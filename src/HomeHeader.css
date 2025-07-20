@@ -220,7 +220,7 @@ body.locked {
   margin-top: 20px;
 }
 
-body.home-page .mobile-menu {
+body.home-page #page.home-page .mobile-menu {
   position: fixed;
   top: 0;
   left: 0;
@@ -228,8 +228,8 @@ body.home-page .mobile-menu {
   height: 100vh;
   z-index: 1997 !important;
   overflow: hidden;
-  opacity: 1 !important; /* Add !important to override opacity */
-  pointer-events: auto !important; /* Override pointer-events */
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .home-page .mobile-menu.active,
