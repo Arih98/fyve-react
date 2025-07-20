@@ -14,7 +14,7 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_errors.log');
 
-$secret_key = 'your_production_secret_key_here'; // Replace with your Revolut production secret key
+$secret_key = 'sk_Sl0FWbYuo1lNBOXbdRQlSQ7_7byRXiTOv3mztPC8Q8XqQ68OS3YxG8MqbUpLapB6'; // Replace with your Revolut production secret key
 $api_url = 'https://merchant.revolut.com/api/orders';
 
 $data = json_decode(file_get_contents('php://input'), true);
