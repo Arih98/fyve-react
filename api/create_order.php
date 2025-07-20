@@ -9,12 +9,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$secret_key = 'sk_Sl0FWbYuo1lNBOXbdRQlSQ7_7byRXiTOv3mztPC8Q8XqQ68OS3YxG8MqbUpLapB6';
-$api_url = 'https://sandbox-merchant.revolut.com/api/orders';
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php_errors.log');
 
-data = json_decode(file_get_contents('php://input'), true);
+$secret_key = 'your_production_secret_key_here'; // Replace with your Revolut production secret key
+$api_url = 'https://merchant.revolut.com/api/orders';
+
+$data = json_decode(file_get_contents('php://input'), true);
 
 if (!isset($data['amount']) || !isset($data['currency'])) {
+    error_log('Missing amount or currency in request');
     http_response_code(400);
     echo json_encode(['error' => 'Missing amount or currency']);
     exit;
@@ -37,9 +43,18 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curl_error = curl_error($ch);
 curl_close($ch);
 
+if ($curl_error) {
+    error_log('cURL error: ' . $curl_error);
+    http_response_code(500);
+    echo json_encode(['error' => 'cURL error: ' . $curl_error]);
+    exit;
+}
+
 if ($http_code !== 201) {
+    error_log('Revolut API error: HTTP ' . $http_code . ' - ' . $response);
     http_response_code($http_code);
     echo $response;
     exit;
