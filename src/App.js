@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './Home';
@@ -12,6 +11,8 @@ import Checkout from './Checkout';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import './App.css';
+import './Header.css';
+import './HomeHeader.css';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
