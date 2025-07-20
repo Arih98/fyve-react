@@ -1,13 +1,183 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* src/index.css */
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-HairLine.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-HairLineItalic.woff2') format('woff2');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Thin.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-ThinItalic.woff2') format('woff2');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-ExtraLight.woff2') format('woff2');
+  font-weight: 250;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-ExtraLightItalic.woff2') format('woff2');
+  font-weight: 250;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-LightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-SemiBoldItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-ExtraBoldItalic.woff2') format('woff2');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Heavy.woff2') format('woff2');
+  font-weight: 850;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-HeavyItalic.woff2') format('woff2');
+  font-weight: 850;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-BlackItalic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+html, body {
+  margin: 0;
+  font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400; /* Explicitly set to force the regular variant */
 }

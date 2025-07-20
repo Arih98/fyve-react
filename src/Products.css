@@ -1,0 +1,90 @@
+/* Products.css */
+
+.products-container {
+    margin-top: 111px;
+  }
+  
+  .page-wrapper {
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .product-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product-image {
+    height: auto;
+    width: 100%;
+    object-fit: contain;
+    z-index: 9999;
+  }
+  
+  .product-info {
+    background-color: #f7f7f7;
+    z-index: 10;
+    padding: 20px;
+    font-size: 1rem;
+  }
+  
+  .product-card .product-title {
+    font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 600;
+    font-size: 16px !important;
+    color: #4a494a;
+    margin: 0;
+  }
+  
+  .product-price {
+    font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #4a494a;
+    margin: 0;
+  }
+  
+  .pagination {
+    margin-top: 50px;
+    text-align: center;
+  }
+  
+  .pagination-button {
+    width: 43.5px;
+    height: 43.5px;
+    border-radius: 50px;
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #4A494A;
+    font-family: quasimoda, sans-serif;
+    font-weight: 500;
+  }
+  
+  .pagination-button-active {
+    background-color: #F1DBD1;
+  }
+  
+  .pagination-button-inactive {
+    background-color: #fff;
+  }
+  
+  .products-loading {
+    padding: 1.5rem;
+    color: #4b5563;
+  }
+  
+  .products-error {
+    padding: 1.5rem;
+    color: #dc2626;
+  }
+
+  .product-card:hover {
+    cursor: pointer;
+  }

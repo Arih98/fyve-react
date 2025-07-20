@@ -1,0 +1,340 @@
+/* ProductDetail.css */
+
+.product-detail-container {
+  display: flex;
+  width: 100vw;
+  margin-top: 111px;
+  padding: 20px;
+  padding-bottom: 125px;
+  box-sizing: border-box;
+}
+
+.images-container {
+  width: 815px;
+  flex-shrink: 0;
+}
+
+.product-image-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.product-gallery-image,
+.product-main-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.related-products-container {
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.related-products-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  border-top: 1px solid #c4c4c4;
+}
+
+.related-products-title {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600;
+  font-size: 2em;
+  color: #4a494a;
+  margin-bottom: 20px;
+}
+
+.related-products-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.related-product-card {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 300px;
+  cursor: pointer;
+}
+
+.related-product-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.related-product-info {
+  background-color: #f7f7f7;
+  padding: 20px;
+  font-size: 1rem;
+}
+
+.related-product-title {
+  font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
+  font-size: 16px !important;
+  color: #4a494a;
+  margin: 0;
+}
+
+.related-product-price {
+  font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #4a494a;
+  margin: 0;
+}
+
+.related-products-gallery {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.related-gallery-image {
+  width: auto;
+  height: 500px;
+  object-fit: contain;
+}
+
+.details-container {
+  flex: 1;
+  margin-top: 180px;
+  margin-left: 30px;
+  width: 100%;
+}
+
+.product-details {
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+  transition: top 0.3s ease;
+}
+
+.product-details.scroll-up {
+  top: 140px;
+}
+
+.product-detail-container .product-title {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600;
+  font-size: 2em;
+  color: #4a494a;
+}
+
+.product-variation-description,
+.product-description {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 500;
+  font-size: 1.2em;
+  color: #4a494a;
+}
+
+.product-price,
+.product-sku,
+.product-stock {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  color: #4a494a;
+}
+
+.product-attributes {
+  margin-top: 10px;
+}
+
+.attribute-group {
+  margin-bottom: 10px;
+}
+
+.attribute-label {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+  font-weight: 700;
+  color: #4a494a;
+}
+
+.color-options,
+.size-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.color-option,
+.size-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.color-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-width 0.2s ease, border-color 0.2s ease;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 12px;
+  color: #4a494a;
+  margin-top: 1px;
+  margin-left: -1.5px;
+}
+
+.size-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-width 0.2s ease, border-color 0.2s ease;
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #4a494a;
+  margin-top: 1px;
+  margin-left: -1.5px;
+}
+
+.color-button.selected,
+.size-button.selected {
+  border-width: 1.5px;
+  border-color: #4A494A;
+}
+
+.color-button.sand {
+  background: #d2c0ab;
+}
+
+.color-button.ivory {
+  background: #ebe8de;
+}
+
+.color-label,
+.size-label {
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a494a;
+  text-align: center;
+}
+
+.attribute-select {
+  margin-left: 10px;
+  padding: 5px;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 14px;
+}
+
+.product-not-found,
+.cart-error {
+  padding: 20px;
+  color: #dc2626;
+  font-size: 16px;
+}
+
+.add-to-cart-button {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #4a494a;
+  padding: 15px 20px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.add-to-cart-price {
+  font-size: 15.6px;
+}
+
+.add-to-cart-button:hover:not(.disabled) {
+  background-color: #333;
+}
+
+.add-to-cart-button.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.quantity-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-label {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 700;
+  font-size: 1em;
+  color: #4a494a;
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #dfdfdf;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.qty-symbol {
+  display: inline-block;
+  transform: translateY(-2px);
+}
+
+.qty-value {
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 16px;
+  color: #4a494a;
+  min-width: 20px;
+  text-align: center;
+}

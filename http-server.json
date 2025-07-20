@@ -1,0 +1,1 @@
+{"spa": true, "port": 5000, "rewriteRules": [{"match": "^.*$", "replace": "/index.html"}]}
