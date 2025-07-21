@@ -205,7 +205,7 @@ const HomeHeader = () => {
         </div>
         <div className="header-logo">
           <img
-            src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-2FYVE-White-Logo.png"
+            src="/api/Uploads/Asset%2020FYVE%20White%20Logo%20Mark.svg"
             alt="FYVE Coloured Logo"
           />
         </div>
