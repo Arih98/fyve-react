@@ -39,4 +39,11 @@
   line-height: 1;
   margin: 0;
   padding: 0;
+  display: inline;
+}
+
+.fy, .ve {
+  display: inline;
+  margin: 0;
+  padding: 0;
 }
