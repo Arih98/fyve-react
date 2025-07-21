@@ -52,4 +52,33 @@
   height: 10vw;
   display: block;
   margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.fyve-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fyve-image::before,
+.fyve-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  z-index: 1;
+}
+
+.fyve-image::before {
+  left: 0;
+  transform-origin: left center;
+}
+
+.fyve-image::after {
+  right: 0;
+  transform-origin: right center;
 }

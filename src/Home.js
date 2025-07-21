@@ -19,8 +19,9 @@ const Home = () => {
     console.log('Setting fyve-mask visibility');
     gsap.set('.fyve-mask', { visibility: 'visible' });
     
-    console.log('Setting initial image scale and visibility');
-    gsap.set('.fyve-image', { scaleX: 0, transformOrigin: 'center', visibility: 'visible' });
+    console.log('Setting initial mask positions');
+    gsap.set('.fyve-image::before, .fyve-image::after', { scaleX: 0.5, transformOrigin: 'center' });
+    gsap.set('.fyve-image', { visibility: 'visible' });
     
     console.log('Starting letter reveal animation');
     gsap.fromTo(
@@ -55,14 +56,22 @@ const Home = () => {
       onComplete: () => console.log('VE shift animation completed')
     });
     
-    console.log('Scheduling image reveal animation');
-    gsap.to('.fyve-image', {
-      scaleX: 1,
+    console.log('Scheduling image mask reveal animation');
+    gsap.to('.fyve-image::before', {
+      x: '-100%',
       duration: 0.8,
       ease: 'power2.out',
       delay: 1,
-      onStart: () => console.log('Image reveal animation started'),
-      onComplete: () => console.log('Image reveal animation completed')
+      onStart: () => console.log('Image mask left animation started'),
+      onComplete: () => console.log('Image mask left animation completed')
+    });
+    gsap.to('.fyve-image::after', {
+      x: '100%',
+      duration: 0.8,
+      ease: 'power2.out',
+      delay: 1,
+      onStart: () => console.log('Image mask right animation started'),
+      onComplete: () => console.log('Image mask right animation completed')
     });
   }, []);
 
@@ -74,11 +83,12 @@ const Home = () => {
             <span key={index} className="fyve-letter">{letter}</span>
           ))}
         </div>
-        <img
-          src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
-          alt="Reveal Image"
-          className="fyve-image"
-        />
+        <div className="fyve-image">
+          <img
+            src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
+            alt="Reveal Image"
+          />
+        </div>
       </div>
     </div>
   );
