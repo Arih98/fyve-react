@@ -1,12 +1,11 @@
 // Home.js
-import React, { useEffect, useState,matterRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react'; // Consolidated import
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import HomeHeader from './HomeHeader';
 import { gsap } from 'gsap';
 import Player from 'lottie-react';
 import './Home.css';
-import React, { useEffect, useState, useRef } from 'react'; // Add useRef here
 
 const Home = () => {
   const navigate = useNavigate();
