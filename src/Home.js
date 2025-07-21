@@ -19,8 +19,8 @@ const Home = () => {
     console.log('Setting fyve-mask visibility');
     gsap.set('.fyve-mask', { visibility: 'visible' });
     
-    console.log('Setting initial image scale');
-    gsap.set('.fyve-image', { scaleX: 0, transformOrigin: 'center' });
+    console.log('Setting initial image scale and visibility');
+    gsap.set('.fyve-image', { scaleX: 0, transformOrigin: 'center', visibility: 'visible' });
     
     console.log('Starting letter reveal animation');
     gsap.fromTo(
