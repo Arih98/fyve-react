@@ -228,7 +228,7 @@ const HomeHeader = () => {
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img
-                  src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-2Close-Button2.png"
+                  src="/api/Uploads/FYVEDarkCloseIcon.svg"
                   alt="Close Button"
                 />
               </button>
@@ -272,7 +272,7 @@ const HomeHeader = () => {
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img
-                  src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-2Close-Button2.png"
+                  src="/api/Uploads/FYVEDarkCloseIcon.svg"
                   alt="Close Button"
                 />
               </button>
@@ -316,7 +316,7 @@ const HomeHeader = () => {
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img
-                  src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-2Close-Button2.png"
+                  src="/api/Uploads/FYVEDarkCloseIcon.svg"
                   alt="Close Button"
                 />
               </button>

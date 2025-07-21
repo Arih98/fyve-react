@@ -210,7 +210,7 @@ const Header = () => {
                 onChange={handleSearch}
               />
               <button className="custom-search-close" onClick={toggleSearch}>
-                <img src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-2Close-Button2.png" alt="Close Button" />
+                <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
               </button>
               <div className="custom-search-results"></div>
             </div>
