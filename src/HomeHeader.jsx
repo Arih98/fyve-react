@@ -327,12 +327,12 @@ const HomeHeader = () => {
           <div className="menu-columns">
             <div className="menu-image-column">
               {[
-                { item: 'ss25', src: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1437_result-1.webp', alt: 'SS25 Image' },
-                { item: 'boys', src: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK_11_2043-1.jpg', alt: 'Boys Image' },
-                { item: 'girls', src: 'https://fyvelondon.com/wp-content/uploads/2025/02/look_12_2482-copy.jpg', alt: 'Girls Image' },
-                { item: 'baby', src: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1650.jpg', alt: 'Baby Image' },
-                { item: 'our-story', src: 'https://fyvelondon.com/wp-content/uploads/2025/05/LOOK-2_191222.webp', alt: 'Our Story Image' },
-                { item: 'lookbook', src: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-6_582_result.webp', alt: 'Lookbook Image' }
+                { item: 'ss25', src: '/api/Uploads/LOOK-9_1437_.webp', alt: 'SS25 Image' },
+                { item: 'boys', src: '/api/Uploads/LOOK_11_2043-1.webp', alt: 'Boys Image' },
+                { item: 'girls', src: '/api/Uploads/LOOK-9_1416.webp', alt: 'Girls Image' },
+                { item: 'baby', src: '/api/Uploads/LOOK-9_1650.jpg', alt: 'Baby Image' },
+                { item: 'our-story', src: '/api/Uploads/LOOK-2_191222.webp', alt: 'Our Story Image' },
+                { item: 'lookbook', src: '/api/Uploads/LOOK-6_582.webp', alt: 'Lookbook Image' }
               ].map(({ item, src, alt }) => (
                 <div
                   key={item}

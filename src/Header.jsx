@@ -159,12 +159,12 @@ const Header = () => {
   };
 
   const menuItems = [
-    { id: 'ss25', name: 'SS25', path: '/products?category=ss25', image: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1437_result-1.webp' },
-    { id: 'boys', name: 'BOYS', path: '/products?category=boys', image: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK_11_2043-1.jpg' },
-    { id: 'girls', name: 'GIRLS', path: '/products?category=girls', image: 'https://fyvelondon.com/wp-content/uploads/2025/02/look_12_2482-copy.jpg' },
-    { id: 'baby', name: 'BABY', path: '/products?category=baby', image: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1650.jpg' },
-    { id: 'our-story', name: 'Our Story', path: '/#our-story', image: 'https://fyvelondon.com/wp-content/uploads/2025/05/LOOK-2_191222.webp' },
-    { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: 'https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-6_582_result.webp' },
+    { id: 'ss25', name: 'SS25', path: '/products?category=ss25', image: '/api/Uploads/LOOK-9_1437_.webp' },
+    { id: 'boys', name: 'BOYS', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
+    { id: 'girls', name: 'GIRLS', path: '/products?category=girls', image: '/api/Uploads/LOOK-9_1416.webp' },
+    { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
+    { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
+    { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
   ];
 
   const BurgerIcon = (
