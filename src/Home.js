@@ -14,6 +14,16 @@ const Home = () => {
 
   return (
     <div className="home-page">
+      <div className="fyveisible;
+    gsap.fromTo(
+      '.fyve-text',
+      { y: '100%' },
+      { y: 0, duration: 0.8, ease: 'power2.out' }
+    );
+  }, []);
+
+  return (
+    <div className="home-page">
       <div className="fyve-mask">
         <div className="fyve-text">FYVE</div>
       </div>

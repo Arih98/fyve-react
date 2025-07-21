@@ -1,7 +1,7 @@
 /* Home.css */
 @font-face {
-  font-family: 'quasimoda';
-  src: url('%PUBLIC_URL%/fonts/quasimoda-200.woff2') format('woff2');
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Thin.woff2') format('woff2');
   font-weight: 200;
   font-style: normal;
   font-display: swap;
@@ -29,7 +29,7 @@
 }
 
 .fyve-text {
-  font-family: 'quasimoda', sans-serif;
+  font-family: 'Quasimoda', sans-serif;
   font-weight: 200 !important;
   font-size: 10vw;
   text-transform: uppercase;
