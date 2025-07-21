@@ -119,28 +119,28 @@ const Home = () => {
         `}
       </style>
       <section
-        ref={heroSectionRef}
-        className="custom-hero-section"
-        style={{
-          position: 'relative",
-          top: '100vw',
-          width: 0,
-          height: '100vh',
-          minHeight: '100vh',
-          maxHeight: '100vh',
-          overflow: 'hidden',
-          backgroundImage: "url('/api/Uploads/LOOK-2_137-e1743957431674.webp')",
-          backgroundRepeat: 'cover',
-          backgroundPosition: 'center',
-          backgroundSize: 'no-repeat',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          padding: 0,
-          margin: 0,
-          zIndex: 1,
-        }}
-      >
+  ref={heroSectionRef}
+  className="custom-hero-section"
+  style={{
+    position: 'relative',
+    top: 0,
+    width: '100vw',
+    height: '100vh',
+    minHeight: '100vh',
+    maxHeight: '100vh',
+    overflow: 'hidden',
+    backgroundImage: "url('/api/Uploads/LOOK-2_137-e1743957431674.webp')",
+    backgroundRepeat: 'no-repeat', // Correct property to prevent repetition
+    backgroundPosition: 'center',
+    backgroundSize: 'cover', // Ensures the image covers the section without repeating
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    padding: 0,
+    margin: 0,
+    zIndex: 1,
+  }}
+>
         <div
           className="lottie-stack"
           style={{
