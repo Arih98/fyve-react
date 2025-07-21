@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import HomeHeader from './HomeHeader';
 import { gsap } from 'gsap';
+import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const Home = () => {
     gsap.ticker.fps(60);
     const section = heroSectionRef.current;
     gsap.set(section, { scale: 0, xPercent: -50, yPercent: -50, left: '50%', top: '50%' });
-    gsap.set(iconRef.current, { opacity: 0' });
+    gsap.set(iconRef.current, { opacity: 0 });
 
     const tl = gsap.timeline();
     tl.to(section, {
@@ -76,11 +77,11 @@ const Home = () => {
         ease: 'none',
       })
       .to(section, {
-        scale: 1',
+        scale: 1,
         xPercent: 0,
         yPercent: 0,
-        left: 1,
-        top: '0',
+        left: 0,
+        top: 0,
         duration: 1,
         ease: 'expo.inOut',
         onComplete: () => {
@@ -89,7 +90,7 @@ const Home = () => {
             lottieRef.current.play();
             setTimeout(() => {
               gsap.to(iconRef.current, { opacity: 1, duration: 0.5 });
-            }, 1000); // Adjust delay (in ms) as needed
+            }, 1000);
           }
         }
       });
@@ -99,135 +100,41 @@ const Home = () => {
     <motion.div
       id="page"
       className="home-page"
-      style={{ opacity: 1 }} // Ensure Home is always visible
       animate={{
-        y: menuActive ? menuHeight : 0',
+        y: menuActive ? menuHeight : 0,
       }}
       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     >
       <HomeHeader setMenuActive={setMenuActive} />
-      <style>
-        {`
-          @media (max-width: 900px) {
-            .look9-bg-image { width: 88vw; }
-            .look9-bg-text { font-size: 3vw; top: 6%; left: 6%; }
-          }
-          @media (max-width: 600px) {
-            .look9-bg-image { width: 99vw; }
-            .look9-bg-text { font-size: 5vw; top: 7%; left: 7%; padding: 0.4em 0.7em; }
-          }
-        `}
-      </style>
-      <section
-  ref={heroSectionRef}
-  className="custom-hero-section"
-  style={{
-    position: 'relative',
-    top: 0,
-    width: '100vw',
-    height: '100vh',
-    minHeight: '100vh',
-    maxHeight: '100vh',
-    overflow: 'hidden',
-    backgroundImage: "url('/api/Uploads/LOOK-2_137-e1743957431674.webp')",
-    backgroundRepeat: 'no-repeat', // Correct property to prevent repetition
-    backgroundPosition: 'center',
-    backgroundSize: 'cover', // Ensures the image covers the section without repeating
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    padding: 0,
-    margin: 0,
-    zIndex: 1,
-  }}
->
-        <div
-          className="lottie-stack"
-          style={{
-            width: '100vw',
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            padding: 0,
-            margin: 0,
-          }}
-        >
+      <section ref={heroSectionRef} className="custom-hero-section">
+        <div className="lottie-stack">
+          {lottieReady && (
+            <lottie-player
+              ref={lottieRef}
+              id="lottieHero"
+              className="hero-lottie"
+              src="/lottie/FYVE-2.json"
+              background="transparent"
+              speed="1"
+            ></lottie-player>
+          )}
+          <img
+            ref={iconRef}
+            src="https://fyvelondon.com/wp-content/uploads/2025/07/Asset-16Fyve-W23-Cart2-Icon.png"
+            className="hero-lottie"
+            alt="London"
+          />
         </div>
       </section>
-      <section
-        className="look9-bg-section"
-        style={{
-          width: '100vw',
-          minHeight: '70vh',
-          paddingTop: '70px',
-          paddingBottom: '70px',
-          background: '#fff',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
-          zIndex: 2,
-        }}
-      >
-        <div
-          className="look9-bg-image"
-          style={{
-            width: '66vw',
-            height: 'auto',
-            aspectRatio: '1/1',
-            background: "url('https://fyvelondon.com/wp-content/uploads/2024/12/LOOK-9_1426_result.webp') center center no-repeat",
-            backgroundSize: 'contain',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <div
-            className="look9-bg-text"
-            style={{
-              position: 'absolute',
-              top: '2.5%',
-              left: '-9.9%',
-              fontFamily: 'quasimoda, sans-serif',
-              fontWeight: 700,
-              fontSize: '3.8vw',
-              lineHeight: '0.9em',
-              letterSpacing: '-0.4px',
-              color: '#222',
-              pointerEvents: 'none',
-              zIndex: 2,
-              textAlign: 'left',
-            }}
-          >
+      <section className="look9-bg-section">
+        <div className="look9-bg-image">
+          <div className="look9-bg-text">
             Comfortably<br />
             Modern,<br />
             Distinctly<br />
             British.
           </div>
-          <div
-            className="look9-bg-tagline"
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              background: '#f7f7f7',
-              color: '#222',
-              padding: '15px',
-              fontSize: '9.85vw',
-              fontFamily: 'quasimoda, sans-serif',
-              fontWeight: 600,
-              lineHeight: 1.05,
-              letterSpacing: '-0.3px',
-              zIndex: 3,
-              textAlign: 'right',
-              pointerEvents: 'none',
-              borderRadius: '0 0 0 25px',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.03)',
-            }}
-          >
+          <div className="look9-bg-tagline">
             We combine iconic British design with modern comfort<br />
             and ease, creating a wardrobe that<br />
             blends timeless elegance with<br />
@@ -236,19 +143,8 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <div style={{ textAlign: 'center', padding: '20px', position: 'relative', zIndex: '2' }}>
-        <button
-          onClick={() => navigate('/products')}
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            cursor: 'pointer',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-          }}
-        >
+      <div className="shop-now-container">
+        <button onClick={() => navigate('/products')}>
           Shop Now
         </button>
       </div>
