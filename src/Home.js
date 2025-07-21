@@ -28,60 +28,60 @@ const Home = () => {
   useEffect(() => {
     gsap.ticker.fps(60);
     gsap.set('.lottie-container', { opacity: 0 });
-    gsap.set('.fy, .ve', { x: 0 });
-
+    gsap.set('.fy, .ve', { x: 0 }); // Ensure no initial translation
+  
     const fontReady = document.fonts.ready;
     const imageLoad = new Promise(resolve => {
       if (imageRef.current?.complete) resolve();
       else if (imageRef.current) imageRef.current.onload = resolve;
     });
-
+  
     Promise.all([fontReady, imageLoad]).then(() => {
       gsap.set('.fyve-mask', { visibility: 'visible' });
       const textHeight = fyveTextRef.current.getBoundingClientRect().height;
       const aspect = imageRef.current.naturalWidth / imageRef.current.naturalHeight;
       const initialWidth = textHeight * aspect;
       gsap.set('.hero-image-container', { width: initialWidth, height: textHeight, scale: 0, transformOrigin: 'center center' });
-
+  
       const tl = gsap.timeline();
-
+  
       tl.to('.fyve-text', { 
         y: 0, 
         duration: 0.8, 
         ease: 'power2.out'
       });
-
-      tl.to({}, { duration: 0.5 });
-
+  
+      tl.to({}, { duration: 0.5 }); // Pause to show "FYVE" together
+  
       tl.to('.hero-image-container', { 
         scale: 1, 
         duration: 0.5, 
         ease: 'power1.inOut'
       });
-
+  
       tl.set('.fyve-mask', { overflow: 'visible' });
-
+  
       tl.to('.fy', { 
         x: '-100vw', 
         duration: 1.2, 
         ease: 'expo.inOut'
       });
-
+  
       tl.to('.ve', { 
         x: '100vw', 
         duration: 1.2, 
         ease: 'expo.inOut'
       }, '<');
-
+  
       tl.set('.hero-image-container', { position: 'absolute', left: '50%', top: '50%', x: '-50%', y: '-50%' });
-
+  
       tl.to('.hero-image-container', { 
         width: '100vw', 
         height: '100vh', 
         duration: 1.2, 
         ease: 'expo.inOut'
       });
-
+  
       tl.to('.lottie-container', { 
         opacity: 1, 
         duration: 0.8, 
