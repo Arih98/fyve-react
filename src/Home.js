@@ -59,7 +59,7 @@ const Home = () => {
     
     console.log('Scheduling image container expand');
     gsap.to('.fyve-image-container', {
-      width: '10vw',
+      width: '22.5vw',
       duration: 0.8,
       ease: 'power2.out',
       delay: 1,
