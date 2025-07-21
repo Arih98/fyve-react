@@ -20,7 +20,6 @@
   min-height: 100vh;
   max-height: 100vh;
   overflow: hidden;
-  background: url('/api/Uploads/LOOK-2_137-e1743957431674.webp') center center/cover no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -28,6 +27,63 @@
   margin: 0;
   z-index: 1;
   will-change: transform;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.fyve-mask {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.fyve-text {
+  font-family: quasimoda, sans-serif;
+  font-weight: 400;
+  font-size: 10vw;
+  text-transform: uppercase;
+  color: #4A494A;
+  white-space: nowrap;
+}
+
+.fy, .ve {
+  display: inline-block;
+}
+
+.final-fyve {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: quasimoda, sans-serif;
+  font-weight: 400;
+  font-size: 10vw;
+  text-transform: uppercase;
+  color: white;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.final-fyve span {
+  display: inline-block;
 }
 
 .look9-bg-section {
@@ -62,7 +118,7 @@
   left: -9.9%;
   font-family: quasimoda, sans-serif;
   font-weight: 700;
-  font-size: boasting3.8vw;
+  font-size: 3.8vw;
   line-height: 0.9em;
   letter-spacing: -0.4px;
   color: #222;
