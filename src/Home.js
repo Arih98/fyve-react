@@ -18,8 +18,9 @@ const Home = () => {
     const updateMenuHeight = () => {
       const contentHeight = window.innerHeight + 64;
       const buffer = 128;
-      setMenuHeight(contentHeight + buffer);
-      console.log('Menu height set to', contentHeight + buffer);
+      const total = contentHeight + buffer;
+      setMenuHeight(total);
+      console.log('Menu height set to', total);
     };
     updateMenuHeight();
     window.addEventListener('resize', updateMenuHeight);
@@ -29,34 +30,38 @@ const Home = () => {
   useEffect(() => {
     console.log('useEffect: starting GSAP setup');
     gsap.ticker.fps(60);
-    console.log('gsap.ticker.fps set to 60');
+    console.log('gsap.ticker.fps set to', gsap.ticker.fps());
 
+    console.log('Setting initial .fyve-text');
     gsap.set('.fyve-text', { yPercent: 100, visibility: 'hidden' });
-    console.log('Initial .fyve-text set to yPercent 100, visibility hidden');
+    console.log('Computed .fyve-text rect', fyveTextRef.current.getBoundingClientRect());
 
+    console.log('Setting initial .hero-image');
     gsap.set('.hero-image', { clipPath: 'inset(0 50% 0 50%)', scale: 1, transformOrigin: 'center center' });
-    console.log('Initial .hero-image clipPath and scale set');
+    console.log('Computed .hero-image clipPath', window.getComputedStyle(document.querySelector('.hero-image')).clipPath);
 
+    console.log('Setting initial .lottie-container');
     gsap.set('.lottie-container', { opacity: 0 });
-    console.log('Initial .lottie-container opacity set to 0');
+    console.log('Computed .lottie-container opacity', window.getComputedStyle(document.querySelector('.lottie-container')).opacity);
 
     document.fonts.ready.then(() => {
-      console.log('Fonts ready event fired');
+      console.log('Fonts ready');
       const section = heroSectionRef.current;
-      const textHeight = fyveTextRef.current.getBoundingClientRect().height;
-      const imageHeight = section.getBoundingClientRect().height;
-      const initialScale = textHeight / imageHeight;
-      console.log('Computed initialScale for hero-image:', initialScale);
+      const textRect = fyveTextRef.current.getBoundingClientRect();
+      const imageRect = section.getBoundingClientRect();
+      const initialScale = textRect.height / imageRect.height;
+      console.log('textRect', textRect, 'imageRect', imageRect, 'initialScale', initialScale);
 
       gsap.set('.hero-image', { scale: initialScale });
-      console.log('Applied initialScale to .hero-image');
+      console.log('hero-image scale after set', window.getComputedStyle(document.querySelector('.hero-image')).transform);
 
       gsap.set('.fyve-text', { visibility: 'visible' });
-      console.log('.fyve-text visibility set to visible');
+      console.log('fyve-text visibility after set', window.getComputedStyle(fyveTextRef.current).visibility);
 
       const tl = gsap.timeline({
-        onStart: () => console.log('Timeline: onStart'),
-        onComplete: () => console.log('Timeline: onComplete')
+        onStart: () => console.log('Timeline onStart'),
+        onUpdate: () => console.log('Timeline progress', tl.progress(), 'time', tl.time()),
+        onComplete: () => console.log('Timeline onComplete')
       });
 
       tl.addLabel('start')
@@ -67,7 +72,7 @@ const Home = () => {
           onStart: () => console.log('[FYVE] slide up start'),
           onUpdate: () => {
             const rect = fyveTextRef.current.getBoundingClientRect();
-            console.log('[FYVE] slide up yPercent:', rect.y, 'height:', rect.height);
+            console.log('[FYVE] y', rect.y, 'height', rect.height);
           },
           onComplete: () => console.log('[FYVE] slide up complete')
         })
@@ -77,21 +82,30 @@ const Home = () => {
           duration: 0.8,
           ease: 'power2.out',
           onStart: () => console.log('[Image] reveal start'),
-          onComplete: () => console.log('[Image] reveal complete')
+          onComplete: () => {
+            console.log('[Image] reveal complete');
+            console.log('clipPath after reveal', window.getComputedStyle(document.querySelector('.hero-image')).clipPath);
+          }
         }, 'revealImage')
         .to('.fy', {
           x: '-50%',
           duration: 0.5,
           ease: 'power1.inOut',
           onStart: () => console.log('[FY] separate start'),
-          onComplete: () => console.log('[FY] separate complete')
+          onComplete: () => {
+            console.log('[FY] separate complete');
+            console.log('FY transform', window.getComputedStyle(document.querySelector('.fy')).transform);
+          }
         }, 'revealImage')
         .to('.ve', {
           x: '50%',
           duration: 0.5,
           ease: 'power1.inOut',
           onStart: () => console.log('[VE] separate start'),
-          onComplete: () => console.log('[VE] separate complete')
+          onComplete: () => {
+            console.log('[VE] separate complete');
+            console.log('VE transform', window.getComputedStyle(document.querySelector('.ve')).transform);
+          }
         }, 'revealImage')
         .addLabel('slideOff', '+=0.2')
         .to('.fy', {
@@ -99,14 +113,20 @@ const Home = () => {
           duration: 1.2,
           ease: 'expo.inOut',
           onStart: () => console.log('[FY] slide off start'),
-          onComplete: () => console.log('[FY] slide off complete')
+          onComplete: () => {
+            console.log('[FY] slide off complete');
+            console.log('FY final transform', window.getComputedStyle(document.querySelector('.fy')).transform);
+          }
         }, 'slideOff')
         .to('.ve', {
           x: '100vw',
           duration: 1.2,
           ease: 'expo.inOut',
           onStart: () => console.log('[VE] slide off start'),
-          onComplete: () => console.log('[VE] slide off complete')
+          onComplete: () => {
+            console.log('[VE] slide off complete');
+            console.log('VE final transform', window.getComputedStyle(document.querySelector('.ve')).transform);
+          }
         }, 'slideOff')
         .addLabel('coverGrow')
         .to('.hero-image', {
@@ -114,14 +134,20 @@ const Home = () => {
           duration: 1.2,
           ease: 'expo.inOut',
           onStart: () => console.log('[Image] cover grow start'),
-          onComplete: () => console.log('[Image] cover grow complete')
+          onComplete: () => {
+            console.log('[Image] cover grow complete');
+            console.log('hero-image transform after coverGrow', window.getComputedStyle(document.querySelector('.hero-image')).transform);
+          }
         }, 'coverGrow')
         .to('.lottie-container', {
           opacity: 1,
           duration: 0.8,
           ease: 'power2.out',
           onStart: () => console.log('[Lottie] fade in start'),
-          onComplete: () => console.log('[Lottie] fade in complete')
+          onComplete: () => {
+            console.log('[Lottie] fade in complete');
+            console.log('lottie opacity after fade', window.getComputedStyle(document.querySelector('.lottie-container')).opacity);
+          }
         }, 'coverGrow+=1.2');
     });
   }, []);
