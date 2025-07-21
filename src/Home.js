@@ -38,76 +38,88 @@ const Home = () => {
     if (fyveTextRef.current) {
       const computedStyle = window.getComputedStyle(fyveTextRef.current);
       console.log('Initial computed font-weight for FYVE text:', computedStyle.fontWeight);
+      console.log('Initial computed font-family for FYVE text:', computedStyle.fontFamily);
     }
 
-    const tl = gsap.timeline({
-      onStart: () => console.log('Timeline started'),
-      onComplete: () => console.log('Timeline completed')
-    });
+    document.fonts.ready.then(() => {
+      console.log('Fonts ready, starting timeline');
 
-    tl.to('.fyve-text', { 
-      yPercent: 0, 
-      duration: 0.8, 
-      ease: 'power2.out',
-      onStart: () => console.log('Starting FYVE slide up'),
-      onComplete: () => {
-        console.log('FYVE slide up completed');
-        if (fyveTextRef.current) {
-          const computedStyle = window.getComputedStyle(fyveTextRef.current);
-          console.log('Font-weight after slide up:', computedStyle.fontWeight);
-        }
+      if (fyveTextRef.current) {
+        const computedStyle = window.getComputedStyle(fyveTextRef.current);
+        console.log('Font-weight after fonts ready:', computedStyle.fontWeight);
+        console.log('Font-family after fonts ready:', computedStyle.fontFamily);
       }
-    });
 
-    tl.to('.fy', { 
-      x: -100, 
-      duration: 0.5, 
-      ease: 'power1.inOut',
-      onStart: () => console.log('Starting FY slide left 100px')
-    }, 'separate');
+      const tl = gsap.timeline({
+        onStart: () => console.log('Timeline started'),
+        onComplete: () => console.log('Timeline completed')
+      });
 
-    tl.to('.ve', { 
-      x: 100, 
-      duration: 0.5, 
-      ease: 'power1.inOut',
-      onStart: () => console.log('Starting VE slide right 100px')
-    }, '<');
+      tl.to('.fyve-text', { 
+        yPercent: 0, 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Starting FYVE slide up'),
+        onComplete: () => {
+          console.log('FYVE slide up completed');
+          if (fyveTextRef.current) {
+            const computedStyle = window.getComputedStyle(fyveTextRef.current);
+            console.log('Font-weight after slide up:', computedStyle.fontWeight);
+            console.log('Font-family after slide up:', computedStyle.fontFamily);
+          }
+        }
+      });
 
-    tl.to('.hero-image', { 
-      clipPath: 'inset(0 0% 0 0%)', 
-      duration: 0.8, 
-      ease: 'power2.out',
-      onStart: () => console.log('Starting hero image reveal from center'),
-      onComplete: () => console.log('Hero image reveal completed')
-    }, 'separate');
+      tl.to('.fy', { 
+        x: -100, 
+        duration: 0.5, 
+        ease: 'power1.inOut',
+        onStart: () => console.log('Starting FY slide left 100px')
+      }, 'separate');
 
-    tl.to('.hero-image', { 
-      scale: 1.1, 
-      duration: 1.2, 
-      ease: 'expo.inOut',
-      onStart: () => console.log('Starting image zoom in')
-    }, 'zoom');
+      tl.to('.ve', { 
+        x: 100, 
+        duration: 0.5, 
+        ease: 'power1.inOut',
+        onStart: () => console.log('Starting VE slide right 100px')
+      }, '<');
 
-    tl.to('.fy', { 
-      x: '-100vw', 
-      duration: 1.2, 
-      ease: 'expo.inOut',
-      onStart: () => console.log('Starting FY slide off left')
-    }, 'zoom');
+      tl.to('.hero-image', { 
+        clipPath: 'inset(0 0% 0 0%)', 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Starting hero image reveal from center'),
+        onComplete: () => console.log('Hero image reveal completed')
+      }, 'separate');
 
-    tl.to('.ve', { 
-      x: '100vw', 
-      duration: 1.2, 
-      ease: 'expo.inOut',
-      onStart: () => console.log('Starting VE slide off right')
-    }, 'zoom');
+      tl.to('.hero-image', { 
+        scale: 1.1, 
+        duration: 1.2, 
+        ease: 'expo.inOut',
+        onStart: () => console.log('Starting image zoom in')
+      }, 'zoom');
 
-    tl.to('.lottie-container', { 
-      opacity: 1, 
-      duration: 0.8, 
-      ease: 'power2.out',
-      onStart: () => console.log('Starting lottie fade in'),
-      onComplete: () => console.log('Lottie fade in completed')
+      tl.to('.fy', { 
+        x: '-100vw', 
+        duration: 1.2, 
+        ease: 'expo.inOut',
+        onStart: () => console.log('Starting FY slide off left')
+      }, 'zoom');
+
+      tl.to('.ve', { 
+        x: '100vw', 
+        duration: 1.2, 
+        ease: 'expo.inOut',
+        onStart: () => console.log('Starting VE slide off right')
+      }, 'zoom');
+
+      tl.to('.lottie-container', { 
+        opacity: 1, 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Starting lottie fade in'),
+        onComplete: () => console.log('Lottie fade in completed')
+      });
     });
   }, []);
 
