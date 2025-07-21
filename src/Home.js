@@ -10,6 +10,18 @@ const Home = () => {
       { y: '100%' },
       { y: 0, duration: 0.8, ease: 'power2.out' }
     );
+    gsap.to('.fyve-letter:nth-child(1), .fyve-letter:nth-child(2)', {
+      x: -100,
+      duration: 0.5,
+      ease: 'power2.out',
+      delay: 1
+    });
+    gsap.to('.fyve-letter:nth-child(3), .fyve-letter:nth-child(4)', {
+      x: 100,
+      duration: 0.5,
+      ease: 'power2.out',
+      delay: 1
+    });
   }, []);
 
   return (
