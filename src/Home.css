@@ -43,3 +43,7 @@
 .fyve-letter {
   display: inline-block;
 }
+
+.fyve-letter:nth-child(3) {
+  margin-right: -0.1em;
+}
