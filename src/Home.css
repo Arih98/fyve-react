@@ -28,6 +28,7 @@
   margin: 0;
   z-index: 1;
   will-change: transform;
+  background: #fff;
 }
 
 .hero-overlay {
@@ -47,6 +48,7 @@
   transform: translate(-50%, -50%);
   overflow: hidden;
   z-index: 10;
+  visibility: hidden;
 }
 
 .fyve-text {

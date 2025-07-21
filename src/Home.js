@@ -36,6 +36,7 @@ const Home = () => {
     });
 
     Promise.all([fontReady, imageLoad]).then(() => {
+      gsap.set('.fyve-mask', { visibility: 'visible' });
       const textHeight = fyveTextRef.current.getBoundingClientRect().height;
       const aspect = imageRef.current.naturalWidth / imageRef.current.naturalHeight;
       const initialWidth = textHeight * aspect;
@@ -49,11 +50,15 @@ const Home = () => {
         ease: 'power2.out'
       });
 
+      tl.to({}, { duration: 0.5 });
+
       tl.to('.hero-image-container', { 
         scale: 1, 
         duration: 0.5, 
         ease: 'power1.inOut'
       });
+
+      tl.set('.fyve-mask', { overflow: 'visible' });
 
       tl.to('.fy', { 
         x: '-100vw', 
@@ -67,10 +72,7 @@ const Home = () => {
         ease: 'expo.inOut'
       }, '<');
 
-      tl.call(() => {
-        gsap.set('.fyve-mask', { overflow: 'visible' });
-        gsap.set('.hero-image-container', { position: 'absolute', left: '50%', top: '50%', x: '-50%', y: '-50%' });
-      }, null, '>');
+      tl.set('.hero-image-container', { position: 'absolute', left: '50%', top: '50%', x: '-50%', y: '-50%' });
 
       tl.to('.hero-image-container', { 
         width: '100vw', 
