@@ -42,7 +42,7 @@ const Home = () => {
       x: '-0.3vw',
       duration: 0.8,
       ease: 'expo.inOut',
-      delay: 1,
+      delay: 1.2,
       onStart: () => console.log('FY shift animation started'),
       onComplete: () => console.log('FY shift animation completed')
     });
@@ -52,7 +52,7 @@ const Home = () => {
       x: '0.3vw',
       duration: 0.8,
       ease: 'expo.inOut',
-      delay: 1,
+      delay: 1.2,
       onStart: () => console.log('VE shift animation started'),
       onComplete: () => console.log('VE shift animation completed')
     });
