@@ -7,26 +7,9 @@ import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
-  const [lottieReady, setLottieReady] = useState(!!window.customElements.get('lottie-player'));
   const [menuActive, setMenuActive] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
   const heroSectionRef = useRef(null);
-  const lottieRef = useRef(null);
-  const iconRef = useRef(null);
-
-  useEffect(() => {
-    if (!window.customElements.get('lottie-player') && !document.getElementById('lottie-script')) {
-      const script = document.createElement('script');
-      script.id = 'lottie-script';
-      script.src = 'https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js';
-      script.async = true;
-      script.onload = () => setLottieReady(true);
-      script.onerror = () => setLottieReady(false);
-      document.body.appendChild(script);
-    } else if (window.customElements.get('lottie-player')) {
-      setLottieReady(true);
-    }
-  }, []);
 
   useEffect(() => {
     const updateMenuHeight = () => {
@@ -40,30 +23,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (!lottieReady) return;
-    let lastScroll = window.scrollY;
-    const handleScroll = () => {
-      const hero = document.querySelector('.custom-hero-section');
-      if (!hero) return;
-      const rect = hero.getBoundingClientRect();
-      const scrollingUp = window.scrollY < lastScroll;
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      const lottie = lottieRef.current;
-      if (scrollingUp && inView && lottie && typeof lottie.play === 'function') {
-        lottie.seek(0);
-        lottie.play();
-      }
-      lastScroll = window.scrollY;
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lottieReady]);
-
-  useEffect(() => {
     gsap.ticker.fps(60);
     const section = heroSectionRef.current;
     gsap.set(section, { scale: 0, xPercent: -50, yPercent: -50, left: '50%', top: '50%' });
-    gsap.set(iconRef.current, { opacity: 0 });
 
     const tl = gsap.timeline();
     tl.to(section, {
@@ -84,17 +46,8 @@ const Home = () => {
         top: 0,
         duration: 1,
         ease: 'expo.inOut',
-        onComplete: () => {
-          if (lottieReady && lottieRef.current && typeof lottieRef.current.play === 'function') {
-            lottieRef.current.seek(0);
-            lottieRef.current.play();
-            setTimeout(() => {
-              gsap.to(iconRef.current, { opacity: 1, duration: 0.5 });
-            }, 1000);
-          }
-        }
       });
-  }, [lottieReady]);
+  }, []);
 
   return (
     <motion.div
@@ -107,24 +60,6 @@ const Home = () => {
     >
       <HomeHeader setMenuActive={setMenuActive} />
       <section ref={heroSectionRef} className="custom-hero-section">
-        <div className="lottie-stack">
-          {lottieReady && (
-            <lottie-player
-              ref={lottieRef}
-              id="lottieHero"
-              className="hero-lottie"
-              src="/lottie/FYVE-2.json"
-              background="transparent"
-              speed="1"
-            ></lottie-player>
-          )}
-          <img
-            ref={iconRef}
-            src="/api/Uploads/Asset-16Fyve-W23-Cart2-Icon.png"
-            className="custom-hero-section"
-            alt="London"
-          />
-        </div>
       </section>
       <section className="look9-bg-section">
         <div className="look9-bg-image">

@@ -1,4 +1,3 @@
-
 @media (max-width: 900px) {
   .look9-bg-image { width: 88vw; }
   .look9-bg-text { font-size: 3vw; top: 6%; left: 6%; }
@@ -29,27 +28,6 @@
   margin: 0;
   z-index: 1;
   will-change: transform;
-}
-
-.lottie-stack {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-}
-
-.hero-lottie {
-  width: 100vw;
-  height: 130vh;
-  max-width: 100vw;
-  max-height: 130vh;
-  display: block;
-  margin: 0;
-  padding: 0;
 }
 
 .look9-bg-section {
@@ -84,7 +62,7 @@
   left: -9.9%;
   font-family: quasimoda, sans-serif;
   font-weight: 700;
-  font-size: 3.8vw;
+  font-size: boasting3.8vw;
   line-height: 0.9em;
   letter-spacing: -0.4px;
   color: #222;
