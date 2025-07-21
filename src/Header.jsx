@@ -191,7 +191,7 @@ const Header = () => {
       <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
       <div className="header-logo">
   <img 
-    src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-4FYVE-Coloured-Logo2.png" 
+    src="/api/Uploads/FYVEDarkLogoMark.svg" 
     alt="FYVE White Logo" 
     onClick={() => navigate('/')} 
   />
