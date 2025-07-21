@@ -33,7 +33,7 @@
 .fyve-text {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 200 !important;
-  font-size: 10vw;
+  font-size: 13.5vw;
   text-transform: uppercase;
   color: #4A494A;
   white-space: nowrap;
@@ -54,7 +54,7 @@
 }
 
 .fyve-image-container {
-  height: 10vw;
+  height: 15vw;
   width: 0;
   position: relative;
   overflow: hidden;

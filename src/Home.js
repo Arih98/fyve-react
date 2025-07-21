@@ -39,7 +39,7 @@ const Home = () => {
     
     console.log('Scheduling FY shift animation');
     gsap.to('.fyve-text:first-child', {
-      x: '-5vw',
+      x: '-0.3vw',
       duration: 0.8,
       ease: 'power2.out',
       delay: 1,
@@ -49,7 +49,7 @@ const Home = () => {
     
     console.log('Scheduling VE shift animation');
     gsap.to('.fyve-text:last-child', {
-      x: '5vw',
+      x: '0.3vw',
       duration: 0.8,
       ease: 'power2.out',
       delay: 1,
