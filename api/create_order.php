@@ -14,10 +14,13 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_errors.log');
 
-$secret_key = 'sk_Sl0FWbYuo1lNBOXbdRQlSQ7_7byRXiTOv3mztPC8Q8XqQ68OS3YxG8MqbUpLapB6'; // Replace with your Revolut production secret key
+$secret_key = 'sk_H3C_Es27b5Pv-wfcLLEpPj0z1ZcmgGVVRgOJA7YuDDIVBkcLEqQPtg-_XL_SH7Ua'; // Replace with your actual secret key
 $api_url = 'https://merchant.revolut.com/api/orders';
 
 $data = json_decode(file_get_contents('php://input'), true);
+
+error_log('Request Headers: ' . json_encode(getallheaders()));
+error_log('Request Payload: ' . json_encode($data));
 
 if (!isset($data['amount']) || !isset($data['currency'])) {
     error_log('Missing amount or currency in request');
@@ -30,6 +33,9 @@ $order_payload = [
     'amount' => $data['amount'],
     'currency' => $data['currency'],
 ];
+
+error_log('Order Payload: ' . json_encode($order_payload));
+error_log('Authorization Header: Bearer ' . substr($secret_key, 0, 10) . '... (redacted)');
 
 $ch = curl_init($api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -44,6 +50,10 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curl_error = curl_error($ch);
+
+error_log('Revolut Response: HTTP ' . $http_code . ' - ' . $response);
+error_log('cURL Info: ' . json_encode(curl_getinfo($ch)));
+
 curl_close($ch);
 
 if ($curl_error) {
