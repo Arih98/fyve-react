@@ -38,7 +38,7 @@ const Home = () => {
     );
     
     console.log('Scheduling FY shift animation');
-    gsap.to('.fyve-letter:nth-child(1), .fyve-letter:nth-child(2)', {
+    gsap.to('.fyve-text:first-child .fyve-letter', {
       x: -100,
       duration: 0.8,
       ease: 'power2.out',
@@ -48,7 +48,7 @@ const Home = () => {
     });
     
     console.log('Scheduling VE shift animation');
-    gsap.to('.fyve-letter:nth-child(3), .fyve-letter:nth-child(4)', {
+    gsap.to('.fyve-text:last-child .fyve-letter', {
       x: 100,
       duration: 0.8,
       ease: 'power2.out',
