@@ -34,6 +34,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transform-origin: center center;
 }
 
 .hero-overlay {
@@ -57,33 +58,26 @@
 
 .fyve-text {
   font-family: quasimoda, sans-serif;
-  font-weight: 400;
+  font-weight: 200;
   font-size: 10vw;
   text-transform: uppercase;
   color: #4A494A;
   white-space: nowrap;
+  letter-spacing: 0;
 }
 
 .fy, .ve {
   display: inline-block;
 }
 
-.final-fyve {
+.lottie-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: quasimoda, sans-serif;
-  font-weight: 400;
-  font-size: 10vw;
-  text-transform: uppercase;
-  color: white;
-  white-space: nowrap;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 30px;
+  box-sizing: border-box;
   z-index: 10;
-}
-
-.final-fyve span {
-  display: inline-block;
 }
 
 .look9-bg-section {
