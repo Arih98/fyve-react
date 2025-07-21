@@ -24,7 +24,10 @@
   left: 50%;
   transform: translate(-50%, -50%);
   visibility: hidden;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .fyve-text {
