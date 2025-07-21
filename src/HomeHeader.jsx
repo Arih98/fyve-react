@@ -254,7 +254,7 @@ const HomeHeader = () => {
         </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
-          <img src="/api/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
+          <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
