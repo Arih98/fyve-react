@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
+import { useNavigate, NavLink } from 'react-router-dom';
 import './HomeHeader.css';
 
 const HomeHeader = () => {
   const [menuActive, setMenuActive] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
   const [menuState, setMenuState] = useState('pre-open');
@@ -21,16 +21,12 @@ const HomeHeader = () => {
   const [showThirdHeader, setShowThirdHeader] = useState(false);
   const [openedFromSecond, setOpenedFromSecond] = useState(false);
   const lastScroll = useRef(0);
-
-  useEffect(() => {
-    setIsLoggedIn(false);
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.classList.add('home-page');
     return () => document.body.classList.remove('home-page');
   }, []);
-  
 
   useEffect(() => {
     if (menuActive) {
@@ -126,10 +122,10 @@ const HomeHeader = () => {
         gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
         gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
         gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-        gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+        gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 0.8 });
         gsap.to(topLine, {
           scaleX: 1,
-          duration: 0.3,
+          duration: 0.3, 
           ease: 'power2.inOut',
           delay: 1.1,
           onComplete: () => setIsAnimating(false)
@@ -186,6 +182,15 @@ const HomeHeader = () => {
     setActiveMenuImage(newItem);
   };
 
+  const menuItems = [
+    { id: 'ss25', name: 'SS25', path: '/products?category=ss25', image: '/api/Uploads/LOOK-9_1437_.webp' },
+    { id: 'boys', name: 'BOYS', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
+    { id: 'girls', name: 'GIRLS', path: '/products?category=girls', image: '/api/Uploads/LOOK-9_1416.webp' },
+    { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
+    { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
+    { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
+  ];
+
   return (
     <>
       <div
@@ -207,13 +212,14 @@ const HomeHeader = () => {
           <img
             src="/api/Uploads/FYVEWhiteLogoMark.svg"
             alt="FYVE Coloured Logo"
+            onClick={() => navigate('/')}
           />
         </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
-          <img src="/api/Uploads/FYVEWhiteSearchIcon.svg" alt="Search Icon" />
+            <img src="/api/Uploads/FYVEWhiteSearchIcon.svg" alt="Search Icon" />
           </button>
-          <div className={`custom-search-container ${searchOpen ? 'active' : ''}` }>
+          <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
               <input
                 type="text"
@@ -250,11 +256,12 @@ const HomeHeader = () => {
           <img
             src="/api/Uploads/FYVEDarkLogoMark.svg"
             alt="FYVE Coloured Logo"
+            onClick={() => navigate('/')}
           />
         </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
-          <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
+            <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
@@ -293,11 +300,12 @@ const HomeHeader = () => {
           <img
             src="/api/Uploads/FYVEDarkLogoMark.svg"
             alt="FYVE Coloured Logo"
+            onClick={() => navigate('/')}
           />
         </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
-          <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
+            <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
@@ -326,61 +334,41 @@ const HomeHeader = () => {
         <div className="menu-content">
           <div className="menu-columns">
             <div className="menu-image-column">
-              {[
-                { item: 'ss25', src: '/api/Uploads/LOOK-9_1437_.webp', alt: 'SS25 Image' },
-                { item: 'boys', src: '/api/Uploads/LOOK_11_2043-1.webp', alt: 'Boys Image' },
-                { item: 'girls', src: '/api/Uploads/LOOK-9_1416.webp', alt: 'Girls Image' },
-                { item: 'baby', src: '/api/Uploads/LOOK-9_1650.jpg', alt: 'Baby Image' },
-                { item: 'our-story', src: '/api/Uploads/LOOK-2_191222.webp', alt: 'Our Story Image' },
-                { item: 'lookbook', src: '/api/Uploads/LOOK-6_582.webp', alt: 'Lookbook Image' }
-              ].map(({ item, src, alt }) => (
+              {menuItems.map(item => (
                 <div
-                  key={item}
-                  className={`menu-image${activeMenuImage === item ? ' active' : ''}`}
-                  data-menu-item={item}
+                  key={item.id}
+                  className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`}
+                  data-menu-item={item.id}
                 >
                   <div className="menu-image-reveal">
-                    <img src={src} alt={alt} />
+                    <img src={item.image} alt={`${item.name} Image`} />
                   </div>
                 </div>
               ))}
             </div>
             <div className="menu-items-wrapper">
               <ul className="menu-items">
-                {[
-                  { item: 'ss25', href: 'https://fyvelondon.com/product-category/ss25/', label: 'SS25' },
-                  { item: 'boys', href: 'https://fyvelondon.com/product-category/boys/', label: 'BOYS' },
-                  { item: 'girls', href: 'https://fyvelondon.com/product-category/girls/', label: 'GIRLS' },
-                  { item: 'baby', href: 'https://fyvelondon.com/product-category/baby/', label: 'BABY' },
-                  { item: 'our-story', href: 'https://fyvelondon.com/#our_story', label: 'Our Story' },
-                  { item: 'lookbook', href: 'https://fyvelondon.com/#lookbook', label: 'Lookbook' }
-                ].map(({ item, href, label }) => (
+                {menuItems.map(item => (
                   <li
-                    key={item}
-                    data-menu-item={item}
-                    onFocus={() => handleMenuImageChange(item)}
-                    onTouchStart={() => handleMenuImageChange(item)}
+                    key={item.id}
+                    data-menu-item={item.id}
+                    className={activeMenuImage === item.id ? 'active' : ''}
+                    onFocus={() => handleMenuImageChange(item.id)}
+                    onTouchStart={() => handleMenuImageChange(item.id)}
+                    onClick={() => {
+                      setMenuActive(false);
+                    }}
                   >
-                    <a href={href} onMouseEnter={() => handleMenuImageChange(item)}>{label}</a>
+                    <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
                   </li>
                 ))}
               </ul>
               <div className="login-section">
-                {isLoggedIn && (
-                  <div className="fyve-login-container">
-                    <a href="https://fyvelondon.com/my-account/" className="fyve-account-link">
-                      My Account
-                    </a>
-                  </div>
-                )}
                 <div className="fyve-login-container">
-                  <a
-                    href={isLoggedIn ? '#' : 'https://fyvelondon.com/my-account/'}
-                    className="fyve-login-link"
-                    onClick={() => isLoggedIn && setIsLoggedIn(false)}
-                  >
-                    {isLoggedIn ? 'Sign out' : 'Sign in'}
-                  </a>
+                  <a href="/my-account" className="fyve-account-link">My Account</a>
+                </div>
+                <div className="fyve-login-container">
+                  <a href="/my-account" className="fyve-login-link">Sign in</a>
                 </div>
               </div>
             </div>
