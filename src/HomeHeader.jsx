@@ -205,13 +205,13 @@ const HomeHeader = () => {
         </div>
         <div className="header-logo">
           <img
-            src="/api/Uploads/Asset%2020FYVE%20White%20Logo%20Mark.svg"
+            src="/api/Uploads/FYVEWhiteLogoMark.svg"
             alt="FYVE Coloured Logo"
           />
         </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
-          <img src="/api/Uploads/Asset 5FYVE FI.svg" alt="Search Icon" />
+          <img src="/api/Uploads/FYVEWhite CartIcon.svg" alt="Search Icon" />
           </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}` }>
             <div className="custom-search-inner">
@@ -248,7 +248,7 @@ const HomeHeader = () => {
         </div>
         <div className="header-logo">
           <img
-            src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-4FYVE-Coloured-Logo2.png"
+            src="/api/Uploads/FYVEDarkLogoMark.svg"
             alt="FYVE Coloured Logo"
           />
         </div>
@@ -291,7 +291,7 @@ const HomeHeader = () => {
         </div>
         <div className="header-logo">
           <img
-            src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-4FYVE-Coloured-Logo2.png"
+            src="/api/Uploads/FYVEDarkLogoMark.svg"
             alt="FYVE Coloured Logo"
           />
         </div>
