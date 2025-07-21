@@ -136,7 +136,6 @@ body.locked {
 .header-logo img {
   max-height: 50px;
   cursor: pointer;
-  transform: scaleX(-1);
 }
 
 .custom-search-trigger {
