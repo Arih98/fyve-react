@@ -15,7 +15,7 @@ const Home = () => {
     } else {
       console.error('Image element not found');
     }
-  
+
     console.log('Setting fyve-mask visibility');
     gsap.set('.fyve-mask', { visibility: 'visible' });
     
@@ -31,7 +31,7 @@ const Home = () => {
       { 
         y: 0, 
         duration: 0.8, 
-        ease: 'expo.out',
+        ease: 'expo.inOut',
         onStart: () => console.log('Letter reveal animation started'),
         onComplete: () => console.log('Letter reveal animation completed')
       }
@@ -41,7 +41,7 @@ const Home = () => {
     gsap.to('.fyve-text:first-child', {
       x: '-0.3vw',
       duration: 0.8,
-      ease: 'expo.out',
+      ease: 'expo.inOut',
       delay: 1,
       onStart: () => console.log('FY shift animation started'),
       onComplete: () => console.log('FY shift animation completed')
@@ -51,7 +51,7 @@ const Home = () => {
     gsap.to('.fyve-text:last-child', {
       x: '0.3vw',
       duration: 0.8,
-      ease: 'expo.out',
+      ease: 'expo.inOut',
       delay: 1,
       onStart: () => console.log('VE shift animation started'),
       onComplete: () => console.log('VE shift animation completed')
@@ -61,7 +61,7 @@ const Home = () => {
     gsap.to('.fyve-image-container', {
       width: '14vw',
       duration: 0.8,
-      ease: 'expo.out',
+      ease: 'expo.inOut',
       delay: 1,
       onStart: () => console.log('Image container expand started'),
       onComplete: () => console.log('Image container expand completed')
@@ -71,7 +71,7 @@ const Home = () => {
     gsap.to('.mask-left', {
       x: '-100%',
       duration: 0.8,
-      ease: 'expo.out',
+      ease: 'expo.inOut',
       delay: 1,
       onStart: () => console.log('Image mask left animation started'),
       onComplete: () => console.log('Image mask left animation completed')
@@ -79,7 +79,7 @@ const Home = () => {
     gsap.to('.mask-right', {
       x: '100%',
       duration: 0.8,
-      ease: 'expo.out',
+      ease: 'expo.inOut',
       delay: 1,
       onStart: () => console.log('Image mask right animation started'),
       onComplete: () => console.log('Image mask right animation completed')
