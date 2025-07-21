@@ -28,14 +28,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
-}
-
-.fyve-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
 }
 
 .fyve-text {
@@ -61,7 +53,8 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: auto;
+  display: block;
+  margin: 0 auto;
   position: relative;
   overflow: hidden;
 }
@@ -69,7 +62,7 @@
 .fyve-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .mask-left,
