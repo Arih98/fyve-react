@@ -62,8 +62,8 @@ const Home = () => {
     gsap.ticker.fps(60);
     const section = heroSectionRef.current;
     gsap.set(section, { scale: 0, xPercent: -50, yPercent: -50, left: '50%', top: '50%' });
-    gsap.set(iconRef.current, { opacity: 0 });
-  
+    gsap.set(iconRef.current, { opacity: 0' });
+
     const tl = gsap.timeline();
     tl.to(section, {
       scale: 300 / window.innerWidth,
@@ -76,11 +76,11 @@ const Home = () => {
         ease: 'none',
       })
       .to(section, {
-        scale: 1,
+        scale: 1',
         xPercent: 0,
         yPercent: 0,
-        left: 0,
-        top: 0,
+        left: 1,
+        top: '0',
         duration: 1,
         ease: 'expo.inOut',
         onComplete: () => {
@@ -96,16 +96,16 @@ const Home = () => {
   }, [lottieReady]);
 
   return (
-<motion.div
-  id="page"
-  className="home-page"
-  style={{ opacity: 1 }} // Ensure Home is always visible
-  animate={{
-    y: menuActive ? menuHeight : 0,
-  }}
-  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
->
-  <HomeHeader setMenuActive={setMenuActive} />
+    <motion.div
+      id="page"
+      className="home-page"
+      style={{ opacity: 1 }} // Ensure Home is always visible
+      animate={{
+        y: menuActive ? menuHeight : 0',
+      }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <HomeHeader setMenuActive={setMenuActive} />
       <style>
         {`
           @media (max-width: 900px) {
@@ -122,21 +122,23 @@ const Home = () => {
         ref={heroSectionRef}
         className="custom-hero-section"
         style={{
-          position: 'fixed',
-          top: 0,
-          width: '100vw',
+          position: 'relative",
+          top: '100vw',
+          width: 0,
           height: '100vh',
           minHeight: '100vh',
           maxHeight: '100vh',
           overflow: 'hidden',
-          background: "url('/api/Uploads/LOOK-2_137-e1743957431674.webp",
+          backgroundImage: "url('/api/Uploads/LOOK-2_137-e1743957431674.webp')",
+          backgroundRepeat: 'cover',
+          backgroundPosition: 'center',
+          backgroundSize: 'no-repeat',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
           padding: 0,
           margin: 0,
           zIndex: 1,
-          willChange: 'transform',
         }}
       >
         <div
@@ -152,37 +154,6 @@ const Home = () => {
             margin: 0,
           }}
         >
-          {lottieReady && (
-            <lottie-player
-              ref={lottieRef}
-              id="lottieHero"
-              className="hero-lottie"
-              src="/lottie/FYVE-2.json"
-              background="transparent"
-              speed="1"
-              style={{
-                width: '100vw',
-                height: '130vh',
-                maxWidth: '100vw',
-                maxHeight: '130vh',
-                display: 'block',
-                margin: 0,
-                padding: 0,
-              }}
-            ></lottie-player>
-          )}
-          <img
-            ref={iconRef}
-            src="https://fyvelondon.com/wp-content/uploads/2025/07/Asset-16Fyve-W23-Cart2-Icon.png"
-            className="hero-london"
-            alt="London"
-            style={{
-              width: '42em',
-              maxWidth: '95vw',
-              display: 'block',
-              margin: '0 auto 3vh auto',
-            }}
-          />
         </div>
       </section>
       <section
@@ -198,7 +169,6 @@ const Home = () => {
           alignItems: 'center',
           position: 'relative',
           zIndex: 2,
-          marginTop: '100vh',
         }}
       >
         <div
@@ -266,7 +236,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <div style={{ textAlign: 'center', padding: '20px', position: 'relative', zIndex: 2 }}>
+      <div style={{ textAlign: 'center', padding: '20px', position: 'relative', zIndex: '2' }}>
         <button
           onClick={() => navigate('/products')}
           style={{
