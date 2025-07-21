@@ -326,10 +326,11 @@ const HomeHeader = () => {
         </div>
       </div>
       <motion.div
-        className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
-        animate={{ y: menuState === 'open' ? 0 : '-100%' }}
-        transition={{ duration: 0.75, ease: 'easeInOut' }}
-      >
+  className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
+  initial={{ y: '-100%' }}
+  animate={{ y: menuState === 'open' ? 0 : '-100%' }}
+  transition={{ duration: 0.75, ease: 'easeInOut' }}
+>
         <div className="menu-background"></div>
         <div className="menu-content">
           <div className="menu-columns">
