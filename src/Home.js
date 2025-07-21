@@ -26,27 +26,23 @@ const Home = () => {
     gsap.ticker.fps(60);
     const section = heroSectionRef.current;
     gsap.set(section, { scale: 0, xPercent: -50, yPercent: -50, left: '50%', top: '50%' });
+    gsap.set('.fyve-text', { yPercent: 100 });
+    gsap.set('.hero-image', { clipPath: 'inset(0 50% 0 50%)' });
+    gsap.set('.final-fyve', { opacity: 0 });
+    gsap.set('.final-fyve span', { clipPath: 'inset(100% 0 0 0)' });
 
     const tl = gsap.timeline();
-    tl.to(section, {
-      scale: 300 / window.innerWidth,
-      duration: 1.2,
-      ease: 'expo.inOut',
-    })
-      .to(section, {
-        scale: 300 / window.innerWidth,
-        duration: 1,
-        ease: 'none',
-      })
-      .to(section, {
-        scale: 1,
-        xPercent: 0,
-        yPercent: 0,
-        left: 0,
-        top: 0,
-        duration: 1,
-        ease: 'expo.inOut',
-      });
+    tl.to('.fyve-text', { yPercent: 0, duration: 0.8, ease: 'power2.out' });
+    tl.to('.fy', { x: -100, duration: 0.5, ease: 'power1.inOut' }, '+=0.2');
+    tl.to('.ve', { x: 100, duration: 0.5, ease: 'power1.inOut' }, '<');
+    tl.to('.hero-image', { clipPath: 'inset(0 0% 0 0%)', duration: 0.8, ease: 'power2.out' }, '+=0.2');
+    tl.to(section, { scale: 300 / window.innerWidth, duration: 1.2, ease: 'expo.inOut' }, 'zoom');
+    tl.to('.fy', { x: '-100vw', duration: 1.2, ease: 'expo.inOut' }, 'zoom');
+    tl.to('.ve', { x: '100vw', duration: 1.2, ease: 'expo.inOut' }, 'zoom');
+    tl.to(section, { scale: 300 / window.innerWidth, duration: 1, ease: 'none' });
+    tl.to(section, { scale: 1, xPercent: 0, yPercent: 0, left: 0, top: 0, duration: 1, ease: 'expo.inOut' });
+    tl.set('.final-fyve', { opacity: 1 });
+    tl.to('.final-fyve span', { clipPath: 'inset(0 0 0 0)', duration: 0.8, ease: 'power2.out' });
   }, []);
 
   return (
@@ -60,7 +56,18 @@ const Home = () => {
     >
       <HomeHeader setMenuActive={setMenuActive} />
       <section ref={heroSectionRef} className="custom-hero-section">
+        <img src="/api/Uploads/LOOK-2_137-e1743957431674.webp" alt="Hero" className="hero-image" />
       </section>
+      <div className="hero-overlay">
+        <div className="fyve-mask">
+          <div className="fyve-text">
+            <span className="fy">FY</span><span className="ve">VE</span>
+          </div>
+        </div>
+        <div className="final-fyve">
+          <span>F</span><span>Y</span><span>V</span><span>E</span>
+        </div>
+      </div>
       <section className="look9-bg-section">
         <div className="look9-bg-image">
           <div className="look9-bg-text">
