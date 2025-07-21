@@ -80,7 +80,7 @@ const Home = () => {
     <div className="home-page">
       <div className="fyve-mask">
         <div className="fyve-text">
-          {'FYVE'.split('').map((letter, index) => (
+          {'FY'.split('').map((letter, index) => (
             <span key={index} className="fyve-letter">{letter}</span>
           ))}
         </div>
@@ -92,6 +92,11 @@ const Home = () => {
           />
           <div className="mask-left"></div>
           <div className="mask-right"></div>
+        </div>
+        <div className="fyve-text">
+          {'VE'.split('').map((letter, index) => (
+            <span key={index + 2} className="fyve-letter">{letter}</span>
+          ))}
         </div>
       </div>
     </div>

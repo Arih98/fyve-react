@@ -24,11 +24,10 @@
   left: 50%;
   transform: translate(-50%, -50%);
   visibility: hidden;
-  text-align: center;
   display: flex;
   align-items: center;
-  flex-direction: row; /* Changed to row for side-by-side layout */
-  gap: 20px; /* Space between text and image */
+  flex-direction: row;
+  gap: 10px; /* Space between text and image */
 }
 
 .fyve-text {
@@ -43,7 +42,7 @@
   margin: 0;
   padding: 0;
   position: relative;
-  overflow: hidden; /* Ensure mask hides text initially */
+  overflow: hidden;
 }
 
 .fyve-letter {
@@ -56,7 +55,7 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: 10vw; /* Added to match height for consistent sizing */
+  width: 10vw;
   position: relative;
   overflow: hidden;
 }
