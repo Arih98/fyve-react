@@ -8,7 +8,7 @@ const Home = () => {
     gsap.fromTo(
       '.fyve-letter',
       { y: '100%' },
-      { y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.1 }
+      { y: 0, duration: 0.8, ease: 'power2.out' }
     );
   }, []);
 
