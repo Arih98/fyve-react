@@ -122,10 +122,10 @@ const HomeHeader = () => {
         gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
         gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
         gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-        gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 0.8 });
+        gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
         gsap.to(topLine, {
           scaleX: 1,
-          duration: 0.3, 
+          duration: 0.3,
           ease: 'power2.inOut',
           delay: 1.1,
           onComplete: () => setIsAnimating(false)
