@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
-import { MenuContext } from './MenuContext';
 import HomeHeader from './HomeHeader';
 import './Home.css';
 
 const Home = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   useEffect(() => {
     console.log('Home component mounted');
     
@@ -136,32 +133,28 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-        <HomeHeader />
-        <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-          <div className="fyve-mask">
-            <div className="fyve-text">
-              {'FY'.split('').map((letter, index) => (
-                <span key={index} className="fyve-letter">{letter}</span>
-              ))}
-            </div>
-            <div className="fyve-image-container">
-              <img
-                src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
-                alt="Reveal Image"
-                className="fyve-image"
-              />
-              <div className="mask-left"></div>
-              <div className="mask-right"></div>
-            </div>
-            <div className="fyve-text">
-              {'VE'.split('').map((letter, index) => (
-                <span key={index + 2} className="fyve-letter">{letter}</span>
-              ))}
-            </div>
-          </div>
+      <HomeHeader />
+      <div className="fyve-mask">
+        <div className="fyve-text">
+          {'FY'.split('').map((letter, index) => (
+            <span key={index} className="fyve-letter">{letter}</span>
+          ))}
         </div>
-      </MenuContext.Provider>
+        <div className="fyve-image-container">
+          <img
+            src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
+            alt="Reveal Image"
+            className="fyve-image"
+          />
+          <div className="mask-left"></div>
+          <div className="mask-right"></div>
+        </div>
+        <div className="fyve-text">
+          {'VE'.split('').map((letter, index) => (
+            <span key={index + 2} className="fyve-letter">{letter}</span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
