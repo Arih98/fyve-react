@@ -25,7 +25,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "git add . && git commit -m \"auto deploy\" && git push && npm run build && scp -i ~/.ssh/siteground_dev_key -P 18765 -r build/* u2499-f5szapuuzspy@ssh.fyvelondon.com:~/www/dev.fyvelondon.com/public_html/"
   },
   "eslintConfig": {
     "extends": [
