@@ -5,6 +5,7 @@ import './Home.css';
 const Home = () => {
   useEffect(() => {
     gsap.set('.fyve-mask', { visibility: 'visible' });
+    gsap.set('.fyve-image', { scaleX: 0, transformOrigin: 'center' });
     gsap.fromTo(
       '.fyve-letter',
       { y: '100%' },
@@ -22,6 +23,12 @@ const Home = () => {
       ease: 'power2.out',
       delay: 1
     });
+    gsap.to('.fyve-image', {
+      scaleX: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+      delay: 1
+    });
   }, []);
 
   return (
@@ -32,6 +39,11 @@ const Home = () => {
             <span key={index} className="fyve-letter">{letter}</span>
           ))}
         </div>
+        <img
+          src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
+          alt="Reveal Image"
+          className="fyve-image"
+        />
       </div>
     </div>
   );

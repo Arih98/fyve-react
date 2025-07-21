@@ -24,6 +24,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   visibility: hidden;
+  text-align: center;
 }
 
 .fyve-text {
@@ -45,4 +46,11 @@
 
 .fyve-letter:nth-child(3) {
   margin-right: -0.1em;
+}
+
+.fyve-image {
+  height: 10vw;
+  display: block;
+  margin: 0 auto;
+  visibility: hidden;
 }
