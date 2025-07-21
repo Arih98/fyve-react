@@ -11,6 +11,7 @@ const Home = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
   const heroSectionRef = useRef(null);
+  const fyveTextRef = useRef(null);
 
   useEffect(() => {
     const updateMenuHeight = () => {
@@ -24,21 +25,90 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log('Animation useEffect started');
     gsap.ticker.fps(60);
     const section = heroSectionRef.current;
+    console.log('Setting initial styles for .fyve-text');
     gsap.set('.fyve-text', { yPercent: 100 });
+    console.log('Setting initial styles for .hero-image');
     gsap.set('.hero-image', { clipPath: 'inset(0 50% 0 50%)', scale: 1 });
+    console.log('Setting initial styles for .lottie-container');
     gsap.set('.lottie-container', { opacity: 0 });
 
-    const tl = gsap.timeline();
-    tl.to('.fyve-text', { yPercent: 0, duration: 0.8, ease: 'power2.out' });
-    tl.to('.fy', { x: -100, duration: 0.5, ease: 'power1.inOut' }, 'separate');
-    tl.to('.ve', { x: 100, duration: 0.5, ease: 'power1.inOut' }, '<');
-    tl.to('.hero-image', { clipPath: 'inset(0 0% 0 0%)', duration: 0.8, ease: 'power2.out' }, 'separate');
-    tl.to('.hero-image', { scale: 1.1, duration: 1.2, ease: 'expo.inOut' }, 'zoom');
-    tl.to('.fy', { x: '-100vw', duration: 1.2, ease: 'expo.inOut' }, 'zoom');
-    tl.to('.ve', { x: '100vw', duration: 1.2, ease: 'expo.inOut' }, 'zoom');
-    tl.to('.lottie-container', { opacity: 1, duration: 0.8, ease: 'power2.out' });
+    if (fyveTextRef.current) {
+      const computedStyle = window.getComputedStyle(fyveTextRef.current);
+      console.log('Initial computed font-weight for FYVE text:', computedStyle.fontWeight);
+    }
+
+    const tl = gsap.timeline({
+      onStart: () => console.log('Timeline started'),
+      onComplete: () => console.log('Timeline completed')
+    });
+
+    tl.to('.fyve-text', { 
+      yPercent: 0, 
+      duration: 0.8, 
+      ease: 'power2.out',
+      onStart: () => console.log('Starting FYVE slide up'),
+      onComplete: () => {
+        console.log('FYVE slide up completed');
+        if (fyveTextRef.current) {
+          const computedStyle = window.getComputedStyle(fyveTextRef.current);
+          console.log('Font-weight after slide up:', computedStyle.fontWeight);
+        }
+      }
+    });
+
+    tl.to('.fy', { 
+      x: -100, 
+      duration: 0.5, 
+      ease: 'power1.inOut',
+      onStart: () => console.log('Starting FY slide left 100px')
+    }, 'separate');
+
+    tl.to('.ve', { 
+      x: 100, 
+      duration: 0.5, 
+      ease: 'power1.inOut',
+      onStart: () => console.log('Starting VE slide right 100px')
+    }, '<');
+
+    tl.to('.hero-image', { 
+      clipPath: 'inset(0 0% 0 0%)', 
+      duration: 0.8, 
+      ease: 'power2.out',
+      onStart: () => console.log('Starting hero image reveal from center'),
+      onComplete: () => console.log('Hero image reveal completed')
+    }, 'separate');
+
+    tl.to('.hero-image', { 
+      scale: 1.1, 
+      duration: 1.2, 
+      ease: 'expo.inOut',
+      onStart: () => console.log('Starting image zoom in')
+    }, 'zoom');
+
+    tl.to('.fy', { 
+      x: '-100vw', 
+      duration: 1.2, 
+      ease: 'expo.inOut',
+      onStart: () => console.log('Starting FY slide off left')
+    }, 'zoom');
+
+    tl.to('.ve', { 
+      x: '100vw', 
+      duration: 1.2, 
+      ease: 'expo.inOut',
+      onStart: () => console.log('Starting VE slide off right')
+    }, 'zoom');
+
+    tl.to('.lottie-container', { 
+      opacity: 1, 
+      duration: 0.8, 
+      ease: 'power2.out',
+      onStart: () => console.log('Starting lottie fade in'),
+      onComplete: () => console.log('Lottie fade in completed')
+    });
   }, []);
 
   return (
@@ -56,7 +126,7 @@ const Home = () => {
       </section>
       <div className="hero-overlay">
         <div className="fyve-mask">
-          <div className="fyve-text">
+          <div className="fyve-text" ref={fyveTextRef}>
             <span className="fy">FY</span><span className="ve">VE</span>
           </div>
         </div>
