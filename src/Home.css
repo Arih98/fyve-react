@@ -31,6 +31,13 @@
   gap: 0;
 }
 
+.fyve-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
 .fyve-text {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 200 !important;
@@ -54,7 +61,7 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: 10vw;
+  width: auto;
   position: relative;
   overflow: hidden;
 }
@@ -62,7 +69,7 @@
 .fyve-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .mask-left,

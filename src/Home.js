@@ -79,19 +79,21 @@ const Home = () => {
   return (
     <div className="home-page">
       <div className="fyve-mask">
-        <div className="fyve-text">
-          {'FYVE'.split('').map((letter, index) => (
-            <span key={index} className="fyve-letter">{letter}</span>
-          ))}
-        </div>
-        <div className="fyve-image-container">
-          <img
-            src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
-            alt="Reveal Image"
-            className="fyve-image"
-          />
-          <div className="mask-left"></div>
-          <div className="mask-right"></div>
+        <div className="fyve-content">
+          <div className="fyve-text">
+            {'FYVE'.split('').map((letter, index) => (
+              <span key={index} className="fyve-letter">{letter}</span>
+            ))}
+          </div>
+          <div className="fyve-image-container">
+            <img
+              src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
+              alt="Reveal Image"
+              className="fyve-image"
+            />
+            <div className="mask-left"></div>
+            <div className="mask-right"></div>
+          </div>
         </div>
       </div>
     </div>
