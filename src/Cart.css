@@ -6,7 +6,7 @@
   height: 50px;
   border-radius: 25px;
   overflow: visible;
-  z-index: 1000;
+  z-index: 99999;
   transition: none;
   pointer-events: auto;
   padding-bottom: env(safe-area-inset-bottom, 0);
@@ -14,7 +14,7 @@
 
 .cart-slide-menu.active {
   pointer-events: auto;
-  z-index: 9999;
+  z-index: 99999;
   border: 0.8px solid #4A494A;
 }
 
