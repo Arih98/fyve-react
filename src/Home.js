@@ -120,8 +120,8 @@ const Home = () => {
           )}
           <img
             ref={iconRef}
-            src="https://fyvelondon.com/wp-content/uploads/2025/07/Asset-16Fyve-W23-Cart2-Icon.png"
-            className="hero-lottie"
+            src="/api/Uploads/Asset-16Fyve-W23-Cart2-Icon.png"
+            className="custom-hero-section"
             alt="London"
           />
         </div>
