@@ -14,13 +14,10 @@ const Home = () => {
   const fyveTextRef = useRef(null);
 
   useEffect(() => {
-    console.log('useEffect: updateMenuHeight listener binding');
     const updateMenuHeight = () => {
       const contentHeight = window.innerHeight + 64;
       const buffer = 128;
-      const total = contentHeight + buffer;
-      setMenuHeight(total);
-      console.log('Menu height set to', total);
+      setMenuHeight(contentHeight + buffer);
     };
     updateMenuHeight();
     window.addEventListener('resize', updateMenuHeight);
@@ -28,127 +25,113 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('useEffect: starting GSAP setup');
+    console.log('Animation useEffect started');
     gsap.ticker.fps(60);
-    console.log('gsap.ticker.fps set to', gsap.ticker.fps());
-
-    console.log('Setting initial .fyve-text');
-    gsap.set('.fyve-text', { yPercent: 100, visibility: 'hidden' });
-    console.log('Computed .fyve-text rect', fyveTextRef.current.getBoundingClientRect());
-
-    console.log('Setting initial .hero-image');
-    gsap.set('.hero-image', { clipPath: 'inset(0 50% 0 50%)', scale: 1, transformOrigin: 'center center' });
-    console.log('Computed .hero-image clipPath', window.getComputedStyle(document.querySelector('.hero-image')).clipPath);
-
-    console.log('Setting initial .lottie-container');
+    const section = heroSectionRef.current;
+    console.log('Setting initial styles for .fyve-text');
+    gsap.set('.fyve-text', { yPercent: 100 });
+    console.log('Setting initial styles for .hero-image');
+    gsap.set('.hero-image', { clipPath: 'inset(0 50% 0 50%)', scale: 1 });
+    console.log('Setting initial styles for .lottie-container');
     gsap.set('.lottie-container', { opacity: 0 });
-    console.log('Computed .lottie-container opacity', window.getComputedStyle(document.querySelector('.lottie-container')).opacity);
+
+    console.log('Quasimoda available initially?', document.fonts.check('12px quasimoda'));
+    console.log('Quasimoda 200 available initially?', document.fonts.check('200 12px quasimoda'));
+    if (fyveTextRef.current) {
+      const computedStyle = window.getComputedStyle(fyveTextRef.current);
+      console.log('Initial computed font-weight for FYVE text:', computedStyle.fontWeight);
+      console.log('Initial computed font-family for FYVE text:', computedStyle.fontFamily);
+      console.log('Initial width:', fyveTextRef.current.getBoundingClientRect().width);
+    }
 
     document.fonts.ready.then(() => {
-      console.log('Fonts ready');
-      const section = heroSectionRef.current;
-      const textRect = fyveTextRef.current.getBoundingClientRect();
-      const imageRect = section.getBoundingClientRect();
-      const initialScale = textRect.height / imageRect.height;
-      console.log('textRect', textRect, 'imageRect', imageRect, 'initialScale', initialScale);
+      console.log('Fonts ready, starting timeline');
 
-      gsap.set('.hero-image', { scale: initialScale });
-      console.log('hero-image scale after set', window.getComputedStyle(document.querySelector('.hero-image')).transform);
-
-      gsap.set('.fyve-text', { visibility: 'visible' });
-      console.log('fyve-text visibility after set', window.getComputedStyle(fyveTextRef.current).visibility);
+      console.log('Quasimoda available after ready?', document.fonts.check('12px quasimoda'));
+      console.log('Quasimoda 200 available after ready?', document.fonts.check('200 12px quasimoda'));
+      if (fyveTextRef.current) {
+        const computedStyle = window.getComputedStyle(fyveTextRef.current);
+        console.log('Font-weight after fonts ready:', computedStyle.fontWeight);
+        console.log('Font-family after fonts ready:', computedStyle.fontFamily);
+        console.log('Width after fonts ready:', fyveTextRef.current.getBoundingClientRect().width);
+      }
 
       const tl = gsap.timeline({
-        onStart: () => console.log('Timeline onStart'),
-        onUpdate: () => console.log('Timeline progress', tl.progress(), 'time', tl.time()),
-        onComplete: () => console.log('Timeline onComplete')
+        onStart: () => console.log('Timeline started'),
+        onComplete: () => console.log('Timeline completed')
       });
 
-      tl.addLabel('start')
-        .to('.fyve-text', {
-          yPercent: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          onStart: () => console.log('[FYVE] slide up start'),
-          onUpdate: () => {
-            const rect = fyveTextRef.current.getBoundingClientRect();
-            console.log('[FYVE] y', rect.y, 'height', rect.height);
-          },
-          onComplete: () => console.log('[FYVE] slide up complete')
-        })
-        .addLabel('revealImage')
-        .to('.hero-image', {
-          scale: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          onStart: () => console.log('[Image] reveal start'),
-          onComplete: () => {
-            console.log('[Image] reveal complete');
-            console.log('clipPath after reveal', window.getComputedStyle(document.querySelector('.hero-image')).clipPath);
+      tl.to('.fyve-text', { 
+        yPercent: 0, 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Starting FYVE slide up'),
+        onUpdate: () => {
+          if (fyveTextRef.current) {
+            console.log('During slide up width:', fyveTextRef.current.getBoundingClientRect().width);
           }
-        }, 'revealImage')
-        .to('.fy', {
-          x: '-50%',
-          duration: 0.5,
-          ease: 'power1.inOut',
-          onStart: () => console.log('[FY] separate start'),
-          onComplete: () => {
-            console.log('[FY] separate complete');
-            console.log('FY transform', window.getComputedStyle(document.querySelector('.fy')).transform);
+        },
+        onComplete: () => {
+          console.log('FYVE slide up completed');
+          if (fyveTextRef.current) {
+            const computedStyle = window.getComputedStyle(fyveTextRef.current);
+            console.log('Font-weight after slide up:', computedStyle.fontWeight);
+            console.log('Font-family after slide up:', computedStyle.fontFamily);
+            console.log('Width after slide up:', fyveTextRef.current.getBoundingClientRect().width);
           }
-        }, 'revealImage')
-        .to('.ve', {
-          x: '50%',
-          duration: 0.5,
-          ease: 'power1.inOut',
-          onStart: () => console.log('[VE] separate start'),
-          onComplete: () => {
-            console.log('[VE] separate complete');
-            console.log('VE transform', window.getComputedStyle(document.querySelector('.ve')).transform);
-          }
-        }, 'revealImage')
-        .addLabel('slideOff', '+=0.2')
-        .to('.fy', {
-          x: '-100vw',
-          duration: 1.2,
-          ease: 'expo.inOut',
-          onStart: () => console.log('[FY] slide off start'),
-          onComplete: () => {
-            console.log('[FY] slide off complete');
-            console.log('FY final transform', window.getComputedStyle(document.querySelector('.fy')).transform);
-          }
-        }, 'slideOff')
-        .to('.ve', {
-          x: '100vw',
-          duration: 1.2,
-          ease: 'expo.inOut',
-          onStart: () => console.log('[VE] slide off start'),
-          onComplete: () => {
-            console.log('[VE] slide off complete');
-            console.log('VE final transform', window.getComputedStyle(document.querySelector('.ve')).transform);
-          }
-        }, 'slideOff')
-        .addLabel('coverGrow')
-        .to('.hero-image', {
-          scale: 1.2,
-          duration: 1.2,
-          ease: 'expo.inOut',
-          onStart: () => console.log('[Image] cover grow start'),
-          onComplete: () => {
-            console.log('[Image] cover grow complete');
-            console.log('hero-image transform after coverGrow', window.getComputedStyle(document.querySelector('.hero-image')).transform);
-          }
-        }, 'coverGrow')
-        .to('.lottie-container', {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          onStart: () => console.log('[Lottie] fade in start'),
-          onComplete: () => {
-            console.log('[Lottie] fade in complete');
-            console.log('lottie opacity after fade', window.getComputedStyle(document.querySelector('.lottie-container')).opacity);
-          }
-        }, 'coverGrow+=1.2');
+        }
+      });
+
+      tl.to('.fy', { 
+        x: -100, 
+        duration: 0.5, 
+        ease: 'power1.inOut',
+        onStart: () => console.log('Starting FY slide left 100px')
+      }, 'separate');
+
+      tl.to('.ve', { 
+        x: 100, 
+        duration: 0.5, 
+        ease: 'power1.inOut',
+        onStart: () => console.log('Starting VE slide right 100px')
+      }, '<');
+
+      tl.to('.hero-image', { 
+        clipPath: 'inset(0 0% 0 0%)', 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Starting hero image reveal from center'),
+        onComplete: () => console.log('Hero image reveal completed')
+      }, 'separate');
+
+      tl.to('.hero-image', { 
+        scale: 1.1, 
+        duration: 1.2, 
+        ease: 'expo.inOut',
+        onStart: () => console.log('Starting image zoom in')
+      }, 'zoom');
+
+      tl.to('.fy', { 
+        x: '-100vw', 
+        duration: 1.2, 
+        ease: 'expo.inOut',
+        onStart: () => console.log('Starting FY slide off left')
+      }, 'zoom');
+
+      tl.to('.ve', { 
+        x: '100vw', 
+        duration: 1.2, 
+        ease: 'expo.inOut',
+        onStart: () => console.log('Starting VE slide off right')
+      }, 'zoom');
+
+      tl.to('.lottie-container', { 
+        opacity: 1, 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Starting lottie fade in'),
+        onComplete: () => console.log('Lottie fade in completed')
+      });
     });
   }, []);
 
@@ -156,7 +139,9 @@ const Home = () => {
     <motion.div
       id="page"
       className="home-page"
-      animate={{ y: menuActive ? menuHeight : 0 }}
+      animate={{
+        y: menuActive ? menuHeight : 0,
+      }}
       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     >
       <HomeHeader setMenuActive={setMenuActive} />
