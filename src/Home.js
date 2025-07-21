@@ -35,19 +35,25 @@ const Home = () => {
     console.log('Setting initial styles for .lottie-container');
     gsap.set('.lottie-container', { opacity: 0 });
 
+    console.log('Quasimoda available initially?', document.fonts.check('12px quasimoda'));
+    console.log('Quasimoda 200 available initially?', document.fonts.check('200 12px quasimoda'));
     if (fyveTextRef.current) {
       const computedStyle = window.getComputedStyle(fyveTextRef.current);
       console.log('Initial computed font-weight for FYVE text:', computedStyle.fontWeight);
       console.log('Initial computed font-family for FYVE text:', computedStyle.fontFamily);
+      console.log('Initial width:', fyveTextRef.current.getBoundingClientRect().width);
     }
 
     document.fonts.ready.then(() => {
       console.log('Fonts ready, starting timeline');
 
+      console.log('Quasimoda available after ready?', document.fonts.check('12px quasimoda'));
+      console.log('Quasimoda 200 available after ready?', document.fonts.check('200 12px quasimoda'));
       if (fyveTextRef.current) {
         const computedStyle = window.getComputedStyle(fyveTextRef.current);
         console.log('Font-weight after fonts ready:', computedStyle.fontWeight);
         console.log('Font-family after fonts ready:', computedStyle.fontFamily);
+        console.log('Width after fonts ready:', fyveTextRef.current.getBoundingClientRect().width);
       }
 
       const tl = gsap.timeline({
@@ -60,12 +66,18 @@ const Home = () => {
         duration: 0.8, 
         ease: 'power2.out',
         onStart: () => console.log('Starting FYVE slide up'),
+        onUpdate: () => {
+          if (fyveTextRef.current) {
+            console.log('During slide up width:', fyveTextRef.current.getBoundingClientRect().width);
+          }
+        },
         onComplete: () => {
           console.log('FYVE slide up completed');
           if (fyveTextRef.current) {
             const computedStyle = window.getComputedStyle(fyveTextRef.current);
             console.log('Font-weight after slide up:', computedStyle.fontWeight);
             console.log('Font-family after slide up:', computedStyle.fontFamily);
+            console.log('Width after slide up:', fyveTextRef.current.getBoundingClientRect().width);
           }
         }
       });
