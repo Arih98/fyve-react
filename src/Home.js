@@ -4,30 +4,65 @@ import './Home.css';
 
 const Home = () => {
   useEffect(() => {
+    console.log('Home component mounted');
+    
+    const image = document.querySelector('.fyve-image');
+    if (image) {
+      console.log('Image element found:', image);
+      console.log('Image src:', image.src);
+      image.onerror = () => console.error('Image failed to load:', image.src);
+      image.onload = () => console.log('Image loaded successfully:', image.src);
+    } else {
+      console.error('Image element not found');
+    }
+
+    console.log('Setting fyve-mask visibility');
     gsap.set('.fyve-mask', { visibility: 'visible' });
+    
+    console.log('Setting initial image scale');
     gsap.set('.fyve-image', { scaleX: 0, transformOrigin: 'center' });
+    
+    console.log('Starting letter reveal animation');
     gsap.fromTo(
       '.fyve-letter',
       { y: '100%' },
-      { y: 0, duration: 0.8, ease: 'power2.out' }
+      { 
+        y: 0, 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => console.log('Letter reveal animation started'),
+        onComplete: () => console.log('Letter reveal animation completed')
+      }
     );
+    
+    console.log('Scheduling FY shift animation');
     gsap.to('.fyve-letter:nth-child(1), .fyve-letter:nth-child(2)', {
       x: -100,
       duration: 0.8,
       ease: 'power2.out',
-      delay: 1
+      delay: 1,
+      onStart: () => console.log('FY shift animation started'),
+      onComplete: () => console.log('FY shift animation completed')
     });
+    
+    console.log('Scheduling VE shift animation');
     gsap.to('.fyve-letter:nth-child(3), .fyve-letter:nth-child(4)', {
       x: 100,
       duration: 0.8,
       ease: 'power2.out',
-      delay: 1
+      delay: 1,
+      onStart: () => console.log('VE shift animation started'),
+      onComplete: () => console.log('VE shift animation completed')
     });
+    
+    console.log('Scheduling image reveal animation');
     gsap.to('.fyve-image', {
       scaleX: 1,
       duration: 0.8,
       ease: 'power2.out',
-      delay: 1
+      delay: 1,
+      onStart: () => console.log('Image reveal animation started'),
+      onComplete: () => console.log('Image reveal animation completed')
     });
   }, []);
 
