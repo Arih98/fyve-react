@@ -1,3 +1,4 @@
+// Home.js
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -10,8 +11,8 @@ const Home = () => {
   const navigate = useNavigate();
   const [menuActive, setMenuActive] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
-  const heroSectionRef = useRef(null);
   const fyveTextRef = useRef(null);
+  const imageRef = useRef(null);
 
   useEffect(() => {
     const updateMenuHeight = () => {
@@ -25,112 +26,63 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Animation useEffect started');
     gsap.ticker.fps(60);
-    const section = heroSectionRef.current;
-    console.log('Setting initial styles for .fyve-text');
-    gsap.set('.fyve-text', { yPercent: 100 });
-    console.log('Setting initial styles for .hero-image');
-    gsap.set('.hero-image', { clipPath: 'inset(0 50% 0 50%)', scale: 1 });
-    console.log('Setting initial styles for .lottie-container');
     gsap.set('.lottie-container', { opacity: 0 });
 
-    console.log('Quasimoda available initially?', document.fonts.check('12px quasimoda'));
-    console.log('Quasimoda 200 available initially?', document.fonts.check('200 12px quasimoda'));
-    if (fyveTextRef.current) {
-      const computedStyle = window.getComputedStyle(fyveTextRef.current);
-      console.log('Initial computed font-weight for FYVE text:', computedStyle.fontWeight);
-      console.log('Initial computed font-family for FYVE text:', computedStyle.fontFamily);
-      console.log('Initial width:', fyveTextRef.current.getBoundingClientRect().width);
-    }
+    const fontReady = document.fonts.ready;
+    const imageLoad = new Promise(resolve => {
+      if (imageRef.current?.complete) resolve();
+      else if (imageRef.current) imageRef.current.onload = resolve;
+    });
 
-    document.fonts.ready.then(() => {
-      console.log('Fonts ready, starting timeline');
+    Promise.all([fontReady, imageLoad]).then(() => {
+      const textHeight = fyveTextRef.current.getBoundingClientRect().height;
+      const aspect = imageRef.current.naturalWidth / imageRef.current.naturalHeight;
+      const initialWidth = textHeight * aspect;
+      gsap.set('.hero-image-container', { width: initialWidth, height: textHeight, scale: 0, transformOrigin: 'center center' });
 
-      console.log('Quasimoda available after ready?', document.fonts.check('12px quasimoda'));
-      console.log('Quasimoda 200 available after ready?', document.fonts.check('200 12px quasimoda'));
-      if (fyveTextRef.current) {
-        const computedStyle = window.getComputedStyle(fyveTextRef.current);
-        console.log('Font-weight after fonts ready:', computedStyle.fontWeight);
-        console.log('Font-family after fonts ready:', computedStyle.fontFamily);
-        console.log('Width after fonts ready:', fyveTextRef.current.getBoundingClientRect().width);
-      }
-
-      const tl = gsap.timeline({
-        onStart: () => console.log('Timeline started'),
-        onComplete: () => console.log('Timeline completed')
-      });
+      const tl = gsap.timeline();
 
       tl.to('.fyve-text', { 
-        yPercent: 0, 
+        y: 0, 
         duration: 0.8, 
-        ease: 'power2.out',
-        onStart: () => console.log('Starting FYVE slide up'),
-        onUpdate: () => {
-          if (fyveTextRef.current) {
-            console.log('During slide up width:', fyveTextRef.current.getBoundingClientRect().width);
-          }
-        },
-        onComplete: () => {
-          console.log('FYVE slide up completed');
-          if (fyveTextRef.current) {
-            const computedStyle = window.getComputedStyle(fyveTextRef.current);
-            console.log('Font-weight after slide up:', computedStyle.fontWeight);
-            console.log('Font-family after slide up:', computedStyle.fontFamily);
-            console.log('Width after slide up:', fyveTextRef.current.getBoundingClientRect().width);
-          }
-        }
+        ease: 'power2.out'
       });
 
-      tl.to('.fy', { 
-        x: -100, 
+      tl.to('.hero-image-container', { 
+        scale: 1, 
         duration: 0.5, 
-        ease: 'power1.inOut',
-        onStart: () => console.log('Starting FY slide left 100px')
-      }, 'separate');
-
-      tl.to('.ve', { 
-        x: 100, 
-        duration: 0.5, 
-        ease: 'power1.inOut',
-        onStart: () => console.log('Starting VE slide right 100px')
-      }, '<');
-
-      tl.to('.hero-image', { 
-        clipPath: 'inset(0 0% 0 0%)', 
-        duration: 0.8, 
-        ease: 'power2.out',
-        onStart: () => console.log('Starting hero image reveal from center'),
-        onComplete: () => console.log('Hero image reveal completed')
-      }, 'separate');
-
-      tl.to('.hero-image', { 
-        scale: 1.1, 
-        duration: 1.2, 
-        ease: 'expo.inOut',
-        onStart: () => console.log('Starting image zoom in')
-      }, 'zoom');
+        ease: 'power1.inOut'
+      });
 
       tl.to('.fy', { 
         x: '-100vw', 
         duration: 1.2, 
-        ease: 'expo.inOut',
-        onStart: () => console.log('Starting FY slide off left')
-      }, 'zoom');
+        ease: 'expo.inOut'
+      });
 
       tl.to('.ve', { 
         x: '100vw', 
         duration: 1.2, 
-        ease: 'expo.inOut',
-        onStart: () => console.log('Starting VE slide off right')
-      }, 'zoom');
+        ease: 'expo.inOut'
+      }, '<');
+
+      tl.call(() => {
+        gsap.set('.fyve-mask', { overflow: 'visible' });
+        gsap.set('.hero-image-container', { position: 'absolute', left: '50%', top: '50%', x: '-50%', y: '-50%' });
+      }, null, '>');
+
+      tl.to('.hero-image-container', { 
+        width: '100vw', 
+        height: '100vh', 
+        duration: 1.2, 
+        ease: 'expo.inOut'
+      });
 
       tl.to('.lottie-container', { 
         opacity: 1, 
         duration: 0.8, 
-        ease: 'power2.out',
-        onStart: () => console.log('Starting lottie fade in'),
-        onComplete: () => console.log('Lottie fade in completed')
+        ease: 'power2.out'
       });
     });
   }, []);
@@ -145,13 +97,15 @@ const Home = () => {
       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     >
       <HomeHeader setMenuActive={setMenuActive} />
-      <section ref={heroSectionRef} className="custom-hero-section">
-        <img src="/api/Uploads/LOOK-2_137-e1743957431674.webp" alt="Hero" className="hero-image" />
-      </section>
+      <section className="custom-hero-section"></section>
       <div className="hero-overlay">
         <div className="fyve-mask">
           <div className="fyve-text" ref={fyveTextRef}>
-            <span className="fy">FY</span><span className="ve">VE</span>
+            <span className="fy">FY</span>
+            <div className="hero-image-container">
+              <img ref={imageRef} src="/api/Uploads/LOOK-2_137-e1743957431674.webp" alt="Hero" className="hero-image" />
+            </div>
+            <span className="ve">VE</span>
           </div>
         </div>
         <div className="lottie-container">
