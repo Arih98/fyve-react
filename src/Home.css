@@ -25,6 +25,9 @@
   transform: translate(-50%, -50%);
   visibility: hidden;
   text-align: center;
+  display: flex; /* Add this */
+  align-items: center; /* Add this */
+  flex-direction: column; /* Add this to keep text above image */
 }
 
 .fyve-text {
