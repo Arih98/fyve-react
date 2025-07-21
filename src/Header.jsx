@@ -198,7 +198,7 @@ const Header = () => {
 </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
-            <img src="https://fyvelondon.com/wp-content/uploads/2025/01/Asset-27FYVE-London-Search-Dark-Search-Icon34.png" alt="Search Icon" />
+            <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
           <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
             <div className="custom-search-inner">
