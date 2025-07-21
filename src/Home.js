@@ -6,16 +6,20 @@ const Home = () => {
   useEffect(() => {
     gsap.set('.fyve-mask', { visibility: 'visible' });
     gsap.fromTo(
-      '.fyve-text',
+      '.fyve-letter',
       { y: '100%' },
-      { y: 0, duration: 0.8, ease: 'power2.out' }
+      { y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.1 }
     );
   }, []);
 
   return (
     <div className="home-page">
       <div className="fyve-mask">
-        <div className="fyve-text">FYVE</div>
+        <div className="fyve-text">
+          {'FYVE'.split('').map((letter, index) => (
+            <span key={index} className="fyve-letter">{letter}</span>
+          ))}
+        </div>
       </div>
     </div>
   );
