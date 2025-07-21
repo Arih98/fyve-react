@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
+import HomeHeader from './HomeHeader';
 import './Home.css';
 
 const Home = () => {
@@ -115,10 +116,24 @@ const Home = () => {
       onStart: () => console.log('Image grow started'),
       onComplete: () => console.log('Image grow completed')
     });
+
+    console.log('Setting initial header opacity');
+    gsap.set('.mobile-header', { opacity: 0 });
+
+    console.log('Scheduling header fade in');
+    gsap.to('.mobile-header', {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'expo.inOut',
+      delay: 2.8,
+      onStart: () => console.log('Header fade in started'),
+      onComplete: () => console.log('Header fade in completed')
+    });
   }, []);
 
   return (
     <div className="home-page">
+      <HomeHeader />
       <div className="fyve-mask">
         <div className="fyve-text">
           {'FY'.split('').map((letter, index) => (
