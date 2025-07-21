@@ -1,4 +1,3 @@
-// Home.js
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import './Home.css';
