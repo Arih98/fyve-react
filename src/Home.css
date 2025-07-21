@@ -24,10 +24,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .fyve-text {
