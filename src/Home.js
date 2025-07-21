@@ -129,7 +129,7 @@ const Home = () => {
           minHeight: '100vh',
           maxHeight: '100vh',
           overflow: 'hidden',
-          background: "url('https://fyvelondon.com/wp-content/uploads/2025/04/LOOK-2_137-e1743957431674.webp') center center/cover no-repeat",
+          background: "url('/api/Uploads/LOOK-2_137-e1743957431674.webp",
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
