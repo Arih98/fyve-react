@@ -38,8 +38,8 @@ const Home = () => {
     );
     
     console.log('Scheduling FY shift animation');
-    gsap.to('.fyve-text:first-child .fyve-letter', {
-      x: -100,
+    gsap.to('.fyve-text:first-child', {
+      x: '-5vw',
       duration: 0.8,
       ease: 'power2.out',
       delay: 1,
@@ -48,13 +48,23 @@ const Home = () => {
     });
     
     console.log('Scheduling VE shift animation');
-    gsap.to('.fyve-text:last-child .fyve-letter', {
-      x: 100,
+    gsap.to('.fyve-text:last-child', {
+      x: '5vw',
       duration: 0.8,
       ease: 'power2.out',
       delay: 1,
       onStart: () => console.log('VE shift animation started'),
       onComplete: () => console.log('VE shift animation completed')
+    });
+    
+    console.log('Scheduling image container expand');
+    gsap.to('.fyve-image-container', {
+      width: '10vw',
+      duration: 0.8,
+      ease: 'power2.out',
+      delay: 1,
+      onStart: () => console.log('Image container expand started'),
+      onComplete: () => console.log('Image container expand completed')
     });
     
     console.log('Scheduling image mask reveal animation');

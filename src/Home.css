@@ -27,7 +27,7 @@
   display: flex;
   align-items: center;
   flex-direction: row;
-  gap: 10px; /* Space between text and image */
+  gap: 0;
 }
 
 .fyve-text {
@@ -49,13 +49,13 @@
   display: inline-block;
 }
 
-.fyve-letter:nth-child(3) {
+.fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
   margin-right: -0.1em;
 }
 
 .fyve-image-container {
   height: 10vw;
-  width: 10vw;
+  width: 0;
   position: relative;
   overflow: hidden;
 }
