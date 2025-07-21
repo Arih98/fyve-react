@@ -84,6 +84,37 @@ const Home = () => {
       onStart: () => console.log('Image mask right animation started'),
       onComplete: () => console.log('Image mask right animation completed')
     });
+
+    console.log('Scheduling FY slide off left');
+    gsap.to('.fyve-text:first-child', {
+      x: '-100vw',
+      duration: 0.8,
+      ease: 'expo.inOut',
+      delay: 2,
+      onStart: () => console.log('FY slide off left started'),
+      onComplete: () => console.log('FY slide off left completed')
+    });
+
+    console.log('Scheduling VE slide off right');
+    gsap.to('.fyve-text:last-child', {
+      x: '100vw',
+      duration: 0.8,
+      ease: 'expo.inOut',
+      delay: 2,
+      onStart: () => console.log('VE slide off right started'),
+      onComplete: () => console.log('VE slide off right completed')
+    });
+
+    console.log('Scheduling image grow to full screen');
+    gsap.to('.fyve-image-container', {
+      width: '100vw',
+      height: '100vh',
+      duration: 0.8,
+      ease: 'expo.inOut',
+      delay: 2,
+      onStart: () => console.log('Image grow started'),
+      onComplete: () => console.log('Image grow completed')
+    });
   }, []);
 
   return (
