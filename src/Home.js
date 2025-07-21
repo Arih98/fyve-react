@@ -1,5 +1,5 @@
 // Home.js
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState,matterRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import HomeHeader from './HomeHeader';
@@ -28,6 +28,7 @@ const Home = () => {
   useEffect(() => {
     gsap.ticker.fps(60);
     gsap.set('.lottie-container', { opacity: 0 });
+    gsap.set('.fy, .ve', { x: 0 });
 
     const fontReady = document.fonts.ready;
     const imageLoad = new Promise(resolve => {
