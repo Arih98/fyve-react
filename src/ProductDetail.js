@@ -378,6 +378,9 @@ const ProductDetail = () => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.5 }}
+            onAnimationStart={(definition) => console.log('[ProductDetail] Details animation start:', { definition, type: 'start', direction: window.history.length > 1 ? 'back possible' : 'forward' })}
+            onAnimationComplete={(definition) => console.log('[ProductDetail] Details animation complete:', { definition, type: 'complete', direction: window.history.length > 1 ? 'back possible' : 'forward' })}
+            onUpdate={(latest) => console.log('[ProductDetail] Details animation update:', { latest, x: latest.x })}
           >
             <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
               <h1 className="product-title">{displayTitle}</h1>
