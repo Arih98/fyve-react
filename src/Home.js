@@ -57,7 +57,7 @@ const Home = () => {
         x: '-0.3vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 1.2,
+        delay: 2.2,
         onStart: () => console.log('FY shift animation started'),
         onComplete: () => console.log('FY shift animation completed')
       });
@@ -67,7 +67,7 @@ const Home = () => {
         x: '0.3vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 1.2,
+        delay: 2.2,
         onStart: () => console.log('VE shift animation started'),
         onComplete: () => console.log('VE shift animation completed')
       });
@@ -77,7 +77,7 @@ const Home = () => {
         width: '14vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 1,
+        delay: 2,
         onStart: () => console.log('Image container expand started'),
         onComplete: () => console.log('Image container expand completed')
       });
@@ -87,7 +87,7 @@ const Home = () => {
         x: '-100%',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 1,
+        delay: 2,
         onStart: () => console.log('Image mask left animation started'),
         onComplete: () => console.log('Image mask left animation completed')
       });
@@ -95,7 +95,7 @@ const Home = () => {
         x: '100%',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 1,
+        delay: 2,
         onStart: () => console.log('Image mask right animation started'),
         onComplete: () => console.log('Image mask right animation completed')
       });
@@ -105,7 +105,7 @@ const Home = () => {
         x: '-100vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 2,
+        delay: 3,
         onStart: () => console.log('FY slide off left started'),
         onComplete: () => console.log('FY slide off left completed')
       });
@@ -115,7 +115,7 @@ const Home = () => {
         x: '100vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 2,
+        delay: 3,
         onStart: () => console.log('VE slide off right started'),
         onComplete: () => console.log('VE slide off right completed')
       });
@@ -126,7 +126,7 @@ const Home = () => {
         height: '100vh',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 2,
+        delay: 3,
         onStart: () => console.log('Image grow started'),
         onComplete: () => console.log('Image grow completed')
       });
