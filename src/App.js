@@ -32,18 +32,33 @@ const AnimatedOutlet = () => {
   return useOutlet();
 }
 
+const StableOutlet = () => {
+  const o = useOutlet();
+  const [outlet] = useState(o);
+  return outlet;
+};
+
 const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
 
   return (
-    <div className="App">
+    <div className="App" style={{ position: 'relative' }}>
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
-        <AnimatePresence mode="wait" initial={false}>
-          <AnimatedOutlet />
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={location.pathname}
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+          >
+            <StableOutlet />
+          </motion.div>
         </AnimatePresence>
       </LayoutGroup>
     </div>
@@ -80,7 +95,6 @@ function AppContent() {
   );
 }
 
-// Remove the outer <Router> since it's in index.js
 const App = () => {
   return <AppContent />;
 };
