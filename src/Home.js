@@ -77,7 +77,7 @@ const Home = () => {
         width: '14vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 1.3,
+        delay: 0.8,
         onStart: () => console.log('Image container expand started'),
         onComplete: () => console.log('Image container expand completed')
       });
