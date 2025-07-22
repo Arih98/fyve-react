@@ -27,7 +27,6 @@ const Home = () => {
       gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
       gsap.set('.fyve-letter', { y: 0 });
       gsap.set('.fyve-text:first-child', { x: '-100vw' });
-      gsap.set('.fyve-text:nth-child(3)', { x: '-100vw' });
       gsap.set('.fyve-text:last-child', { x: '100vw' });
       gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
       gsap.set('.mobile-header', { opacity: 1 });
@@ -61,16 +60,6 @@ const Home = () => {
         delay: 1.2,
         onStart: () => console.log('FY shift animation started'),
         onComplete: () => console.log('FY shift animation completed')
-      });
-      
-      console.log('Scheduling LONDON shift animation');
-      gsap.to('.fyve-text:nth-child(3)', {
-        x: '-0.3vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1.2,
-        onStart: () => console.log('LONDON shift animation started'),
-        onComplete: () => console.log('LONDON shift animation completed')
       });
       
       console.log('Scheduling VE shift animation');
@@ -121,16 +110,6 @@ const Home = () => {
         onComplete: () => console.log('FY slide off left completed')
       });
 
-      console.log('Scheduling LONDON slide off left');
-      gsap.to('.fyve-text:nth-child(3)', {
-        x: '-100vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 2,
-        onStart: () => console.log('LONDON slide off left started'),
-        onComplete: () => console.log('LONDON slide off left completed')
-      });
-
       console.log('Scheduling VE slide off right');
       gsap.to('.fyve-text:last-child', {
         x: '100vw',
@@ -178,11 +157,6 @@ const Home = () => {
             <span key={index} className="fyve-letter">{letter}</span>
           ))}
         </div>
-        <div className="fyve-text">
-          {'VE'.split('').map((letter, index) => (
-            <span key={index + 2} className="fyve-letter">{letter}</span>
-          ))}
-        </div>
         <div className="fyve-image-container">
           <img
             src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
@@ -193,8 +167,8 @@ const Home = () => {
           <div className="mask-right"></div>
         </div>
         <div className="fyve-text">
-          {'LONDON'.split('').map((letter, index) => (
-            <span key={index + 4} className="fyve-letter">{letter}</span>
+          {'VE'.split('').map((letter, index) => (
+            <span key={index + 2} className="fyve-letter">{letter}</span>
           ))}
         </div>
       </div>
