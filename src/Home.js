@@ -127,8 +127,17 @@ const Home = () => {
         duration: 0.8,
         ease: 'expo.inOut',
         delay: 2,
-        onStart: () => console.log('Image grow started'),
-        onComplete: () => console.log('Image grow completed')
+        onStart: () => gsap.set('.fyve-image-container', { transformOrigin: 'top left' }),
+        onComplete: () => {
+          gsap.set('.fyve-mask', { clearProps: 'transform' });
+          gsap.set('.fyve-image-container', {
+            clearProps: 'transform,transformOrigin',
+            top: 0,
+            left: 0,
+            x: 0,
+            y: 0,
+          });
+        }
       });
 
       console.log('Setting initial header opacity');
