@@ -48,6 +48,10 @@
   z-index: 2;
 }
 
+.fyve-text:last-child {
+  font-size: 2vw;
+}
+
 .fyve-letter {
   display: inline-block;
 }
