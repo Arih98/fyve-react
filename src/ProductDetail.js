@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CartContext } from './CartContext';
 import './ProductDetail.css';
 
@@ -370,79 +370,83 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
-        <motion.div
-          className="details-container"
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
-            <h1 className="product-title">{displayTitle}</h1>
-            <p
-              className="product-variation-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
-            />
-            <p
-              className="product-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
-            />
-            {product.product_type === 'variable' && (
-              <div className="product-attributes">
-                {attributeNames.map(attrName => {
-                  const options = getAvailableOptions(attrName);
-                  return (
-                    <div key={attrName} className="attribute-group">
-                      <label className="attribute-label">{attrName}</label>
-                      {attrName === 'Color' ? (
-                        <div className="color-options">
-                          {options.map(term => (
-                            <div key={term} className="color-option">
-                              <button
-                                onClick={() => handleAttributeChange(attrName, term)}
-                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
-                              />
-                              <span className="color-label">{term}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="size-options">
-                          {options.map(term => (
-                            <div key={term} className="size-option">
-                              <button
-                                onClick={() => handleAttributeChange(attrName, term)}
-                                className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-                              >
-                                {term}
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+        <AnimatePresence initial={false}>
+          <motion.div
+            className="details-container"
+            key={`details-${currentDisplayId}-${location.key}`}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
+              <h1 className="product-title">{displayTitle}</h1>
+              <p
+                className="product-variation-description"
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+              />
+              <p
+                className="product-description"
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
+              />
+              {product.product_type === 'variable' && (
+                <div className="product-attributes">
+                  {attributeNames.map(attrName => {
+                    const options = getAvailableOptions(attrName);
+                    return (
+                      <div key={attrName} className="attribute-group">
+                        <label className="attribute-label">{attrName}</label>
+                        {attrName === 'Color' ? (
+                          <div className="color-options">
+                            {options.map(term => (
+                              <div key={term} className="color-option">
+                                <button
+                                  onClick={() => handleAttributeChange(attrName, term)}
+                                  className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
+                                />
+                                <span className="color-label">{term}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="size-options">
+                            {options.map(term => (
+                              <div key={term} className="size-option">
+                                <button
+                                  onClick={() => handleAttributeChange(attrName, term)}
+                                  className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+                                >
+                                  {term}
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {cartError && <p className="cart-error">{cartError}</p>}
+              <div className="quantity-selector">
+                <label className="quantity-label">QTY</label>
+                <div className="quantity-controls">
+                  <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
+                    <span className="qty-symbol">-</span>
+                  </button>
+                  <span className="qty-value">{quantity}</span>
+                  <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
+                    <span className="qty-symbol">+</span>
+                  </button>
+                </div>
               </div>
-            )}
-            {cartError && <p className="cart-error">{cartError}</p>}
-            <div className="quantity-selector">
-              <label className="quantity-label">QTY</label>
-              <div className="quantity-controls">
-                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
-                  <span className="qty-symbol">-</span>
-                </button>
-                <span className="qty-value">{quantity}</span>
-                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
-                  <span className="qty-symbol">+</span>
-                </button>
-              </div>
+              <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
+                <span className="add-to-cart-text">Add to Cart</span>
+                <span className="add-to-cart-price">${(parseFloat(current?.price || 0) * quantity).toFixed(2)}</span>
+              </button>
             </div>
-            <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
-              <span className="add-to-cart-text">Add to Cart</span>
-              <span className="add-to-cart-price">${(parseFloat(current?.price || 0) * quantity).toFixed(2)}</span>
-            </button>
-          </div>
-        </motion.div>
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
       {relatedProducts.length > 0 && (
         <div className="related-products-container">
