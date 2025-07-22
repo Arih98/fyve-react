@@ -128,7 +128,10 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 2,
         onStart: () => console.log('Image grow started'),
-        onComplete: () => console.log('Image grow completed')
+        onComplete: () => {
+          console.log('Image grow completed');
+          gsap.set('.fyve-mask', { left: 0, transform: 'none' }); // Reset transform
+        }
       });
 
       console.log('Setting initial header opacity');
