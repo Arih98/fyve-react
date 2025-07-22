@@ -28,6 +28,7 @@
   align-items: center;
   flex-direction: row;
   gap: 0;
+  z-index: 1; /* Ensure mask stays above image */
 }
 
 .fyve-text {
@@ -43,8 +44,9 @@
   padding: 0;
   position: relative;
   overflow: hidden;
-  flex: 1; /* Ensure equal width for both text elements */
-  text-align: center; /* Center text within each flex item */
+  flex: 1; /* Equal width for text elements */
+  text-align: center;
+  z-index: 2; /* Text above image */
 }
 
 .fyve-letter {
@@ -57,13 +59,14 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: 100vw !important; /* Override parent constraints */
+  width: 0; /* Start with zero width for animation */
   position: relative;
   overflow: hidden;
+  z-index: 0; /* Image below text */
 }
 
 .fyve-image {
-  width: 100%;
+  width: 100vw; /* Full viewport width */
   height: 100%;
   object-fit: cover;
 }
@@ -75,7 +78,7 @@
   width: 50%;
   height: 100%;
   background: #fff;
-  z-index: 1;
+  z-index: 1; /* Masks above image but below text */
 }
 
 .mask-left {
