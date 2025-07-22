@@ -18,38 +18,33 @@ const ProductDetail = () => {
   const [selectedAttributes, setSelectedAttributes] = useState(() => {
     if (!product) return {};
     const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
-    let initialAttrs = initialColor ? { Color: location.state.initialColor } : {};
+    let attrs = initialColor ? { Color: location.state.initialColor } : {};
     if (product.product_type === 'variable' && product.variations?.length > 0) {
-      const initialVariation = product.variations.find(v => {
-        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+      const v = product.variations.find(v => {
+        const c = v.attributes.find(a => a.attribute_name === 'Color');
+        return c?.term_name?.trim().toLowerCase() === initialColor;
       }) || product.variations[0];
-      initialVariation.attributes.forEach(attr => {
-        if (!attr.term_name.startsWith('Any')) {
-          initialAttrs[attr.attribute_name] = attr.term_name;
+      v.attributes.forEach(a => {
+        if (!a.term_name.startsWith('Any')) {
+          attrs[a.attribute_name] = a.term_name;
         }
       });
     }
-    return initialAttrs;
+    return attrs;
   });
   const [currentVariation, setCurrentVariation] = useState(() => {
     if (!product) return null;
     const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
     if (product.product_type === 'variable' && product.variations?.length > 0) {
       return product.variations.find(v => {
-        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+        const c = v.attributes.find(a => a.attribute_name === 'Color');
+        return c?.term_name?.trim().toLowerCase() === initialColor;
       }) || product.variations[0];
     }
     return null;
   });
   const [quantity, setQuantity] = useState(1);
   const [availableStock, setAvailableStock] = useState(null);
-
-  useEffect(() => {
-    console.log('[ProductDetail] Component mounted');
-    return () => console.log('[ProductDetail] Component unmounted');
-  }, []);
 
   useEffect(() => {
     let lastY = window.pageYOffset;
@@ -63,8 +58,7 @@ const ProductDetail = () => {
   }, []);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('products') || '[]');
-    setAllProducts(stored);
+    setAllProducts(JSON.parse(localStorage.getItem('products') || '[]'));
   }, []);
 
   useEffect(() => {
@@ -83,14 +77,12 @@ const ProductDetail = () => {
   useLayoutEffect(() => {
     if (mainImageRef.current) {
       const img = mainImageRef.current;
-      console.log('[ProductDetail] Target image layout details:', {
+      console.log('[ProductDetail] layout details:', {
         src: img.src,
-        clientWidth: img.clientWidth,
-        clientHeight: img.clientHeight,
-        naturalWidth: img.naturalWidth,
-        naturalHeight: img.naturalHeight,
-        boundingRect: img.getBoundingClientRect(),
-        complete: img.complete,
+        cw: img.clientWidth,
+        ch: img.clientHeight,
+        nw: img.naturalWidth,
+        nh: img.naturalHeight,
       });
     }
   }, [currentVariation]);
@@ -102,9 +94,9 @@ const ProductDetail = () => {
         )
       : [];
 
-  const getAvailableOptions = attrName => {
+  const getAvailableOptions = name => {
     const other = { ...selectedAttributes };
-    delete other[attrName];
+    delete other[name];
     const opts = new Set(
       product.variations
         .filter(v =>
@@ -114,12 +106,12 @@ const ProductDetail = () => {
           })
         )
         .flatMap(v => {
-          const a = v.attributes.find(x => x.attribute_name === attrName);
+          const a = v.attributes.find(x => x.attribute_name === name);
           return a && !a.term_name.startsWith('Any') ? [a.term_name] : [];
         })
     );
     const arr = [...opts];
-    if (attrName === 'Size') {
+    if (name === 'Size') {
       arr.sort((x, y) => x.localeCompare(y, 'en', { numeric: true }));
     } else {
       arr.sort();
@@ -129,7 +121,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable') return;
-    const match = product.variations.find(v =>
+    const m = product.variations.find(v =>
       attributeNames.every(a => {
         const sel = selectedAttributes[a];
         if (!sel) return true;
@@ -137,7 +129,7 @@ const ProductDetail = () => {
         return x && (x.term_name === sel || x.term_name === `Any ${a}`);
       })
     );
-    setCurrentVariation(match || null);
+    setCurrentVariation(m || null);
   }, [selectedAttributes, product]);
 
   useEffect(() => {
@@ -154,13 +146,10 @@ const ProductDetail = () => {
     if (changed) setSelectedAttributes(upd);
   }, [selectedAttributes, product]);
 
-  const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
+  const current = product?.product_type === 'variable' ? currentVariation : product;
   const gallery = current?.gallery || product?.gallery || [];
-  const mainImage = gallery[0] || '/api/Uploads/fallback-image.png';
   const displayTitle =
-    product?.product_type === 'variable' && currentVariation?.title
-      ? currentVariation.title
-      : product?.title;
+    product?.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product?.title;
   const displayDescription =
     product?.product_type === 'variable' && currentVariation?.description
       ? currentVariation.description
@@ -169,9 +158,10 @@ const ProductDetail = () => {
   const currentDisplayId = `${product?.id}-${currentColor}`;
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
-  const relatedProductsRaw =
-    product?.product_type === 'variable' ? currentVariation?.related_products || [] : product?.related_products || [];
-  const relatedProducts = relatedProductsRaw
+  const relatedProducts = (product?.product_type === 'variable'
+    ? currentVariation?.related_products
+    : product?.related_products) || [];
+  const normalizedRelated = relatedProducts
     .map(rel => {
       const norm = typeof rel === 'string' ? { productId: rel } : rel;
       const p = allProducts.find(x => x.id === norm.productId);
@@ -199,8 +189,6 @@ const ProductDetail = () => {
     })
     .filter(Boolean);
 
-  const getDisplayImage = rel => rel.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
-  const getDisplayPrice = rel => rel.displayPrice || 0;
   const handleRelatedClick = rel => {
     const orig = allProducts.find(x => x.id === rel.id);
     navigate(`/product/${rel.id}`, {
@@ -219,11 +207,11 @@ const ProductDetail = () => {
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
                 const key = `${current?.sku || product.id}-${idx}`;
-                const layoutId = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
+                const lid = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
                 return (
                   <motion.img
                     key={key}
-                    layoutId={layoutId}
+                    layoutId={lid}
                     ref={el => galleryRefs.current.set(key, el)}
                     src={img}
                     alt={`${displayTitle} ${idx + 1}`}
@@ -231,8 +219,8 @@ const ProductDetail = () => {
                     onError={e => {
                       e.target.src = '/api/Uploads/fallback-image.png';
                     }}
-                    onLayoutAnimationStart={() => layoutId && console.log('[Detail] layout start for', currentDisplayId)}
-                    onLayoutAnimationComplete={() => layoutId && console.log('[Detail] layout complete for', currentDisplayId)}
+                    onLayoutAnimationStart={() => lid && console.log('[Detail] layout start for', currentDisplayId)}
+                    onLayoutAnimationComplete={() => lid && console.log('[Detail] layout complete for', currentDisplayId)}
                   />
                 );
               })
@@ -240,7 +228,7 @@ const ProductDetail = () => {
               <motion.img
                 layoutId={`product-image-${currentDisplayId}`}
                 ref={mainImageRef}
-                src={mainImage}
+                src={gallery[0] || '/api/Uploads/fallback-image.png'}
                 alt={displayTitle}
                 className="product-main-image"
                 onError={e => {
@@ -250,6 +238,7 @@ const ProductDetail = () => {
                 onLayoutAnimationComplete={() => console.log('[Detail] layout complete for', currentDisplayId)}
               />
             )}
+          </div>
         </div>
         <motion.div className="details-container" initial={{ x: '100%' }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
@@ -258,27 +247,24 @@ const ProductDetail = () => {
             <p className="product-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
             {product.product_type === 'variable' && (
               <div className="product-attributes">
-                {attributeNames.map(attrName => {
-                  const options = getAvailableOptions(attrName);
+                {attributeNames.map(name => {
+                  const opts = getAvailableOptions(name);
                   return (
-                    <div key={attrName} className="attribute-group">
-                      <label className="attribute-label">{attrName}</label>
-                      {attrName === 'Color' ? (
+                    <div key={name} className="attribute-group">
+                      <label className="attribute-label">{name}</label>
+                      {name === 'Color' ? (
                         <div className="color-options">
-                          {options.map(term => (
+                          {opts.map(term => (
                             <div key={term} className="color-option">
-                              <button
-                                onClick={() => setSelectedAttributes(prev => ({ ...prev, [attrName]: term }))}
-                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term.toLowerCase()}`}
-                              />
+                              <button onClick={() => setSelectedAttributes(prev => ({ ...prev, [name]: term }))} className={`color-button ${selectedAttributes[name] === term ? 'selected' : ''} ${term.toLowerCase()}`} />
                               <span className="color-label">{term}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
                         <div className="size-options">
-                          {options.map(term => (
-                            <button key={term} onClick={() => setSelectedAttributes(prev => ({ ...prev, [attrName]: term }))} className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}>
+                          {opts.map(term => (
+                            <button key={term} onClick={() => setSelectedAttributes(prev => ({ ...prev, [name]: term }))} className={`size-button ${selectedAttributes[name] === term ? 'selected' : ''}`}>
                               {term}
                             </button>
                           ))}
@@ -293,40 +279,36 @@ const ProductDetail = () => {
             <div className="quantity-selector">
               <label className="quantity-label">QTY</label>
               <div className="quantity-controls">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn minus" disabled={quantity <= 1}>
-                  −
-                </button>
+                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn minus" disabled={quantity <= 1}>−</button>
                 <span className="qty-value">{quantity}</span>
-                <button onClick={() => availableStock === null || quantity < availableStock ? setQuantity(q => q + 1) : null} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
-                  +
-                </button>
+                <button onClick={() => (availableStock === null || quantity < availableStock) && setQuantity(q => q + 1)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>+</button>
               </div>
             </div>
             <button onClick={() => {
-                fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`)
+                fetch(`/api/get_inventory.php?sku=${encodeURIComponent(currentVariation.sku)}`)
                   .then(r => r.json())
                   .then(d => {
                     if ((d.stock_quantity ?? 0) < quantity) setCartError('Out of stock');
-                    else setCartItems(prev => [...prev, { id: current.id || product.id, name: current.title || product.title, price: parseFloat(current.price || product.price), quantity, image: current.gallery?.[0] || product.gallery?.[0] }]);
+                    else setCartItems(prev => [...prev, { id: currentVariation.id || product.id, name: currentVariation.title || product.title, price: parseFloat(currentVariation.price || product.price), quantity, image: currentVariation.gallery?.[0] || product.gallery?.[0] }]);
                   })
                   .catch(() => setCartError('Failed to verify stock'));
               }} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
               <span className="add-to-cart-text">Add to Cart</span>
-              <span className="add-to-cart-price">${((parseFloat(current?.price || 0) * quantity).toFixed(2))}</span>
+              <span className="add-to-cart-price">${(parseFloat(currentVariation?.price || product.price) * quantity).toFixed(2)}</span>
             </button>
           </div>
         </motion.div>
       </motion.div>
-      {relatedProducts.length > 0 && (
+      {normalizedRelated.length > 0 && (
         <div className="related-products-container">
           <h2 className="related-products-title">Related Products</h2>
           <div className="related-products-grid">
-            {relatedProducts.map(relItem => (
-              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-                <motion.img layoutId={`product-image-${relItem.displayId}`} src={getDisplayImage(relItem)} alt={relItem.displayTitle} className="related-product-image" />
+            {normalizedRelated.map(item => (
+              <div key={item.displayId} className="related-product-card" onClick={() => handleRelatedClick(item)}>
+                <motion.img layoutId={`product-image-${item.displayId}`} src={item.displayGallery?.[0] || '/api/Uploads/fallback-image.png'} alt={item.displayTitle} className="related-product-image" />
                 <div className="related-product-info">
-                  <h3 className="related-product-title">{relItem.displayTitle}</h3>
-                  <p className="related-product-price">${getDisplayPrice(relItem)}</p>
+                  <h3 className="related-product-title">{item.displayTitle}</h3>
+                  <p className="related-product-price">${item.displayPrice.toFixed(2)}</p>
                 </div>
               </div>
             ))}
