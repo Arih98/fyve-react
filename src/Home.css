@@ -55,7 +55,7 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: 0;
+  width: 100vw;
   position: relative;
   overflow: hidden;
 }
