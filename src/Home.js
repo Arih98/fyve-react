@@ -72,15 +72,16 @@ const Home = () => {
         onComplete: () => console.log('VE shift animation completed')
       });
       
-      console.log('Scheduling image container expand');
-      gsap.to('.fyve-image-container', {
-        width: '14vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1,
-        onStart: () => console.log('Image container expand started'),
-        onComplete: () => console.log('Image container expand completed')
-      });
+      console.log('Scheduling image grow to full screen');
+gsap.to('.fyve-image-container', {
+  width: '100%', // Use 100% instead of 100vw
+  height: '100vh',
+  duration: 0.8,
+  ease: 'expo.inOut',
+  delay: 2,
+  onStart: () => console.log('Image grow started'),
+  onComplete: () => console.log('Image grow completed')
+});
       
       console.log('Scheduling image mask reveal animation');
       gsap.to('.mask-left', {
