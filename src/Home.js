@@ -172,6 +172,16 @@ const Home = () => {
           ))}
         </div>
       </div>
+      <div className="new-section">
+        <div className="new-image-container">
+          <img
+            src="/api/Uploads/LOOK-9_1426_result.webp"
+            alt="New Section Image"
+            className="new-image"
+          />
+          <div className="new-text">Comfortably <br/> Modern, <br/> Distinctly <br/> British.</div>
+        </div>
+      </div>
     </div>
   );
 };

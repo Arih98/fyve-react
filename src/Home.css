@@ -88,3 +88,33 @@
 .mask-right {
   right: 0;
 }
+
+.new-section {
+  position: relative;
+  width: 100%;
+  margin-top: 100vh; /* Places section below fyve-mask */
+}
+
+.new-image-container {
+  position: relative;
+  width: 67vw;
+  margin: 0 auto;
+}
+
+.new-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.new-text {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 200;
+  font-size: 2vw;
+  color: #4A494A;
+  text-align: right;
+  line-height: 1.2;
+}
