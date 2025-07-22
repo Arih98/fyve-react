@@ -9,6 +9,9 @@ const Home = () => {
   useEffect(() => {
     console.log('Home component mounted');
     
+    // Disable scrolling initially
+    gsap.set('.home-page', { overflow: 'hidden' });
+    
     const image = document.querySelector('.fyve-image');
     if (image) {
       console.log('Image element found:', image);
@@ -30,6 +33,7 @@ const Home = () => {
       gsap.set('.fyve-text:last-child', { x: '100vw' });
       gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
       gsap.set('.mobile-header', { opacity: 1 });
+      gsap.set('.home-page', { overflow: 'auto' }); // Enable scrolling for subsequent visits
     } else {
       console.log('Setting fyve-mask visibility');
       gsap.set('.fyve-mask', { visibility: 'visible' });
@@ -141,7 +145,10 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 2.8,
         onStart: () => console.log('Header fade in started'),
-        onComplete: () => console.log('Header fade in completed')
+        onComplete: () => {
+          console.log('Header fade in completed');
+          gsap.set('.home-page', { overflow: 'auto' }); // Enable scrolling after all animations
+        }
       });
     }
 
