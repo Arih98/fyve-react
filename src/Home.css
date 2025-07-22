@@ -7,15 +7,11 @@
 }
 
 .home-page {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh; /* Changed to min-height to allow content to expand */
   background: #fff;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 .fyve-mask {
@@ -28,7 +24,7 @@
   align-items: center;
   flex-direction: row;
   gap: 0;
-  z-index: 1; /* Ensure mask stays above image */
+  z-index: 1;
 }
 
 .fyve-text {
@@ -44,9 +40,9 @@
   padding: 0;
   position: relative;
   overflow: hidden;
-  flex: 1; /* Equal width for text elements */
+  flex: 1;
   text-align: center;
-  z-index: 2; /* Text above image */
+  z-index: 2;
 }
 
 .fyve-letter {
@@ -59,14 +55,14 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: 0; /* Start with zero width for animation */
+  width: 0;
   position: relative;
   overflow: hidden;
-  z-index: 0; /* Image below text */
+  z-index: 0;
 }
 
 .fyve-image {
-  width: 100vw; /* Full viewport width */
+  width: 100vw;
   height: 100%;
   object-fit: cover;
 }
@@ -78,7 +74,7 @@
   width: 50%;
   height: 100%;
   background: #fff;
-  z-index: 1; /* Masks above image but below text */
+  z-index: 1;
 }
 
 .mask-left {
@@ -92,7 +88,7 @@
 .new-section {
   position: relative;
   width: 100%;
-  margin-top: 100vh; /* Places section below fyve-mask */
+  margin-top: 100vh;
 }
 
 .new-image-container {
