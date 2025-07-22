@@ -147,19 +147,11 @@ const HomeHeader = () => {
   };
 
   const handleMenuImageChange = (newItem) => {
-    console.log(`handleMenuImageChange called with newItem: ${newItem}, current active: ${activeMenuImage}, animating: ${isImageAnimating}`);
-    if (isImageAnimating || newItem === activeMenuImage) {
-      console.log('handleMenuImageChange skipped due to animating or same item');
-      return;
-    }
+    if (isImageAnimating || newItem === activeMenuImage) return;
     const prevItem = activeMenuImage;
     const prevElem = document.querySelector(`.menu-image[data-menu-item="${prevItem}"]`);
     const newElem = document.querySelector(`.menu-image[data-menu-item="${newItem}"]`);
-    console.log(`prevElem found: ${!!prevElem}, newElem found: ${!!newElem}`);
-    if (!newElem) {
-      console.log('newElem not found, aborting');
-      return;
-    }
+    if (!newElem) return;
     setIsImageAnimating(true);
     if (prevElem) {
       prevElem.style.opacity = '1';
@@ -168,11 +160,9 @@ const HomeHeader = () => {
     newElem.style.opacity = '1';
     newElem.style.zIndex = '2';
     const newImg = newElem.querySelector('img');
-    console.log(`newImg found: ${!!newImg}, src: ${newImg?.src}`);
     gsap.set(newImg, { yPercent: -100 });
     gsap.to(newImg, { yPercent: 0, duration: 0.6, ease: 'power2.inOut' });
     const prevImg = prevElem ? prevElem.querySelector('img') : null;
-    console.log(`prevImg found: ${!!prevImg}, src: ${prevImg?.src}`);
     if (prevImg) {
       gsap.to(prevImg, {
         yPercent: 100,
@@ -184,15 +174,12 @@ const HomeHeader = () => {
             prevElem.style.zIndex = '1';
           }
           setIsImageAnimating(false);
-          console.log('Animation complete, setIsImageAnimating false');
         }
       });
     } else {
       setIsImageAnimating(false);
-      console.log('No prevImg, setIsImageAnimating false');
     }
     setActiveMenuImage(newItem);
-    console.log(`Active menu image set to: ${newItem}`);
   };
 
   const menuItems = [
@@ -203,10 +190,6 @@ const HomeHeader = () => {
     { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
     { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
   ];
-
-  useEffect(() => {
-    console.log('menuItems:', menuItems.map(item => ({ id: item.id, image: item.image })));
-  }, []);
 
   return (
     <>
@@ -343,11 +326,11 @@ const HomeHeader = () => {
         </div>
       </div>
       <motion.div
-        className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
-        initial={{ y: '-100%' }}
-        animate={{ y: menuState === 'open' ? 0 : '-100%' }}
-        transition={{ duration: 0.75, ease: 'easeInOut' }}
-      >
+  className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
+  initial={{ y: '-100%' }}
+  animate={{ y: menuState === 'open' ? 0 : '-100%' }}
+  transition={{ duration: 0.75, ease: 'easeInOut' }}
+>
         <div className="menu-background"></div>
         <div className="menu-content">
           <div className="menu-columns">
@@ -359,12 +342,7 @@ const HomeHeader = () => {
                   data-menu-item={item.id}
                 >
                   <div className="menu-image-reveal">
-                    <img 
-                      src={item.image} 
-                      alt={`${item.name} Image`} 
-                      onLoad={() => console.log(`Image loaded: ${item.image}`)}
-                      onError={() => console.log(`Image error: ${item.image}`)}
-                    />
+                    <img src={item.image} alt={`${item.name} Image`} />
                   </div>
                 </div>
               ))}
