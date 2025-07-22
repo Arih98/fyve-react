@@ -1,3 +1,4 @@
+// ProductDetail.js
 import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
@@ -13,190 +14,291 @@ const ProductDetail = () => {
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
   const [allProducts, setAllProducts] = useState([]);
-  const [scrollDirection, setScrollDirection] = useState('down');
   const product = location.state?.product;
+  const [scrollDirection, setScrollDirection] = useState('down');
+
+  useEffect(() => {
+    console.log('[ProductDetail] Component mounted');
+    return () => console.log('[ProductDetail] Component unmounted');
+  }, []);
+
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset;
+    const handleScroll = () => {
+      const currentScrollY = window.pageYOffset;
+      if (currentScrollY > lastScrollY) {
+        setScrollDirection('down');
+      } else if (currentScrollY < lastScrollY) {
+        setScrollDirection('up');
+      }
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const [selectedAttributes, setSelectedAttributes] = useState(() => {
     if (!product) return {};
     const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
-    let attrs = initialColor ? { Color: location.state.initialColor } : {};
+    let initialAttrs = initialColor ? { Color: location.state.initialColor } : {};
     if (product.product_type === 'variable' && product.variations?.length > 0) {
-      const v = product.variations.find(v => {
-        const c = v.attributes.find(a => a.attribute_name === 'Color');
-        return c?.term_name?.trim().toLowerCase() === initialColor;
+      const initialVariation = product.variations.find(v => {
+        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
+        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
       }) || product.variations[0];
-      v.attributes.forEach(a => {
-        if (!a.term_name.startsWith('Any')) {
-          attrs[a.attribute_name] = a.term_name;
+      initialVariation?.attributes.forEach(attr => {
+        if (!attr.term_name.startsWith('Any')) {
+          initialAttrs[attr.attribute_name] = attr.term_name;
         }
       });
     }
-    return attrs;
+    console.log('[ProductDetail] Initialized selectedAttributes:', initialAttrs);
+    return initialAttrs;
   });
+
   const [currentVariation, setCurrentVariation] = useState(() => {
     if (!product) return null;
     const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
     if (product.product_type === 'variable' && product.variations?.length > 0) {
-      return product.variations.find(v => {
-        const c = v.attributes.find(a => a.attribute_name === 'Color');
-        return c?.term_name?.trim().toLowerCase() === initialColor;
+      const initialVariation = product.variations.find(v => {
+        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
+        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
       }) || product.variations[0];
+      console.log('[ProductDetail] Initialized currentVariation:', {
+        variationId: initialVariation?.id,
+        title: initialVariation?.title,
+        sku: initialVariation?.sku,
+        galleryLength: initialVariation?.gallery?.length || 0,
+        attributes: selectedAttributes,
+      });
+      return initialVariation;
     }
     return null;
   });
+
   const [quantity, setQuantity] = useState(1);
   const [availableStock, setAvailableStock] = useState(null);
 
   useEffect(() => {
-    let lastY = window.pageYOffset;
-    const onScroll = () => {
-      const y = window.pageYOffset;
-      setScrollDirection(y > lastY ? 'down' : 'up');
-      lastY = y;
+    const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
+    setAllProducts(localProducts);
+  }, []);
+
+  const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
+
+  useEffect(() => {
+    if (!current) return;
+    const fetchAvailableStock = async () => {
+      if (current?.sku) {
+        try {
+          const res = await fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`);
+          const data = await res.json();
+          setAvailableStock(data.stock_quantity ?? 0);
+        } catch (err) {
+          console.error('[ProductDetail] Error fetching stock:', err);
+          setAvailableStock(0);
+        }
+      } else {
+        setAvailableStock(null);
+      }
     };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
-    setAllProducts(JSON.parse(localStorage.getItem('products') || '[]'));
-  }, []);
-
-  useEffect(() => {
-    if (!currentVariation) return;
-    if (currentVariation.sku) {
-      fetch(`/api/get_inventory.php?sku=${encodeURIComponent(currentVariation.sku)}`)
-        .then(r => r.json())
-        .then(d => setAvailableStock(d.stock_quantity ?? 0))
-        .catch(() => setAvailableStock(0));
-    } else {
-      setAvailableStock(null);
-    }
+    fetchAvailableStock();
     setQuantity(1);
-  }, [currentVariation]);
+  }, [current?.sku]);
 
   useLayoutEffect(() => {
     if (mainImageRef.current) {
       const img = mainImageRef.current;
-      console.log({
+      console.log('[ProductDetail] Target image layout details:', {
         src: img.src,
-        cw: img.clientWidth,
-        ch: img.clientHeight,
-        nw: img.naturalWidth,
-        nh: img.naturalHeight,
+        clientWidth: img.clientWidth,
+        clientHeight: img.clientHeight,
+        naturalWidth: img.naturalWidth,
+        naturalHeight: img.naturalHeight,
+        boundingRect: img.getBoundingClientRect(),
+        complete: img.complete,
       });
+    } else {
+      console.warn('[ProductDetail] Main image ref not available');
     }
   }, [currentVariation]);
 
-  const attributeNames =
-    product?.product_type === 'variable' && product.variations?.length > 0
-      ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) =>
-          a === 'Color' ? 1 : -1
-        )
-      : [];
+  const attributeNames = product && product.product_type === 'variable' && product.variations.length > 0
+    ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) => a === 'Color' ? 1 : -1)
+    : [];
 
-  const getAvailableOptions = name => {
-    const other = { ...selectedAttributes };
-    delete other[name];
-    const opts = new Set(
+  const getAvailableOptions = (attrName) => {
+    const otherSelected = { ...selectedAttributes };
+    delete otherSelected[attrName];
+    const optionsSet = new Set(
       product.variations
         .filter(v =>
-          Object.entries(other).every(([k, t]) => {
-            const a = v.attributes.find(x => x.attribute_name === k);
-            return a?.term_name === t || a?.term_name.startsWith('Any');
+          Object.entries(otherSelected).every(([otherAttr, term]) => {
+            const vAttr = v.attributes.find(a => a.attribute_name === otherAttr);
+            return vAttr?.term_name === term || vAttr?.term_name.startsWith('Any');
           })
         )
         .flatMap(v => {
-          const a = v.attributes.find(x => x.attribute_name === name);
-          return a && !a.term_name.startsWith('Any') ? [a.term_name] : [];
+          const thisAttr = v.attributes.find(a => a.attribute_name === attrName);
+          if (thisAttr && !thisAttr.term_name.startsWith('Any')) {
+            return [thisAttr.term_name];
+          }
+          return [];
         })
     );
-    const arr = [...opts];
-    if (name === 'Size') {
-      arr.sort((x, y) => x.localeCompare(y, 'en', { numeric: true }));
+    const options = [...optionsSet];
+    if (attrName === 'Size') {
+      options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
     } else {
-      arr.sort();
+      options.sort();
     }
-    return arr;
+    return options;
   };
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable') return;
-    const m = product.variations.find(v =>
-      attributeNames.every(a => {
-        const sel = selectedAttributes[a];
+    const matchingVariation = product.variations.find(v =>
+      attributeNames.every(attr => {
+        const sel = selectedAttributes[attr];
         if (!sel) return true;
-        const x = v.attributes.find(y => y.attribute_name === a);
-        return x && (x.term_name === sel || x.term_name === `Any ${a}`);
+        const vAttr = v.attributes.find(a => a.attribute_name === attr);
+        return vAttr && (vAttr.term_name === sel || vAttr.term_name === `Any ${attr}`);
       })
     );
-    setCurrentVariation(m || null);
-  }, [selectedAttributes, product]);
+    setCurrentVariation(matchingVariation || null);
+  }, [selectedAttributes, product, attributeNames]);
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable') return;
-    let upd = { ...selectedAttributes };
+    let updatedSelected = { ...selectedAttributes };
     let changed = false;
-    attributeNames.forEach(a => {
-      const opts = getAvailableOptions(a);
-      if (selectedAttributes[a] && !opts.includes(selectedAttributes[a])) {
-        upd[a] = opts[0] || '';
+    attributeNames.forEach(attr => {
+      const avail = getAvailableOptions(attr);
+      if (selectedAttributes[attr] && !avail.includes(selectedAttributes[attr])) {
+        updatedSelected[attr] = avail[0] || undefined;
         changed = true;
       }
     });
-    if (changed) setSelectedAttributes(upd);
-  }, [selectedAttributes, product]);
+    if (changed) {
+      setSelectedAttributes(updatedSelected);
+    }
+  }, [selectedAttributes, product, attributeNames]);
 
-  const current = product?.product_type === 'variable' ? currentVariation : product;
-  const gallery = current?.gallery || product?.gallery || [];
-  const displayTitle =
-    product?.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product?.title;
-  const displayDescription =
-    product?.product_type === 'variable' && currentVariation?.description
-      ? currentVariation.description
-      : product?.description;
+  if (!product) return <div className="product-not-found">Product not found</div>;
+  if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
+
+  const handleAttributeChange = (attrName, value) => {
+    setSelectedAttributes(prev => ({ ...prev, [attrName]: value }));
+    setCartError(null);
+  };
+
+  const handleAddToCart = async () => {
+    if (current?.sku) {
+      try {
+        const res = await fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`);
+        const data = await res.json();
+        const freshStock = data.stock_quantity ?? 0;
+        console.log('[ProductDetail] Add to cart stock check:', { sku: current.sku, freshStock });
+        if (freshStock < quantity) {
+          setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
+        } else {
+          const newItem = {
+            id: current.id || product.id,
+            name: current.title || product.title,
+            price: parseFloat(current.price || product.price),
+            quantity,
+            image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
+            size: selectedAttributes.Size || '',
+            color: selectedAttributes.Color || '',
+          };
+          setCartItems(prev => {
+            const variationKey = `${newItem.size}-${newItem.color}`;
+            const existingIndex = prev.findIndex(i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey);
+            if (existingIndex !== -1) {
+              const newPrev = [...prev];
+              newPrev[existingIndex].quantity += quantity;
+              return newPrev;
+            } else {
+              return [...prev, newItem];
+            }
+          });
+          setCartError(null);
+        }
+      } catch (err) {
+        console.error('[ProductDetail] Error verifying stock:', err);
+        setCartError('Failed to verify stock');
+      }
+    } else {
+      console.warn('[ProductDetail] No SKU for current');
+    }
+  };
+
+  const increaseQuantity = () => {
+    if (availableStock === null || quantity < availableStock) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
   const currentColor = selectedAttributes.Color || 'default';
-  const currentDisplayId = `${product?.id}-${currentColor}`;
+  const currentDisplayId = `${product.id}-${currentColor}`;
+
+  const gallery = current?.gallery || product.gallery || [];
+  const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
+  const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
+  const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
+  const stock = current?.stock_quantity ?? 'N/A';
+
+  console.log('[ProductDetail] Rendering with:', {
+    displayTitle,
+    galleryLength: gallery.length,
+    mainImage,
+    stock,
+    currentSku: current?.sku,
+  });
+
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
-  const relatedRaw =
-    product?.product_type === 'variable' ? currentVariation?.related_products : product?.related_products;
-  const normalizedRelated = (relatedRaw || [])
-    .map(rel => {
-      const norm = typeof rel === 'string' ? { productId: rel } : rel;
-      const p = allProducts.find(x => x.id === norm.productId);
-      if (!p) return null;
-      const color = norm.selectedColor;
-      if (color) {
-        const v = p.variations.find(x => x.attributes.some(a => a.attribute_name === 'Color' && a.term_name === color));
-        return {
-          ...p,
-          displayId: `${p.id}-${color}`,
-          selectedColor: color,
-          displayTitle: v?.title || `${p.title} - ${color}`,
-          displayPrice: parseFloat(v?.price || p.price),
-          displayGallery: v?.gallery || p.gallery,
-        };
-      }
+  const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
+  const relatedProducts = relatedProductsRaw.map(rel => {
+    const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
+    const p = allProducts.find(p => p.id === normalizedRel.productId);
+    if (!p) return null;
+    const color = normalizedRel.selectedColor;
+    if (color) {
+      const v = p.variations.find(v => v.attributes.some(a => a.attribute_name === 'Color' && a.term_name === color));
+      return {
+        ...p,
+        displayId: `${p.id}-${color}`,
+        selectedColor: color,
+        displayTitle: v?.title || `${p.title} - ${color}`,
+        displayPrice: v?.price || p.price,
+        displayGallery: v?.gallery || p.gallery,
+      };
+    } else {
       return {
         ...p,
         displayId: p.id,
         selectedColor: null,
         displayTitle: p.title,
-        displayPrice: parseFloat(p.price),
+        displayPrice: p.price,
         displayGallery: p.gallery,
       };
-    })
-    .filter(Boolean);
+    }
+  }).filter(Boolean);
 
-  const handleRelatedClick = item => {
-    const orig = allProducts.find(x => x.id === item.id);
-    navigate(`/product/${item.id}`, {
-      state: { product: orig, initialColor: item.selectedColor, transitionKey: item.displayId },
-    });
+  const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
+  const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
+
+  const handleRelatedClick = (relItem) => {
+    const originalProduct = allProducts.find(p => p.id === relItem.id);
+    navigate(`/product/${relItem.id}`, { state: { product: originalProduct, initialColor: relItem.selectedColor, transitionKey: relItem.displayId } });
   };
-
-  if (!product) return <div className="product-not-found">Product not found</div>;
-  if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
   return (
     <>
@@ -205,67 +307,104 @@ const ProductDetail = () => {
           <div className="product-image-gallery">
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
-                const key = `${current?.sku || product.id}-${idx}`;
-                const lid = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
+                const imageKey = `${current?.sku || product.id}-${idx}`;
+                const layoutIdValue = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
                 return (
                   <motion.img
-                    key={key}
-                    layoutId={lid}
-                    ref={el => galleryRefs.current.set(key, el)}
+                    ref={el => galleryRefs.current.set(imageKey, el)}
+                    key={imageKey}
+                    layoutId={layoutIdValue}
                     src={img}
                     alt={`${displayTitle} ${idx + 1}`}
                     className="product-gallery-image"
-                    onError={e => {
-                      e.target.src = '/api/Uploads/fallback-image.png';
+                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                    onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
+                    transition={{ duration: 0.5 }}
+                    onAnimationStart={() => console.log('[ProductDetail] Animation start')}
+                    onAnimationComplete={() => console.log('[ProductDetail] Animation complete')}
+                    onLayoutAnimationStart={() => {
+                      if (layoutIdValue) {
+                        const el = galleryRefs.current.get(imageKey);
+                        if (el) el.style.zIndex = '10000';
+                      }
                     }}
-                    onLayoutAnimationStart={() => lid && console.log('[Detail] layout start for', currentDisplayId)}
-                    onLayoutAnimationComplete={() => lid && console.log('[Detail] layout complete for', currentDisplayId)}
+                    onLayoutAnimationComplete={() => {
+                      if (layoutIdValue) {
+                        const el = galleryRefs.current.get(imageKey);
+                        if (el) el.style.zIndex = '';
+                      }
+                    }}
                   />
                 );
               })
             ) : (
               <motion.img
-                layoutId={`product-image-${currentDisplayId}`}
                 ref={mainImageRef}
-                src={gallery[0] || '/api/Uploads/fallback-image.png'}
+                layoutId={`product-image-${currentDisplayId}`}
+                src={mainImage}
                 alt={displayTitle}
                 className="product-main-image"
-                onError={e => {
-                  e.target.src = '/api/Uploads/fallback-image.png';
+                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
+                transition={{ duration: 0.5 }}
+                onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
+                onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
+                onLayoutAnimationStart={() => {
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
                 }}
-                onLayoutAnimationStart={() => console.log('[Detail] layout start for', currentDisplayId)}
-                onLayoutAnimationComplete={() => console.log('[Detail] layout complete for', currentDisplayId)}
+                onLayoutAnimationComplete={() => {
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+                }}
               />
             )}
           </div>
         </div>
-        <motion.div className="details-container" initial={{ x: '100%' }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
+        <motion.div
+          className="details-container"
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
-            <p className="product-variation-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }} />
-            <p className="product-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
+            <p
+              className="product-variation-description"
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+            />
+            <p
+              className="product-description"
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
+            />
             {product.product_type === 'variable' && (
               <div className="product-attributes">
-                {attributeNames.map(name => {
-                  const opts = getAvailableOptions(name);
+                {attributeNames.map(attrName => {
+                  const options = getAvailableOptions(attrName);
                   return (
-                    <div key={name} className="attribute-group">
-                      <label className="attribute-label">{name}</label>
-                      {name === 'Color' ? (
+                    <div key={attrName} className="attribute-group">
+                      <label className="attribute-label">{attrName}</label>
+                      {attrName === 'Color' ? (
                         <div className="color-options">
-                          {opts.map(term => (
+                          {options.map(term => (
                             <div key={term} className="color-option">
-                              <button onClick={() => setSelectedAttributes(prev => ({ ...prev, [name]: term }))} className={`color-button ${selectedAttributes[name] === term ? 'selected' : ''} ${term.toLowerCase()}`} />
+                              <button
+                                onClick={() => handleAttributeChange(attrName, term)}
+                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
+                              />
                               <span className="color-label">{term}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
                         <div className="size-options">
-                          {opts.map(term => (
-                            <button key={term} onClick={() => setSelectedAttributes(prev => ({ ...prev, [name]: term }))} className={`size-button ${selectedAttributes[name] === term ? 'selected' : ''}`}>
-                              {term}
-                            </button>
+                          {options.map(term => (
+                            <div key={term} className="size-option">
+                              <button
+                                onClick={() => handleAttributeChange(attrName, term)}
+                                className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+                              >
+                                {term}
+                              </button>
+                            </div>
                           ))}
                         </div>
                       )}
@@ -278,36 +417,38 @@ const ProductDetail = () => {
             <div className="quantity-selector">
               <label className="quantity-label">QTY</label>
               <div className="quantity-controls">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn minus" disabled={quantity <= 1}>−</button>
+                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
+                  <span className="qty-symbol">-</span>
+                </button>
                 <span className="qty-value">{quantity}</span>
-                <button onClick={() => (availableStock === null || quantity < availableStock) && setQuantity(q => q + 1)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>+</button>
+                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
+                  <span className="qty-symbol">+</span>
+                </button>
               </div>
             </div>
-            <button onClick={() => {
-                fetch(`/api/get_inventory.php?sku=${encodeURIComponent(currentVariation.sku)}`)
-                  .then(r => r.json())
-                  .then(d => {
-                    if ((d.stock_quantity ?? 0) < quantity) setCartError('Out of stock');
-                    else setCartItems(prev => [...prev, { id: currentVariation.id || product.id, name: currentVariation.title || product.title, price: parseFloat(currentVariation.price || product.price), quantity, image: currentVariation.gallery?.[0] || product.gallery?.[0] }]);
-                  })
-                  .catch(() => setCartError('Failed to verify stock'));
-              }} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
+            <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
               <span className="add-to-cart-text">Add to Cart</span>
-              <span className="add-to-cart-price">${(parseFloat(currentVariation?.price || product.price) * quantity).toFixed(2)}</span>
+              <span className="add-to-cart-price">${(parseFloat(current?.price || 0) * quantity).toFixed(2)}</span>
             </button>
           </div>
         </motion.div>
       </motion.div>
-      {normalizedRelated.length > 0 && (
+      {relatedProducts.length > 0 && (
         <div className="related-products-container">
           <h2 className="related-products-title">Related Products</h2>
           <div className="related-products-grid">
-            {normalizedRelated.map(item => (
-              <div key={item.displayId} className="related-product-card" onClick={() => handleRelatedClick(item)}>
-                <motion.img layoutId={`product-image-${item.displayId}`} src={item.displayGallery?.[0] || '/api/Uploads/fallback-image.png'} alt={item.displayTitle} className="related-product-image" />
+            {relatedProducts.map(relItem => (
+              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
+                <motion.img
+                  layoutId={`product-image-${relItem.displayId}`}
+                  src={getDisplayImage(relItem)}
+                  alt={relItem.displayTitle}
+                  className="related-product-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                />
                 <div className="related-product-info">
-                  <h3 className="related-product-title">{item.displayTitle}</h3>
-                  <p className="related-product-price">${item.displayPrice.toFixed(2)}</p>
+                  <h3 className="related-product-title">{relItem.displayTitle}</h3>
+                  <p className="related-product-price">${getDisplayPrice(relItem)}</p>
                 </div>
               </div>
             ))}
