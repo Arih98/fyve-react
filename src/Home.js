@@ -57,7 +57,7 @@ const Home = () => {
         x: '-0.3vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 2.2,
+        delay: 1.5,
         onStart: () => console.log('FY shift animation started'),
         onComplete: () => console.log('FY shift animation completed')
       });
@@ -67,7 +67,7 @@ const Home = () => {
         x: '0.3vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 2.2,
+        delay: 1.5,
         onStart: () => console.log('VE shift animation started'),
         onComplete: () => console.log('VE shift animation completed')
       });
@@ -77,7 +77,7 @@ const Home = () => {
         width: '14vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 2,
+        delay: 1.3,
         onStart: () => console.log('Image container expand started'),
         onComplete: () => console.log('Image container expand completed')
       });
