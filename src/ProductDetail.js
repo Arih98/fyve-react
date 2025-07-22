@@ -77,7 +77,7 @@ const ProductDetail = () => {
   useLayoutEffect(() => {
     if (mainImageRef.current) {
       const img = mainImageRef.current;
-      console.log('[ProductDetail] layout details:', {
+      console.log({
         src: img.src,
         cw: img.clientWidth,
         ch: img.clientHeight,
@@ -158,10 +158,9 @@ const ProductDetail = () => {
   const currentDisplayId = `${product?.id}-${currentColor}`;
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
-  const relatedProducts = (product?.product_type === 'variable'
-    ? currentVariation?.related_products
-    : product?.related_products) || [];
-  const normalizedRelated = relatedProducts
+  const relatedRaw =
+    product?.product_type === 'variable' ? currentVariation?.related_products : product?.related_products;
+  const normalizedRelated = (relatedRaw || [])
     .map(rel => {
       const norm = typeof rel === 'string' ? { productId: rel } : rel;
       const p = allProducts.find(x => x.id === norm.productId);
@@ -174,7 +173,7 @@ const ProductDetail = () => {
           displayId: `${p.id}-${color}`,
           selectedColor: color,
           displayTitle: v?.title || `${p.title} - ${color}`,
-          displayPrice: v?.price || p.price,
+          displayPrice: parseFloat(v?.price || p.price),
           displayGallery: v?.gallery || p.gallery,
         };
       }
@@ -183,16 +182,16 @@ const ProductDetail = () => {
         displayId: p.id,
         selectedColor: null,
         displayTitle: p.title,
-        displayPrice: p.price,
+        displayPrice: parseFloat(p.price),
         displayGallery: p.gallery,
       };
     })
     .filter(Boolean);
 
-  const handleRelatedClick = rel => {
-    const orig = allProducts.find(x => x.id === rel.id);
-    navigate(`/product/${rel.id}`, {
-      state: { product: orig, initialColor: rel.selectedColor, transitionKey: rel.displayId },
+  const handleRelatedClick = item => {
+    const orig = allProducts.find(x => x.id === item.id);
+    navigate(`/product/${item.id}`, {
+      state: { product: orig, initialColor: item.selectedColor, transitionKey: item.displayId },
     });
   };
 
