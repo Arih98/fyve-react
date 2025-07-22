@@ -140,12 +140,14 @@ const Home = () => {
         onStart: () => gsap.set('.fyve-image-container', { transformOrigin: 'top left' }),
         onComplete: () => {
           gsap.set('.fyve-mask', {
+            display: 'block',
             transform: 'none',
             left: 0,
             top: 0,
             width: '100vw',
             height: '100vh'
           });
+          gsap.set('.fyve-text', { visibility: 'hidden' });
           gsap.set('.fyve-image-container', {
             clearProps: 'transform,transformOrigin',
             top: 0,
