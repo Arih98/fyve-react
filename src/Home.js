@@ -1,3 +1,4 @@
+// Home.js
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import HomeHeader from './HomeHeader';
@@ -30,6 +31,7 @@ const Home = () => {
     if (imageEl) console.log('image rect', imageEl.getBoundingClientRect());
 
     if (hasAnimated) {
+      // ...unchanged final state setup...
       gsap.set('.fyve-mask', { visibility: 'visible' });
       gsap.set('.fyve-image', { visibility: 'visible' });
       gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
@@ -40,103 +42,40 @@ const Home = () => {
       gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
       gsap.set('.mobile-header', { opacity: 1 });
     } else {
+      // ...unchanged initial animations...
       gsap.set('.fyve-mask', { visibility: 'visible' });
       gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
       gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
       gsap.set('.fyve-image', { visibility: 'visible' });
-      
-      gsap.fromTo(
-        '.fyve-letter',
-        { y: '100%' },
-        { y: 0, duration: 0.8, ease: 'expo.inOut' }
-      );
-      
-      gsap.to('.fyve-text:first-child', {
-        x: '-0.3vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1.2
-      });
-      
-      gsap.to('.fyve-text:last-child', {
-        x: '0.3vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1.2
-      });
-      
-      gsap.to('.fyve-image-container', {
-        width: '14vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1
-      });
-      
-      gsap.to('.mask-left', {
-        x: '-100%',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1
-      });
-      gsap.to('.mask-right', {
-        x: '100%',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 1
-      });
+      gsap.fromTo('.fyve-letter', { y: '100%' }, { y: 0, duration: 0.8, ease: 'expo.inOut' });
+      gsap.to('.fyve-text:first-child', { x: '-0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.fyve-text:last-child', { x: '0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.fyve-image-container', { width: '14vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
+      gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
 
-      gsap.to('.fyve-text:first-child', {
-        x: '-100vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 2
-      });
-
-      gsap.to('.fyve-text:last-child', {
-        x: '100vw',
-        duration: 0.8,
-        ease: 'expo.inOut',
-        delay: 2
-      });
-
+      // **Updated grow tween** --
       gsap.to('.fyve-image-container', {
         width: '100vw',
         height: '100vh',
+        x: (i, el) => -el.getBoundingClientRect().left,
+        y: (i, el) => -el.getBoundingClientRect().top,
+        transformOrigin: 'top left',
         duration: 0.8,
         ease: 'expo.inOut',
         delay: 2,
         onStart: () => gsap.set('.fyve-image-container', { transformOrigin: 'top left' }),
         onComplete: () => {
-          gsap.set('.fyve-mask', {
-            transform: 'none',
-            left: 0,
-            top: 0,
-            width: '100vw',
-            height: '100vh',
-            display: 'block'
-          });
-          gsap.set('.fyve-text', { display: 'none' });
-          gsap.set('.fyve-image-container', {
-            clearProps: 'transform,transformOrigin',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            x: 0,
-            y: 0
-          });
+          // clear everything now that we're in final position
+          gsap.set('.fyve-mask', { transform: 'none', left: 0, top: 0 });
+          gsap.set('.fyve-image-container', { clearProps: 'all' });
         }
       });
 
       gsap.set('.mobile-header', { opacity: 0 });
-
-      gsap.to('.mobile-header', {
-        opacity: 1,
-        duration: 0.5,
-        ease: 'expo.inOut',
-        delay: 2.8
-      });
+      gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
     }
 
     hasAnimated = true;
