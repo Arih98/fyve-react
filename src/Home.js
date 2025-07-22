@@ -1,4 +1,3 @@
-// Home.js
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import HomeHeader from './HomeHeader';
@@ -20,18 +19,8 @@ const Home = () => {
       console.error('Image element not found');
     }
 
-    const homePage = document.querySelector('.home-page');
-    const mask = document.querySelector('.fyve-mask');
-    const container = document.querySelector('.fyve-image-container');
-    const imageEl = document.querySelector('.fyve-image');
-    console.log('Viewport innerWidth:', window.innerWidth, 'document.clientWidth:', document.documentElement.clientWidth);
-    if (homePage) console.log('home-page rect', homePage.getBoundingClientRect());
-    if (mask) console.log('mask rect', mask.getBoundingClientRect());
-    if (container) console.log('container rect', container.getBoundingClientRect());
-    if (imageEl) console.log('image rect', imageEl.getBoundingClientRect());
-
     if (hasAnimated) {
-      // ...unchanged final state setup...
+      console.log('Setting final states without animation');
       gsap.set('.fyve-mask', { visibility: 'visible' });
       gsap.set('.fyve-image', { visibility: 'visible' });
       gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
@@ -42,40 +31,118 @@ const Home = () => {
       gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
       gsap.set('.mobile-header', { opacity: 1 });
     } else {
-      // ...unchanged initial animations...
+      console.log('Setting fyve-mask visibility');
       gsap.set('.fyve-mask', { visibility: 'visible' });
+      
+      console.log('Setting initial mask positions');
       gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
       gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
       gsap.set('.fyve-image', { visibility: 'visible' });
-      gsap.fromTo('.fyve-letter', { y: '100%' }, { y: 0, duration: 0.8, ease: 'expo.inOut' });
-      gsap.to('.fyve-text:first-child', { x: '-0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-      gsap.to('.fyve-text:last-child', { x: '0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-      gsap.to('.fyve-image-container', { width: '14vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-
-      // **Updated grow tween** --
+      
+      console.log('Starting letter reveal animation');
+      gsap.fromTo(
+        '.fyve-letter',
+        { y: '100%' },
+        { 
+          y: 0, 
+          duration: 0.8, 
+          ease: 'expo.inOut',
+          onStart: () => console.log('Letter reveal animation started'),
+          onComplete: () => console.log('Letter reveal animation completed')
+        }
+      );
+      
+      console.log('Scheduling FY shift animation');
+      gsap.to('.fyve-text:first-child', {
+        x: '-0.3vw',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 1.2,
+        onStart: () => console.log('FY shift animation started'),
+        onComplete: () => console.log('FY shift animation completed')
+      });
+      
+      console.log('Scheduling VE shift animation');
+      gsap.to('.fyve-text:last-child', {
+        x: '0.3vw',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 1.2,
+        onStart: () => console.log('VE shift animation started'),
+        onComplete: () => console.log('VE shift animation completed')
+      });
+      
+      console.log('Scheduling image container expand');
       gsap.to('.fyve-image-container', {
-        width: '100vw',
-        height: '100vh',
-        x: (i, el) => -el.getBoundingClientRect().left,
-        y: (i, el) => -el.getBoundingClientRect().top,
-        transformOrigin: 'top left',
+        width: '14vw',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 1,
+        onStart: () => console.log('Image container expand started'),
+        onComplete: () => console.log('Image container expand completed')
+      });
+      
+      console.log('Scheduling image mask reveal animation');
+      gsap.to('.mask-left', {
+        x: '-100%',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 1,
+        onStart: () => console.log('Image mask left animation started'),
+        onComplete: () => console.log('Image mask left animation completed')
+      });
+      gsap.to('.mask-right', {
+        x: '100%',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 1,
+        onStart: () => console.log('Image mask right animation started'),
+        onComplete: () => console.log('Image mask right animation completed')
+      });
+
+      console.log('Scheduling FY slide off left');
+      gsap.to('.fyve-text:first-child', {
+        x: '-100vw',
         duration: 0.8,
         ease: 'expo.inOut',
         delay: 2,
-        onStart: () => gsap.set('.fyve-image-container', { transformOrigin: 'top left' }),
-        onComplete: () => {
-          // clear everything now that we're in final position
-          gsap.set('.fyve-mask', { transform: 'none', left: 0, top: 0 });
-          gsap.set('.fyve-image-container', { clearProps: 'all' });
-        }
+        onStart: () => console.log('FY slide off left started'),
+        onComplete: () => console.log('FY slide off left completed')
       });
 
+      console.log('Scheduling VE slide off right');
+      gsap.to('.fyve-text:last-child', {
+        x: '100vw',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 2,
+        onStart: () => console.log('VE slide off right started'),
+        onComplete: () => console.log('VE slide off right completed')
+      });
+
+      console.log('Scheduling image grow to full screen');
+      gsap.to('.fyve-image-container', {
+        width: '100vw',
+        height: '100vh',
+        duration: 0.8,
+        ease: 'expo.inOut',
+        delay: 2,
+        onStart: () => console.log('Image grow started'),
+        onComplete: () => console.log('Image grow completed')
+      });
+
+      console.log('Setting initial header opacity');
       gsap.set('.mobile-header', { opacity: 0 });
-      gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
+
+      console.log('Scheduling header fade in');
+      gsap.to('.mobile-header', {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'expo.inOut',
+        delay: 2.8,
+        onStart: () => console.log('Header fade in started'),
+        onComplete: () => console.log('Header fade in completed')
+      });
     }
 
     hasAnimated = true;
