@@ -28,11 +28,30 @@ const ProductDetailWrapper = () => {
   return <ProductDetail key={location.key} />;
 }
 
-function AppContent() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const AnimatedOutlet = () => {
+  return useOutlet();
+}
+
+const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
+
+  return (
+    <div className="App">
+      {showHeader && <Header />}
+      {showCart && <Cart />}
+      <LayoutGroup>
+        <AnimatePresence mode="wait" initial={false}>
+          <AnimatedOutlet />
+        </AnimatePresence>
+      </LayoutGroup>
+    </div>
+  );
+};
+
+function AppContent() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -45,23 +64,17 @@ function AppContent() {
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
-        <div className="App">
-          {showHeader && <Header />}
-          {showCart && <Cart />}
-          <ScrollToTop />
-          <LayoutGroup>
-            <AnimatePresence>
-              <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<Home />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/product/:id" element={<ProductDetailWrapper />} />
-                <Route path="/product-category/:slug" element={<CategoryProducts />} />
-                <Route path="/checkout" element={<Checkout />} />
-              </Routes>
-            </AnimatePresence>
-          </LayoutGroup>
-        </div>
+        <ScrollToTop />
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetailWrapper />} />
+            <Route path="/product-category/:slug" element={<CategoryProducts />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Route>
+        </Routes>
       </CartProvider>
     </MenuContext.Provider>
   );
