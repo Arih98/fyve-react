@@ -11,14 +11,12 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .home-page {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   background: #fff;
   overflow: hidden;
 }
@@ -59,15 +57,19 @@ body {
 }
 
 .fyve-image-container {
-  height: 10vw;
-  width: 0;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
 .fyve-image {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
   object-fit: cover;
 }
 
