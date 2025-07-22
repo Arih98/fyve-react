@@ -1,6 +1,5 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import Home from './Home';
 import Products from './Products';
 import ProductDetail from './ProductDetail';
@@ -42,14 +41,6 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const AnimatedRoutes = forwardRef((props, ref) => (
-    <div ref={ref} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-      <Routes location={props.location}>
-        {props.children}
-      </Routes>
-    </div>
-  ));
-
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
@@ -57,16 +48,14 @@ function AppContent() {
           {showHeader && <Header />}
           {showCart && <Cart />}
           <ScrollToTop />
-          <AnimatePresence mode="popLayout">
-            <AnimatedRoutes location={location} key={location.key}>
-              <Route path="/" element={<Home />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/product/:id" element={<ProductDetailWrapper />} />
-              <Route path="/product-category/:slug" element={<CategoryProducts />} />
-              <Route path="/checkout" element={<Checkout />} />
-            </AnimatedRoutes>
-          </AnimatePresence>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetailWrapper />} />
+            <Route path="/product-category/:slug" element={<CategoryProducts />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Routes>
         </div>
       </CartProvider>
     </MenuContext.Provider>
