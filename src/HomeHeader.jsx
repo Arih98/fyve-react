@@ -263,7 +263,7 @@ const HomeHeader = () => {
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
-          < اکثر search-container ${searchOpen ? 'active' : ''}`}>
+          <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
               <input
                 type="text"
