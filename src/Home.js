@@ -139,7 +139,7 @@ const Home = () => {
         opacity: 1,
         duration: 0.5,
         ease: 'expo.inOut',
-        delay: 2.8,
+        delay: 4.8,
         onStart: () => console.log('Header fade in started'),
         onComplete: () => console.log('Header fade in completed')
       });
