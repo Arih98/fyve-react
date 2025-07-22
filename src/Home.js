@@ -164,7 +164,7 @@ const Home = () => {
             className="fyve-image"
           />
           <div className="mask-left"></div>
-          < telomeres
+          <div className="mask-right"></div>
         </div>
         <div className="fyve-text">
           {'VE'.split('').map((letter, index) => (
