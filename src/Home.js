@@ -45,7 +45,7 @@ const Home = () => {
         { y: '100%' },
         { 
           y: 0, 
-          duration: 1.8, 
+          duration: 0.8, 
           ease: 'expo.inOut',
           onStart: () => console.log('Letter reveal animation started'),
           onComplete: () => console.log('Letter reveal animation completed')
@@ -55,9 +55,9 @@ const Home = () => {
       console.log('Scheduling FY shift animation');
       gsap.to('.fyve-text:first-child', {
         x: '-0.3vw',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 1.5,
+        delay: 1.2,
         onStart: () => console.log('FY shift animation started'),
         onComplete: () => console.log('FY shift animation completed')
       });
@@ -65,9 +65,9 @@ const Home = () => {
       console.log('Scheduling VE shift animation');
       gsap.to('.fyve-text:last-child', {
         x: '0.3vw',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 1.5,
+        delay: 1.2,
         onStart: () => console.log('VE shift animation started'),
         onComplete: () => console.log('VE shift animation completed')
       });
@@ -75,9 +75,9 @@ const Home = () => {
       console.log('Scheduling image container expand');
       gsap.to('.fyve-image-container', {
         width: '14vw',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 0.8,
+        delay: 1,
         onStart: () => console.log('Image container expand started'),
         onComplete: () => console.log('Image container expand completed')
       });
@@ -85,17 +85,17 @@ const Home = () => {
       console.log('Scheduling image mask reveal animation');
       gsap.to('.mask-left', {
         x: '-100%',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 2,
+        delay: 1,
         onStart: () => console.log('Image mask left animation started'),
         onComplete: () => console.log('Image mask left animation completed')
       });
       gsap.to('.mask-right', {
         x: '100%',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 2,
+        delay: 1,
         onStart: () => console.log('Image mask right animation started'),
         onComplete: () => console.log('Image mask right animation completed')
       });
@@ -103,9 +103,9 @@ const Home = () => {
       console.log('Scheduling FY slide off left');
       gsap.to('.fyve-text:first-child', {
         x: '-100vw',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 4,
+        delay: 2,
         onStart: () => console.log('FY slide off left started'),
         onComplete: () => console.log('FY slide off left completed')
       });
@@ -113,9 +113,9 @@ const Home = () => {
       console.log('Scheduling VE slide off right');
       gsap.to('.fyve-text:last-child', {
         x: '100vw',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 4,
+        delay: 2,
         onStart: () => console.log('VE slide off right started'),
         onComplete: () => console.log('VE slide off right completed')
       });
@@ -124,9 +124,9 @@ const Home = () => {
       gsap.to('.fyve-image-container', {
         width: '100vw',
         height: '100vh',
-        duration: 1.8,
+        duration: 0.8,
         ease: 'expo.inOut',
-        delay: 4,
+        delay: 2,
         onStart: () => console.log('Image grow started'),
         onComplete: () => console.log('Image grow completed')
       });
@@ -139,7 +139,7 @@ const Home = () => {
         opacity: 1,
         duration: 0.5,
         ease: 'expo.inOut',
-        delay: 4.8,
+        delay: 2.8,
         onStart: () => console.log('Header fade in started'),
         onComplete: () => console.log('Header fade in completed')
       });
