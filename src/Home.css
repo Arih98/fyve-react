@@ -6,12 +6,6 @@
   font-display: swap;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
 .home-page {
   position: fixed;
   top: 0;
@@ -55,7 +49,7 @@ html, body {
   display: inline-block;
 }
 
-.fyve mask > .fyve-text:last-child > .fyve-letter:first-child {
+.fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
   margin-right: -0.08em;
 }
 
