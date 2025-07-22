@@ -9,11 +9,6 @@ const Home = () => {
   useEffect(() => {
     console.log('Home component mounted');
     
-    // Disable scrolling initially
-    gsap.set('.home-page', { overflow: 'hidden' });
-    console.log('Initial overflow set to hidden');
-    console.log('Current overflow:', document.querySelector('.home-page').style.overflow);
-    
     const image = document.querySelector('.fyve-image');
     if (image) {
       console.log('Image element found:', image);
@@ -35,11 +30,6 @@ const Home = () => {
       gsap.set('.fyve-text:last-child', { x: '100vw' });
       gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
       gsap.set('.mobile-header', { opacity: 1 });
-      gsap.set('.home-page', { overflow: 'auto' }); // Enable scrolling for subsequent visits
-      console.log('Final states set, overflow set to auto for subsequent visits');
-      console.log('Current overflow after final states:', document.querySelector('.home-page').style.overflow);
-      console.log('Document height:', document.documentElement.scrollHeight);
-      console.log('Viewport height:', window.innerHeight);
     } else {
       console.log('Setting fyve-mask visibility');
       gsap.set('.fyve-mask', { visibility: 'visible' });
@@ -89,10 +79,7 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 1,
         onStart: () => console.log('Image container expand started'),
-        onComplete: () => {
-          console.log('Image container expand completed');
-          console.log('Image container width after expand:', document.querySelector('.fyve-image-container').style.width);
-        }
+        onComplete: () => console.log('Image container expand completed')
       });
       
       console.log('Scheduling image mask reveal animation');
@@ -141,10 +128,7 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 2,
         onStart: () => console.log('Image grow started'),
-        onComplete: () => {
-          console.log('Image grow completed');
-          console.log('Image container dimensions after grow:', document.querySelector('.fyve-image-container').style.width, document.querySelector('.fyve-image-container').style.height);
-        }
+        onComplete: () => console.log('Image grow completed')
       });
 
       console.log('Setting initial header opacity');
@@ -157,26 +141,11 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 2.8,
         onStart: () => console.log('Header fade in started'),
-        onComplete: () => {
-          console.log('Header fade in completed');
-          gsap.set('.home-page', { overflow: 'auto' }); // Enable scrolling after all animations
-          console.log('Scrolling enabled, overflow set to auto');
-          console.log('Current overflow after enabling:', document.querySelector('.home-page').style.overflow);
-          console.log('Document height after animations:', document.documentElement.scrollHeight);
-          console.log('Viewport height:', window.innerHeight);
-          console.log('New section position:', document.querySelector('.new-section')?.getBoundingClientRect().top);
-        }
+        onComplete: () => console.log('Header fade in completed')
       });
     }
 
     hasAnimated = true;
-
-    // Add scroll listener for debugging
-    const handleScroll = () => {
-      console.log('Scroll event triggered, current scrollY:', window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -201,16 +170,6 @@ const Home = () => {
           {'VE'.split('').map((letter, index) => (
             <span key={index + 2} className="fyve-letter">{letter}</span>
           ))}
-        </div>
-      </div>
-      <div className="new-section">
-        <div className="new-image-container">
-          <img
-            src="/api/Uploads/LOOK-9_1426_result.webp"
-            alt="New Section Image"
-            className="new-image"
-          />
-          <div className="new-text">Comfortably <br/> Modern, <br/> Distinctly <br/> British.</div>
         </div>
       </div>
     </div>
