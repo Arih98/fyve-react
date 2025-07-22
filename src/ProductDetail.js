@@ -51,8 +51,9 @@ const ProductDetail = () => {
           initialAttrs[attr.attribute_name] = attr.term_name;
         }
       });
+      console.log('[ProductDetail] Initialized selectedAttributes:', initialAttrs);
+      return initialAttrs;
     }
-    console.log('[ProductDetail] Initialized selectedAttributes:', initialAttrs);
     return initialAttrs;
   });
 
@@ -297,7 +298,15 @@ const ProductDetail = () => {
 
   const handleRelatedClick = (relItem) => {
     const originalProduct = allProducts.find(p => p.id === relItem.id);
-    navigate(`/product/${relItem.id}`, { state: { product: originalProduct, initialColor: relItem.selectedColor, transitionKey: relItem.displayId } });
+    // Use a unique transition key to avoid conflicts with main product layoutId
+    const uniqueTransitionKey = `related-${relItem.displayId}-${Date.now()}`;
+    navigate(`/product/${relItem.id}`, { 
+      state: { 
+        product: originalProduct, 
+        initialColor: relItem.selectedColor, 
+        transitionKey: uniqueTransitionKey 
+      } 
+    });
   };
 
   return (
@@ -443,7 +452,6 @@ const ProductDetail = () => {
               <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
                 <motion.img
                   initial={false}
-                  layoutId={`product-image-${relItem.displayId}`}
                   src={getDisplayImage(relItem)}
                   alt={relItem.displayTitle}
                   className="related-product-image"

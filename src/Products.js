@@ -116,7 +116,13 @@ const Products = () => {
       initialColor: item.selectedColor,
       transitionKey: item.displayId,
     });
-    navigate(`/product/${item.parentId}`, { state: { product: targetProduct, initialColor: item.selectedColor, transitionKey: item.displayId } });
+    navigate(`/product/${item.parentId}`, { 
+      state: { 
+        product: targetProduct, 
+        initialColor: item.selectedColor, 
+        transitionKey: `main-${item.displayId}-${Date.now()}` 
+      } 
+    });
   };
 
   const idxLast = currentPage * productsPerPage;
