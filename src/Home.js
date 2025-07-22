@@ -105,7 +105,7 @@ const Home = () => {
         x: '-100vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 3,
+        delay: 4,
         onStart: () => console.log('FY slide off left started'),
         onComplete: () => console.log('FY slide off left completed')
       });
@@ -115,7 +115,7 @@ const Home = () => {
         x: '100vw',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 3,
+        delay: 4,
         onStart: () => console.log('VE slide off right started'),
         onComplete: () => console.log('VE slide off right completed')
       });
@@ -126,7 +126,7 @@ const Home = () => {
         height: '100vh',
         duration: 1.8,
         ease: 'expo.inOut',
-        delay: 3,
+        delay: 4,
         onStart: () => console.log('Image grow started'),
         onComplete: () => console.log('Image grow completed')
       });
