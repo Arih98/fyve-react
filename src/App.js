@@ -10,7 +10,7 @@ import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
-import { AnimatePresence, LayoutGroup } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import './App.css';
 import './Header.css';
 import './HomeHeader.css';
