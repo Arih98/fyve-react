@@ -250,7 +250,6 @@ const ProductDetail = () => {
 
   const gallery = current?.gallery || product.gallery || [];
   const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-  console.log('[ProductDetail] Main image:', {displayId: currentDisplayId, src: mainImage, galleryLength: gallery.length});
   const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
   const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
   const stock = current?.stock_quantity ?? 'N/A';
@@ -308,7 +307,6 @@ const ProductDetail = () => {
           <div className="product-image-gallery">
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
-                if (idx === 0) console.log('[ProductDetail] Gallery image 0 src:', img);
                 const imageKey = `${current?.sku || product.id}-${idx}`;
                 const layoutIdValue = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
                 return (
