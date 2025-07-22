@@ -11,6 +11,7 @@ import Checkout from './Checkout';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import Loading from './Loading'; // Import the new Loading component
 import './App.css';
 import './Header.css';
 import './HomeHeader.css';
@@ -28,10 +29,6 @@ const ProductDetailWrapper = () => {
   return <ProductDetail key={location.key} />;
 }
 
-const AnimatedOutlet = () => {
-  return useOutlet();
-}
-
 const StableOutlet = () => {
   const o = useOutlet();
   const [outlet] = useState(o);
@@ -42,23 +39,37 @@ const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
+  const [showLoading, setShowLoading] = useState(false);
+
+  useEffect(() => {
+    setShowLoading(true);
+  }, [location.pathname]);
+
+  const handleLoadingComplete = () => {
+    setShowLoading(false);
+  };
 
   return (
     <div className="App" style={{ position: 'relative' }}>
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={location.pathname}
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
-          >
-            <StableOutlet />
-          </motion.div>
+        <AnimatePresence mode="wait" initial={false}>
+          {showLoading && (
+            <Loading key="loading" onComplete={handleLoadingComplete} />
+          )}
+          {!showLoading && (
+            <motion.div
+              key={location.pathname}
+              initial={{ y: '-100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+            >
+              <StableOutlet />
+            </motion.div>
+          )}
         </AnimatePresence>
       </LayoutGroup>
     </div>
