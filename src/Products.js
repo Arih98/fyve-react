@@ -140,6 +140,7 @@ const Products = () => {
               className="product-card"
             >
               <motion.img
+                initial={false}
                 layoutId={`product-image-${item.displayId}`}
                 ref={el => imageRefs.current.set(item.displayId, el)}
                 id={`img-${item.displayId}`}

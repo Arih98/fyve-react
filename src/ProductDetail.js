@@ -311,6 +311,7 @@ const ProductDetail = () => {
                 const layoutIdValue = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
                 return (
                   <motion.img
+                    initial={false}
                     ref={el => galleryRefs.current.set(imageKey, el)}
                     key={imageKey}
                     layoutId={layoutIdValue}
@@ -339,6 +340,7 @@ const ProductDetail = () => {
               })
             ) : (
               <motion.img
+                initial={false}
                 ref={mainImageRef}
                 layoutId={`product-image-${currentDisplayId}`}
                 src={mainImage}
@@ -440,6 +442,7 @@ const ProductDetail = () => {
             {relatedProducts.map(relItem => (
               <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
                 <motion.img
+                  initial={false}
                   layoutId={`product-image-${relItem.displayId}`}
                   src={getDisplayImage(relItem)}
                   alt={relItem.displayTitle}
