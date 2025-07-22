@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// Updated App.js
+import React, { useState, useEffect, createContext } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
 import Products from './Products';
@@ -14,6 +15,9 @@ import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import './App.css';
 import './Header.css';
 import './HomeHeader.css';
+import SearchResults from './SearchResults';
+
+export const ProductsContext = createContext({ products: [], categories: [] });
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -67,6 +71,8 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -76,20 +82,29 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  useEffect(() => {
+    const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
+    setProducts(localProducts);
+    fetch('/api/manage_categories.php').then(res => res.json()).then(setCategories);
+  }, []);
+
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
-        <ScrollToTop />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/product/:id" element={<ProductDetailWrapper />} />
-            <Route path="/product-category/:slug" element={<CategoryProducts />} />
-            <Route path="/checkout" element={<Checkout />} />
-          </Route>
-        </Routes>
+        <ProductsContext.Provider value={{products, categories}}>
+          <ScrollToTop />
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetailWrapper />} />
+              <Route path="/product-category/:slug" element={<CategoryProducts />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/search" element={<SearchResults />} />
+            </Route>
+          </Routes>
+        </ProductsContext.Provider>
       </CartProvider>
     </MenuContext.Provider>
   );

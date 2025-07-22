@@ -1,9 +1,10 @@
-// HomeHeader.jsx
-import React, { useState, useEffect, useRef } from 'react';
+// Updated HomeHeader.jsx
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useNavigate, NavLink } from 'react-router-dom';
 import './HomeHeader.css';
+import { ProductsContext } from './App';
 
 const HomeHeader = () => {
   const [menuActive, setMenuActive] = useState(false);
@@ -22,6 +23,10 @@ const HomeHeader = () => {
   const [openedFromSecond, setOpenedFromSecond] = useState(false);
   const lastScroll = useRef(0);
   const navigate = useNavigate();
+  const { products, categories } = useContext(ProductsContext);
+  const categoriesMap = categories.reduce((acc, cat) => { acc[cat.id] = cat; return acc; }, {});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     document.body.classList.add('home-page');
@@ -182,6 +187,27 @@ const HomeHeader = () => {
     setActiveMenuImage(newItem);
   };
 
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = products.filter(p => {
+        const words = searchTerm.toLowerCase().split(/\s+/);
+        const title = p.title.toLowerCase();
+        const cats = p.categories.map(id => categoriesMap[id]?.name.toLowerCase() || '');
+        return words.every(w => title.includes(w) || cats.some(c => c.includes(w)));
+      });
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchTerm]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      setSearchOpen(false);
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
   const menuItems = [
     { id: 'ss25', name: 'SS25', path: '/products?category=ss25', image: '/api/Uploads/LOOK-9_1437_.webp' },
     { id: 'boys', name: 'BOYS', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
@@ -225,6 +251,9 @@ const HomeHeader = () => {
                 type="text"
                 className="custom-search-input"
                 placeholder="Little Trendsetters: Uncover Your Child's Style"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img
@@ -232,7 +261,14 @@ const HomeHeader = () => {
                   alt="Close Button"
                 />
               </button>
-              <div className="custom-search-results"></div>
+              <div className="custom-search-results">
+                {suggestions.map(p => (
+                  <div key={p.id} className="suggestion-item" onClick={() => { setSearchOpen(false); navigate(`/product/${p.id}`); }}>
+                    <img src={p.gallery[0] || '/api/Uploads/fallback-image.png'} alt={p.title} className="suggestion-image" />
+                    <span>{p.title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -269,6 +305,9 @@ const HomeHeader = () => {
                 type="text"
                 className="custom-search-input"
                 placeholder="Little Trendsetters: Uncover Your Child's Style"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img
@@ -276,7 +315,14 @@ const HomeHeader = () => {
                   alt="Close Button"
                 />
               </button>
-              <div className="custom-search-results"></div>
+              <div className="custom-search-results">
+                {suggestions.map(p => (
+                  <div key={p.id} className="suggestion-item" onClick={() => { setSearchOpen(false); navigate(`/product/${p.id}`); }}>
+                    <img src={p.gallery[0] || '/api/Uploads/fallback-image.png'} alt={p.title} className="suggestion-image" />
+                    <span>{p.title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -313,6 +359,9 @@ const HomeHeader = () => {
                 type="text"
                 className="custom-search-input"
                 placeholder="Little Trendsetters: Uncover Your Child's Style"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img
@@ -320,7 +369,14 @@ const HomeHeader = () => {
                   alt="Close Button"
                 />
               </button>
-              <div className="custom-search-results"></div>
+              <div className="custom-search-results">
+                {suggestions.map(p => (
+                  <div key={p.id} className="suggestion-item" onClick={() => { setSearchOpen(false); navigate(`/product/${p.id}`); }}>
+                    <img src={p.gallery[0] || '/api/Uploads/fallback-image.png'} alt={p.title} className="suggestion-image" />
+                    <span>{p.title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

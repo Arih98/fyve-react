@@ -1,9 +1,10 @@
-// Modified Header.jsx
+// Updated Header.jsx
 import { MenuContext } from './MenuContext';
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
+import { ProductsContext } from './App';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ const Header = () => {
   const [isImageAnimating, setIsImageAnimating] = useState(false);
   const burgerRef = useRef(null);
   const prevMenuStateRef = useRef(menuState);
+  const { products, categories } = useContext(ProductsContext);
+  const categoriesMap = categories.reduce((acc, cat) => { acc[cat.id] = cat; return acc; }, {});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -158,6 +163,27 @@ const Header = () => {
     setActiveMenuImage(newId);
   };
 
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = products.filter(p => {
+        const words = searchTerm.toLowerCase().split(/\s+/);
+        const title = p.title.toLowerCase();
+        const cats = p.categories.map(id => categoriesMap[id]?.name.toLowerCase() || '');
+        return words.every(w => title.includes(w) || cats.some(c => c.includes(w)));
+      });
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchTerm]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      setIsSearchOpen(false);
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
   const menuItems = [
     { id: 'ss25', name: 'SS25', path: '/products?category=ss25', image: '/api/Uploads/LOOK-9_1437_.webp' },
     { id: 'boys', name: 'BOYS', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
@@ -206,13 +232,21 @@ const Header = () => {
                 type="text"
                 className="custom-search-input"
                 placeholder="Little Trendsetters: Uncover Your Child's Style"
-                value={searchQuery}
-                onChange={handleSearch}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <button className="custom-search-close" onClick={toggleSearch}>
                 <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
               </button>
-              <div className="custom-search-results"></div>
+              <div className="custom-search-results">
+                {suggestions.map(p => (
+                  <div key={p.id} className="suggestion-item" onClick={() => { setIsSearchOpen(false); navigate(`/product/${p.id}`); }}>
+                    <img src={p.gallery[0] || '/api/Uploads/fallback-image.png'} alt={p.title} className="suggestion-image" />
+                    <span>{p.title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
