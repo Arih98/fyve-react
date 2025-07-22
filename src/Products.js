@@ -133,7 +133,9 @@ const Products = () => {
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
         <div className="products-grid">
-          {currentProducts.map((item, idx) => (
+          {currentProducts.map((item, idx) => {
+            console.log('[Products] Rendering item:', {displayId: item.displayId, title: item.title, src: item.gallery?.[0] || '/api/Uploads/fallback-image.png'});
+            return (
             <div
               key={`${item.displayId}-${idx}`}
               onClick={(e) => handleProductClick(item, e)}
@@ -186,7 +188,7 @@ const Products = () => {
                 </p>
               </div>
             </div>
-          ))}
+          )})}
         </div>
 
         <div className="pagination">
