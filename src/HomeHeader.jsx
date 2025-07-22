@@ -1,12 +1,12 @@
-// HomeHeader.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useNavigate, NavLink } from 'react-router-dom';
+import { MenuContext } from './MenuContext';
 import './HomeHeader.css';
 
 const HomeHeader = () => {
-  const [menuActive, setMenuActive] = useState(false);
+  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
   const [menuState, setMenuState] = useState('pre-open');
@@ -29,7 +29,7 @@ const HomeHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (menuActive) {
+    if (isMenuOpen) {
       setMenuState('open');
       document.body.classList.add('locked');
     } else {
@@ -40,7 +40,7 @@ const HomeHeader = () => {
       }, 750);
       return () => clearTimeout(timeout);
     }
-  }, [menuActive]);
+  }, [isMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +60,7 @@ const HomeHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (menuActive) {
+    if (isMenuOpen) {
       setShowFirstHeader(false);
       setShowSecondHeader(openedFromSecond);
       setShowThirdHeader(!openedFromSecond);
@@ -77,7 +77,7 @@ const HomeHeader = () => {
       setShowSecondHeader(false);
       setShowThirdHeader(false);
     }
-  }, [scrollTop, scrollDirection, menuActive, openedFromSecond]);
+  }, [scrollTop, scrollDirection, isMenuOpen, openedFromSecond]);
 
   useEffect(() => {
     const updateMenuHeight = () => {
@@ -136,10 +136,10 @@ const HomeHeader = () => {
 
   const toggleMenu = () => {
     if (isAnimating || menuState === 'closing') return;
-    if (!menuActive) {
+    if (!isMenuOpen) {
       setOpenedFromSecond(showSecondHeader);
     }
-    setMenuActive(!menuActive);
+    setIsMenuOpen(!isMenuOpen);
   };
 
   const toggleSearch = () => {
@@ -194,7 +194,7 @@ const HomeHeader = () => {
   return (
     <>
       <div
-        className={`mobile-header first-header${menuActive ? ' menu-active' : ''}${(!showFirstHeader && !menuActive) ? ' hide-header' : ''}`}
+        className={`mobile-header first-header${isMenuOpen ? ' menu-active' : ''}${(!showFirstHeader && !isMenuOpen) ? ' hide-header' : ''}`}
         style={{ display: showFirstHeader ? 'flex' : 'none' }}
       >
         <div className="a-burger" ref={el => burgerRefs.current[0] = el} onClick={toggleMenu}>
@@ -263,7 +263,7 @@ const HomeHeader = () => {
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
-          <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
+          < اکثر search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
               <input
                 type="text"
@@ -326,11 +326,11 @@ const HomeHeader = () => {
         </div>
       </div>
       <motion.div
-  className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
-  initial={{ y: '-100%' }}
-  animate={{ y: menuState === 'open' ? 0 : '-100%' }}
-  transition={{ duration: 0.75, ease: 'easeInOut' }}
->
+        className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
+        initial={{ y: '-100%' }}
+        animate={{ y: menuState === 'open' ? 0 : '-100%' }}
+        transition={{ duration: 0.75, ease: 'easeInOut' }}
+      >
         <div className="menu-background"></div>
         <div className="menu-content">
           <div className="menu-columns">
@@ -357,7 +357,7 @@ const HomeHeader = () => {
                     onFocus={() => handleMenuImageChange(item.id)}
                     onTouchStart={() => handleMenuImageChange(item.id)}
                     onClick={() => {
-                      setMenuActive(false);
+                      setIsMenuOpen(false);
                     }}
                   >
                     <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
