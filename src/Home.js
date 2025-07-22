@@ -82,8 +82,8 @@ const Home = () => {
         onStart: () => console.log('Image grow started'),
         onComplete: () => {
           console.log('Image grow completed');
-          gsap.set('.fyve-mask', { left: 0, top: 0, transform: 'none' }); // Reset transform and top
-          gsap.set('.fyve-image-container', { left: 0, top: 0 }); // Ensure container aligns to top-left
+          gsap.set('.fyve-mask', { left: 0, top: 0, transform: 'none' }); // Reset transform and position
+          gsap.set('.fyve-image-container', { left: 0, top: 0, x: 0 }); // Ensure container aligns to left edge
         }
       });
       
