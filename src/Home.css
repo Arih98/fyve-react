@@ -43,6 +43,8 @@
   padding: 0;
   position: relative;
   overflow: hidden;
+  flex: 1; /* Ensure equal width for both text elements */
+  text-align: center; /* Center text within each flex item */
 }
 
 .fyve-letter {
@@ -55,7 +57,7 @@
 
 .fyve-image-container {
   height: 10vw;
-  width: 100vw!important;
+  width: 100vw !important; /* Override parent constraints */
   position: relative;
   overflow: hidden;
 }
