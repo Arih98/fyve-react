@@ -1,4 +1,3 @@
-// Products.js
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
@@ -116,7 +115,9 @@ const Products = () => {
       initialColor: item.selectedColor,
       transitionKey: item.displayId,
     });
-    navigate(`/product/${item.parentId}`, { state: { product: targetProduct, initialColor: item.selectedColor, transitionKey: item.displayId } });
+    navigate(`/product/${item
+
+.parentId}`, { state: { product: targetProduct, initialColor: item.selectedColor, transitionKey: item.displayId } });
   };
 
   const idxLast = currentPage * productsPerPage;
@@ -140,6 +141,7 @@ const Products = () => {
               className="product-card"
             >
               <motion.img
+                initial={false}
                 layoutId={`product-image-${item.displayId}`}
                 ref={el => imageRefs.current.set(item.displayId, el)}
                 id={`img-${item.displayId}`}
@@ -149,7 +151,7 @@ const Products = () => {
                     : '/api/Uploads/fallback-image.png'
                 }
                 alt={item.title}
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                onError={e => { e.target.src= '/api/Uploads/fallback-image.png'; }}
                 onLoad={e => console.log('[Products] Image loaded for', item.displayId, {
                   src: e.target.src,
                   naturalWidth: e.target.naturalWidth,
@@ -168,7 +170,7 @@ const Products = () => {
                   }
                 }}
                 onLayoutAnimationComplete={() => {
-                  const el = imageRefs.current.get(item.displayId);
+                  const el = imageRefs.current.get,item.displayId);
                   if (el) {
                     const currentZ = window.getComputedStyle(el).zIndex;
                     console.log('[Products] Layout animation complete for', item.displayId, '- current z-index:', currentZ);
