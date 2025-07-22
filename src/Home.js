@@ -26,7 +26,7 @@ const Home = () => {
       if (hasAnimated) {
         console.log('Setting final states without animation');
         gsap.set('.fyve-mask', { visibility: 'visible', delay: 0.1 });
-        gsap.set('.fyve-image', { visibility: 'visible' });
+        gsap.set('.fyve-image', { visibility: 'hidden' }); // Hide image initially
         gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
         gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
         gsap.set('.fyve-letter', { y: 0 });
@@ -37,11 +37,12 @@ const Home = () => {
       } else {
         console.log('Setting fyve-mask visibility');
         gsap.set('.fyve-mask', { visibility: 'visible', delay: 0.1 });
+        gsap.set('.fyve-image', { visibility: 'hidden' }); // Hide image initially
+        gsap.set('.mobile-header', { opacity: 0 }); // Hide header initially
         
         console.log('Setting initial mask positions');
         gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
         gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
-        gsap.set('.fyve-image', { visibility: 'visible' });
         
         const tl = gsap.timeline();
         console.log('Starting letter reveal animation');
@@ -74,7 +75,10 @@ const Home = () => {
           width: '14vw',
           duration: 2.8,
           ease: 'expo.inOut',
-          onStart: () => console.log('Image container expand started'),
+          onStart: () => {
+            console.log('Image container expand started');
+            gsap.set('.fyve-image', { visibility: 'visible' }); // Show image when container expands
+          },
           onComplete: () => console.log('Image container expand completed')
         }, '<')
         .to('.mask-left', {
