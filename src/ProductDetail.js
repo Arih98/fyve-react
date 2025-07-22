@@ -1,3 +1,4 @@
+// ProductDetail.js
 import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
@@ -17,8 +18,8 @@ const ProductDetail = () => {
   const [scrollDirection, setScrollDirection] = useState('down');
 
   useEffect(() => {
-    console.log('[ProductDetail] Component mounted', { locationKey: location.key, productId: product?.id });
-    return () => console.log('[ProductDetail] Component unmounted', { locationKey: location.key });
+    console.log('[ProductDetail] Component mounted');
+    return () => console.log('[ProductDetail] Component unmounted');
   }, []);
 
   useEffect(() => {
@@ -111,9 +112,7 @@ const ProductDetail = () => {
       const img = mainImageRef.current;
       console.log('[ProductDetail] Target image layout details:', {
         src: img.src,
-        clientWidth: img.clientWidth
-
-,
+        clientWidth: img.clientWidth,
         clientHeight: img.clientHeight,
         naturalWidth: img.naturalWidth,
         naturalHeight: img.naturalHeight,
@@ -262,8 +261,6 @@ const ProductDetail = () => {
     mainImage,
     stock,
     currentSku: current?.sku,
-    currentDisplayId,
-    locationKey: location.key,
   });
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
@@ -301,8 +298,8 @@ const ProductDetail = () => {
 
   const handleRelatedClick = (relItem) => {
     const originalProduct = allProducts.find(p => p.id === relItem.id);
+    // Use a unique transition key to avoid conflicts with main product layoutId
     const uniqueTransitionKey = `related-${relItem.displayId}-${Date.now()}`;
-    console.log('[ProductDetail] Navigating to related product:', { id: relItem.id, transitionKey: uniqueTransitionKey });
     navigate(`/product/${relItem.id}`, { 
       state: { 
         product: originalProduct, 
@@ -330,30 +327,21 @@ const ProductDetail = () => {
                     src={img}
                     alt={`${displayTitle} ${idx + 1}`}
                     className="product-gallery-image"
-                    onError={e => { 
-                      console.error('[ProductDetail] Image load error:', { src: e.target.src });
-                      e.target.src = '/api/Uploads/fallback-image.png'; 
-                    }}
+                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                     onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
                     transition={{ duration: 0.5 }}
-                    onAnimationStart={() => console.log('[ProductDetail] Gallery image animation start', { imageKey })}
-                    onAnimationComplete={() => console.log('[ProductDetail] Gallery image animation complete', { imageKey })}
+                    onAnimationStart={() => console.log('[ProductDetail] Animation start')}
+                    onAnimationComplete={() => console.log('[ProductDetail] Animation complete')}
                     onLayoutAnimationStart={() => {
                       if (layoutIdValue) {
                         const el = galleryRefs.current.get(imageKey);
-                        if (el) {
-                          console.log('[ProductDetail] Gallery layout animation start', { imageKey, zIndex: el.style.zIndex });
-                          el.style.zIndex = '10000';
-                        }
+                        if (el) el.style.zIndex = '10000';
                       }
                     }}
                     onLayoutAnimationComplete={() => {
                       if (layoutIdValue) {
                         const el = galleryRefs.current.get(imageKey);
-                        if (el) {
-                          console.log('[ProductDetail] Gallery layout animation complete', { imageKey, zIndex: el.style.zIndex });
-                          el.style.zIndex = '';
-                        }
+                        if (el) el.style.zIndex = '';
                       }
                     }}
                   />
@@ -367,25 +355,16 @@ const ProductDetail = () => {
                 src={mainImage}
                 alt={displayTitle}
                 className="product-main-image"
-                onError={e => { 
-                  console.error('[ProductDetail] Main image load error:', { src: e.target.src });
-                  e.target.src = '/api/Uploads/fallback-image.png'; 
-                }}
+                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                 onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
                 transition={{ duration: 0.5 }}
-                onAnimationStart={() => console.log('[ProductDetail] Main image animation start', { currentDisplayId })}
-                onAnimationComplete={() => console.log('[ProductDetail] Main image animation complete', { currentDisplayId })}
+                onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
+                onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
                 onLayoutAnimationStart={() => {
-                  if (mainImageRef.current) {
-                    console.log('[ProductDetail] Main image layout animation start', { currentDisplayId, zIndex: mainImageRef.current.style.zIndex });
-                    mainImageRef.current.style.zIndex = '10000';
-                  }
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
                 }}
                 onLayoutAnimationComplete={() => {
-                  if (mainImageRef.current) {
-                    console.log('[ProductDetail] Main image layout animation complete', { currentDisplayId, zIndex: mainImageRef.current.style.zIndex });
-                    mainImageRef.current.style.zIndex = '';
-                  }
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
                 }}
               />
             )}
@@ -393,33 +372,9 @@ const ProductDetail = () => {
         </div>
         <motion.div
           className="details-container"
-          key={`details-${currentDisplayId}-${location.key}`}
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
-          exit={{ x: '100%' }}
           transition={{ duration: 0.5 }}
-          onAnimationStart={(definition) => console.log('[ProductDetail] Details animation start:', { 
-            definition, 
-            type: 'start', 
-            direction: window.history.state.idx > 0 ? 'back possible' : 'forward',
-            currentDisplayId,
-            locationKey: location.key,
-            historyState: window.history.state
-          })}
-          onAnimationComplete={(definition) => console.log('[ProductDetail] Details animation complete:', { 
-            definition, 
-            type: 'complete', 
-            direction: window.history.state.idx > 0 ? 'back possible' : 'forward',
-            currentDisplayId,
-            locationKey: location.key,
-            historyState: window.history.state
-          })}
-          onUpdate={(latest) => console.log('[ProductDetail] Details animation update:', { 
-            latest, 
-            x: latest.x, 
-            currentDisplayId,
-            locationKey: location.key
-          })}
         >
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
@@ -443,10 +398,7 @@ const ProductDetail = () => {
                           {options.map(term => (
                             <div key={term} className="color-option">
                               <button
-                                onClick={() => {
-                                  console.log('[ProductDetail] Attribute changed:', { attrName, value: term });
-                                  handleAttributeChange(attrName, term);
-                                }}
+                                onClick={() => handleAttributeChange(attrName, term)}
                                 className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
                               />
                               <span className="color-label">{term}</span>
@@ -458,10 +410,7 @@ const ProductDetail = () => {
                           {options.map(term => (
                             <div key={term} className="size-option">
                               <button
-                                onClick={() => {
-                                  console.log('[ProductDetail] Attribute changed:', { attrName, value: term });
-                                  handleAttributeChange(attrName, term);
-                                }}
+                                onClick={() => handleAttributeChange(attrName, term)}
                                 className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
                               >
                                 {term}
@@ -479,37 +428,16 @@ const ProductDetail = () => {
             <div className="quantity-selector">
               <label className="quantity-label">QTY</label>
               <div className="quantity-controls">
-                <button 
-                  onClick={() => {
-                    console.log('[ProductDetail] Decrease quantity:', { currentQuantity: quantity });
-                    decreaseQuantity();
-                  }} 
-                  className="qty-btn minus" 
-                  disabled={quantity <= 1}
-                >
+                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
                   <span className="qty-symbol">-</span>
                 </button>
                 <span className="qty-value">{quantity}</span>
-                <button 
-                  onClick={() => {
-                    console.log('[ProductDetail] Increase quantity:', { currentQuantity: quantity, availableStock });
-                    increaseQuantity();
-                  }} 
-                  className="qty-btn plus" 
-                  disabled={availableStock !== null && quantity >= availableStock}
-                >
+                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
                   <span className="qty-symbol">+</span>
                 </button>
               </div>
             </div>
-            <button 
-              onClick={() => {
-                console.log('[ProductDetail] Add to cart clicked:', { sku: current?.sku, quantity });
-                handleAddToCart();
-              }} 
-              disabled={isAddDisabled} 
-              className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}
-            >
+            <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
               <span className="add-to-cart-text">Add to Cart</span>
               <span className="add-to-cart-price">${(parseFloat(current?.price || 0) * quantity).toFixed(2)}</span>
             </button>
@@ -521,23 +449,13 @@ const ProductDetail = () => {
           <h2 className="related-products-title">Related Products</h2>
           <div className="related-products-grid">
             {relatedProducts.map(relItem => (
-              <div 
-                key={relItem.displayId} 
-                className="related-product-card" 
-                onClick={() => {
-                  console.log('[ProductDetail] Related product clicked:', { displayId: relItem.displayId, title: relItem.displayTitle });
-                  handleRelatedClick(relItem);
-                }}
-              >
+              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
                 <motion.img
                   initial={false}
                   src={getDisplayImage(relItem)}
                   alt={relItem.displayTitle}
                   className="related-product-image"
-                  onError={e => { 
-                    console.error('[ProductDetail] Related image load error:', { src: e.target.src });
-                    e.target.src = '/api/Uploads/fallback-image.png'; 
-                  }}
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                 />
                 <div className="related-product-info">
                   <h3 className="related-product-title">{relItem.displayTitle}</h3>
