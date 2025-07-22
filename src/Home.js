@@ -178,6 +178,11 @@ const Home = () => {
             <span key={index} className="fyve-letter">{letter}</span>
           ))}
         </div>
+        <div className="fyve-text">
+          {'VE'.split('').map((letter, index) => (
+            <span key={index + 2} className="fyve-letter">{letter}</span>
+          ))}
+        </div>
         <div className="fyve-image-container">
           <img
             src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
@@ -189,12 +194,7 @@ const Home = () => {
         </div>
         <div className="fyve-text">
           {'LONDON'.split('').map((letter, index) => (
-            <span key={index + 2} className="fyve-letter">{letter}</span>
-          ))}
-        </div>
-        <div className="fyve-text">
-          {'VE'.split('').map((letter, index) => (
-            <span key={index + 8} className="fyve-letter">{letter}</span>
+            <span key={index + 4} className="fyve-letter">{letter}</span>
           ))}
         </div>
       </div>
