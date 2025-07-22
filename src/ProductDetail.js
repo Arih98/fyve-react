@@ -10,7 +10,6 @@ const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const [cartError, setCartError] = useState(null);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
   const [allProducts, setAllProducts] = useState([]);
@@ -26,11 +25,7 @@ const ProductDetail = () => {
     let lastScrollY = window.pageYOffset;
     const handleScroll = () => {
       const currentScrollY = window.pageYOffset;
-      if (currentScrollY > lastScrollY) {
-        setScrollDirection('down');
-      } else if (currentScrollY < lastScrollY) {
-        setScrollDirection('up');
-      }
+      setScrollDirection(currentScrollY > lastScrollY ? 'down' : 'up');
       lastScrollY = currentScrollY;
     };
     window.addEventListener('scroll', handleScroll);
@@ -43,8 +38,8 @@ const ProductDetail = () => {
     let initialAttrs = initialColor ? { Color: location.state.initialColor } : {};
     if (product.product_type === 'variable' && product.variations?.length > 0) {
       const initialVariation = product.variations.find(v => {
-        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+        const c = v.attributes.find(a => a.attribute_name === 'Color');
+        return c?.term_name?.trim().toLowerCase() === initialColor;
       }) || product.variations[0];
       initialVariation?.attributes.forEach(attr => {
         if (!attr.term_name.startsWith('Any')) {
@@ -61,8 +56,8 @@ const ProductDetail = () => {
     const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
     if (product.product_type === 'variable' && product.variations?.length > 0) {
       const initialVariation = product.variations.find(v => {
-        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+        const c = v.attributes.find(a => a.attribute_name === 'Color');
+        return c?.term_name?.trim().toLowerCase() === initialColor;
       }) || product.variations[0];
       console.log('[ProductDetail] Initialized currentVariation:', {
         variationId: initialVariation?.id,
@@ -84,25 +79,28 @@ const ProductDetail = () => {
     setAllProducts(localProducts);
   }, []);
 
-  const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
+  const current = product
+    ? product.product_type === 'variable'
+      ? currentVariation
+      : product
+    : null;
 
   useEffect(() => {
     if (!current) return;
-    const fetchAvailableStock = async () => {
+    const fetchStock = async () => {
       if (current?.sku) {
         try {
           const res = await fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`);
           const data = await res.json();
           setAvailableStock(data.stock_quantity ?? 0);
-        } catch (err) {
-          console.error('[ProductDetail] Error fetching stock:', err);
+        } catch {
           setAvailableStock(0);
         }
       } else {
         setAvailableStock(null);
       }
     };
-    fetchAvailableStock();
+    fetchStock();
     setQuantity(1);
   }, [current?.sku]);
 
@@ -123,313 +121,136 @@ const ProductDetail = () => {
     }
   }, [currentVariation]);
 
-  const attributeNames = product && product.product_type === 'variable' && product.variations.length > 0
-    ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) => a === 'Color' ? 1 : -1)
-    : [];
+  const attributeNames =
+    product?.product_type === 'variable' && product.variations?.length > 0
+      ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) =>
+          a === 'Color' ? 1 : -1
+        )
+      : [];
 
-  const getAvailableOptions = (attrName) => {
-    const otherSelected = { ...selectedAttributes };
-    delete otherSelected[attrName];
-    const optionsSet = new Set(
+  const getAvailableOptions = attrName => {
+    const other = { ...selectedAttributes };
+    delete other[attrName];
+    const opts = new Set(
       product.variations
         .filter(v =>
-          Object.entries(otherSelected).every(([otherAttr, term]) => {
-            const vAttr = v.attributes.find(a => a.attribute_name === otherAttr);
-            return vAttr?.term_name === term || vAttr?.term_name.startsWith('Any');
+          Object.entries(other).every(([k, t]) => {
+            const vAttr = v.attributes.find(a => a.attribute_name === k);
+            return vAttr?.term_name === t || vAttr?.term_name.startsWith('Any');
           })
         )
         .flatMap(v => {
-          const thisAttr = v.attributes.find(a => a.attribute_name === attrName);
-          if (thisAttr && !thisAttr.term_name.startsWith('Any')) {
-            return [thisAttr.term_name];
-          }
-          return [];
+          const a = v.attributes.find(a => a.attribute_name === attrName);
+          return a && !a.term_name.startsWith('Any') ? [a.term_name] : [];
         })
     );
-    const options = [...optionsSet];
+    const arr = [...opts];
     if (attrName === 'Size') {
-      options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+      arr.sort((x, y) => x.localeCompare(y, 'en', { numeric: true }));
     } else {
-      options.sort();
+      arr.sort();
     }
-    return options;
+    return arr;
   };
 
   useEffect(() => {
-    if (!product || product.product_type !== 'variable') return;
-    const matchingVariation = product.variations.find(v =>
-      attributeNames.every(attr => {
-        const sel = selectedAttributes[attr];
+    if (product?.product_type !== 'variable') return;
+    const match = product.variations.find(v =>
+      attributeNames.every(a => {
+        const sel = selectedAttributes[a];
         if (!sel) return true;
-        const vAttr = v.attributes.find(a => a.attribute_name === attr);
-        return vAttr && (vAttr.term_name === sel || vAttr.term_name === `Any ${attr}`);
+        const vAttr = v.attributes.find(x => x.attribute_name === a);
+        return vAttr && (vAttr.term_name === sel || vAttr.term_name === `Any ${a}`);
       })
     );
-    setCurrentVariation(matchingVariation || null);
+    setCurrentVariation(match || null);
   }, [selectedAttributes, product, attributeNames]);
 
   useEffect(() => {
-    if (!product || product.product_type !== 'variable') return;
-    let updatedSelected = { ...selectedAttributes };
+    if (product?.product_type !== 'variable') return;
+    let upd = { ...selectedAttributes };
     let changed = false;
-    attributeNames.forEach(attr => {
-      const avail = getAvailableOptions(attr);
-      if (selectedAttributes[attr] && !avail.includes(selectedAttributes[attr])) {
-        updatedSelected[attr] = avail[0] || undefined;
+    attributeNames.forEach(a => {
+      const opts = getAvailableOptions(a);
+      if (selectedAttributes[a] && !opts.includes(selectedAttributes[a])) {
+        upd[a] = opts[0] || undefined;
         changed = true;
       }
     });
-    if (changed) {
-      setSelectedAttributes(updatedSelected);
-    }
+    if (changed) setSelectedAttributes(upd);
   }, [selectedAttributes, product, attributeNames]);
 
   if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
-  const handleAttributeChange = (attrName, value) => {
-    setSelectedAttributes(prev => ({ ...prev, [attrName]: value }));
-    setCartError(null);
+  const handleAttributeChange = (a, v) => {
+    setSelectedAttributes(prev => ({ ...prev, [a]: v }));
   };
 
   const handleAddToCart = async () => {
-    if (current?.sku) {
-      try {
-        const res = await fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`);
-        const data = await res.json();
-        const freshStock = data.stock_quantity ?? 0;
-        console.log('[ProductDetail] Add to cart stock check:', { sku: current.sku, freshStock });
-        if (freshStock < quantity) {
-          setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
-        } else {
-          const newItem = {
-            id: current.id || product.id,
-            name: current.title || product.title,
-            price: parseFloat(current.price || product.price),
-            quantity,
-            image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
-            size: selectedAttributes.Size || '',
-            color: selectedAttributes.Color || '',
-          };
-          setCartItems(prev => {
-            const variationKey = `${newItem.size}-${newItem.color}`;
-            const existingIndex = prev.findIndex(i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey);
-            if (existingIndex !== -1) {
-              const newPrev = [...prev];
-              newPrev[existingIndex].quantity += quantity;
-              return newPrev;
-            } else {
-              return [...prev, newItem];
-            }
-          });
-          setCartError(null);
-        }
-      } catch (err) {
-        console.error('[ProductDetail] Error verifying stock:', err);
-        setCartError('Failed to verify stock');
+    if (!current?.sku) return;
+    try {
+      const res = await fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`);
+      const data = await res.json();
+      const fresh = data.stock_quantity ?? 0;
+      console.log('[ProductDetail] Add to cart stock check:', { sku: current.sku, fresh });
+      if (fresh < quantity) {
+        console.error('Out of stock');
+      } else {
+        setCartItems(prev => [...prev, { id: current.id || product.id, name: current.title || product.title, price: parseFloat(current.price || product.price), quantity, image: current.gallery?.[0] || product.gallery?.[0] }]);
       }
-    } else {
-      console.warn('[ProductDetail] No SKU for current');
+    } catch {
+      console.error('Failed to verify stock');
     }
   };
 
-  const increaseQuantity = () => {
-    if (availableStock === null || quantity < availableStock) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
+  const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
+  const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
+  const gallery = current?.gallery || product.gallery || [];
   const currentColor = selectedAttributes.Color || 'default';
   const currentDisplayId = `${product.id}-${currentColor}`;
 
-  const gallery = current?.gallery || product.gallery || [];
-  const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-  const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
-  const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
-  const stock = current?.stock_quantity ?? 'N/A';
-
-  console.log('[ProductDetail] Rendering with:', {
-    displayTitle,
-    galleryLength: gallery.length,
-    mainImage,
-    stock,
-    currentSku: current?.sku,
-  });
-
-  const isAddDisabled = availableStock !== null && availableStock < quantity;
-
-  const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
-  const relatedProducts = relatedProductsRaw.map(rel => {
-    const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
-    const p = allProducts.find(p => p.id === normalizedRel.productId);
-    if (!p) return null;
-    const color = normalizedRel.selectedColor;
-    if (color) {
-      const v = p.variations.find(v => v.attributes.some(a => a.attribute_name === 'Color' && a.term_name === color));
-      return {
-        ...p,
-        displayId: `${p.id}-${color}`,
-        selectedColor: color,
-        displayTitle: v?.title || `${p.title} - ${color}`,
-        displayPrice: v?.price || p.price,
-        displayGallery: v?.gallery || p.gallery,
-      };
-    } else {
-      return {
-        ...p,
-        displayId: p.id,
-        selectedColor: null,
-        displayTitle: p.title,
-        displayPrice: p.price,
-        displayGallery: p.gallery,
-      };
-    }
-  }).filter(Boolean);
-
-  const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
-  const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
-
-  const handleRelatedClick = (relItem) => {
-    const originalProduct = allProducts.find(p => p.id === relItem.id);
-    navigate(`/product/${relItem.id}`, { state: { product: originalProduct, initialColor: relItem.selectedColor, transitionKey: relItem.displayId } });
-  };
+  useEffect(() => console.log('[ProductDetail] Rendering', { displayTitle, galleryLength: gallery.length }), [displayTitle, gallery.length]);
 
   return (
     <>
       <motion.div className="product-detail-container">
-        <div className="images-container">
-          <div className="product-image-gallery">
-            {gallery.length > 0 ? (
-              gallery.map((img, idx) => {
-                const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
-                return (
-                  <motion.img
-                    ref={el => galleryRefs.current.set(imageKey, el)}
-                    key={imageKey}
-                    layoutId={layoutIdValue}
-                    src={img}
-                    alt={`${displayTitle} ${idx + 1}`}
-                    className="product-gallery-image"
-                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                    onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
-                    transition={{ duration: 0.5 }}
-                    onAnimationStart={() => console.log('[ProductDetail] Animation start')}
-                    onAnimationComplete={() => console.log('[ProductDetail] Animation complete')}
-                    onLayoutAnimationStart={() => {
-                      if (layoutIdValue) {
-                        console.log('[Detail] layout start for', currentDisplayId);
-                        const el = galleryRefs.current.get(imageKey);
-                        if (el) el.style.zIndex = '10000';
-                      }
-                    }}
-                    onLayoutAnimationComplete={() => {
-                      if (layoutIdValue) {
-                        console.log('[Detail] layout complete for', currentDisplayId);
-                        const el = galleryRefs.current.get(imageKey);
-                        if (el) el.style.zIndex = '';
-                      }
-                    }}
-                  />
-                );
-              })
-            ) : (
-              <motion.img
-                ref={mainImageRef}
-                layoutId={`product-image-${currentDisplayId}`}
-                src={mainImage}
-                alt={displayTitle}
-                className="product-main-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
-                transition={{ duration: 0.5 }}
-                onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
-                onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
-                onLayoutAnimationStart={() => {
-                  console.log('[Detail] layout start for', currentDisplayId);
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
-                }}
-                onLayoutAnimationComplete={() => {
-                  console.log('[Detail] layout complete for', currentDisplayId);
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
-                }}
-              />
-            )}
-          </div>
+        <div className="product-image-gallery">
+          {gallery.length > 0 ? (
+            gallery.map((img, idx) => {
+              const key = `${current?.sku || product.id}-${idx}`;
+              const id = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
+              return (
+                <motion.img
+                  initial={false}
+                  layoutId={id}
+                  key={key}
+                  ref={el => galleryRefs.current.set(key, el)}
+                  src={img}
+                  alt={`${displayTitle} ${idx + 1}`}
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLayoutAnimationStart={() => {
+                    if (id) console.log('[Detail] layout start for', currentDisplayId);
+                  }}
+                  onLayoutAnimationComplete={() => {
+                    if (id) console.log('[Detail] layout complete for', currentDisplayId);
+                  }}
+                />
+              );
+            })
+          ) : (
+            <motion.img
+              initial={false}
+              layoutId={`product-image-${currentDisplayId}`}
+              ref={mainImageRef}
+              src={gallery[0] || '/api/Uploads/fallback-image.png'}
+              alt={displayTitle}
+              onLayoutAnimationStart={() => console.log('[Detail] layout start for', currentDisplayId)}
+              onLayoutAnimationComplete={() => console.log('[Detail] layout complete for', currentDisplayId)}
+            />
+          )}
         </div>
-        <motion.div className="details-container" initial={{ x: '100%' }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
-          <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
-            <h1 className="product-title">{displayTitle}</h1>
-            <p className="product-variation-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }} />
-            <p className="product-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
-            {product.product_type === 'variable' && (
-              <div className="product-attributes">
-                {attributeNames.map(attrName => {
-                  const options = getAvailableOptions(attrName);
-                  return (
-                    <div key={attrName} className="attribute-group">
-                      <label className="attribute-label">{attrName}</label>
-                      {attrName === 'Color' ? (
-                        <div className="color-options">
-                          {options.map(term => (
-                            <div key={term} className="color-option">
-                              <button onClick={() => handleAttributeChange(attrName, term)} className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`} />
-                              <span className="color-label">{term}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="size-options">
-                          {options.map(term => (
-                            <div key={term} className="size-option">
-                              <button onClick={() => handleAttributeChange(attrName, term)} className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}>{term}</button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-            {cartError && <p className="cart-error">{cartError}</p>}
-            <div className="quantity-selector">
-              <label className="quantity-label">QTY</label>
-              <div className="quantity-controls">
-                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}><span className="qty-symbol">-</span></button>
-                <span className="qty-value">{quantity}</span>
-                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}><span className="qty-symbol">+</span></button>
-              </div>
-            </div>
-            <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
-              <span className="add-to-cart-text">Add to Cart</span>
-              <span className="add-to-cart-price">${(parseFloat(current?.price || 0) * quantity).toFixed(2)}</span>
-            </button>
-          </div>
-        </motion.div>
       </motion.div>
-      {relatedProducts.length > 0 && (
-        <div className="related-products-container">
-          <h2 className="related-products-title">Related Products</h2>
-          <div className="related-products-grid">
-            {relatedProducts.map(relItem => (
-              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-                <motion.img layoutId={`product-image-${relItem.displayId}`} src={getDisplayImage(relItem)} alt={relItem.displayTitle} className="related-product-image" onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }} />
-                <div className="related-product-info">
-                  <h3 className="related-product-title">{relItem.displayTitle}</h3>
-                  <p className="related-product-price">${getDisplayPrice(relItem)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </>
   );
 };

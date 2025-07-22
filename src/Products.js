@@ -143,6 +143,7 @@ const Products = () => {
               className="product-card"
             >
               <motion.img
+                initial={false}
                 layoutId={`product-image-${item.displayId}`}
                 ref={el => imageRefs.current.set(item.displayId, el)}
                 id={`img-${item.displayId}`}
@@ -150,8 +151,6 @@ const Products = () => {
                 alt={item.title}
                 onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                 onLoad={e => console.log('[Products] Image loaded for', item.displayId, { src: e.target.src, naturalWidth: e.target.naturalWidth, naturalHeight: e.target.naturalHeight })}
-                onAnimationStart={() => console.log('[Products] Animation start for image', item.displayId)}
-                onAnimationComplete={() => console.log('[Products] Animation complete for image', item.displayId)}
                 onLayoutAnimationStart={() => {
                   console.log('[Products] layout start for', item.displayId);
                   const el = imageRefs.current.get(item.displayId);
