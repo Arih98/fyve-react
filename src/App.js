@@ -10,6 +10,7 @@ import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
+import { AnimatePresence, LayoutGroup } from 'framer-motion';
 import './App.css';
 import './Header.css';
 import './HomeHeader.css';
@@ -48,14 +49,18 @@ function AppContent() {
           {showHeader && <Header />}
           {showCart && <Cart />}
           <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/product/:id" element={<ProductDetailWrapper />} />
-            <Route path="/product-category/:slug" element={<CategoryProducts />} />
-            <Route path="/checkout" element={<Checkout />} />
-          </Routes>
+          <LayoutGroup>
+            <AnimatePresence>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<Home />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/product/:id" element={<ProductDetailWrapper />} />
+                <Route path="/product-category/:slug" element={<CategoryProducts />} />
+                <Route path="/checkout" element={<Checkout />} />
+              </Routes>
+            </AnimatePresence>
+          </LayoutGroup>
         </div>
       </CartProvider>
     </MenuContext.Provider>
