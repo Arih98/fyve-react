@@ -5,6 +5,11 @@ import './Home.css';
 
 let hasAnimated = false;
 
+const vwToPx = (vw) => vw * window.innerWidth / 100;
+const initialWidth = vwToPx(14);
+const initialHeight = vwToPx(10);
+const scaleX = window.innerWidth / initialWidth;
+const scaleY = window.innerHeight / initialHeight;
 const Home = () => {
   useEffect(() => {
     console.log('Home component mounted');
@@ -74,8 +79,8 @@ const Home = () => {
       
       console.log('Scheduling image grow to full screen');
 gsap.to('.fyve-image-container', {
-  width: '100%', // Use 100% instead of 100vw
-  height: '100vh',
+  scaleX: scaleX,
+  scaleY: scaleY,
   duration: 0.8,
   ease: 'expo.inOut',
   delay: 2,
