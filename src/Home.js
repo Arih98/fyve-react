@@ -3,8 +3,13 @@ import { gsap } from 'gsap';
 import HomeHeader from './HomeHeader';
 import './Home.css';
 
+let hasAnimated = false;
+
 const Home = () => {
   useEffect(() => {
+    if (hasAnimated) return;
+    hasAnimated = true;
+    
     console.log('Home component mounted');
     
     const image = document.querySelector('.fyve-image');
