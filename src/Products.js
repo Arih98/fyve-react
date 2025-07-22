@@ -22,6 +22,10 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
+    console.log('[Products] currentPage =', currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
     try {
       console.log('[Products] Loading products from localStorage');
       const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
@@ -33,10 +37,9 @@ const Products = () => {
       console.log('[Products] Loaded', normalizedProducts.length, 'products');
       setProducts(normalizedProducts);
 
-      // Flatten and deduplicate by product title and color
       const seenColorsByTitle = new Map();
       const flattened = normalizedProducts.flatMap(product => {
-        if (product.product_type !== 'variable') return [{...product, displayId: product.id, gallery: product.gallery}];
+        if (product.product_type !== 'variable') return [{ ...product, displayId: product.id, gallery: product.gallery }];
         let colorVariants = product.variations.reduce((acc, variation) => {
           const colorAttr = variation.attributes?.find(a => a.attribute_name === 'Color')?.term_name;
           if (colorAttr && !colorAttr.startsWith('Any')) {
@@ -143,22 +146,14 @@ const Products = () => {
                 layoutId={`product-image-${item.displayId}`}
                 ref={el => imageRefs.current.set(item.displayId, el)}
                 id={`img-${item.displayId}`}
-                src={
-                  item.gallery && item.gallery.length > 0
-                    ? item.gallery[0]
-                    : '/api/Uploads/fallback-image.png'
-                }
+                src={item.gallery && item.gallery.length > 0 ? item.gallery[0] : '/api/Uploads/fallback-image.png'}
                 alt={item.title}
                 onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                onLoad={e => console.log('[Products] Image loaded for', item.displayId, {
-                  src: e.target.src,
-                  naturalWidth: e.target.naturalWidth,
-                  naturalHeight: e.target.naturalHeight,
-                })}
-                className="product-image"
+                onLoad={e => console.log('[Products] Image loaded for', item.displayId, { src: e.target.src, naturalWidth: e.target.naturalWidth, naturalHeight: e.target.naturalHeight })}
                 onAnimationStart={() => console.log('[Products] Animation start for image', item.displayId)}
                 onAnimationComplete={() => console.log('[Products] Animation complete for image', item.displayId)}
                 onLayoutAnimationStart={() => {
+                  console.log('[Products] layout start for', item.displayId);
                   const el = imageRefs.current.get(item.displayId);
                   if (el) {
                     const currentZ = window.getComputedStyle(el).zIndex;
@@ -168,6 +163,7 @@ const Products = () => {
                   }
                 }}
                 onLayoutAnimationComplete={() => {
+                  console.log('[Products] layout complete for', item.displayId);
                   const el = imageRefs.current.get(item.displayId);
                   if (el) {
                     const currentZ = window.getComputedStyle(el).zIndex;
@@ -176,19 +172,15 @@ const Products = () => {
                     console.log('[Products] Reset z-index for', item.displayId, '- new z-index:', window.getComputedStyle(el).zIndex);
                   }
                 }}
+                className="product-image"
               />
               <div className="product-info">
-                <h3 className="product-title">
-                  {item.title}
-                </h3>
-                <p className="product-price">
-                  ${item.price}
-                </p>
+                <h3 className="product-title">{item.title}</h3>
+                <p className="product-price">${item.price}</p>
               </div>
             </div>
           ))}
         </div>
-
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, i) => (
             <button

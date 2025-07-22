@@ -324,12 +324,14 @@ const ProductDetail = () => {
                     onAnimationComplete={() => console.log('[ProductDetail] Animation complete')}
                     onLayoutAnimationStart={() => {
                       if (layoutIdValue) {
+                        console.log('[Detail] layout start for', currentDisplayId);
                         const el = galleryRefs.current.get(imageKey);
                         if (el) el.style.zIndex = '10000';
                       }
                     }}
                     onLayoutAnimationComplete={() => {
                       if (layoutIdValue) {
+                        console.log('[Detail] layout complete for', currentDisplayId);
                         const el = galleryRefs.current.get(imageKey);
                         if (el) el.style.zIndex = '';
                       }
@@ -350,31 +352,22 @@ const ProductDetail = () => {
                 onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
                 onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
                 onLayoutAnimationStart={() => {
+                  console.log('[Detail] layout start for', currentDisplayId);
                   if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
                 }}
                 onLayoutAnimationComplete={() => {
+                  console.log('[Detail] layout complete for', currentDisplayId);
                   if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
                 }}
               />
             )}
           </div>
         </div>
-        <motion.div
-          className="details-container"
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <motion.div className="details-container" initial={{ x: '100%' }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
-            <p
-              className="product-variation-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
-            />
-            <p
-              className="product-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
-            />
+            <p className="product-variation-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }} />
+            <p className="product-description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
             {product.product_type === 'variable' && (
               <div className="product-attributes">
                 {attributeNames.map(attrName => {
@@ -386,10 +379,7 @@ const ProductDetail = () => {
                         <div className="color-options">
                           {options.map(term => (
                             <div key={term} className="color-option">
-                              <button
-                                onClick={() => handleAttributeChange(attrName, term)}
-                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
-                              />
+                              <button onClick={() => handleAttributeChange(attrName, term)} className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`} />
                               <span className="color-label">{term}</span>
                             </div>
                           ))}
@@ -398,12 +388,7 @@ const ProductDetail = () => {
                         <div className="size-options">
                           {options.map(term => (
                             <div key={term} className="size-option">
-                              <button
-                                onClick={() => handleAttributeChange(attrName, term)}
-                                className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-                              >
-                                {term}
-                              </button>
+                              <button onClick={() => handleAttributeChange(attrName, term)} className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}>{term}</button>
                             </div>
                           ))}
                         </div>
@@ -417,13 +402,9 @@ const ProductDetail = () => {
             <div className="quantity-selector">
               <label className="quantity-label">QTY</label>
               <div className="quantity-controls">
-                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
-                  <span className="qty-symbol">-</span>
-                </button>
+                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}><span className="qty-symbol">-</span></button>
                 <span className="qty-value">{quantity}</span>
-                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
-                  <span className="qty-symbol">+</span>
-                </button>
+                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}><span className="qty-symbol">+</span></button>
               </div>
             </div>
             <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
@@ -439,13 +420,7 @@ const ProductDetail = () => {
           <div className="related-products-grid">
             {relatedProducts.map(relItem => (
               <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-                <motion.img
-                  layoutId={`product-image-${relItem.displayId}`}
-                  src={getDisplayImage(relItem)}
-                  alt={relItem.displayTitle}
-                  className="related-product-image"
-                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                />
+                <motion.img layoutId={`product-image-${relItem.displayId}`} src={getDisplayImage(relItem)} alt={relItem.displayTitle} className="related-product-image" onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }} />
                 <div className="related-product-info">
                   <h3 className="related-product-title">{relItem.displayTitle}</h3>
                   <p className="related-product-price">${getDisplayPrice(relItem)}</p>
