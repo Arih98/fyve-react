@@ -11,6 +11,8 @@ const Home = () => {
     
     // Disable scrolling initially
     gsap.set('.home-page', { overflow: 'hidden' });
+    console.log('Initial overflow set to hidden');
+    console.log('Current overflow:', document.querySelector('.home-page').style.overflow);
     
     const image = document.querySelector('.fyve-image');
     if (image) {
@@ -34,6 +36,10 @@ const Home = () => {
       gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
       gsap.set('.mobile-header', { opacity: 1 });
       gsap.set('.home-page', { overflow: 'auto' }); // Enable scrolling for subsequent visits
+      console.log('Final states set, overflow set to auto for subsequent visits');
+      console.log('Current overflow after final states:', document.querySelector('.home-page').style.overflow);
+      console.log('Document height:', document.documentElement.scrollHeight);
+      console.log('Viewport height:', window.innerHeight);
     } else {
       console.log('Setting fyve-mask visibility');
       gsap.set('.fyve-mask', { visibility: 'visible' });
@@ -83,7 +89,10 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 1,
         onStart: () => console.log('Image container expand started'),
-        onComplete: () => console.log('Image container expand completed')
+        onComplete: () => {
+          console.log('Image container expand completed');
+          console.log('Image container width after expand:', document.querySelector('.fyve-image-container').style.width);
+        }
       });
       
       console.log('Scheduling image mask reveal animation');
@@ -132,7 +141,10 @@ const Home = () => {
         ease: 'expo.inOut',
         delay: 2,
         onStart: () => console.log('Image grow started'),
-        onComplete: () => console.log('Image grow completed')
+        onComplete: () => {
+          console.log('Image grow completed');
+          console.log('Image container dimensions after grow:', document.querySelector('.fyve-image-container').style.width, document.querySelector('.fyve-image-container').style.height);
+        }
       });
 
       console.log('Setting initial header opacity');
@@ -148,11 +160,23 @@ const Home = () => {
         onComplete: () => {
           console.log('Header fade in completed');
           gsap.set('.home-page', { overflow: 'auto' }); // Enable scrolling after all animations
+          console.log('Scrolling enabled, overflow set to auto');
+          console.log('Current overflow after enabling:', document.querySelector('.home-page').style.overflow);
+          console.log('Document height after animations:', document.documentElement.scrollHeight);
+          console.log('Viewport height:', window.innerHeight);
+          console.log('New section position:', document.querySelector('.new-section')?.getBoundingClientRect().top);
         }
       });
     }
 
     hasAnimated = true;
+
+    // Add scroll listener for debugging
+    const handleScroll = () => {
+      console.log('Scroll event triggered, current scrollY:', window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
