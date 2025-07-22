@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+// HomeHeader.jsx
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { MenuContext } from './MenuContext';
 import './HomeHeader.css';
 
 const HomeHeader = () => {
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const [menuActive, setMenuActive] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState(0);
   const [menuState, setMenuState] = useState('pre-open');
@@ -29,7 +29,7 @@ const HomeHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (isMenuOpen) {
+    if (menuActive) {
       setMenuState('open');
       document.body.classList.add('locked');
     } else {
@@ -40,7 +40,7 @@ const HomeHeader = () => {
       }, 750);
       return () => clearTimeout(timeout);
     }
-  }, [isMenuOpen]);
+  }, [menuActive]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +60,7 @@ const HomeHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (isMenuOpen) {
+    if (menuActive) {
       setShowFirstHeader(false);
       setShowSecondHeader(openedFromSecond);
       setShowThirdHeader(!openedFromSecond);
@@ -77,7 +77,7 @@ const HomeHeader = () => {
       setShowSecondHeader(false);
       setShowThirdHeader(false);
     }
-  }, [scrollTop, scrollDirection, isMenuOpen, openedFromSecond]);
+  }, [scrollTop, scrollDirection, menuActive, openedFromSecond]);
 
   useEffect(() => {
     const updateMenuHeight = () => {
@@ -136,10 +136,10 @@ const HomeHeader = () => {
 
   const toggleMenu = () => {
     if (isAnimating || menuState === 'closing') return;
-    if (!isMenuOpen) {
+    if (!menuActive) {
       setOpenedFromSecond(showSecondHeader);
     }
-    setIsMenuOpen(!isMenuOpen);
+    setMenuActive(!menuActive);
   };
 
   const toggleSearch = () => {
@@ -194,7 +194,7 @@ const HomeHeader = () => {
   return (
     <>
       <div
-        className={`mobile-header first-header${isMenuOpen ? ' menu-active' : ''}${(!showFirstHeader && !isMenuOpen) ? ' hide-header' : ''}`}
+        className={`mobile-header first-header${menuActive ? ' menu-active' : ''}${(!showFirstHeader && !menuActive) ? ' hide-header' : ''}`}
         style={{ display: showFirstHeader ? 'flex' : 'none' }}
       >
         <div className="a-burger" ref={el => burgerRefs.current[0] = el} onClick={toggleMenu}>
@@ -326,11 +326,11 @@ const HomeHeader = () => {
         </div>
       </div>
       <motion.div
-        className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
-        initial={{ y: '-100%' }}
-        animate={{ y: menuState === 'open' ? 0 : '-100%' }}
-        transition={{ duration: 0.75, ease: 'easeInOut' }}
-      >
+  className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
+  initial={{ y: '-100%' }}
+  animate={{ y: menuState === 'open' ? 0 : '-100%' }}
+  transition={{ duration: 0.75, ease: 'easeInOut' }}
+>
         <div className="menu-background"></div>
         <div className="menu-content">
           <div className="menu-columns">
@@ -357,7 +357,7 @@ const HomeHeader = () => {
                     onFocus={() => handleMenuImageChange(item.id)}
                     onTouchStart={() => handleMenuImageChange(item.id)}
                     onClick={() => {
-                      setIsMenuOpen(false);
+                      setMenuActive(false);
                     }}
                   >
                     <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>

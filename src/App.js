@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
 import Products from './Products';
 import ProductDetail from './ProductDetail';
 import Header from './Header';
-import HomeHeader from './HomeHeader';
 import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
@@ -41,13 +40,12 @@ const StableOutlet = () => {
 
 const Layout = () => {
   const location = useLocation();
-  const { isMenuOpen } = useContext(MenuContext);
-  const showHeader = location.pathname !== '/admin';
+  const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
 
   return (
     <div className="App" style={{ position: 'relative' }}>
-      {showHeader && (location.pathname === '/' ? <HomeHeader /> : <Header />)}
+      {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
         <AnimatePresence initial={false}>
@@ -58,7 +56,6 @@ const Layout = () => {
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
-            className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}
           >
             <StableOutlet />
           </motion.div>
