@@ -8,15 +8,15 @@
 
 .home-page {
   width: 100vw;
-  min-height: 100vh;
+  min-height: 200vh; /* Increased to accommodate both sections */
   background: #fff;
   margin: 0;
   padding: 0;
-  position: relative; /* Ensure positioning context for children */
+  position: relative;
 }
 
 .fyve-mask {
-  position: fixed; /* Fix to viewport top */
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -89,7 +89,8 @@
 .new-section {
   position: relative;
   width: 100%;
-  margin-top: 100vh; /* Ensure it appears below fixed fyve-mask */
+  margin-top: 100vh; /* Places below fixed fyve-mask */
+  min-height: 100vh; /* Ensures section has enough space */
 }
 
 .new-image-container {
