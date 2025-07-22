@@ -49,7 +49,7 @@ function AppContent() {
           {showHeader && <Header />}
           {showCart && <Cart />}
           <ScrollToTop />
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
