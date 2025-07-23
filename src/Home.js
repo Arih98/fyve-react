@@ -1,14 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
 import HomeHeader from './HomeHeader';
 import './Home.css';
-import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 
 let hasAnimated = false;
 
 const Home = () => {
+  const [lottieData, setLottieData] = useState(null);
+
   useEffect(() => {
+    // Fetch Lottie JSON
+    fetch('/api/Uploads/FYVEHeroLottie.json')
+      .then((response) => {
+        if (!response.ok) throw new Error('Lottie file not found');
+        return response.json();
+      })
+      .then((data) => setLottieData(data))
+      .catch((error) => console.error('Failed to load Lottie file:', error));
+
     console.log('Home component mounted');
     const image = document.querySelector('.fyve-image');
     if (image) {
@@ -121,7 +131,7 @@ const Home = () => {
           </div>
         </div>
         <div className="lottie-container">
-          <Lottie animationData={FYVEHeroLottie} loop={true} />
+          {lottieData && <Lottie animationData={lottieData} loop={true} />}
         </div>
       </div>
     </div>
