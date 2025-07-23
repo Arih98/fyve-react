@@ -9,19 +9,22 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 const Home = () => {
   const lottieRef = useRef();
   const hasAnimated = useRef(false);
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.5 });
+  const introDone = useRef(false);
+  const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
 
   useEffect(() => {
-    if (!lottieRef.current) {
-      console.error('Lottie ref not available');
-      return;
-    }
-    if (inView) {
-      lottieRef.current.goToAndPlay(0, true);
-      console.log('Lottie played on enter');
+    if (lottieRef.current) {
+      if (inView) {
+        if (introDone.current) {
+          lottieRef.current.play();
+          console.log('Lottie played on re-enter');
+        }
+      } else {
+        lottieRef.current.goToAndStop(0, true);
+        console.log('Lottie reset to frame 0');
+      }
     } else {
-      lottieRef.current.goToAndStop(0, true);
-      console.log('Lottie reset to start frame');
+      console.error('Lottie ref not available');
     }
   }, [inView]);
 
@@ -78,7 +81,11 @@ const Home = () => {
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
         gsap.set('.lottie-container', { autoAlpha: 0 });
-        gsap.fromTo('.fyve-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
+        gsap.fromTo(
+          '.fyve-letter',
+          { y: '100%' },
+          { y: 0, duration: 1.3, ease: 'expo.inOut' }
+        );
         gsap.to('.fyve-text:first-child', { x: '-0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
         gsap.to('.fyve-text:last-child', { x: '0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
         gsap.to('.fyve-image-container', { width: '18vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
@@ -91,28 +98,34 @@ const Home = () => {
         gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
         gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
         gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
-        gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
+        gsap.fromTo(
+          '.london-letter',
+          { y: '100%' },
+          { y: 0, duration: 1.3, ease: 'expo.inOut' }
+        );
         gsap.to('.london-mask .london-text:first-child', { x: '-8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:last-child', { x: '8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-        gsap.to('.lottie-container', {
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'expo.inOut',
+        gsap.to('.lottie-container', { 
+          autoAlpha: 1, 
+          duration: 0.8, 
+          ease: 'expo.inOut', 
           delay: 2.8,
           onStart: () => {
-            lottieRef.current?.goToAndPlay(FYVEHeroLottie.ip, true);
+            lottieRef.current?.play();
             console.log('Lottie internal animation played first time');
           },
           onComplete: () => {
+            introDone.current = true;
             console.log('Lottie container animation completed');
-            hasAnimated.current = true;
           }
         });
       }
     });
+
+    hasAnimated.current = true;
 
     return () => ctx.revert();
   }, []);
