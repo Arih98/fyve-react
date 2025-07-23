@@ -69,7 +69,7 @@ const Home = () => {
       gsap.to('.fyve-text:last-child', { x: '100vw', duration: 1.04, ease: 'expo.inOut', delay: 2.6 });
       gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 1.04, ease: 'expo.inOut', delay: 2.6 });
       gsap.set('.mobile-header', { opacity: 0 });
-      gsap.to('.mobile-header', { opacity: 1, duration: 0.65, ease: 'expo.inOut', delay: 3.64 });
+      gsap.to('.mobile-header', { opacity: 1, duration: 0.15, ease: 'expo.inOut', delay: 3.64 });
       gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
       gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
       gsap.fromTo(
