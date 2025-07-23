@@ -138,7 +138,7 @@
   width: 100vw;
   height: 100vh;
   opacity: 0; /* Revert to original for GSAP animation */
-  z-index: 0; /* Revert to original */
+  z-index: 2; /* Revert to original */
   display: flex;
   justify-content: center; /* Ensure SVG is centered */
   align-items: center; /* Vertically center if needed */
