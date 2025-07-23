@@ -104,7 +104,7 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  transform: translateX(4.3vw) translateY(-3.41vw) !important;
+  transform: translateX(1.3vw) translateY(-1.41vw) !important;
 }
 
 .london-text {
