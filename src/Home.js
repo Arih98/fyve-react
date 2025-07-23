@@ -13,6 +13,18 @@ const Home = () => {
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
 
   useEffect(() => {
+    const lottie = lottieRef.current;
+    if (lottie) {
+      const onComplete = () => {
+        gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+        console.log('Lottie completed, fading in LONDON');
+      };
+      lottie.addEventListener('complete', onComplete);
+      return () => lottie.removeEventListener('complete', onComplete);
+    }
+  }, []);
+
+  useEffect(() => {
     if (lottieRef.current) {
       if (inView) {
         if (introDone.current) {
@@ -21,6 +33,7 @@ const Home = () => {
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
+        gsap.set('.london-below', { opacity: 0 });
         console.log('Lottie reset to frame 0');
       }
     } else {
@@ -73,6 +86,7 @@ const Home = () => {
         gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center' });
         gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center' });
         gsap.set('.lottie-container', { opacity: 1 });
+        gsap.set('.london-below', { opacity: 1 });
       } else {
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
@@ -81,6 +95,7 @@ const Home = () => {
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
         gsap.set('.lottie-container', { autoAlpha: 0 });
+        gsap.set('.london-below', { opacity: 0 });
         gsap.fromTo(
           '.fyve-letter',
           { y: '100%' },
@@ -168,6 +183,7 @@ const Home = () => {
             style={{ width: '100%', height: '100%' }} 
           />
         </div>
+        <div className="london-below">LONDON</div>
       </div>
     </div>
   );

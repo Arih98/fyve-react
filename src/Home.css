@@ -143,3 +143,17 @@
   justify-content: center;
   align-items: center;
 }
+
+.london-below {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 700 !important;
+  font-size: 2vw;
+  text-transform: uppercase;
+  color: #4A494A;
+  opacity: 0;
+  z-index: 3;
+}
