@@ -105,7 +105,7 @@
   gap: 0;
   z-index: 1;
   transform: translateY(-2.3vw) !important;
-  transform: translateX(3vw);
+  transform: translateX(13vw) !important;
 }
 
 .london-text {
