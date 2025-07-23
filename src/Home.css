@@ -133,9 +133,13 @@
 .lottie-container {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
   width: 100vw;
   height: 100vh;
-  opacity: 1; /* Temporary for testing */
-  z-index: 2; /* Higher than other elements */
+  opacity: 0; /* Revert to original for GSAP animation */
+  z-index: 0; /* Revert to original */
+  display: flex;
+  justify-content: center; /* Ensure SVG is centered */
+  align-items: center; /* Vertically center if needed */
 }
