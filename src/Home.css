@@ -20,12 +20,11 @@
 
 .fyve-wrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;               /* top:0; right:0; bottom:0; left:0 */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center; /* vertical centering */
+  align-items: center;     /* horizontal centering */
   gap: 2vw;
 }
 
@@ -66,7 +65,7 @@
 }
 
 .fyve-image-container {
-  height: 12.09vw;
+  height: 12.1vw;
   width: 0;
   position: relative;
   overflow: hidden;
