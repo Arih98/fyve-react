@@ -75,7 +75,7 @@ const Home = () => {
       gsap.fromTo(
         '.london-letter',
         { y: '100%' },
-        { y: 0, duration: 1.3, ease: 'expo.inOut', delay: 0.8 }
+        { y: 0, duration: 1.3, ease: 'expo.inOut', delay: 0.4 }
       );
       gsap.to('.london-mask .london-text:first-child', { x: '-8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.london-mask .london-text:last-child', { x: '8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
