@@ -62,7 +62,6 @@
 
 .fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
   margin-right: -0.08em;
-  margin-left: 0.08em;
 }
 
 .fyve-image-container {
@@ -105,7 +104,7 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  transform: translateY(-2vw);
+  transform: translateY(-12vw);
 }
 
 .london-text {
