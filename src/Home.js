@@ -12,17 +12,7 @@ const Home = () => {
   const introDone = useRef(false);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
 
-  useEffect(() => {
-    const lottie = lottieRef.current;
-    if (lottie) {
-      const onComplete = () => {
-        gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-        console.log('Lottie completed, fading in LONDON');
-      };
-      lottie.addEventListener('complete', onComplete);
-      return () => lottie.removeEventListener('complete', onComplete);
-    }
-  }, []);
+  const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -30,6 +20,10 @@ const Home = () => {
         if (introDone.current) {
           lottieRef.current.play();
           console.log('Lottie played on re-enter');
+          setTimeout(() => {
+            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+            console.log('Fading in LONDON after re-enter');
+          }, animationDuration);
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
@@ -131,6 +125,10 @@ const Home = () => {
           onStart: () => {
             lottieRef.current?.play();
             console.log('Lottie internal animation played first time');
+            setTimeout(() => {
+              gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+              console.log('Fading in LONDON after initial play');
+            }, animationDuration);
           },
           onComplete: () => {
             introDone.current = true;
