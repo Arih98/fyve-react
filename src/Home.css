@@ -53,7 +53,6 @@
   flex: 1;
   text-align: center;
   z-index: 2;
-  transform: translateY(-1.11vw) !important;
 }
 
 .fyve-letter {
@@ -104,7 +103,6 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  transform: translateX(1.3vw) translateY(-1.41vw) !important;
 }
 
 .london-text {
