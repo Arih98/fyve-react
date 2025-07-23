@@ -6,6 +6,10 @@
   font-display: swap;
 }
 
+.mobile-header {
+  opacity: 0;
+}
+
 .home-page {
   position: fixed;
   top: 0;
