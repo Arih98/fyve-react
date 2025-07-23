@@ -59,8 +59,8 @@ const Home = () => {
         { y: '100%' },
         { y: 0, duration: 0.8, ease: 'expo.inOut' }
       );
-      gsap.to('.london-mask .london-text:first-child', { x: '-5vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.london-mask .london-text:last-child', { x: '5vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.london-mask .london-text:first-child', { x: '-8vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.london-mask .london-text:last-child', { x: '8vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
     }
