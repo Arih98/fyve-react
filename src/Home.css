@@ -132,11 +132,11 @@
 
 .lottie-container {
   position: absolute;
-  top: -15vh;
+  top: -11vh;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  height: 770px;
+  height: 780px;
   visibility: hidden;
   z-index: 2;
   display: flex;
