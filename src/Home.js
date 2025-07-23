@@ -26,7 +26,7 @@ const Home = () => {
       gsap.set('.fyve-letter', { y: 0 });
       gsap.set('.fyve-text:first-child', { x: '-100vw' });
       gsap.set('.fyve-text:last-child', { x: '100vw' });
-      gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
+      gsap.set('.fyve-image-container', { width: '100vw', height: '100%' });
       gsap.set('.mobile-header', { opacity: 1 });
       gsap.set('.london-mask', { visibility: 'visible' });
       gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center' });
