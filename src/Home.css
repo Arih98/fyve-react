@@ -1,26 +1,7 @@
-@font-face {
-  font-family: 'Quasimoda';
-  src: url('/fonts/Quasimoda-Thin.woff2') format('woff2');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-.home-page {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #fff;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-.fyve-mask {
+/* Home.css (add these at the end) */
+.london-mask {
   position: absolute;
-  top: 50%;
+  top: calc(50% + 8vw);
   left: 50%;
   transform: translate(-50%, -50%);
   visibility: hidden;
@@ -28,13 +9,13 @@
   align-items: center;
   flex-direction: row;
   gap: 0;
-  z-index: 1; /* Ensure mask stays above image */
+  z-index: 2;
 }
 
-.fyve-text {
+.london-text {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 200 !important;
-  font-size: 13.5vw;
+  font-size: 2vw;
   text-transform: uppercase;
   color: #4A494A;
   white-space: nowrap;
@@ -44,47 +25,10 @@
   padding: 0;
   position: relative;
   overflow: hidden;
-  flex: 1; /* Equal width for text elements */
+  flex: 1;
   text-align: center;
-  z-index: 2; /* Text above image */
 }
 
-.fyve-letter {
+.london-letter {
   display: inline-block;
-}
-
-.fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
-  margin-right: -0.08em;
-}
-
-.fyve-image-container {
-  height: 10vw;
-  width: 0; /* Start with zero width for animation */
-  position: relative;
-  overflow: hidden;
-  z-index: 0; /* Image below text */
-}
-
-.fyve-image {
-  width: 100vw; /* Full viewport width */
-  height: 100%;
-  object-fit: cover;
-}
-
-.mask-left,
-.mask-right {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background: #fff;
-  z-index: 1; /* Masks above image but below text */
-}
-
-.mask-left {
-  left: 0;
-}
-
-.mask-right {
-  right: 0;
 }
