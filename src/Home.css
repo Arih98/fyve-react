@@ -104,7 +104,7 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  transform: translateY(-3.5vw);
+  transform: translateY(-13.5vw);
   transform: translateX(2vw);
 }
 
@@ -115,7 +115,7 @@
   text-transform: uppercase;
   color: #4A494A;
   white-space: nowrap;
-  letter-spacing: 3vw;
+  letter-spacing: 2.6vw;
   line-height: 1;
   margin: 0;
   padding: 0;
