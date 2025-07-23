@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
+import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
@@ -8,6 +9,9 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 let hasAnimated = false;
 
 const Home = () => {
+  const lottieRef = useRef();
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.5 });
+
   useEffect(() => {
     console.log('Home component mounted');
     console.log('Lottie data:', FYVEHeroLottie);
@@ -97,7 +101,16 @@ const Home = () => {
       });
     }
     hasAnimated = true;
-  }, []);
+
+    if (inView && lottieRef.current) {
+      lottieRef.current.play();
+      console.log('Lottie played on scroll into view');
+    } else if (!inView) {
+      console.log('Section not in view');
+    } else if (!lottieRef.current) {
+      console.error('Lottie ref not found');
+    }
+  }, [inView]);
 
   return (
     <div className="home-page">
@@ -128,8 +141,14 @@ const Home = () => {
             {'DON'.split('').map((l, i) => <span key={i+3} className="london-letter">{l}</span>)}
           </div>
         </div>
-        <div className="lottie-container">
-          <Lottie animationData={FYVEHeroLottie} loop={true} style={{ width: '100%', height: '100%' }} />
+        <div ref={ref} className="lottie-container">
+          <Lottie 
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie} 
+            loop={false} 
+            autoplay={false} 
+            style={{ width: '100%', height: '100%' }} 
+          />
         </div>
       </div>
     </div>
