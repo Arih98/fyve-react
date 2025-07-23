@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
+import Lottie from 'lottie-react';
 import HomeHeader from './HomeHeader';
 import './Home.css';
+import FYVEHeroLottie from '/api/Uploads/FYVEHeroLottie.json';
 
 let hasAnimated = false;
 
@@ -48,6 +50,7 @@ const Home = () => {
       gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
       gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center' });
       gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center' });
+      gsap.set('.lottie-container', { opacity: 1 });
     } else {
       gsap.set('.fyve-mask', { visibility: 'visible' });
       gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
@@ -55,6 +58,7 @@ const Home = () => {
       gsap.set('.fyve-image', { visibility: 'visible' });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
+      gsap.set('.lottie-container', { opacity: 0 });
       gsap.fromTo(
         '.fyve-letter',
         { y: '100%' },
@@ -82,6 +86,7 @@ const Home = () => {
       gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+      gsap.to('.lottie-container', { opacity: 1, duration: 0.8, ease: 'expo.inOut', delay: 2.8 });
     }
     hasAnimated = true;
   }, []);
@@ -114,6 +119,9 @@ const Home = () => {
           <div className="london-text">
             {'DON'.split('').map((l, i) => <span key={i+3} className="london-letter">{l}</span>)}
           </div>
+        </div>
+        <div className="lottie-container">
+          <Lottie animationData={FYVEHeroLottie} loop={true} />
         </div>
       </div>
     </div>
