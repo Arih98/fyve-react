@@ -104,7 +104,7 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  transform: translateY(-13.5vw) !important;
+  transform: translateY(-3vw) !important;
   transform: translateX(2vw);
 }
 
