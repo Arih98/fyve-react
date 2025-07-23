@@ -132,7 +132,7 @@
 
 .lottie-container {
   position: absolute;
-  top: -5vh;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
@@ -148,8 +148,7 @@
 .london-below {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 600 !important;
-  letter-spacing: 3.8vw;
-  font-size: 1.5vw;
+  font-size: 2.5%;
   text-transform: uppercase;
   color: #fff;
   opacity: 0;
