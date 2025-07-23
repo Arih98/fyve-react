@@ -10,6 +10,7 @@ let hasAnimated = false;
 const Home = () => {
   useEffect(() => {
     console.log('Home component mounted');
+    console.log('Lottie data:', FYVEHeroLottie);
     const image = document.querySelector('.fyve-image');
     if (image) {
       console.log('Image element found:', image);
@@ -58,7 +59,7 @@ const Home = () => {
       gsap.set('.fyve-image', { visibility: 'visible' });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
-      gsap.set('.lottie-container', { opacity: 0 });
+      gsap.set('.lottie-container', { autoAlpha: 0 }); // Use autoAlpha to ensure hidden state
       gsap.fromTo(
         '.fyve-letter',
         { y: '100%' },
@@ -86,7 +87,14 @@ const Home = () => {
       gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.lottie-container', { opacity: 1, duration: 0.8, ease: 'expo.inOut', delay: 2.8 });
+      gsap.to('.lottie-container', { 
+        autoAlpha: 1, 
+        duration: 0.8, 
+        ease: 'expo.inOut', 
+        delay: 2.8,
+        onStart: () => console.log('Lottie animation started'),
+        onComplete: () => console.log('Lottie animation completed')
+      });
     }
     hasAnimated = true;
   }, []);
@@ -121,7 +129,7 @@ const Home = () => {
           </div>
         </div>
         <div className="lottie-container">
-          <Lottie animationData={FYVEHeroLottie} loop={true} />
+          <Lottie animationData={FYVEHeroLottie} loop={true} style={{ width: '100%', height: '100%' }} />
         </div>
       </div>
     </div>
