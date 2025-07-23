@@ -20,10 +20,10 @@ const Home = () => {
         if (introDone.current) {
           lottieRef.current.play();
           console.log('Lottie played on re-enter');
-          lottieRef.current.onComplete = () => {
+          setTimeout(() => {
             gsap.to('.london-below', { opacity: 1, duration: 0.5 });
             console.log('Fading in LONDON after re-enter');
-          };
+          }, animationDuration);
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
@@ -125,10 +125,10 @@ const Home = () => {
           onStart: () => {
             lottieRef.current?.play();
             console.log('Lottie internal animation played first time');
-            lottieRef.current.onComplete = () => {
+            setTimeout(() => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
               console.log('Fading in LONDON after initial play');
-            };
+            }, animationDuration);
           },
           onComplete: () => {
             introDone.current = true;
