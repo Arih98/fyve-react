@@ -20,12 +20,11 @@
 
 .fyve-wrapper {
   position: absolute;
-  inset: 0;               /* top:0; right:0; bottom:0; left:0 */
-  display: flex;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   flex-direction: column;
-  justify-content: center; /* vertical centering */
-  align-items: center;     /* horizontal centering */
-  gap: 2vw;
+  align-items: center;
 }
 
 .fyve-mask {
