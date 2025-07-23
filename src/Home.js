@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
+import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
@@ -8,6 +9,9 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 let hasAnimated = false;
 
 const Home = () => {
+  const lottieRef = useRef();
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.5 });
+
   useEffect(() => {
     console.log('Home component mounted');
     console.log('Lottie data:', FYVEHeroLottie);
@@ -59,7 +63,6 @@ const Home = () => {
       gsap.set('.fyve-image', { visibility: 'visible' });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
-      gsap.set('.lottie-container', { autoAlpha: 0 }); // Use autoAlpha to ensure hidden state
       gsap.fromTo(
         '.fyve-letter',
         { y: '100%' },
@@ -87,17 +90,13 @@ const Home = () => {
       gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.lottie-container', { 
-        autoAlpha: 1, 
-        duration: 0.8, 
-        ease: 'expo.inOut', 
-        delay: 2.8,
-        onStart: () => console.log('Lottie animation started'),
-        onComplete: () => console.log('Lottie animation completed')
-      });
     }
     hasAnimated = true;
-  }, []);
+
+    if (inView && lottieRef.current) {
+      lottieRef.current.play();
+    }
+  }, [inView]);
 
   return (
     <div className="home-page">
@@ -128,8 +127,14 @@ const Home = () => {
             {'DON'.split('').map((l, i) => <span key={i+3} className="london-letter">{l}</span>)}
           </div>
         </div>
-        <div className="lottie-container">
-          <Lottie animationData={FYVEHeroLottie} loop={true} style={{ width: '100%', height: '100%' }} />
+        <div ref={ref} className="lottie-container">
+          <Lottie
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie}
+            loop={false}
+            autoplay={false}
+            style={{ width: '100%', height: '100%' }}
+          />
         </div>
       </div>
     </div>
