@@ -88,3 +88,38 @@
 .mask-right {
   right: 0;
 }
+
+/* Home.css (add at the end of the file) */
+.london-mask {
+  position: absolute;
+  top: calc(50% + 7vw);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0;
+  z-index: 1;
+}
+
+.london-text {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 200 !important;
+  font-size: 2vw;
+  text-transform: uppercase;
+  color: #4A494A;
+  white-space: nowrap;
+  letter-spacing: 0;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  text-align: center;
+}
+
+.london-letter {
+  display: inline-block;
+}
