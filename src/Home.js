@@ -180,8 +180,8 @@ const Home = () => {
             autoplay={false} 
             style={{ width: '100%', height: '100%' }} 
           />
+          <div className="london-below">LONDON</div>
         </div>
-        <div className="london-below">LONDON</div>
       </div>
     </div>
   );
