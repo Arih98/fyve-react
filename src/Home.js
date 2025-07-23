@@ -15,7 +15,7 @@ const Home = () => {
     if (lottieRef.current) {
       if (inView) {
         if (hasAnimated.current) {
-          lottieRef.current.play();
+          lottieRef.current.goToAndPlay(FYVEHeroLottie.ip, true);
           console.log('Lottie played on re-enter');
         }
       } else {
@@ -113,15 +113,16 @@ const Home = () => {
           ease: 'expo.inOut', 
           delay: 2.8,
           onStart: () => {
-            lottieRef.current?.play();
+            lottieRef.current?.goToAndPlay(FYVEHeroLottie.ip, true);
             console.log('Lottie internal animation played first time');
           },
-          onComplete: () => console.log('Lottie container animation completed')
+          onComplete: () => {
+            console.log('Lottie container animation completed');
+            hasAnimated.current = true;
+          }
         });
       }
     });
-
-    hasAnimated.current = true;
 
     return () => ctx.revert();
   }, []);
