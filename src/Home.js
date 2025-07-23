@@ -77,8 +77,8 @@ const Home = () => {
         { y: '100%' },
         { y: 0, duration: 0.8, ease: 'expo.inOut' }
       );
-      gsap.to('.london-mask .london-text:first-child', { x: '-9.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.london-mask .london-text:last-child', { x: '9.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.london-mask .london-text:first-child', { x: '-8.5vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+      gsap.to('.london-mask .london-text:last-child', { x: '8.5vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
