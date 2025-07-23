@@ -58,30 +58,30 @@ const Home = () => {
       gsap.fromTo(
         '.fyve-letter',
         { y: '100%' },
-        { y: 0, duration: 0.8, ease: 'expo.inOut' }
+        { y: 0, duration: 0.96, ease: 'expo.inOut' }
       );
-      gsap.to('.fyve-text:first-child', { x: '-0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-      gsap.to('.fyve-text:last-child', { x: '0.3vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-      gsap.to('.fyve-image-container', { width: '18vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
+      gsap.to('.fyve-text:first-child', { x: '-0.3vw', duration: 0.96, ease: 'expo.inOut', delay: 1.44 });
+      gsap.to('.fyve-text:last-child', { x: '0.3vw', duration: 0.96, ease: 'expo.inOut', delay: 1.44 });
+      gsap.to('.fyve-image-container', { width: '18vw', duration: 0.96, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.mask-left', { x: '-100%', duration: 0.96, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.mask-right', { x: '100%', duration: 0.96, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.96, ease: 'expo.inOut', delay: 2.4 });
+      gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.96, ease: 'expo.inOut', delay: 2.4 });
+      gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.96, ease: 'expo.inOut', delay: 2.4 });
       gsap.set('.mobile-header', { opacity: 0 });
-      gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
+      gsap.to('.mobile-header', { opacity: 1, duration: 0.6, ease: 'expo.inOut', delay: 3.36 });
       gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
       gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
       gsap.fromTo(
         '.london-letter',
         { y: '100%' },
-        { y: 0, duration: 0.8, ease: 'expo.inOut' }
+        { y: 0, duration: 0.96, ease: 'expo.inOut' }
       );
-      gsap.to('.london-mask .london-text:first-child', { x: '-8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.london-mask .london-text:last-child', { x: '8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-      gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+      gsap.to('.london-mask .london-text:first-child', { x: '-8.9vw', duration: 0.96, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.london-mask .london-text:last-child', { x: '8.9vw', duration: 0.96, ease: 'expo.inOut', delay: 1.2 });
+      gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.96, ease: 'expo.inOut', delay: 2.4 });
+      gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.96, ease: 'expo.inOut', delay: 2.4 });
+      gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.96, ease: 'expo.inOut', delay: 2.4 });
     }
     hasAnimated = true;
   }, []);
