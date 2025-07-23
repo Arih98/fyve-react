@@ -1,4 +1,3 @@
-// Home.js
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import HomeHeader from './HomeHeader';
@@ -31,6 +30,7 @@ const Home = () => {
       gsap.set('.london-mask', { visibility: 'visible' });
       gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center' });
       gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center' });
+      gsap.set('.london-mask', { height: 0 });
     } else {
       gsap.set('.fyve-mask', { visibility: 'visible' });
       gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
@@ -63,6 +63,7 @@ const Home = () => {
       gsap.to('.london-mask .london-text:last-child', { x: '8vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
       gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
+      gsap.set('.london-mask', { height: 0, delay: 2.8 });
     }
     hasAnimated = true;
   }, []);
