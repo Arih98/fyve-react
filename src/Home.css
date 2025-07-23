@@ -104,13 +104,13 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  transform: translateY(-2vw);
+  transform: translateY(-3.5vw);
   transform: translateX(2vw);
 }
 
 .london-text {
   font-family: 'Quasimoda', sans-serif;
-  font-weight: 500 !important;
+  font-weight: 700 !important;
   font-size: 0.9vw;
   text-transform: uppercase;
   color: #4A494A;
