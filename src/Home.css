@@ -66,7 +66,7 @@
 }
 
 .fyve-image-container {
-  height: 12.2vw;
+  height: 12.5vw;
   width: 0;
   position: relative;
   overflow: hidden;
@@ -74,12 +74,9 @@
 }
 
 .fyve-image {
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100vw;
+  height: 100%;
   object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
 .mask-left,
