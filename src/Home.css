@@ -136,7 +136,8 @@
   left: 50%;
   transform: translateX(-50%);
   width: calc(100vw - 60px); /* Full width minus 30px padding */
-  height: 80vh; /* Reduced height for better scaling */
+  max-height: 80vh; /* Allow shrinking but cap height */
+  min-height: 50vh; /* Prevent container from becoming too small */
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -162,6 +163,7 @@
 /* Ensure Lottie animation scales correctly */
 .lottie-container > * {
   width: 100%;
-  height: 100%;
+  height: auto; /* Prioritize width scaling */
+  min-height: 40vh; /* Prevent animation from becoming too small */
   object-fit: contain; /* Maintain aspect ratio */
 }
