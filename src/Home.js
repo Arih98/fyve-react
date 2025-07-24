@@ -37,6 +37,7 @@ const Home = () => {
   }, [inView]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     document.body.style.overflow = 'hidden';
     console.log('Home component mounted');
     console.log('Lottie data:', FYVEHeroLottie);
@@ -132,7 +133,7 @@ const Home = () => {
               console.log('Fading in LONDON after initial play');
             }, londonFadeDelay);
             setTimeout(() => {
-              document.body.style.overflow = 'visible';
+              document.body.style.overflow = 'auto';
             }, animationDuration + 500);
           },
           onComplete: () => {
