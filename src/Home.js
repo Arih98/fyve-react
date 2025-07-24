@@ -13,7 +13,7 @@ const Home = () => {
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
 
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
-  const londonFadeDelay = animationDuration * 0.5;
+  const londonFadeDelay = animationDuration * 0.3;
 
   useEffect(() => {
     if (lottieRef.current) {
