@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
+import './IntroAnimations.css';
 
 const IntroAnimations = () => {
   const lottieRef = useRef();
@@ -30,8 +31,12 @@ const IntroAnimations = () => {
   }, [inView]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    document.body.style.overflow = 'hidden';
+    const navEntries = performance.getEntriesByType('navigation');
+    const navType = navEntries.length > 0 ? navEntries[0].type : 'navigate';
+    if (navType === 'back_forward') {
+      hasAnimated.current = true;
+    }
+
     const image = document.querySelector('.fyve-image');
     if (image) {
       image.onerror = () => console.error('Image failed to load:', image.src);
@@ -53,6 +58,7 @@ const IntroAnimations = () => {
       const londonY = -1.41;
 
       if (hasAnimated.current) {
+        document.body.style.overflow = 'auto';
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
         gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
@@ -69,6 +75,8 @@ const IntroAnimations = () => {
         gsap.set('.lottie-container', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'hidden';
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
         gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
