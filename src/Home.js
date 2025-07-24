@@ -1,5 +1,5 @@
-// Home.js
-import React, { useEffect, useRef } from 'react';
+// Modified Home.js
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
@@ -8,60 +8,63 @@ import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import HomePageAnimations from './HomePageAnimations';
 
-export const loadId = Math.random().toString();
-
 const Home = () => {
   const lottieRef = useRef();
   const introDone = useRef(false);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [londonHeight, setLondonHeight] = useState(0);
 
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
+
+  const fyveTextY = -1.11;
+  const londonX = 1.3;
+  const londonY = -1.41;
+
+  useEffect(() => {
+    console.log('Lottie data:', FYVEHeroLottie);
+
+    const navEntry = performance.getEntriesByType('navigation')[0];
+    const navType = navEntry ? navEntry.type : 'navigate';
+    const shouldAnimate = navType !== 'back_forward';
+    setIsAnimating(shouldAnimate);
+
+    if (shouldAnimate) {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = 'hidden';
+      gsap.set('.lottie-container', { autoAlpha: 0 });
+      gsap.set('.london-below', { opacity: 0 });
+      gsap.set('.mobile-header', { opacity: 0 });
+    } else {
+      document.body.style.overflow = 'auto';
+      gsap.set('.lottie-container', { autoAlpha: 1 });
+      gsap.set('.london-below', { opacity: 1 });
+      gsap.set('.mobile-header', { opacity: 1 });
+      introDone.current = true;
+    }
+  }, []);
 
   useEffect(() => {
     if (lottieRef.current) {
       if (inView) {
         if (introDone.current) {
           lottieRef.current.play();
-          console.log('Lottie played on re-enter');
           setTimeout(() => {
             gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-            console.log('Fading in LONDON after re-enter');
-          }, londonFadeDelay);
+          },londonFadeDelay);
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
         gsap.set('.london-below', { opacity: 0 });
-        console.log('Lottie reset to frame 0');
       }
-    } else {
-      console.error('Lottie ref not available');
     }
   }, [inView]);
 
-  useEffect(() => {
-    console.log('Home component mounted');
-    console.log('Lottie data:', FYVEHeroLottie);
-
-    const playedId = sessionStorage.getItem('introPlayedId') || '';
-    const shouldAnimate = playedId !== loadId;
-
-    const ctx = gsap.context(() => {
-      if (!shouldAnimate) {
-        gsap.set('.mobile-header', { opacity: 1 });
-        gsap.set('.lottie-container', { autoAlpha: 1 });
-        gsap.set('.london-below', { opacity: 1 });
-        introDone.current = true;
-      }
-    });
-
-    return () => ctx.revert();
-  }, []);
-
-  const handleIntroComplete = () => {
-    gsap.to('.lottie-container', { 
-      autoAlpha: 1, 
-      duration: 0.8, 
+  const handleMasksComplete = () => {
+    gsap.to('.lottie-container', {
+      autoAlpha: 1,
+      duration: 0.8,
       ease: 'expo.inOut',
       onStart: () => {
         lottieRef.current?.play();
@@ -86,7 +89,15 @@ const Home = () => {
     <div className="home-page">
       <HomeHeader />
       <div className="fyve-wrapper">
-        <HomePageAnimations onIntroComplete={handleIntroComplete} />
+        <HomePageAnimations
+          isAnimating={isAnimating}
+          onMasksComplete={handleMasksComplete}
+          fyveTextY={fyveTextY}
+          londonX={londonX}
+          londonY={londonY}
+          londonHeight={londonHeight}
+          londonFadeDelay={londonFadeDelay}
+        />
         <div ref={ref} className="lottie-container">
           <Lottie 
             lottieRef={lottieRef}
