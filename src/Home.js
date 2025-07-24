@@ -41,6 +41,7 @@ const Home = () => {
       gsap.set('.lottie-container', { autoAlpha: 1 });
       gsap.set('.london-below', { opacity: 1 });
       gsap.set('.mobile-header', { opacity: 1 });
+      lottieRef.current?.goToAndStop(FYVEHeroLottie.op, true);
       introDone.current = true;
     }
   }, []);
@@ -49,14 +50,26 @@ const Home = () => {
     if (lottieRef.current) {
       if (inView) {
         if (introDone.current) {
-          lottieRef.current.play();
-          setTimeout(() => {
-            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-          },londonFadeDelay);
+          const current = lottieRef.current.currentFrame;
+          const total = lottieRef.current.totalFrames;
+          lottieRef.current.playSegments([current, total], true);
+
+          const london = document.querySelector('.london-below');
+          const currentOpacity = gsap.getProperty(london, 'opacity');
+          if (currentOpacity === 0) {
+            const fadeFrame = FYVEHeroLottie.ip + 0.3 * (FYVEHeroLottie.op - FYVEHeroLottie.ip);
+            if (current < fadeFrame) {
+              const delay = (fadeFrame - current) / FYVEHeroLottie.fr * 1000;
+              setTimeout(() => {
+                gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+              }, delay);
+            } else {
+              gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+            }
+          }
         }
       } else {
-        lottieRef.current.goToAndStop(0, true);
-        gsap.set('.london-below', { opacity: 0 });
+        lottieRef.current.pause();
       }
     }
   }, [inView]);
