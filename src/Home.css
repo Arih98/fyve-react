@@ -132,16 +132,16 @@
 
 .lottie-container {
   position: absolute;
-  top: -11vh;
+  bottom: 0; /* Align to bottom of page */
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  height: 80vh; /* Scales with viewport height */
+  height: 80vh; /* Responsive height */
   visibility: hidden;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-end; /* Align contents to bottom */
   align-items: center;
 }
 
@@ -154,5 +154,5 @@
   color: #fff;
   opacity: 0;
   z-index: 3;
-  margin-top: 0;
+  margin-top: 0; /* Remove margin to avoid gap */
 }
