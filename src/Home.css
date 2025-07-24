@@ -157,6 +157,8 @@
   z-index: 3;
   margin: 0;
   padding: 0;
+  width: 100%; /* Ensure text spans container */
+  text-align: center; /* Center text horizontally */
 }
 
 /* Ensure Lottie animation scales to container */
