@@ -1,3 +1,4 @@
+// HomePageAnimations.js
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import './HomepageAnimations.css';
@@ -51,16 +52,7 @@ const HomePageAnimations = ({ isAnimating, onMasksComplete, fyveTextY, londonX, 
         gsap.to('.london-mask .london-text:last-child', { x: '8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
-        gsap.to('.london-mask', {
-          marginTop: `-${londonHeight}vw`,
-          y: `${londonY + londonHeight}vw`,
-          duration: 0.8,
-          ease: 'expo.inOut',
-          delay: 2,
-          onComplete: () => {
-            if (isAnimating) onMasksComplete();
-          }
-        });
+        gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: onMasksComplete });
       }
     });
 
