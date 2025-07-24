@@ -1,4 +1,3 @@
-// Modified Home.js
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
@@ -11,6 +10,8 @@ import HomePageAnimations from './HomePageAnimations';
 const Home = () => {
   const lottieRef = useRef();
   const introDone = useRef(false);
+  const hasPlayedScrollSegment = useRef(false);
+  const prevScrollY = useRef(0);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
   const [isAnimating, setIsAnimating] = useState(false);
   const [londonHeight, setLondonHeight] = useState(0);
@@ -23,8 +24,6 @@ const Home = () => {
   const londonY = -1.41;
 
   useEffect(() => {
-    console.log('Lottie data:', FYVEHeroLottie);
-
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry ? navEntry.type : 'navigate';
     const shouldAnimate = navType !== 'back_forward';
@@ -47,31 +46,41 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (lottieRef.current) {
-      if (inView) {
-        if (introDone.current) {
-          const current = lottieRef.current.currentFrame;
-          const total = lottieRef.current.totalFrames;
-          lottieRef.current.playSegments([current, total], true);
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const direction = currentY < prevScrollY.current ? 'up' : 'down';
+      prevScrollY.current = currentY;
 
-          const london = document.querySelector('.london-below');
-          const currentOpacity = gsap.getProperty(london, 'opacity');
-          if (currentOpacity === 0) {
-            const fadeFrame = FYVEHeroLottie.ip + 0.3 * (FYVEHeroLottie.op - FYVEHeroLottie.ip);
-            if (current < fadeFrame) {
-              const delay = (fadeFrame - current) / FYVEHeroLottie.fr * 1000;
-              setTimeout(() => {
-                gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-              }, delay);
-            } else {
+      if (inView && introDone.current && direction === 'up' && !hasPlayedScrollSegment.current) {
+        const current = lottieRef.current?.currentFrame || 0;
+        const total = lottieRef.current?.totalFrames || FYVEHeroLottie.op;
+        lottieRef.current?.playSegments([current, total], true);
+
+        const london = document.querySelector('.london-below');
+        const currentOpacity = gsap.getProperty(london, 'opacity');
+        if (currentOpacity === 0) {
+          const fadeFrame = FYVEHeroLottie.ip + 0.3 * (FYVEHeroLottie.op - FYVEHeroLottie.ip);
+          if (current < fadeFrame) {
+            const delay = (fadeFrame - current) / FYVEHeroLottie.fr * 1000;
+            setTimeout(() => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-            }
+            }, delay);
+          } else {
+            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
           }
         }
-      } else {
-        lottieRef.current.pause();
+
+        hasPlayedScrollSegment.current = true;
       }
-    }
+
+      if (!inView) {
+        hasPlayedScrollSegment.current = false;
+        lottieRef.current?.pause();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [inView]);
 
   const handleMasksComplete = () => {
@@ -81,10 +90,8 @@ const Home = () => {
       ease: 'expo.inOut',
       onStart: () => {
         lottieRef.current?.play();
-        console.log('Lottie internal animation played first time');
         setTimeout(() => {
           gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-          console.log('Fading in LONDON after initial play');
         }, londonFadeDelay);
         setTimeout(() => {
           document.body.style.overflow = 'auto';
@@ -92,7 +99,6 @@ const Home = () => {
       },
       onComplete: () => {
         introDone.current = true;
-        console.log('Lottie container animation completed');
       }
     });
     gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut' });
