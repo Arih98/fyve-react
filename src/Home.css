@@ -1,9 +1,14 @@
+/* Home.css */
 @font-face {
   font-family: 'Quasimoda';
   src: url('/fonts/Quasimoda-Thin.woff2') format('woff2');
   font-weight: 200;
   font-style: normal;
   font-display: swap;
+}
+
+.mobile-header {
+  opacity: 0;
 }
 
 .home-page {
@@ -14,6 +19,50 @@
   margin: 0;
   padding: 0;
   overflow: visible;
+}
+
+.fyve-wrapper {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lottie-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 60px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.london-below {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600 !important;
+  letter-spacing: 6vw;
+  font-size: 2.6vw;
+  text-transform: uppercase;
+  color: #fff;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.lottie-container > * {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .section-1 {

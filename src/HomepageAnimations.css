@@ -1,18 +1,5 @@
-.mobile-header {
-    opacity: 0;
-  }
-  
-  .fyve-wrapper {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .fyve-mask {
+/* HomePageAnimations.css */
+.fyve-mask {
     visibility: hidden;
     display: flex;
     align-items: center;
@@ -108,38 +95,4 @@
   
   .london-letter {
     display: inline-block;
-  }
-  
-  .lottie-container {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 60px);
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 0 30px;
-  }
-  
-  .london-below {
-    font-family: 'Quasimoda', sans-serif;
-    font-weight: 600 !important;
-    letter-spacing: 6vw;
-    font-size: 2.6vw;
-    text-transform: uppercase;
-    color: #fff;
-    z-index: 3;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .lottie-container > * {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
   }
