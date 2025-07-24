@@ -20,22 +20,34 @@ const Home = () => {
       if (inView) {
         if (introDone.current) {
           lottieRef.current.play();
+          console.log('Lottie played on re-enter');
           setTimeout(() => {
             gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+            console.log('Fading in LONDON after re-enter');
           }, londonFadeDelay);
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
         gsap.set('.london-below', { opacity: 0 });
+        console.log('Lottie reset to frame 0');
       }
+    } else {
+      console.error('Lottie ref not available');
     }
   }, [inView]);
 
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    console.log('Home component mounted');
+    console.log('Lottie data:', FYVEHeroLottie);
     const image = document.querySelector('.fyve-image');
     if (image) {
-      image.onerror = () => {};
-      image.onload = () => {};
+      console.log('Image element found:', image);
+      console.log('Image src:', image.src);
+      image.onerror = () => console.error('Image failed to load:', image.src);
+      image.onload = () => console.log('Image loaded successfully:', image.src);
+    } else {
+      console.error('Image element not found');
     }
 
     const ctx = gsap.context(() => {
@@ -46,6 +58,9 @@ const Home = () => {
         const londonHeightPx = londonMask.offsetHeight;
         const vwFactor = window.innerWidth / 100;
         londonHeight = londonHeightPx / vwFactor;
+        console.log('London mask height in vw:', londonHeight);
+      } else {
+        console.error('london-mask not found');
       }
 
       const fyveTextY = -1.11;
@@ -104,25 +119,25 @@ const Home = () => {
         gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-        gsap.to('.lottie-container', {
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'expo.inOut',
+        gsap.to('.lottie-container', { 
+          autoAlpha: 1, 
+          duration: 0.8, 
+          ease: 'expo.inOut', 
           delay: 2.8,
           onStart: () => {
             lottieRef.current?.play();
+            console.log('Lottie internal animation played first time');
             setTimeout(() => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+              console.log('Fading in LONDON after initial play');
             }, londonFadeDelay);
+            setTimeout(() => {
+              document.body.style.overflow = 'visible';
+            }, animationDuration + 500);
           },
           onComplete: () => {
             introDone.current = true;
-            const homePage = document.querySelector('.home-page');
-            if (homePage) {
-              homePage.style.position = 'static';
-              homePage.style.height = 'auto';
-              homePage.style.overflow = 'auto';
-            }
+            console.log('Lottie container animation completed');
           }
         });
       }
@@ -163,19 +178,19 @@ const Home = () => {
           </div>
         </div>
         <div ref={ref} className="lottie-container">
-          <Lottie
+          <Lottie 
             lottieRef={lottieRef}
-            animationData={FYVEHeroLottie}
-            loop={false}
-            autoplay={false}
-            style={{ width: '100%', height: '100%' }}
+            animationData={FYVEHeroLottie} 
+            loop={false} 
+            autoplay={false} 
+            style={{ width: '100%', height: '100%' }} 
           />
           <div className="london-below">LONDON</div>
         </div>
       </div>
-      <section className="section-1">
-        <h2>Section 1</h2>
-      </section>
+      <div className="section-1">
+        <h2>section 1</h2>
+      </div>
     </div>
   );
 };
