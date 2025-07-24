@@ -136,12 +136,12 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  height: 780px;
+  height: 80vh; /* Scales with viewport height */
   visibility: hidden;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -154,5 +154,5 @@
   color: #fff;
   opacity: 0;
   z-index: 3;
-  margin-top: 1vw;
+  margin-top: 0;
 }
