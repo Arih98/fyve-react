@@ -13,6 +13,7 @@ const Home = () => {
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
 
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
+  const londonFadeDelay = animationDuration * 0.5;
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -23,7 +24,7 @@ const Home = () => {
           setTimeout(() => {
             gsap.to('.london-below', { opacity: 1, duration: 0.5 });
             console.log('Fading in LONDON after re-enter');
-          }, animationDuration);
+          }, londonFadeDelay);
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
@@ -128,7 +129,7 @@ const Home = () => {
             setTimeout(() => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
               console.log('Fading in LONDON after initial play');
-            }, animationDuration);
+            }, londonFadeDelay);
           },
           onComplete: () => {
             introDone.current = true;
