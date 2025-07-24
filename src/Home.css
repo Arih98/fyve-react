@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Quasimoda';
+  src: url('/fonts/Quasimoda-Thin.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mobile-header {
+  opacity: 0;
+}
+
 .home-page {
   position: relative;
   width: 100%;
@@ -6,6 +18,148 @@
   margin: 0;
   padding: 0;
   overflow: visible;
+}
+
+.fyve-wrapper {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.fyve-mask {
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0;
+  z-index: 1;
+}
+
+.fyve-text {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 200 !important;
+  font-size: 13.5vw;
+  text-transform: uppercase;
+  color: #4A494A;
+  white-space: nowrap;
+  letter-spacing: 0;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  text-align: center;
+  z-index: 2;
+}
+
+.fyve-letter {
+  display: inline-block;
+}
+
+.fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
+  margin-right: -0.08em;
+}
+
+.fyve-image-container {
+  height: 12.2vw;
+  width: 0;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.fyve-image {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mask-left,
+.mask-right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  z-index: 1;
+}
+
+.mask-left {
+  left: 0;
+}
+
+.mask-right {
+  right: 0;
+}
+
+.london-mask {
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0;
+  z-index: 1;
+}
+
+.london-text {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 700 !important;
+  font-size: 0.9vw;
+  text-transform: uppercase;
+  color: #4A494A;
+  white-space: nowrap;
+  letter-spacing: 2.4vw;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  flex: 0 1 auto;
+  text-align: center;
+}
+
+.london-letter {
+  display: inline-block;
+}
+
+.lottie-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 60px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.london-below {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600 !important;
+  letter-spacing: 6vw;
+  font-size: 2.6vw;
+  text-transform: uppercase;
+  color: #fff;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.lottie-container > * {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .section-1 {
