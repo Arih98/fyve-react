@@ -2,12 +2,12 @@
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import './HomePageAnimations.css';
-import { loadId } from './Home';
 
 const HomePageAnimations = ({ onIntroComplete }) => {
   useEffect(() => {
-    const playedId = sessionStorage.getItem('introPlayedId') || '';
-    const shouldAnimate = playedId !== loadId;
+    const navEntries = performance.getEntriesByType('navigation');
+    const navType = navEntries.length > 0 ? navEntries[0].type : 'navigate';
+    const shouldAnimate = navType !== 'back_forward';
 
     if (shouldAnimate) {
       window.scrollTo(0, 0);
@@ -87,7 +87,6 @@ const HomePageAnimations = ({ onIntroComplete }) => {
         gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2,
           onComplete: () => {
-            sessionStorage.setItem('introPlayedId', loadId);
             if (onIntroComplete) onIntroComplete();
           }
         });
