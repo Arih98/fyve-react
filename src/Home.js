@@ -26,16 +26,19 @@ const Home = () => {
   useEffect(() => {
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry ? navEntry.type : 'navigate';
+    console.log('[INIT] Navigation type:', navType);
     const shouldAnimate = navType !== 'back_forward';
     setIsAnimating(shouldAnimate);
 
     if (shouldAnimate) {
+      console.log('[INIT] Running full intro animation');
       window.scrollTo(0, 0);
       document.body.style.overflow = 'hidden';
       gsap.set('.lottie-container', { autoAlpha: 0 });
       gsap.set('.london-below', { opacity: 0 });
       gsap.set('.mobile-header', { opacity: 0 });
     } else {
+      console.log('[INIT] Skipping intro animation (back_forward), showing final state');
       document.body.style.overflow = 'auto';
       gsap.set('.lottie-container', { autoAlpha: 1 });
       gsap.set('.london-below', { opacity: 1 });
@@ -51,7 +54,10 @@ const Home = () => {
       const direction = currentY < prevScrollY.current ? 'up' : 'down';
       prevScrollY.current = currentY;
 
+      console.log(`[SCROLL] Direction: ${direction}, In View: ${inView}, IntroDone: ${introDone.current}, HasPlayedSegment: ${hasPlayedScrollSegment.current}`);
+
       if (inView && introDone.current && direction === 'up' && !hasPlayedScrollSegment.current) {
+        console.log('[SCROLL] Playing scroll-triggered Lottie segment');
         const current = lottieRef.current?.currentFrame || 0;
         const total = lottieRef.current?.totalFrames || FYVEHeroLottie.op;
         lottieRef.current?.playSegments([current, total], true);
@@ -62,10 +68,12 @@ const Home = () => {
           const fadeFrame = FYVEHeroLottie.ip + 0.3 * (FYVEHeroLottie.op - FYVEHeroLottie.ip);
           if (current < fadeFrame) {
             const delay = (fadeFrame - current) / FYVEHeroLottie.fr * 1000;
+            console.log(`[SCROLL] Delayed LONDON fade-in by ${delay.toFixed(0)}ms`);
             setTimeout(() => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
             }, delay);
           } else {
+            console.log('[SCROLL] Immediate LONDON fade-in');
             gsap.to('.london-below', { opacity: 1, duration: 0.5 });
           }
         }
@@ -76,6 +84,7 @@ const Home = () => {
       if (!inView) {
         hasPlayedScrollSegment.current = false;
         lottieRef.current?.pause();
+        console.log('[SCROLL] Paused Lottie and reset scroll segment flag');
       }
     };
 
@@ -84,20 +93,24 @@ const Home = () => {
   }, [inView]);
 
   const handleMasksComplete = () => {
+    console.log('[ANIMATION] handleMasksComplete fired');
     gsap.to('.lottie-container', {
       autoAlpha: 1,
       duration: 0.8,
       ease: 'expo.inOut',
       onStart: () => {
+        console.log('[ANIMATION] Playing Lottie (intro)');
         lottieRef.current?.play();
         setTimeout(() => {
           gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+          console.log('[ANIMATION] Fading in LONDON after intro');
         }, londonFadeDelay);
         setTimeout(() => {
           document.body.style.overflow = 'auto';
         }, animationDuration + 500);
       },
       onComplete: () => {
+        console.log('[ANIMATION] Intro complete');
         introDone.current = true;
       }
     });
