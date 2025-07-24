@@ -135,9 +135,9 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100vw - 60px); /* Full width minus 30px padding */
-  max-height: 80vh; /* Allow shrinking but cap height */
-  min-height: 50vh; /* Prevent container from becoming too small */
+  width: calc(100vw - 60px);
+  height: 80vh;
+  min-height: 80vh;
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -160,10 +160,8 @@
   text-align: center;
 }
 
-/* Ensure Lottie animation scales correctly */
 .lottie-container > * {
   width: 100%;
-  height: auto; /* Prioritize width scaling */
-  min-height: 40vh; /* Prevent animation from becoming too small */
-  object-fit: contain; /* Maintain aspect ratio */
+  height: 100%;
+  object-fit: contain;
 }
