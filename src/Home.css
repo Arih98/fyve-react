@@ -38,7 +38,7 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .fyve-text {
@@ -52,8 +52,8 @@
   line-height: 1;
   margin: 0;
   padding: 0;
-  position: hidden;
-  overflow-x: hidden;
+  position: relative;
+  overflow: hidden;
   flex: 1;
   text-align: center;
   z-index: 2;
@@ -64,7 +64,7 @@
 }
 
 .fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
-  margin-right: -0.087em;
+  margin-right: -0.08em;
 }
 
 .fyve-image-container {
@@ -107,7 +107,7 @@
   flex-direction: row;
   gap: 0;
   z-index: 1;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .london-text {
@@ -122,7 +122,7 @@
   margin: 0;
   padding: 0;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   flex: 0 1 auto;
   text-align: center;
 }

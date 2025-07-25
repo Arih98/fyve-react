@@ -40,6 +40,10 @@ body.locked {
   transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s;
 }
 
+.mobile-header {
+  opacity: 1;
+}
+
 .mobile-header.first-header.hide-header {
   transform: translateY(-100%);
   pointer-events: none;
