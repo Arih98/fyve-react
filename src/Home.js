@@ -37,7 +37,11 @@ const Home = () => {
   }, [inView]);
 
   useEffect(() => {
+    // Reset scroll position and animation states on page reload
+    window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+    hasAnimated.current = false;
+    introDone.current = false;
     document.body.style.overflow = 'hidden';
     console.log('Home component mounted');
     console.log('Lottie data:', FYVEHeroLottie);

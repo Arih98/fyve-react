@@ -15,14 +15,6 @@ import './App.css';
 import './Header.css';
 import './HomeHeader.css';
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-  return null;
-}
-
 const ProductDetailWrapper = () => {
   const location = useLocation();
   return <ProductDetail key={location.key} />;
@@ -79,7 +71,6 @@ function AppContent() {
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
-        <ScrollToTop />
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
