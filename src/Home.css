@@ -174,14 +174,14 @@
 
 .section1-image-container {
   position: relative;
-  width: 66vw;
-  height: 0; /* Use padding-bottom for aspect ratio */
-  padding-bottom: 49.5vw; /* Adjust based on image's aspect ratio, e.g., 4:3 */
+  width: 100vw; /* Full viewport width */
+  height: 0;
+  padding-bottom: 75vw; /* Adjust based on image aspect ratio, e.g., 1200/1600 for 4:3 */
   padding: 5vw 0;
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: contain; /* Show entire image without cropping */
+  background-size: contain; /* Ensures entire image is visible */
   overflow: hidden;
 }
 
