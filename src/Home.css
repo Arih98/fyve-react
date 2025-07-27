@@ -164,12 +164,14 @@
 }
 
 .section-1 {
-  min-height: calc(100vh + 200px); /* Ensure space for 100px top + bottom margins */
+  height: auto; /* Let content define height */
   width: 100%;
   display: flex;
+  flex-direction: column; /* Stack image and text vertically */
   align-items: center;
   justify-content: center;
   position: relative;
+  padding: 0; /* Remove any extra padding */
 }
 
 .section1-image-container {
@@ -182,12 +184,12 @@
   background-position: center center;
   background-repeat: no-repeat;
   background-size: 100% auto; /* Scale width to 100%, height auto */
-  overflow: hidden; /* Restore original overflow */
+  overflow: hidden;
 }
 
 .section1-overlay-text {
   position: absolute;
-  top: 2%; /* Same vertical position */
+  top: 100px; /* Align with top margin of image */
   left: 100px; /* Align with image's left edge (100px margin) */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
