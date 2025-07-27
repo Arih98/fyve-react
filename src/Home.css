@@ -175,8 +175,8 @@
 .section1-image-container {
   position: relative;
   width: 66vw;
-  height: calc(100% - 8vw);
-  margin: 4vw auto;
+  height: calc(100% - 20vw);
+  margin: 10vw auto;
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-size: 66vw auto;
   background-position: center center;
@@ -185,7 +185,8 @@
 
 .section1-overlay-text {
   position: absolute;
-  top: 10.3%;
+  top: -33%;
+  left: -10%;
   text-align: left;
   font-family: "quasimoda", Sans-serif;
   font-size: 3.8vw;
