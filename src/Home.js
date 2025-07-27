@@ -130,14 +130,14 @@ const Home = () => {
           delay: 2.8,
           onStart: () => {
             lottieRef.current?.play();
-            lottieRef.current.addEventListener('complete', () => {
-              document.body.style.overflow = 'auto';
-            });
             console.log('Lottie internal animation played first time');
             setTimeout(() => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
               console.log('Fading in LONDON after initial play');
             }, londonFadeDelay);
+            setTimeout(() => {
+              document.body.style.overflow = 'auto';
+            }, animationDuration + 500);
           },
           onComplete: () => {
             introDone.current = true;
