@@ -185,8 +185,11 @@
 
 .section1-overlay-text {
   position: absolute;
-  top: -1vw;
-  left: 0;
-  font-family: 'Quasimoda', sans-serif;
-  line-height: 1.2;
+  top: 10.3%;
+  text-align: left;
+  font-family: "quasimoda", Sans-serif;
+  font-size: 3.8vw;
+  font-weight: 700;
+  line-height: 0.9em;
+  letter-spacing: -0.4px;
 }
