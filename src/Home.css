@@ -164,7 +164,7 @@
 }
 
 .section-1 {
-  height: 100vh;
+  min-height: calc(100vh + 200px); /* Ensure space for 100px top + bottom margins */
   width: 100%;
   display: flex;
   align-items: center;
