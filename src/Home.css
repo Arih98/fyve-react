@@ -190,7 +190,7 @@
   left: -10%; /* Relative to image container */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
-  font-size: 3.8vw;
+  font-size: clamp(1.5rem, 5%, 2.5rem); /* Scale with container, not viewport */
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
