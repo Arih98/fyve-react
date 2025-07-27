@@ -14,7 +14,7 @@ const Home = () => {
 
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
-  const scrollDisableTime = 5000; // Adjust in ms as needed
+  const scrollDisableTime = 4800;
 
   useEffect(() => {
     if (lottieRef.current) {
