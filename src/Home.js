@@ -137,7 +137,7 @@ const Home = () => {
             }, londonFadeDelay);
             setTimeout(() => {
               document.body.style.overflow = 'auto';
-            }, animationDuration + 500);
+            }, animationDuration);
           },
           onComplete: () => {
             introDone.current = true;
