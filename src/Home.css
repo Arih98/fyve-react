@@ -175,14 +175,11 @@
 .section1-image-container {
   position: relative;
   width: 66vw;
-  height: calc(100% - 4vw);
-  margin: 2vw auto;
-}
-
-.section1-cover-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: calc(100% - 8vw);
+  margin: 4vw auto;
+  background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
+  background-size: cover;
+  background-position: center;
 }
 
 .section1-overlay-text {

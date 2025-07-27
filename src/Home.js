@@ -195,16 +195,10 @@ const Home = () => {
       </div>
       <div className="section-1">
         <div className="section1-image-container">
-          <img
-            src="/api/Uploads/LOOK-9_1426_result.webp"
-            alt="Section 1 Cover"
-            className="section1-cover-image"
-          />
           <div className="section1-overlay-text">
             Comfortably<br/>Modern,<br/>Distinctly<br/>British
           </div>
         </div>
-        <h2>section 1</h2>
       </div>
     </div>
   );
