@@ -1,4 +1,3 @@
-// Home.js (modified)
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
@@ -195,10 +194,7 @@ const Home = () => {
         </div>
       </div>
       <div className="section-1">
-        <div className="image-wrapper">
-          <img src="/api/Uploads/LOOK-9_1426_result.webp" alt="Section 1 Image" className="section-image" />
-          <div className="overlay-text">Comfortably<br/>Modern,<br/>Distinctly<br/>British</div>
-        </div>
+        <h2>section 1</h2>
       </div>
     </div>
   );
