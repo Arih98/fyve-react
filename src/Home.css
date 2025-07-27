@@ -175,14 +175,16 @@
 .section1-image-container {
   position: relative;
   width: calc(100% - 200px); /* 100px left + 100px right */
-  height: 100vh;
+  height: 0; /* Let height be determined by aspect ratio */
+  padding-bottom: 56.25%; /* Example aspect ratio (16:9); adjust based on image */
   margin: 0 100px; /* Fixed 100px spacing on both sides */
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: contain; /* Image scales while maintaining aspect ratio */
+  background-size: 100% auto; /* Scale width to 100%, height auto */
   overflow: hidden;
 }
+
 .section1-overlay-text {
   position: absolute;
   top: 2%;
