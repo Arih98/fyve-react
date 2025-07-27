@@ -180,6 +180,7 @@
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .section1-overlay-text {
