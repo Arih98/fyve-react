@@ -194,10 +194,9 @@ const Home = () => {
         </div>
       </div>
       <div className="section-1">
-        <div className="section1-image-container">
-          <div className="section1-overlay-text">
-            Comfortably<br/>Modern,<br/>Distinctly<br/>British
-          </div>
+        <div className="section1-image-container"></div>
+        <div className="section1-overlay-text">
+          Comfortably<br/>Modern,<br/>Distinctly<br/>British
         </div>
       </div>
     </div>
