@@ -174,16 +174,15 @@
 
 .section1-image-container {
   position: relative;
-  width: 100%; /* Use full width to maximize image size */
-  height: 100vh; /* Ensure full viewport height */
-  padding: 5vw 0;
+  width: calc(100% - 200px); /* 100px left + 100px right */
+  height: 100vh;
+  margin: 0 100px; /* Fixed 100px spacing on both sides */
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: contain; /* Keep entire image visible */
+  background-size: contain; /* Image scales while maintaining aspect ratio */
   overflow: hidden;
 }
-
 .section1-overlay-text {
   position: absolute;
   top: 2%;
