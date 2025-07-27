@@ -188,11 +188,12 @@
 .section1-overlay-text {
   position: absolute;
   top: 2%;
-  left: -10%;
+  left: 0; /* Align with container's left edge */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
   font-size: 3.8vw;
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
+  transform: translateX(-10%); /* Shift text left by 10% of its container */
 }
