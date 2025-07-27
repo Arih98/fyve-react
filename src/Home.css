@@ -175,21 +175,20 @@
 .section1-image-container {
   position: relative;
   width: 66vw;
-  height: auto; /* Allow height to adjust based on image aspect ratio */
-  padding: 5vw 0; /* Add spacing above and below (adjust as needed) */
+  height: 100%;
+  padding: 5vw 0;
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
-  background-size: contain; /* Scale image to fit without cropping */
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .section1-overlay-text {
   position: absolute;
-  top: 2%; /* Relative to container height */
-  left: -10%; /* Relative to container width */
+  top: 2%;
+  left: -10%;
   text-align: left;
   font-family: "Quasimoda", sans-serif;
-  font-size: 3.8vw; /* Scales with viewport width */
+  font-size: 3.8vw;
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
