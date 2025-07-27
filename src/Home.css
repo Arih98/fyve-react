@@ -175,8 +175,8 @@
 .section1-image-container {
   position: relative;
   width: 66vw;
-  height: calc(100% - 20vw);
-  margin: 10vw auto;
+  height: 100%;
+  margin: 5vw auto;
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-size: 66vw auto;
   background-position: center center;
