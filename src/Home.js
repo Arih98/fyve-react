@@ -14,6 +14,7 @@ const Home = () => {
 
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
+  const scrollDisableTime = 5000; // Adjust in ms as needed
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -42,6 +43,9 @@ const Home = () => {
     hasAnimated.current = false;
     introDone.current = false;
     document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      document.body.style.overflow = 'auto';
+    }, scrollDisableTime);
     console.log('Home component mounted');
     console.log('Lottie data:', FYVEHeroLottie);
     const image = document.querySelector('.fyve-image');
@@ -135,9 +139,6 @@ const Home = () => {
               gsap.to('.london-below', { opacity: 1, duration: 0.5 });
               console.log('Fading in LONDON after initial play');
             }, londonFadeDelay);
-            setTimeout(() => {
-              document.body.style.overflow = 'auto';
-            }, animationDuration + 500);
           },
           onComplete: () => {
             introDone.current = true;
