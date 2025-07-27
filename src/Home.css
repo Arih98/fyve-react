@@ -174,25 +174,24 @@
 
 .section1-image-container {
   position: relative;
-  width: 100%; /* Scale with browser width */
-  height: 0;
-  padding-bottom: 75%; /* Adjust for image aspect ratio, e.g., 4:3 (1200/1600) */
+  width: calc(100% - 160px); /* Full width minus 80px left + 80px right */
+  height: calc(100% - 80px); /* Full height minus 40px top + 40px bottom */
+  margin: 40px 80px; /* 40px top/bottom, 80px left/right */
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: cover; /* Scale image to fill container */
+  background-size: contain; /* Ensure full image visibility */
   overflow: hidden;
 }
 
 .section1-overlay-text {
   position: absolute;
-  top: 2%; /* Relative to container */
-  left: 5%; /* Adjusted to stay within image */
+  top: 2%; /* Relative to image container */
+  left: -10%; /* Relative to image container */
   text-align: left;
-  font-family: 'Quasimoda', sans-serif;
-  font-size: 3.8vw; /* Scales with viewport */
+  font-family: "Quasimoda", sans-serif;
+  font-size: 3.8vw;
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
-  color: #fff; /* Ensure visibility on image */
 }
