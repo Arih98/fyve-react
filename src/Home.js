@@ -184,12 +184,14 @@ const Home = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const parts = document.querySelectorAll('.text-part p');
+      const textParts = document.querySelectorAll('.text-part');
       let splits = [];
-      parts.forEach((p) => {
+      textParts.forEach((part) => {
+        const p = part.querySelector('p');
         const split = new SplitText(p, { type: 'words', wordsClass: 'word' });
         splits.push(split);
         gsap.set(split.words, { opacity: 0 });
+        gsap.set(part, { opacity: 0 });
       });
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -201,12 +203,19 @@ const Home = () => {
         },
       });
       let time = 0;
-      splits.forEach((split) => {
+      textParts.forEach((part, index) => {
+        const split = splits[index];
+        // Set all parts to opacity 0 before animating the current one
+        if (index > 0) {
+          tl.set(textParts, { opacity: 0 }, time);
+        }
+        tl.set(part, { opacity: 1 }, time);
         tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
         time += 1;
-        tl.to(split.words, { duration: 0.5 }, time);
+        tl.to({}, { duration: 0.5 }, time); // Hold time
         time += 0.5;
-        tl.to(split.words, { opacity: 0, duration: 0.5 }, time);
+        // Fade out the current part
+        tl.to(part, { opacity: 0, duration: 0.5 }, time);
         time += 1;
       });
     }, section4Ref);
