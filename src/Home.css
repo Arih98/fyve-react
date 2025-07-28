@@ -171,13 +171,14 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 100px 0; /* 100px top/bottom spacing */
+  padding: 0;
 }
 
 .image-wrapper {
   position: relative;
   box-sizing: border-box;
-  width: calc(100% - 200px); /* 100px left + 100px right */
+  width: 80%; /* Adjust to control max image width */
+  margin: 0 auto; /* Center the wrapper */
 }
 
 .section1-image-container {
@@ -197,13 +198,12 @@
 
 .section1-overlay-text {
   position: absolute;
-  top: 0; /* Align with top of image */
-  left: 0; /* Align with image's left edge */
+  top: 10%; /* Match top margin of image */
+  left: 10%; /* Match left margin of image */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
   font-size: 3.8vw;
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
-  transform: translateX(-10%); /* Shift text left by 10% */
 }
