@@ -321,18 +321,18 @@ const Home = () => {
               <div className="text-part"><p>Hi!</p></div>
               <div className="text-part"><p>I'm Hannah</p></div>
               <div className="text-part"><p>founder of FYVE London.</p></div>
-              <div className="text-part"><p>Ever since I can remember, I’ve been passionate<br/>about design — especially children’s fashion.</p></div>
+              <div className="text-part"><p>Ever since I can remember, I’ve been passionate<br/>about design - especially children’s fashion.</p></div>
               <div className="text-part"><p>There’s something truly magical about watching<br/>a sketch transform into a piece that brings joy<br/>to little ones and their families.</p></div>
               <div className="text-part"><p>But my greatest inspiration, and my most important role, is being a mom to my five incredible children.</p></div>
               <div className="text-part"><p>That’s where FYVE began, born from the love, chaos, and wonder of raising my own little crew.</p></div>
               <div className="text-part"><p>Like so many of you, I know the daily juggle of balancing work and motherhood is no small feat – it’s a dance I’m still perfecting every day!</p></div>
-              <div className="text-part"><p>That’s why I’ve built FYVE not just as a fashion brand, but as a celebration of motherhood—the highs, the challenges, and everything in between.</p></div>
+              <div className="text-part"><p>That’s why I’ve built FYVE. Not just as a fashion brand, but as a celebration of motherhood - the highs, the challenges, and everything in between.</p></div>
               <div className="text-part"><p>Our clothes are crafted with quality and comfort in mind, using soft, durable fabrics that kids can move in freely, designed to keep up with their energy and spark their joy...</p></div>
               <div className="text-part"><p>...all while embracing a British, timeless classical style that never goes out of fashion.</p></div>
               <div className="text-part"><p>I’ve also chosen to partner with other mom-led businesses because I believe we’re stronger together...</p></div>
               <div className="text-part"><p>Supporting each other is at the core of what we do.</p></div>
               <div className="text-part"><p>We’re so excited for you to join the FYVE family!</p></div>
-              <div className="text-part"><p>We’d love to hear your feedback and see pictures of your little ones wearing our designs—your stories and moments mean the world to us.</p></div>
+              <div className="text-part"><p>We’d love to hear your feedback and see pictures of your little ones wearing our designs - your stories and moments mean the world to us.</p></div>
               <div className="text-part"><p>With love,</p></div>
               <div className="text-part"><p>Hannah x</p></div>
             </div>
