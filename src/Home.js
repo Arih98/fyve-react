@@ -206,7 +206,7 @@ const Home = () => {
         time += 1;
         tl.to(split.words, { duration: 0.5 }, time);
         time += 0.5;
-        tl.to(split.words, { opacity: 0, duration: 0.5, stagger: 0.05 }, time);
+        tl.to(split.words, { opacity: 0, duration: 0.5 }, time);
         time += 1;
       });
     }, section4Ref);
