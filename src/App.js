@@ -14,6 +14,7 @@ import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import './App.css';
 import './Header.css';
 import './HomeHeader.css';
+import Lenis from '@studio-freight/lenis';
 
 const ProductDetailWrapper = () => {
   const location = useLocation();
@@ -66,6 +67,32 @@ function AppContent() {
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.5,
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 3,
+      smoothTouch: true,
+      touchMultiplier: 2,
+      infinite: false,
+      easing: (t) => 1 - Math.pow(1 - t, 6)
+    });
+  
+    lenis.on('scroll', (data) => {
+      console.log(data);
+    });
+  
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  
+    return () => lenis.destroy();
   }, []);
 
   return (

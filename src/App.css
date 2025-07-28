@@ -54,7 +54,3 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .container {
   @apply mx-auto px-4 sm:px-6 lg:px-8;
 }
-
-html {
-  scroll-behavior: smooth;
-}
