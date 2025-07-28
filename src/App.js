@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
 import Products from './Products';
@@ -15,6 +15,8 @@ import './App.css';
 import './Header.css';
 import './HomeHeader.css';
 import Lenis from '@studio-freight/lenis';
+
+export const LenisContext = createContext(null);
 
 const ProductDetailWrapper = () => {
   const location = useLocation();
@@ -35,9 +37,28 @@ const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
+  const containerRef = useRef(null);
+  const lenis = useContext(LenisContext);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        const contentHeight = containerRef.current.querySelector('motion.div')?.scrollHeight || 0;
+        containerRef.current.style.height = `${contentHeight}px`;
+        lenis?.resize();
+      }
+    };
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    const interval = setInterval(updateHeight, 100);
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      clearInterval(interval);
+    };
+  }, [lenis]);
 
   return (
-    <div className="App" style={{ position: 'relative' }}>
+    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
@@ -69,47 +90,45 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.5,
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 3,
-      smoothTouch: true,
-      touchMultiplier: 2,
-      infinite: false,
-      easing: (t) => 1 - Math.pow(1 - t, 6)
-    });
-  
-    lenis.on('scroll', (data) => {
-      console.log(data);
-    });
-  
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+  const lenis = new Lenis({
+    duration: 1.5,
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 3,
+    smoothTouch: true,
+    touchMultiplier: 2,
+    infinite: false,
+    easing: (t) => 1 - Math.pow(1 - t, 6)
+  });
+
+  lenis.on('scroll', (data) => {
+    console.log(data);
+  });
+
+  function raf(time) {
+    lenis.raf(time);
     requestAnimationFrame(raf);
-  
-    return () => lenis.destroy();
-  }, []);
+  }
+  requestAnimationFrame(raf);
 
   return (
-    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-      <CartProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/product/:id" element={<ProductDetailWrapper />} />
-            <Route path="/product-category/:slug" element={<CategoryProducts />} />
-            <Route path="/checkout" element={<Checkout />} />
-          </Route>
-        </Routes>
-      </CartProvider>
-    </MenuContext.Provider>
+    <LenisContext.Provider value={lenis}>
+      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+        <CartProvider>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetailWrapper />} />
+              <Route path="/product-category/:slug" element={<CategoryProducts />} />
+              <Route path="/checkout" element={<Checkout />} />
+            </Route>
+          </Routes>
+        </CartProvider>
+      </MenuContext.Provider>
+    </LenisContext.Provider>
   );
 }
 
