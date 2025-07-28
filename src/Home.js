@@ -233,6 +233,10 @@ We combine iconic British design with modern comfort<br/>and ease, creating a wa
   <div className="section2-subtext">
     Soft hues,<br/>effortless<br/>silhouettes,<br/>and timeless<br/>charm.
   </div>
+  <a href="https://dev.fyvelondon.com/products?category=ss25" className="section2-shop-button">
+    SHOP NOW
+    <img src="/api/Uploads/FYVE-Arrow-Icon-White.svg" alt="" />
+  </a>
 </div>
     </div>
   );
