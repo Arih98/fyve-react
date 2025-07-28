@@ -457,8 +457,9 @@
   position: relative;
 }
 
-.text-inner p {
-  margin: 0 0 1em 0;
+.part {
+  white-space: pre-line;
+  margin-bottom: 1em;
 }
 
 .word {
