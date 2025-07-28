@@ -171,44 +171,35 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0;
+  padding: 100px 0; /* 100px top/bottom spacing */
 }
 
 .image-wrapper {
   position: relative;
-  box-sizing: border-box;
-  width: 80%;
-  margin: 0 auto;
-}
-
-.image-padding-wrapper {
-  width: 100%;
-  padding-top: 5%;
-  padding-bottom: 5%;
+  width: calc(100% - 200px); /* 100px left + 100px right */
 }
 
 .section1-image-container {
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%;
-  padding-left: 10%;
-  padding-right: 10%;
+  padding-bottom: 56.25%; /* Example aspect ratio (16:9); adjust based on image */
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 100% auto; /* Scale width to 100%, height auto */
   overflow: hidden;
 }
 
 .section1-overlay-text {
   position: absolute;
-  top: 10%; /* Match top margin of image */
-  left: 10%; /* Match left margin of image */
+  top: 0; /* Align with top of image */
+  left: 0; /* Align with image's left edge */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
   font-size: 3.8vw;
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
+  transform: translateX(-10%); /* Shift text left by 10% */
 }
