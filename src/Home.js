@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
@@ -7,6 +7,7 @@ import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import Lenis from '@studio-freight/lenis';
+import { LenisContext } from './App';
 
 gsap.registerPlugin(Observer);
 
@@ -46,10 +47,9 @@ const Home = () => {
     window.scrollTo(0, 0);
     hasAnimated.current = false;
     introDone.current = false;
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => {
-      document.body.style.overflow = 'auto';
-    }, scrollDisableTime);
+    const lenis = useContext(LenisContext);
+    lenis?.stop();
+    setTimeout(() => lenis?.start(), scrollDisableTime);
     console.log('Home component mounted');
     console.log('Lottie data:', FYVEHeroLottie);
     const image = document.querySelector('.fyve-image');
