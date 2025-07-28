@@ -345,6 +345,8 @@
 .section3-image-container {
   position: relative;
   height: 0;
+  margin-top: 77%;
+  margin-bottom: 77%;
   padding-bottom: 150%;
 }
 
