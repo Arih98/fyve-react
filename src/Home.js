@@ -193,15 +193,16 @@ const Home = () => {
           <div className="london-below">LONDON</div>
         </div>
       </div>
-      <div className="section-1">
-      <div className="image-padding-wrapper">
-  <div className="section1-image-container"></div>
+      <div className="section1-wrapper">
+  <div className="section-1">
+    <div className="image-padding-wrapper">
+      <div className="section1-image-container"></div>
+    </div>
+  </div>
+  <div className="section1-overlay-text">
+    Comfortably<br/>Modern,<br/>Distinctly<br/>British
+  </div>
 </div>
-</div>
-        <div className="section1-overlay-text">
-          Comfortably<br/>Modern,<br/>Distinctly<br/>British
-        </div>
-      </div>
     </div>
   );
 };
