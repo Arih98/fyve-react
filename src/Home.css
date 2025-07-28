@@ -171,12 +171,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 100px 0; /* 100px top/bottom spacing */
+  padding: 0;
 }
 
 .image-wrapper {
   position: relative;
-  width: calc(100% - 200px); /* 100px left + 100px right */
+  width: 80%; /* Adjust to control max image width */
 }
 
 .section1-image-container {
@@ -184,6 +184,7 @@
   width: 100%;
   height: 0;
   padding-bottom: 56.25%; /* Example aspect ratio (16:9); adjust based on image */
+  margin: 10%; /* Proportionate spacing: 10% of wrapper width */
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
@@ -193,8 +194,8 @@
 
 .section1-overlay-text {
   position: absolute;
-  top: 0; /* Align with top of image */
-  left: 0; /* Align with image's left edge */
+  top: 10%; /* Match top margin of image */
+  left: 10%; /* Match left margin of image */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
   font-size: 3.8vw;
