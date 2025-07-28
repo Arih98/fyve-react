@@ -6,6 +6,7 @@ import HomeHeader from './HomeHeader';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
+import Lenis from '@studio-freight/lenis';
 
 gsap.registerPlugin(Observer);
 
