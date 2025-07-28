@@ -219,6 +219,10 @@ Observer.create({
         <div className="section1-overlay-text">
           Comfortably<br/>Modern,<br/>Distinctly<br/>British.
         </div>
+        <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+  SHOP NOW
+  <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
+</a>
         <div className="section1-new-text">
 We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
 </div>

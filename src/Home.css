@@ -235,3 +235,26 @@
   height: auto;
   will-change: transform;
 }
+
+.section1-shop-button {
+  position: absolute;
+  top: 28%;
+  left: 10.5%;
+  font-family: "quasimoda", Sans-serif;
+  font-size: 1.2vw;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 10px;
+  color: #4A494A;
+  background-color: transparent;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.section1-shop-button img {
+  margin-left: 0.5vw;
+  width: 1.2vw;
+  height: auto;
+}
