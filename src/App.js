@@ -15,8 +15,6 @@ import './App.css';
 import './Header.css';
 import './HomeHeader.css';
 import Lenis from '@studio-freight/lenis';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import gsap from 'gsap';
 
 export const LenisContext = createContext(null);
 
@@ -103,25 +101,6 @@ function AppContent() {
     infinite: false,
     easing: (t) => 1 - Math.pow(1 - t, 6)
   });
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  ScrollTrigger.scrollerProxy('.App', {
-    scrollTop(value) {
-      if (arguments.length) {
-        lenis.scrollTo(value, { immediate: true });
-      }
-      return lenis.scroll;
-    },
-    getBoundingClientRect() {
-      return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-    },
-    pinType: 'transform'
-  });
-  
-  lenis.on('scroll', ScrollTrigger.update);
-  
-  ScrollTrigger.defaults({ scroller: '.App' });
 
   lenis.on('scroll', (data) => {
     console.log(data);

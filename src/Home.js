@@ -195,8 +195,7 @@ const Home = () => {
           end: () => "+=" + totalScrollWidth,
           scrub: true,
           pin: true,
-          anticipatePin: 1,
-          scroller: '.App', // Add this
+          anticipatePin: 1
         }
       });
     }
