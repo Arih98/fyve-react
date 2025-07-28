@@ -176,6 +176,7 @@
 
 .image-wrapper {
   position: relative;
+  box-sizing: border-box;
   width: calc(100% - 200px); /* 100px left + 100px right */
 }
 
