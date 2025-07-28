@@ -271,7 +271,7 @@
 
 .section2-overlay-text {
   position: absolute;
-  top: 50%;
+  top: 7%;
   left: 0;
   width: 100%;
   transform: translateY(-50%);
