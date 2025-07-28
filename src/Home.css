@@ -226,3 +226,12 @@
   padding-left: 2%;
   padding-right: 1%;
 }
+
+.section1-stamp {
+  position: absolute;
+  top: 80%; /* Adjust % as needed */
+  left: 80%; /* Adjust % as needed */
+  width: 12.3vw;
+  height: auto;
+  will-change: transform;
+}

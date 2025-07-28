@@ -5,6 +5,9 @@ import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
+import { Observer } from "gsap/Observer";
+
+gsap.registerPlugin(Observer);
 
 const Home = () => {
   const lottieRef = useRef();
@@ -70,6 +73,23 @@ const Home = () => {
       } else {
         console.error('london-mask not found');
       }
+
+      let rotation = 0;
+const stamp = document.querySelector('.section1-stamp');
+Observer.create({
+  type: "wheel,touch,scroll",
+  wheelSpeed: -1,
+  onDown: () => {
+    rotation -= 10; // Adjust speed as needed
+    gsap.to(stamp, { rotation, duration: 0.2, overwrite: true });
+  },
+  onUp: () => {
+    rotation += 10; // Adjust speed as needed
+    gsap.to(stamp, { rotation, duration: 0.2, overwrite: true });
+  },
+  tolerance: 10,
+  preventDefault: false
+});
 
       const fyveTextY = -1.11;
       const londonX = 1.3;
@@ -198,11 +218,12 @@ const Home = () => {
           <div className="section1-image-container"></div>
         </div>
         <div className="section1-overlay-text">
-          Comfortably<br/>Modern,<br/>Distinctly<br/>British
+          Comfortably<br/>Modern,<br/>Distinctly<br/>British.
         </div>
         <div className="section1-new-text">
 We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
 </div>
+<img src="/api/Uploads/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
       </div>
     </div>
   );
