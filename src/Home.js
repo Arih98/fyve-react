@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
@@ -8,7 +10,7 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
 
-gsap.registerPlugin(Observer);
+gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
 const Home = () => {
   const lottieRef = useRef();
@@ -19,6 +21,7 @@ const Home = () => {
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
   const scrollDisableTime = 4000;
+  const section4Ref = useRef();
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -179,6 +182,37 @@ const Home = () => {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const parts = document.querySelectorAll('.text-part p');
+      let splits = [];
+      parts.forEach((p) => {
+        const split = new SplitText(p, { type: 'words', wordsClass: 'word' });
+        splits.push(split);
+        gsap.set(split.words, { opacity: 0 });
+      });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section4Ref.current,
+          start: 'top top',
+          end: '+=900%',
+          pin: true,
+          scrub: true,
+        },
+      });
+      let time = 0;
+      splits.forEach((split) => {
+        tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
+        time += 1;
+        tl.to(split.words, { duration: 0.5 }, time);
+        time += 0.5;
+        tl.to(split.words, { opacity: 0, duration: 0.5, stagger: 0.05 }, time);
+        time += 1;
+      });
+    }, section4Ref);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div className="home-page">
       <HomeHeader />
@@ -265,6 +299,32 @@ const Home = () => {
               <div className="section3-text">BABY</div>
             </div>
           </a>
+        </div>
+      </div>
+      <div className="section-4" ref={section4Ref}>
+        <div className="left-images">
+          <img src="/api/Uploads/LOOK-8_1094_result.webp" alt="" className="top-left" />
+          <img src="/api/Uploads/LOOK-6_626.webp" alt="" className="bottom-left" />
+        </div>
+        <div className="middle-text">
+          <div className="text-container">
+            <div className="text-wrapper">
+              <div className="text-part"><p>Hi!</p></div>
+              <div className="text-part"><p>I'm Hannah</p></div>
+              <div className="text-part"><p>founder of FYVE London.</p></div>
+              <div className="text-part"><p>Ever since I can remember, I’ve been passionate<br/>about design — especially children’s fashion.<br/>There’s something truly magical about watching<br/>a sketch transform into a piece that brings joy<br/>to little ones and their families.</p></div>
+              <div className="text-part"><p>But my greatest inspiration, and my most important role, is being a mom to my five incredible children. That’s where FYVE began, born from the love, chaos, and wonder of raising my own little crew.</p></div>
+              <div className="text-part"><p>Like so many of you, I know the daily juggle of balancing work and motherhood is no small feat – it’s a dance I’m still perfecting every day! That’s why I’ve built FYVE not just as a fashion brand, but as a celebration of motherhood—the highs, the challenges, and everything in between.</p></div>
+              <div className="text-part"><p>Our clothes are crafted with quality and comfort in mind, using soft, durable fabrics that kids can move in freely, designed to keep up with their energy and spark their joy—all while embracing a British, timeless classical style that never goes out of fashion. I’ve also chosen to partner with other mom-led businesses because I believe we’re stronger together. Supporting each other is at the core of what we do.</p></div>
+              <div className="text-part"><p>We’re so excited for you to join the FYVE family! We’d love to hear your feedback and see pictures of your little ones wearing our designs—your stories and moments mean the world to us.</p></div>
+              <div className="text-part"><p>With love,</p></div>
+              <div className="text-part"><p>Hannah x</p></div>
+            </div>
+          </div>
+        </div>
+        <div className="right-images">
+          <img src="/api/Uploads/LOOK-12_2218.webp" alt="" className="top-right" />
+          <img src="/api/Uploads/EMBROIDERED-COLLAR-ROMPER3.webp" alt="" className="bottom-right" />
         </div>
       </div>
     </div>

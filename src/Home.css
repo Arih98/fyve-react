@@ -388,3 +388,69 @@
   margin: 0;
   padding: 0;
 }
+
+.section-4 {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  gap: 1vw;
+}
+
+.left-images, .right-images {
+  width: 35vw;
+  position: relative;
+  height: 100%;
+}
+
+.middle-text {
+  width: 30vw;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 1.2vw;
+  color: #4A494A;
+  overflow: hidden;
+}
+
+.text-container {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-wrapper {
+  width: 100%;
+}
+
+.text-part p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.top-left, .top-right {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
+.bottom-left, .bottom-right {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
+.top-right, .bottom-right {
+  left: auto;
+  right: 0;
+}
