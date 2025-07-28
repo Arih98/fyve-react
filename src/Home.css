@@ -403,7 +403,7 @@
   width: calc(50% - 15vw);
   display: flex;
   flex-direction: column;
-  gap: 1vw;
+  gap: 0;
 }
 
 .left-images {
@@ -415,7 +415,7 @@
 }
 
 .image {
-  height: calc(50% - 0.5vw);
+  height: 50%;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -445,7 +445,6 @@
   height: 100vh;
   background: white;
   padding: 2vw;
-  overflow: hidden;
   font-family: 'Quasimoda', sans-serif;
   font-weight: 400;
   font-size: 1vw;

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
@@ -9,7 +10,7 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
 
-gsap.registerPlugin(Observer, ScrollTrigger);
+gsap.registerPlugin(Observer, ScrollTrigger, SplitText);
 
 const Home = () => {
   const lottieRef = useRef();
@@ -185,46 +186,30 @@ const Home = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (textInnerRef.current && textMiddleRef.current) {
-        const textHeight = textInnerRef.current.offsetHeight;
-        const containerHeight = textMiddleRef.current.offsetHeight;
-        const scrollDistance = textHeight - containerHeight;
-        if (scrollDistance > 0) {
-          ScrollTrigger.create({
-            trigger: section4Ref.current,
-            start: "top top",
-            end: `+=${scrollDistance}`,
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-          });
-          gsap.to(textInnerRef.current, {
-            y: -scrollDistance,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section4Ref.current,
-              start: "top top",
-              end: `+=${scrollDistance}`,
-              scrub: true,
-            }
-          });
+      ScrollTrigger.create({
+        trigger: section4Ref.current,
+        start: "top top",
+        end: "+=150%",
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+      });
+      const split = new SplitText(".text-inner p", {type: "words", wordsClass: "word"});
+      gsap.set(".word", {opacity: 0.3});
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section4Ref.current,
+          start: "top top",
+          end: "+=150%",
+          scrub: true,
         }
-        gsap.utils.toArray('.word').forEach(word => {
-          gsap.fromTo(word, 
-            { opacity: 0, y: '1em' },
-            {
-              opacity: 1,
-              y: 0,
-              scrollTrigger: {
-                trigger: word,
-                start: 'top 80%',
-                end: 'top 60%',
-                scrub: true,
-              }
-            }
-          );
-        });
-      }
+      });
+      tl.to(split.words, {
+        opacity: 1,
+        duration: 0.2,
+        stagger: 0.05,
+        ease: "power1.out"
+      });
     });
     return () => ctx.revert();
   }, []);
@@ -340,11 +325,7 @@ const Home = () => {
         <div className="text-middle" ref={textMiddleRef}>
           <div className="text-inner" ref={textInnerRef}>
             {paragraphs.map((para, i) => (
-              <p key={i}>
-                {para.split(/\s+/).map((word, j) => (
-                  <span key={j} className="word">{word} </span>
-                ))}
-              </p>
+              <p key={i}>{para}</p>
             ))}
           </div>
         </div>
