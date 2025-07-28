@@ -106,7 +106,7 @@ function AppContent() {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  ScrollTrigger.scrollerProxy('body', {
+  ScrollTrigger.scrollerProxy('.App', {
     scrollTop(value) {
       if (arguments.length) {
         lenis.scrollTo(value, { immediate: true });
@@ -121,7 +121,7 @@ function AppContent() {
   
   lenis.on('scroll', ScrollTrigger.update);
   
-  ScrollTrigger.defaults({ scroller: 'body' });
+  ScrollTrigger.defaults({ scroller: '.App' });
 
   lenis.on('scroll', (data) => {
     console.log(data);
