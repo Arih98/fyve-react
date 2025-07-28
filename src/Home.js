@@ -399,8 +399,8 @@ const Home = () => {
     <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
     <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
     <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
-    <img className="custom-img img18" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_1743-1" />
-    <img className="custom-img img19" src="/api/Uploads/LOOK_11_2060-1.webp.webp" alt="LOOK_11_2043-1" />
+    <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
+    <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
     <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
     <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
   </div>
