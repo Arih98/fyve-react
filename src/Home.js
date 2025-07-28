@@ -185,18 +185,32 @@ const Home = () => {
   useEffect(() => {
     const scrollContainer = document.querySelector('.horizontal-scroll-content');
     if (scrollContainer) {
-      const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
       gsap.to(scrollContainer, {
-        x: -totalScrollWidth,
+        x: () => -(scrollContainer.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
           trigger: '.horizontal-scroll-section',
           start: 'top top',
-          end: () => "+=" + totalScrollWidth,
+          end: () => `+=${scrollContainer.scrollWidth - window.innerWidth}`,
           scrub: true,
           pin: true,
-          anticipatePin: 1
+          anticipatePin: 1,
+          invalidateOnRefresh: true
         }
+      });
+  
+      // Refresh after images load
+      const images = scrollContainer.querySelectorAll('img');
+      let loaded = 0;
+      const onLoad = () => {
+        loaded++;
+        if (loaded === images.length) {
+          ScrollTrigger.refresh(true);
+        }
+      };
+      images.forEach(img => {
+        if (img.complete) onLoad();
+        else img.addEventListener('load', onLoad);
       });
     }
   }, []);

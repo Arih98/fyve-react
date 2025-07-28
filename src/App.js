@@ -119,7 +119,7 @@ function AppContent() {
       if (arguments.length) {
         lenis.scrollTo(value, { immediate: true });
       }
-      return lenis.scroll;
+      return window.pageYOffset;
     },
     getBoundingClientRect() {
       return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
