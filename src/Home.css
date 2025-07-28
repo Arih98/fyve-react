@@ -177,6 +177,7 @@
 .image-wrapper {
   position: relative;
   width: 80%; /* Adjust to control max image width */
+  margin: 0 auto; /* Center the wrapper */
 }
 
 .section1-image-container {
@@ -202,5 +203,4 @@
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
-  transform: translateX(-10%); /* Shift text left by 10% */
 }
