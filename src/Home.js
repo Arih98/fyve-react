@@ -200,6 +200,9 @@ const Home = () => {
         <div className="section1-overlay-text">
           Comfortably<br/>Modern,<br/>Distinctly<br/>British
         </div>
+        <div className="section1-new-text">
+We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
+</div>
       </div>
     </div>
   );

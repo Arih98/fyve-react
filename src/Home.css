@@ -208,3 +208,18 @@
   line-height: 0.9em;
   letter-spacing: -0.4px;
 }
+
+.section1-new-text {
+  position: absolute;
+  top: 50%; /* Adjust percentage as needed */
+  left: 70%; /* Adjust percentage as needed */
+  background-color: #f7f7f7;
+  width: 13.3%;
+  font-family: "quasimoda", Sans-serif;
+  font-size: 0.985vw;
+  font-weight: 600;
+  line-height: 3.2em;
+  letter-spacing: 0.02em;
+  text-align: left;
+  padding: 1em; /* Optional for spacing */
+}
