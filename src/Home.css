@@ -164,31 +164,26 @@
 }
 
 .section-1 {
-  height: auto; /* Let content define height */
+  height: auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0;
+  padding: 100px 0; /* 100px top/bottom spacing */
 }
 
 .image-wrapper {
   position: relative;
-  width: calc(100% - 200px); /* Match image container width */
-  height: 0; /* Let height be determined by child */
-  padding-bottom: calc(56.25% + 200px); /* Image height + 100px top/bottom margins */
+  width: calc(100% - 200px); /* 100px left + 100px right */
 }
 
 .section1-image-container {
-  position: absolute;
-  top: 100px; /* Match top margin */
-  left: 100px; /* Match left margin */
-  width: calc(100% - 200px); /* 100px left + 100px right */
-  height: 0; /* Let height be determined by aspect ratio */
+  position: relative;
+  width: 100%;
+  height: 0;
   padding-bottom: 56.25%; /* Example aspect ratio (16:9); adjust based on image */
-  margin: 0; /* Remove margin from image container */
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
@@ -198,8 +193,8 @@
 
 .section1-overlay-text {
   position: absolute;
-  top: 100px; /* Align with top of image */
-  left: 100px; /* Align with image's left edge */
+  top: 0; /* Align with top of image */
+  left: 0; /* Align with image's left edge */
   text-align: left;
   font-family: "Quasimoda", sans-serif;
   font-size: 3.8vw;
