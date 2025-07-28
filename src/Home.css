@@ -189,7 +189,7 @@
   padding-left: 10%;
   padding-right: 10%;
   margin-top: 27%;
-  margin-bottom: 14%;
+  margin-bottom: 22%;
   background-image: url('/api/Uploads/LOOK-9_1426_result.webp');
   background-position: center center;
   background-repeat: no-repeat;
@@ -229,7 +229,7 @@
 
 .section1-stamp {
   position: absolute;
-  top: 66%;
+  top: 61%;
   left: 77.5%;
   width: 12.3vw;
   height: auto;
@@ -238,7 +238,7 @@
 
 .section1-shop-button {
   position: absolute;
-  top: 90%;
+  top: 84%;
   left: 10.5%;
   font-family: "quasimoda", Sans-serif;
   font-size: 1.2vw;
