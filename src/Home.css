@@ -238,7 +238,7 @@
 
 .section1-shop-button {
   position: absolute;
-  top: 28%;
+  top: 90%;
   left: 10.5%;
   font-family: "quasimoda", Sans-serif;
   font-size: 1.2vw;
@@ -255,6 +255,6 @@
 
 .section1-shop-button img {
   margin-left: 0.5vw;
-  width: 1.2vw;
+  width: 1.5vw;
   height: auto;
 }
