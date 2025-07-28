@@ -209,10 +209,36 @@ const Home = () => {
             }
           });
         }
+        gsap.utils.toArray('.word').forEach(word => {
+          gsap.fromTo(word, 
+            { opacity: 0, y: '1em' },
+            {
+              opacity: 1,
+              y: 0,
+              scrollTrigger: {
+                trigger: word,
+                start: 'top 80%',
+                end: 'top 60%',
+                scrub: true,
+              }
+            }
+          );
+        });
       }
     });
     return () => ctx.revert();
   }, []);
+
+  const paragraphs = [
+    "Hi! I'm Hannah founder of FYVE London.",
+    "Ever since I can remember, I’ve been passionate about design — especially children’s fashion. There’s something truly magical about watching a sketch transform into a piece that brings joy to little ones and their families.",
+    "But my greatest inspiration, and my most important role, is being a mom to my five incredible children. That’s where FYVE began, born from the love, chaos, and wonder of raising my own little crew.",
+    "Like so many of you, I know the daily juggle of balancing work and motherhood is no small feat – it’s a dance I’m still perfecting every day! That’s why I’ve built FYVE not just as a fashion brand, but as a celebration of motherhood—the highs, the challenges, and everything in between.",
+    "Our clothes are crafted with quality and comfort in mind, using soft, durable fabrics that kids can move in freely, designed to keep up with their energy and spark their joy—all while embracing a British, timeless classical style that never goes out of fashion. I’ve also chosen to partner with other mom-led businesses because I believe we’re stronger together. Supporting each other is at the core of what we do.",
+    "We’re so excited for you to join the FYVE family! We’d love to hear your feedback and see pictures of your little ones wearing our designs—your stories and moments mean the world to us.",
+    "With love,",
+    "Hannah x"
+  ];
 
   return (
     <div className="home-page">
@@ -313,18 +339,13 @@ const Home = () => {
         </div>
         <div className="text-middle" ref={textMiddleRef}>
           <div className="text-inner" ref={textInnerRef}>
-            Hi! I'm Hannah founder of FYVE London.<br/><br/>
-            Ever since I can remember, I’ve been passionate<br/>
-            about design — especially children’s fashion.<br/>
-            There’s something truly magical about watching<br/>
-            a sketch transform into a piece that brings joy<br/>
-            to little ones and their families.<br/><br/>
-            But my greatest inspiration, and my most important role, is being a mom to my five incredible children. That’s where FYVE began, born from the love, chaos, and wonder of raising my own little crew.<br/><br/>
-            Like so many of you, I know the daily juggle of balancing work and motherhood is no small feat – it’s a dance I’m still perfecting every day! That’s why I’ve built FYVE not just as a fashion brand, but as a celebration of motherhood—the highs, the challenges, and everything in between.<br/><br/>
-            Our clothes are crafted with quality and comfort in mind, using soft, durable fabrics that kids can move in freely, designed to keep up with their energy and spark their joy—all while embracing a British, timeless classical style that never goes out of fashion. I’ve also chosen to partner with other mom-led businesses because I believe we’re stronger together. Supporting each other is at the core of what we do.<br/><br/>
-            We’re so excited for you to join the FYVE family! We’d love to hear your feedback and see pictures of your little ones wearing our designs—your stories and moments mean the world to us.<br/><br/>
-            With love,<br/>
-            Hannah x
+            {paragraphs.map((para, i) => (
+              <p key={i}>
+                {para.split(/\s+/).map((word, j) => (
+                  <span key={j} className="word">{word} </span>
+                ))}
+              </p>
+            ))}
           </div>
         </div>
       </div>

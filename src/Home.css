@@ -400,9 +400,10 @@
   position: absolute;
   top: 0;
   height: 100%;
-  width: calc(50% - 0.5vw);
+  width: calc(50% - 15vw);
   display: flex;
   flex-direction: column;
+  gap: 1vw;
 }
 
 .left-images {
@@ -414,18 +415,34 @@
 }
 
 .image {
-  height: 50%;
+  height: calc(50% - 0.5vw);
   background-size: cover;
-  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.top-left {
+  background-position: top left;
+}
+
+.bottom-left {
+  background-position: bottom left;
+}
+
+.top-right {
+  background-position: top right;
+}
+
+.bottom-right {
+  background-position: bottom right;
 }
 
 .text-middle {
   position: absolute;
-  top: 10vh;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 30vw;
-  height: 80vh;
+  height: 100vh;
   background: white;
   padding: 2vw;
   overflow: hidden;
@@ -439,4 +456,12 @@
 
 .text-inner {
   position: relative;
+}
+
+.text-inner p {
+  margin: 0 0 1em 0;
+}
+
+.word {
+  display: inline-block;
 }
