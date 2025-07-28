@@ -229,8 +229,8 @@
 
 .section1-stamp {
   position: absolute;
-  top: 80%; /* Adjust % as needed */
-  left: 80%; /* Adjust % as needed */
+  top: 66%;
+  left: 77.5%;
   width: 12.3vw;
   height: auto;
   will-change: transform;

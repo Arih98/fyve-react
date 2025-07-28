@@ -78,14 +78,13 @@ const Home = () => {
 const stamp = document.querySelector('.section1-stamp');
 Observer.create({
   type: "wheel,touch,scroll",
-  wheelSpeed: -1,
   onDown: () => {
-    rotation -= 10; // Adjust speed as needed
-    gsap.to(stamp, { rotation, duration: 0.2, overwrite: true });
+    rotation -= 5; // Adjust speed as needed
+    gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
   },
   onUp: () => {
-    rotation += 10; // Adjust speed as needed
-    gsap.to(stamp, { rotation, duration: 0.2, overwrite: true });
+    rotation += 5; // Adjust speed as needed
+    gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
   },
   tolerance: 10,
   preventDefault: false
