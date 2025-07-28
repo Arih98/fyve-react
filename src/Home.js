@@ -183,6 +183,25 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    const scrollContainer = document.querySelector('.horizontal-scroll-content');
+    if (scrollContainer) {
+      const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
+      gsap.to(scrollContainer, {
+        x: -totalScrollWidth,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.horizontal-scroll-section',
+          start: 'top top',
+          end: () => "+=" + totalScrollWidth,
+          scrub: true,
+          pin: true,
+          anticipatePin: 1
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       const textParts = document.querySelectorAll('.text-part');
       let splits = [];
@@ -343,6 +362,31 @@ const Home = () => {
           <img src="/api/Uploads/EMBROIDERED-COLLAR-ROMPER3.webp" alt="" className="bottom-right" />
         </div>
       </div>
+      <div className="horizontal-scroll-section">
+  <div className="horizontal-scroll-content">
+    <img className="custom-img img1" src="https://fyvelondon.com/wp-content/uploads/2025/03/LOOK-2_191.jpg" alt="LOOK-2_191" />
+    <img className="custom-img img2" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
+    <img className="custom-img img3" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-3_329.jpg" alt="LOOK-3_329" />
+    <img className="custom-img img4" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
+    <img className="custom-img img5" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-4_365.jpg" alt="LOOK-4_365" />
+    <img className="custom-img img6" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-2_289.jpg" alt="LOOK-2_289" />
+    <img className="custom-img img7" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-8_1177-1.jpg" alt="look_12_2435" />
+    <img className="custom-img img8" src="https://fyvelondon.com/wp-content/uploads/2025/02/look_12_2435.jpg" alt="look_12_2435" />
+    <img className="custom-img img9" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-6_582_result.webp" alt="LOOK-6_582_result" />
+    <img className="custom-img img10" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-7_920.jpg" alt="LOOK-7_920" />
+    <img className="custom-img img11" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-8_985.jpg" alt="LOOK-8_985" />
+    <img className="custom-img img12" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1665-1.jpg" alt="LOOK-9_1665-1" />
+    <img className="custom-img img13" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1452.jpg" alt="LOOK-9_1452" />
+    <img className="custom-img img14" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1531.jpg" alt="LOOK-9_1531" />
+    <img className="custom-img img15" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1459.jpg" alt="LOOK-9_1459" />
+    <img className="custom-img img16" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-9_1361.jpg" alt="LOOK-9_1361" />
+    <img className="custom-img img17" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK-12_2160.jpg" alt="LOOK-12_2160" />
+    <img className="custom-img img18" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK_11_1743-1.jpg" alt="LOOK_11_1743-1" />
+    <img className="custom-img img19" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK_11_2043-1.jpg" alt="LOOK_11_2043-1" />
+    <img className="custom-img img20" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK_11_2060-1.jpg" alt="LOOK_11_2060-1" />
+    <img className="custom-img img21" src="https://fyvelondon.com/wp-content/uploads/2025/02/LOOK_11_2082.jpg" alt="LOOK_11_2082" />
+  </div>
+</div>
     </div>
   );
 };
