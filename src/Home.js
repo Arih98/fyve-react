@@ -238,6 +238,28 @@ We combine iconic British design with modern comfort<br/>and ease, creating a wa
     <img src="/api/Uploads/FYVE-Arrow-Icon-White.svg" alt="" />
   </a>
 </div>
+<div className="section-3">
+  <div className="section3-image-wrapper">
+    <a href="https://dev.fyvelondon.com/products?category=boys" className="section3-link">
+      <div className="section3-image-container">
+        <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-8_1135_result.webp')`}}></div>
+        <div className="section3-text">BOY</div>
+      </div>
+    </a>
+    <a href="https://dev.fyvelondon.com/products?category=girls" className="section3-link">
+      <div className="section3-image-container">
+        <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-4_365.webp')`}}></div>
+        <div className="section3-text">GIRL</div>
+      </div>
+    </a>
+    <a href="https://dev.fyvelondon.com/products?category=baby" className="section3-link">
+      <div className="section3-image-container">
+        <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-9_1536_result.webp')`}}></div>
+        <div className="section3-text">BABY</div>
+      </div>
+    </a>
+  </div>
+</div>
     </div>
   );
 };
