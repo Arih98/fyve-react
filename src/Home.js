@@ -185,17 +185,35 @@ const Home = () => {
   useEffect(() => {
     const scrollContainer = document.querySelector('.horizontal-scroll-content');
     if (scrollContainer) {
-      const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
-      gsap.to(scrollContainer, {
-        x: -totalScrollWidth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.horizontal-scroll-section',
-          start: 'top top',
-          end: () => "+=" + totalScrollWidth,
-          scrub: true,
-          pin: true,
-          anticipatePin: 1
+      const images = scrollContainer.querySelectorAll('img');
+      const totalImages = images.length;
+      let loadedImages = 0;
+  
+      const checkImagesLoaded = () => {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+          const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
+          gsap.to(scrollContainer, {
+            x: -totalScrollWidth,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.horizontal-scroll-section',
+              start: 'top top',
+              end: () => "+=" + totalScrollWidth,
+              scrub: true,
+              pin: true,
+              anticipatePin: 1
+            }
+          });
+        }
+      };
+  
+      images.forEach((img) => {
+        if (img.complete) {
+          checkImagesLoaded();
+        } else {
+          img.addEventListener('load', checkImagesLoaded);
+          img.addEventListener('error', checkImagesLoaded); // Handle image load errors
         }
       });
     }
