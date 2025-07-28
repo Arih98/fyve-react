@@ -282,3 +282,15 @@
   line-height: 1em;
   color: #FFFFFF;
 }
+
+.section2-subtext {
+  position: absolute;
+  top: 14.1%;
+  left: 9%;
+  text-align: left;
+  font-family: "quasimoda", Sans-serif;
+  font-size: 4.3vw;
+  font-weight: 700;
+  line-height: 1em;
+  color: #FFFFFF;
+}

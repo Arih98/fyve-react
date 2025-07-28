@@ -230,6 +230,9 @@ We combine iconic British design with modern comfort<br/>and ease, creating a wa
       </div>
       <div className="section-2">
   <div className="section2-overlay-text">SS25</div>
+  <div className="section2-subtext">
+    Soft hues,<br/>effortless<br/>silhouettes,<br/>and timeless<br/>charm.
+  </div>
 </div>
     </div>
   );
