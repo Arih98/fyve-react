@@ -228,6 +228,7 @@ We combine iconic British design with modern comfort<br/>and ease, creating a wa
 </div>
 <img src="/api/Uploads/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
       </div>
+      <div className="section-2"></div>
     </div>
   );
 };
