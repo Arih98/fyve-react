@@ -185,7 +185,7 @@
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%;
+  padding-bottom: 69%;
   padding-left: 10%;
   padding-right: 10%;
   margin-top: 27%;
@@ -211,13 +211,13 @@
 
 .section1-new-text {
   position: absolute;
-  top: 50%; /* Adjust percentage as needed */
-  left: 70%; /* Adjust percentage as needed */
+  top: 33%;
+  left: 76.9%;
   background-color: #f7f7f7;
   width: 13.3%;
   font-family: "quasimoda", Sans-serif;
   font-size: 0.985vw;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.7em;
   letter-spacing: 0.02em;
   text-align: left;
