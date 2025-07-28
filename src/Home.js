@@ -16,7 +16,7 @@ const Home = () => {
   const hasAnimated = useRef(false);
   const introDone = useRef(false);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
-
+  const lenis = useContext(LenisContext);
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
   const scrollDisableTime = 4000;
@@ -47,7 +47,6 @@ const Home = () => {
     window.scrollTo(0, 0);
     hasAnimated.current = false;
     introDone.current = false;
-    const lenis = useContext(LenisContext);
     lenis?.stop();
     setTimeout(() => lenis?.start(), scrollDisableTime);
     console.log('Home component mounted');
@@ -61,7 +60,7 @@ const Home = () => {
     } else {
       console.error('Image element not found');
     }
-
+  
     const ctx = gsap.context(() => {
       gsap.set('.london-mask', { visibility: 'visible' });
       const londonMask = document.querySelector('.london-mask');
@@ -74,27 +73,27 @@ const Home = () => {
       } else {
         console.error('london-mask not found');
       }
-
+  
       let rotation = 0;
-const stamp = document.querySelector('.section1-stamp');
-Observer.create({
-  type: "wheel,touch,scroll",
-  onDown: () => {
-    rotation -= 5; // Adjust speed as needed
-    gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-  },
-  onUp: () => {
-    rotation += 5; // Adjust speed as needed
-    gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-  },
-  tolerance: 10,
-  preventDefault: false
-});
-
+      const stamp = document.querySelector('.section1-stamp');
+      Observer.create({
+        type: "wheel,touch,scroll",
+        onDown: () => {
+          rotation -= 5;
+          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+        },
+        onUp: () => {
+          rotation += 5;
+          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+        },
+        tolerance: 10,
+        preventDefault: false
+      });
+  
       const fyveTextY = -1.11;
       const londonX = 1.3;
       const londonY = -1.41;
-
+  
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
@@ -165,104 +164,103 @@ Observer.create({
             console.log('Lottie container animation completed');
           }
         });
-      }
-    });
-
-    hasAnimated.current = true;
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <div className="home-page">
-      <HomeHeader />
-      <div className="fyve-wrapper">
-        <div className="fyve-mask">
-          <div className="fyve-text">
-            {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+      });
+  
+      hasAnimated.current = true;
+  
+      return () => ctx.revert();
+    }, []);
+  
+    return (
+      <div className="home-page">
+        <HomeHeader />
+        <div className="fyve-wrapper">
+          <div className="fyve-mask">
+            <div className="fyve-text">
+              {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+            </div>
+            <div className="fyve-image-container">
+              <img
+                src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
+                alt="Reveal Image"
+                className="fyve-image"
+              />
+              <div className="mask-left"></div>
+              <div className="mask-right"></div>
+            </div>
+            <div className="fyve-text">
+              {'VE'.split('').map((l, i) => <span key={i+2} className="fyve-letter">{l}</span>)}
+            </div>
           </div>
-          <div className="fyve-image-container">
-            <img
-              src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
-              alt="Reveal Image"
-              className="fyve-image"
+          <div className="london-mask">
+            <div className="london-text">
+              {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
+            </div>
+            <div className="london-text">
+              {'DON'.split('').map((l, i) => <span key={i+3} className="london-letter">{l}</span>)}
+            </div>
+          </div>
+          <div ref={ref} className="lottie-container">
+            <Lottie 
+              lottieRef={lottieRef}
+              animationData={FYVEHeroLottie} 
+              loop={false} 
+              autoplay={false} 
+              style={{ width: '100%', height: '100%' }} 
             />
-            <div className="mask-left"></div>
-            <div className="mask-right"></div>
-          </div>
-          <div className="fyve-text">
-            {'VE'.split('').map((l, i) => <span key={i+2} className="fyve-letter">{l}</span>)}
+            <div className="london-below">LONDON</div>
           </div>
         </div>
-        <div className="london-mask">
-          <div className="london-text">
-            {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
+        <div className="section-1">
+          <div className="image-wrapper">
+            <div className="section1-image-container"></div>
           </div>
-          <div className="london-text">
-            {'DON'.split('').map((l, i) => <span key={i+3} className="london-letter">{l}</span>)}
+          <div className="section1-overlay-text">
+            Comfortably<br/>Modern,<br/>Distinctly<br/>British.
+          </div>
+          <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+            SHOP NOW
+            <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
+          </a>
+          <div className="section1-new-text">
+            We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
+          </div>
+          <img src="/api/Uploads/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
+        </div>
+        <div className="section-2">
+          <div className="section2-overlay-text">SS25</div>
+          <div className="section2-subtext">
+            Soft hues,<br/>effortless<br/>silhouettes,<br/>and timeless<br/>charm.
+          </div>
+          <a href="https://dev.fyvelondon.com/products?category=ss25" className="section2-shop-button">
+            SHOP NOW
+            <img src="/api/Uploads/FYVE-Arrow-Icon-White.svg" alt="" />
+          </a>
+        </div>
+        <div className="section-3">
+          <div className="section3-image-wrapper">
+            <a href="https://dev.fyvelondon.com/products?category=boys" className="section3-link">
+              <div className="section3-image-container">
+                <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-8_1135_result.webp')`}}></div>
+                <div className="section3-text">BOY</div>
+              </div>
+            </a>
+            <a href="https://dev.fyvelondon.com/products?category=girls" className="section3-link">
+              <div className="section3-image-container">
+                <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-4_365.webp')`}}></div>
+                <div className="section3-text">GIRL</div>
+              </div>
+            </a>
+            <a href="https://dev.fyvelondon.com/products?category=baby" className="section3-link">
+              <div className="section3-image-container">
+                <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-9_1536_result.webp')`}}></div>
+                <div className="section3-text">BABY</div>
+              </div>
+            </a>
           </div>
         </div>
-        <div ref={ref} className="lottie-container">
-          <Lottie 
-            lottieRef={lottieRef}
-            animationData={FYVEHeroLottie} 
-            loop={false} 
-            autoplay={false} 
-            style={{ width: '100%', height: '100%' }} 
-          />
-          <div className="london-below">LONDON</div>
-        </div>
       </div>
-      <div className="section-1">
-        <div className="image-wrapper">
-          <div className="section1-image-container"></div>
-        </div>
-        <div className="section1-overlay-text">
-          Comfortably<br/>Modern,<br/>Distinctly<br/>British.
-        </div>
-        <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
-  SHOP NOW
-  <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
-</a>
-        <div className="section1-new-text">
-We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
-</div>
-<img src="/api/Uploads/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
-      </div>
-      <div className="section-2">
-  <div className="section2-overlay-text">SS25</div>
-  <div className="section2-subtext">
-    Soft hues,<br/>effortless<br/>silhouettes,<br/>and timeless<br/>charm.
-  </div>
-  <a href="https://dev.fyvelondon.com/products?category=ss25" className="section2-shop-button">
-    SHOP NOW
-    <img src="/api/Uploads/FYVE-Arrow-Icon-White.svg" alt="" />
-  </a>
-</div>
-<div className="section-3">
-  <div className="section3-image-wrapper">
-    <a href="https://dev.fyvelondon.com/products?category=boys" className="section3-link">
-      <div className="section3-image-container">
-        <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-8_1135_result.webp')`}}></div>
-        <div className="section3-text">BOY</div>
-      </div>
-    </a>
-    <a href="https://dev.fyvelondon.com/products?category=girls" className="section3-link">
-      <div className="section3-image-container">
-        <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-4_365.webp')`}}></div>
-        <div className="section3-text">GIRL</div>
-      </div>
-    </a>
-    <a href="https://dev.fyvelondon.com/products?category=baby" className="section3-link">
-      <div className="section3-image-container">
-        <div className="section3-image" style={{backgroundImage: `url('/api/Uploads/LOOK-9_1536_result.webp')`}}></div>
-        <div className="section3-text">BABY</div>
-      </div>
-    </a>
-  </div>
-</div>
-    </div>
-  );
-};
-
-export default Home;
+    );
+  };
+  
+  export default Home;
