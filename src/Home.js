@@ -10,7 +10,7 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
 
-gsap.registerPlugin(Observer, SplitText, ScrollTrigger); // Single registration
+gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
 const Home = () => {
   const lottieRef = useRef();
@@ -183,58 +183,40 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const cards = document.querySelectorAll('.card');
-    const numCards = cards.length;
-    const radius = 2000; // Adjust for arch curvature
-    const angleStep = 180 / (numCards - 1); // Half-circle arch
-
-    // Wait for images to load
-    const images = document.querySelectorAll('.card img');
-    let loadedImages = 0;
-
-    const checkImagesLoaded = () => {
-      loadedImages++;
-      if (loadedImages === images.length) {
-        cards.forEach((card, i) => {
-          gsap.set(card, {
-            rotationY: -90 + (i * angleStep), // Arc from left to right
-            transformOrigin: `50% 50% -${radius}px`,
-            z: -radius,
-            x: '-50%',
-            y: '-50%',
+    const scrollContainer = document.querySelector('.horizontal-scroll-content');
+    if (scrollContainer) {
+      const images = scrollContainer.querySelectorAll('img');
+      const totalImages = images.length;
+      let loadedImages = 0;
+  
+      const checkImagesLoaded = () => {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+          const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
+          gsap.to(scrollContainer, {
+            x: -totalScrollWidth,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.horizontal-scroll-section',
+              start: 'top top',
+              end: () => "+=" + totalScrollWidth,
+              scrub: true,
+              pin: true,
+              anticipatePin: 1
+            }
           });
-        });
-
-        const totalRotation = -180; // Full arch sweep
-        gsap.to('.horizontal-scroll-content', {
-          rotationY: totalRotation,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.horizontal-scroll-section',
-            start: 'top top',
-            end: `+=${Math.abs(totalRotation) * 20}`, // Adjust speed
-            scrub: true,
-            pin: true,
-            anticipatePin: 1,
-          },
-        });
-      }
-    };
-
-    images.forEach((img) => {
-      if (img.complete) checkImagesLoaded();
-      else {
-        img.addEventListener('load', checkImagesLoaded);
-        img.addEventListener('error', checkImagesLoaded);
-      }
-    });
-
-    return () => {
+        }
+      };
+  
       images.forEach((img) => {
-        img.removeEventListener('load', checkImagesLoaded);
-        img.removeEventListener('error', checkImagesLoaded);
+        if (img.complete) {
+          checkImagesLoaded();
+        } else {
+          img.addEventListener('load', checkImagesLoaded);
+          img.addEventListener('error', checkImagesLoaded); // Handle image load errors
+        }
       });
-    };
+    }
   }, []);
 
   useEffect(() => {
@@ -260,12 +242,16 @@ const Home = () => {
       let time = 0;
       textParts.forEach((part, index) => {
         const split = splits[index];
-        if (index > 0) tl.set(textParts, { opacity: 0 }, time);
+        // Set all parts to opacity 0 before animating the current one
+        if (index > 0) {
+          tl.set(textParts, { opacity: 0 }, time);
+        }
         tl.set(part, { opacity: 1 }, time);
         tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
         time += 1;
-        tl.to({}, { duration: 0.5 }, time);
+        tl.to({}, { duration: 0.5 }, time); // Hold time
         time += 0.5;
+        // Fade out the current part
         tl.to(part, { opacity: 0, duration: 0.5 }, time);
         time += 1;
       });
@@ -395,40 +381,30 @@ const Home = () => {
         </div>
       </div>
       <div className="horizontal-scroll-section">
-        <div className="horizontal-scroll-content">
-          {[
-            "/api/Uploads/LOOK-2_191.webp",
-            "/api/Uploads/LOOK-5_531_result.webp",
-            "/api/Uploads/LOOK-3_329.jpg",
-            "/api/Uploads/LOOK-1_011_result.webp",
-            "/api/Uploads/LOOK-2_289.webp",
-            "/api/Uploads/LOOK-8_1177-1.webp",
-            "/api/Uploads/look_12_2435.webp",
-            "/api/Uploads/LOOK-6_582_result2.webp",
-            "/api/Uploads/LOOK-7_920.webp",
-            "/api/Uploads/LOOK-8_985.webp",
-            "/api/Uploads/LOOK-9_1665-1.webp",
-            "/api/Uploads/LOOK-9_1452.webp",
-            "/api/Uploads/LOOK-9_1531.webp",
-            "/api/Uploads/LOOK-9_1459.webp",
-            "/api/Uploads/LOOK-9_1361.webp",
-            "/api/Uploads/LOOK-12_2160.webp",
-            "/api/Uploads/LOOK_11_1743-1.webp",
-            "/api/Uploads/LOOK_11_2043.webp",
-            "/api/Uploads/LOOK-4_365.webp",
-            "/api/Uploads/LOOK-2_191.webp",
-            "/api/Uploads/LOOK_11_2082.webp",
-          ].map((src, index) => (
-            <div className="card" key={index}>
-              <img
-                className={`custom-img img${index + 1}`}
-                src={src}
-                alt={`LOOK-${index + 1}`}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+  <div className="horizontal-scroll-content">
+    <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
+    <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
+    <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
+    <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
+    <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
+    <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
+    <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
+    <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
+    <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
+    <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
+    <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
+    <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
+    <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
+    <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
+    <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
+    <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
+    <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
+    <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
+    <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
+    <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
+    <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
+  </div>
+</div>
     </div>
   );
 };
