@@ -322,7 +322,7 @@ const Home = () => {
               <div className="text-part"><p>I'm Hannah</p></div>
               <div className="text-part"><p>founder of FYVE London.</p></div>
               <div className="text-part"><p>Ever since I can remember, I’ve been passionate about design - especially children’s fashion.</p></div>
-              <div className="text-part"><p>There’s something truly magical about watching<br/>a sketch transform into a piece that brings joy<br/>to little ones and their families.</p></div>
+              <div className="text-part"><p>There’s something truly magical about watching a sketch transform into a piece that brings joy<br/>to little ones and their families.</p></div>
               <div className="text-part"><p>But my greatest inspiration, and my most important role, is being a mom to my five incredible children.</p></div>
               <div className="text-part"><p>That’s where FYVE began, born from the love, chaos, and wonder of raising my own little crew.</p></div>
               <div className="text-part"><p>Like so many of you, I know the daily juggle of balancing work and motherhood is no small feat – it’s a dance I’m still perfecting every day!</p></div>
