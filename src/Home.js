@@ -51,8 +51,6 @@ const Home = () => {
         gsap.set('.london-below', { opacity: 0 });
         console.log('Lottie reset to frame 0');
       }
-    } else {
-      console.error('Lottie ref not available');
     }
   }, [inView, londonFadeDelay]);
 
@@ -83,6 +81,7 @@ const Home = () => {
     }
 
     const ctx = gsap.context(() => {
+      gsap.set('.fyve-image-container', { autoAlpha: 0 });
       gsap.set('.london-mask', { visibility: 'visible' });
       const londonMask = document.querySelector('.london-mask');
       let londonHeight = 0;
@@ -147,6 +146,7 @@ const Home = () => {
         );
         gsap.to('.fyve-text:first-child', { x: '-0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
         gsap.to('.fyve-text:last-child', { x: '0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+        gsap.set('.fyve-image-container', { autoAlpha: 1 });
         gsap.to('.fyve-image-container', { width: '18vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
@@ -181,7 +181,6 @@ const Home = () => {
             }, londonFadeDelay);
           },
           onComplete: () => {
-            gsap.set('.fyve-image-container', { autoAlpha: 0 });
             introDone.current = true;
             console.log('Lottie container animation completed');
           }
