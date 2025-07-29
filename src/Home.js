@@ -322,7 +322,7 @@ return () => {
   tl.kill();
   window.removeEventListener('resize', handleResize);
   renderer.dispose();
-};
+};});
 
 useEffect(() => {
   let ctx;
