@@ -640,10 +640,10 @@
 
 @media (max-width: 768px) {
   .fyve-image-container {
-  height: 35vw;
+  height: 45vw;
   }
   .fyve-text {
-  font-size: 30vw;
+  font-size: 25vw;
   }
   .london-text {
   font-size: 2.5vw;
