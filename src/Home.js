@@ -18,6 +18,7 @@ const Home = () => {
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
   const lenis = useContext(LenisContext);
   const [animationData, setAnimationData] = useState(null);
+  const [londonFadeDelay, setLondonFadeDelay] = useState(0);
   const scrollDisableTime = 4000;
   const section4Ref = useRef();
 
@@ -29,8 +30,7 @@ const Home = () => {
       .then(data => {
         setAnimationData(data);
         const animationDuration = (data.op - data.ip) / data.fr * 1000;
-        const londonFadeDelay = animationDuration * 0.3;
-        // Use animationDuration and londonFadeDelay here if needed
+        setLondonFadeDelay(animationDuration * 0.3);
       })
       .catch(error => console.error('Failed to load Lottie JSON:', error));
   }, []);
@@ -54,7 +54,7 @@ const Home = () => {
     } else {
       console.error('Lottie ref not available');
     }
-  }, [inView]);
+  }, [inView, londonFadeDelay]);
 
   useEffect(() => {
     if (lenis) {
@@ -191,7 +191,7 @@ const Home = () => {
     hasAnimated.current = true;
 
     return () => ctx.revert();
-  }, []);
+  }, [londonFadeDelay]);
 
   useEffect(() => {
     const scrollContainer = document.querySelector('.horizontal-scroll-content');
