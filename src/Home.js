@@ -108,8 +108,8 @@ const ctx = gsap.context(() => {
   const londonY = isMobile ? -14.41 : -1.41; // Adjusted for higher position on mobile
   const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw'; // Increased movement for FYVE text on mobile
   const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw'; // Increased movement for FYVE text on mobile
-  const londonMoveX = isMobile ? '-22vw' : '-15.9vw'; // Increased movement for LONDON text on mobile
-  const londonMoveXEnd = isMobile ? '22vw' : '15.9vw'; // Increased movement for LONDON text on mobile
+  const londonMoveX = isMobile ? '-52vw' : '-45.9vw'; // Increased movement for LONDON text on mobile
+  const londonMoveXEnd = isMobile ? '52vw' : '45.9vw'; // Increased movement for LONDON text on mobile
 
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
