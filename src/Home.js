@@ -295,6 +295,35 @@ images.forEach((img) => {
   }
 });
 
+const render = () => {
+  planes.forEach(({ mesh, img }) => {
+    const rect = img.getBoundingClientRect();
+    mesh.position.x = rect.left + rect.width / 2 - window.innerWidth / 2;
+    mesh.position.y = -rect.top - rect.height / 2 + window.innerHeight / 2;
+    mesh.scale.set(rect.width, rect.height, 1);
+    mesh.material.uniforms.uVelo.value = velocity;
+  });
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+};
+render();
+
+const handleResize = () => {
+  camera.left = -window.innerWidth / 2;
+  camera.right = window.innerWidth / 2;
+  camera.top = window.innerHeight / 2;
+  camera.bottom = -window.innerHeight / 2;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+};
+window.addEventListener('resize', handleResize);
+
+return () => {
+  tl.kill();
+  window.removeEventListener('resize', handleResize);
+  renderer.dispose();
+};
+
 useEffect(() => {
   let ctx;
   document.fonts.ready.then(() => {
