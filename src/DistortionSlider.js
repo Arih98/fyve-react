@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { TextureLoader, ShaderMaterial, PlaneGeometry } from 'three';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { TextureLoader, ShaderMaterial, PlaneGeometry, LinearFilter, Vector2 } from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContext } from 'react';
-import { LenisContext } from './App'; // Assuming App.js provides Lenis
+import { LenisContext } from './App';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,75 +52,84 @@ const fragmentShader = `
 
 const Plane = ({ url, position, size, veloRef }) => {
   const meshRef = useRef();
-  const { viewport } = useThree();
-  const texture = new TextureLoader().load(url);
-  const material = new ShaderMaterial({
+  const materialRef = useRef(new ShaderMaterial({
     uniforms: {
-      uTexture: { value: texture },
-      uMeshSize: { value: [size[0], size[1]] },
-      uImageSize: { value: [texture.image.width, texture.image.height] },
+      uTexture: { value: null },
+      uMeshSize: { value: new Vector2(size[0], size[1]) },
+      uImageSize: { value: new Vector2(1, 1) },
       uVelo: { value: 0 },
       uScale: { value: 1 },
     },
     vertexShader,
     fragmentShader,
     transparent: true,
-  });
+  }));
+
+  useEffect(() => {
+    const loader = new TextureLoader();
+    loader.load(url, (texture) => {
+      texture.minFilter = LinearFilter;
+      texture.generateMipmaps = false;
+      materialRef.current.uniforms.uTexture.value = texture;
+      materialRef.current.uniforms.uImageSize.value = new Vector2(texture.image.width, texture.image.height);
+      materialRef.current.needsUpdate = true;
+    });
+  }, [url]);
 
   useFrame(() => {
-    material.uniforms.uVelo.value = veloRef.current * 0.0005;
+    materialRef.current.uniforms.uVelo.value = veloRef.current * 0.0005;
   });
 
   return (
-    <mesh ref={meshRef} position={position} material={material}>
+    <mesh ref={meshRef} position={position} material={materialRef.current}>
       <planeGeometry args={[size[0], size[1], 32, 32]} />
     </mesh>
   );
 };
 
 const DistortionSlider = ({ images }) => {
-    const containerRef = useRef();
-    const groupRef = useRef();
-    const veloRef = useRef(0);
-    const lenis = useContext(LenisContext);
-    const [totalWidth, setTotalWidth] = useState(0);
-  
-    useEffect(() => {
-      let widths = images.map((img) => img.width || 400);
-      setTotalWidth(widths.reduce((a, b) => a + b + 15, 0));
-  
-      const st = ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
-        end: () => `+=${totalWidth - window.innerWidth}`,
-        pin: true,
-        scrub: true,
-        onUpdate: (self) => {
-          gsap.to(groupRef.current.position, { x: -self.progress * (totalWidth - window.innerWidth), duration: 0 });
-        },
-      });
-  
-      lenis?.on('scroll', ({ velocity }) => {
-        veloRef.current = velocity;
-      });
-  
-      return () => st.kill();
-    }, [totalWidth, lenis, images]);
-  
-    let posX = 0;
-    const planes = images.map((img, i) => {
-      const pos = [posX + (img.width || 400) / 2, img.align === 'flex-end' ? -((400 - (img.height || 400)) / 2) : (img.align === 'flex-start' ? ((400 - (img.height || 400)) / 2) : 0), 0];
-      posX += (img.width || 400) + 15;
-      return <Plane key={i} url={img.url} position={pos} size={[img.width || 400, img.height || 400]} veloRef={veloRef} />;
+  const containerRef = useRef();
+  const groupRef = useRef();
+  const veloRef = useRef(0);
+  const lenis = useContext(LenisContext);
+  const [totalWidth, setTotalWidth] = useState(0);
+
+  useEffect(() => {
+    let widths = images.map((img) => img.width || 400);
+    setTotalWidth(widths.reduce((a, b) => a + b + 15, 0));
+
+    const st = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: 'top top',
+      end: () => `+=${totalWidth - window.innerWidth}`,
+      pin: true,
+      scrub: true,
+      onUpdate: (self) => {
+        gsap.to(groupRef.current.position, { x: -self.progress * (totalWidth - window.innerWidth), duration: 0 });
+      },
     });
-  
-    return (
-      <div ref={containerRef} style={{ height: '100vh', width: '100%', position: 'relative' }}>
-        <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} orthographic camera={{ near: 0, far: 1000, position: [0, 0, 1] }}>
-          <group ref={groupRef}>{planes}</group>
-        </Canvas>
-      </div>
-    );
-  };
+
+    lenis?.on('scroll', ({ velocity }) => {
+      veloRef.current = velocity;
+    });
+
+    return () => st.kill();
+  }, [totalWidth, lenis, images]);
+
+  let posX = 0;
+  const planes = images.map((img, i) => {
+    const pos = [posX + (img.width || 400) / 2, img.align === 'flex-end' ? -((400 - (img.height || 400)) / 2) : (img.align === 'flex-start' ? ((400 - (img.height || 400)) / 2) : 0), 0];
+    posX += (img.width || 400) + 15;
+    return <Plane key={i} url={img.url} position={pos} size={[img.width || 400, img.height || 400]} veloRef={veloRef} />;
+  });
+
+  return (
+    <div ref={containerRef} style={{ height: '100vh', width: '100%', position: 'relative' }}>
+      <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} orthographic camera={{ near: 0, far: 1000, position: [0, 0, 1] }}>
+        <group ref={groupRef}>{planes}</group>
+      </Canvas>
+    </div>
+  );
+};
 
 export default DistortionSlider;
