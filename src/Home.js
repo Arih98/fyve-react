@@ -152,7 +152,7 @@ const Home = () => {
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
         gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => { gsap.set('.fyve-image-container', { autoAlpha: 0 }); } });
+        gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.set('.mobile-header', { opacity: 0 });
         gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
         gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
@@ -181,6 +181,7 @@ const Home = () => {
             }, londonFadeDelay);
           },
           onComplete: () => {
+            gsap.set('.fyve-image-container', { autoAlpha: 0 });
             introDone.current = true;
             console.log('Lottie container animation completed');
           }
