@@ -19,6 +19,7 @@ const Home = () => {
   const lenis = useContext(LenisContext);
   const [animationData, setAnimationData] = useState(null);
   const [londonFadeDelay, setLondonFadeDelay] = useState(0);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const scrollDisableTime = 4000;
   const section4Ref = useRef();
 
@@ -31,30 +32,31 @@ const Home = () => {
         setAnimationData(data);
         const animationDuration = (data.op - data.ip) / data.fr * 1000;
         setLondonFadeDelay(animationDuration * 0.3);
+        setDataLoaded(true);
       })
       .catch(error => console.error('Failed to load Lottie JSON:', error));
   }, []);
 
   useEffect(() => {
-    if (lottieRef.current) {
-      if (inView) {
-        if (introDone.current) {
-          lottieRef.current.play();
-          console.log('Lottie played on re-enter');
-          setTimeout(() => {
-            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-            console.log('Fading in LONDON after re-enter');
-          }, londonFadeDelay);
-        }
-      } else {
-        lottieRef.current.goToAndStop(0, true);
-        gsap.set('.london-below', { opacity: 0 });
-        console.log('Lottie reset to frame 0');
+    if (!lottieRef.current) return;
+    if (inView) {
+      if (introDone.current) {
+        lottieRef.current.play();
+        console.log('Lottie played on re-enter');
+        setTimeout(() => {
+          gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+          console.log('Fading in LONDON after re-enter');
+        }, londonFadeDelay);
       }
+    } else {
+      lottieRef.current.goToAndStop(0, true);
+      gsap.set('.london-below', { opacity: 0 });
+      console.log('Lottie reset to frame 0');
     }
   }, [inView, londonFadeDelay]);
 
   useEffect(() => {
+    if (!dataLoaded) return;
     if (lenis) {
       lenis.stop();
       console.log('Lenis scroll stopped');
@@ -81,7 +83,6 @@ const Home = () => {
     }
 
     const ctx = gsap.context(() => {
-      gsap.set('.fyve-image-container', { autoAlpha: 0 });
       gsap.set('.london-mask', { visibility: 'visible' });
       const londonMask = document.querySelector('.london-mask');
       let londonHeight = 0;
@@ -146,13 +147,12 @@ const Home = () => {
         );
         gsap.to('.fyve-text:first-child', { x: '-0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
         gsap.to('.fyve-text:last-child', { x: '0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-        gsap.set('.fyve-image-container', { autoAlpha: 1 });
         gsap.to('.fyve-image-container', { width: '18vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
         gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
+        gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => { gsap.set('.fyve-image-container', { autoAlpha: 0 }); } });
         gsap.set('.mobile-header', { opacity: 0 });
         gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
         gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
@@ -191,7 +191,7 @@ const Home = () => {
     hasAnimated.current = true;
 
     return () => ctx.revert();
-  }, [londonFadeDelay]);
+  }, [dataLoaded, londonFadeDelay]);
 
   useEffect(() => {
     const scrollContainer = document.querySelector('.horizontal-scroll-content');
