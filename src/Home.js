@@ -1,3 +1,4 @@
+// Home.js
 import React, { useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
@@ -72,44 +73,43 @@ const Home = () => {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const intermediateWidth = isMobile ? '30vw' : '18vw';
-    const ctx = gsap.context(() => {
-      gsap.set('.london-mask', { visibility: 'visible' });
-      const londonMask = document.querySelector('.london-mask');
-      let londonHeight = 0;
-      if (londonMask) {
-        const londonHeightPx = londonMask.offsetHeight;
-        const vwFactor = window.innerWidth / 100;
-        londonHeight = londonHeightPx / vwFactor;
-        console.log('London mask height in vw:', londonHeight);
-      } else {
-        console.error('london-mask not found');
-      }
+const intermediateWidth = isMobile ? '30vw' : '18vw';
+const ctx = gsap.context(() => {
+  gsap.set('.london-mask', { visibility: 'visible' });
+  const londonMask = document.querySelector('.london-mask');
+  let londonHeight = 0;
+  if (londonMask) {
+    const londonHeightPx = londonMask.offsetHeight;
+    const vwFactor = window.innerWidth / 100;
+    londonHeight = londonHeightPx / vwFactor;
+    console.log('London mask height in vw:', londonHeight);
+  } else {
+    console.error('london-mask not found');
+  }
 
-      let rotation = 0;
-      const stamp = document.querySelector('.section1-stamp');
-      Observer.create({
-        type: "wheel,touch,scroll",
-        onDown: () => {
-          rotation -= 5;
-          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-        },
-        onUp: () => {
-          rotation += 5;
-          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-        },
-        tolerance: 10,
-        preventDefault: false
-      });
+  let rotation = 0;
+  const stamp = document.querySelector('.section1-stamp');
+  Observer.create({
+    type: "wheel,touch,scroll",
+    onDown: () => {
+      rotation -= 5;
+      gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+    },
+    onUp: () => {
+      rotation += 5;
+      gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+    },
+    tolerance: 10,
+    preventDefault: false
+  });
 
-      const fyveTextY = -1.11;
-      const londonX = 1.3;
-      const londonY = isMobile ? -2.41 : -1.41;
-      const fyveMoveX = isMobile ? '-5vw' : '-0.4vw';
-      const fyveMoveXEnd = isMobile ? '5vw' : '0.4vw';
-      const londonMoveX = isMobile ? '-20vw' : '-8.9vw';
-      const londonMoveXEnd = isMobile ? '20vw' : '8.9vw';
-
+  const fyveTextY = -1.11;
+  const londonX = 1.3;
+  const londonY = isMobile ? -14.41 : -1.41;
+  const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw';
+  const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw';
+  const londonMoveX = isMobile ? '-15vw' : '-48.9vw';
+  const londonMoveXEnd = isMobile ? '15vw' : '48.9vw';
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
@@ -150,15 +150,15 @@ const Home = () => {
         gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.set('.mobile-header', { opacity: 0 });
         gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
-        gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
+        gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.fromTo(
           '.london-letter',
           { y: '100%' },
           { y: 0, duration: 1.3, ease: 'expo.inOut' }
         );
-        gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.london-mask .london-text:first-child', { x: '-8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.london-mask .london-text:last-child', { x: '8.9vw', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
         gsap.to('.london-mask .london-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
         gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
@@ -220,7 +220,7 @@ const Home = () => {
           checkImagesLoaded();
         } else {
           img.addEventListener('load', checkImagesLoaded);
-          img.addEventListener('error', checkImagesLoaded);
+          img.addEventListener('error', checkImagesLoaded); // Handle image load errors
         }
       });
     }
@@ -252,14 +252,16 @@ const Home = () => {
         let time = 0;
         textParts.forEach((part, index) => {
           const split = splits[index];
+          // Set all parts to opacity 0 before animating the current one
           if (index > 0) {
             tl.set(textParts, { opacity: 0 }, time);
           }
           tl.set(part, { opacity: 1 }, time);
           tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
           time += 1;
-          tl.to({}, { duration: 0.5 }, time);
+          tl.to({}, { duration: 0.5 }, time); // Hold time
           time += 0.5;
+          // Fade out the current part
           tl.to(part, { opacity: 0, duration: 0.5 }, time);
           time += 1;
         });
@@ -391,30 +393,30 @@ const Home = () => {
         </div>
       </div>
       <div className="horizontal-scroll-section">
-        <div className="horizontal-scroll-content">
-          <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
-          <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
-          <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
-          <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
-          <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
-          <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
-          <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
-          <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
-          <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
-          <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
-          <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
-          <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
-          <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
-          <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
-          <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
-          <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
-          <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
-          <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
-          <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
-          <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
-          <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
-        </div>
-      </div>
+  <div className="horizontal-scroll-content">
+    <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
+    <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
+    <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
+    <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
+    <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
+    <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
+    <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
+    <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
+    <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
+    <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
+    <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
+    <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
+    <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
+    <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
+    <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
+    <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
+    <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
+    <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
+    <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
+    <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
+    <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
+  </div>
+</div>
     </div>
   );
 };
