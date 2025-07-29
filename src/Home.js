@@ -206,6 +206,7 @@ const Home = () => {
               anticipatePin: 1
             }
           });
+          console.log('All horizontal scroll images loaded, animation set up');
         }
       };
   
@@ -221,43 +222,49 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const textParts = document.querySelectorAll('.text-part');
-      let splits = [];
-      textParts.forEach((part) => {
-        const p = part.querySelector('p');
-        const split = new SplitText(p, { type: 'words', wordsClass: 'word' });
-        splits.push(split);
-        gsap.set(split.words, { opacity: 0 });
-        gsap.set(part, { opacity: 0 });
-      });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section4Ref.current,
-          start: 'top top',
-          end: '+=900%',
-          pin: true,
-          scrub: true,
-        },
-      });
-      let time = 0;
-      textParts.forEach((part, index) => {
-        const split = splits[index];
-        // Set all parts to opacity 0 before animating the current one
-        if (index > 0) {
-          tl.set(textParts, { opacity: 0 }, time);
-        }
-        tl.set(part, { opacity: 1 }, time);
-        tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
-        time += 1;
-        tl.to({}, { duration: 0.5 }, time); // Hold time
-        time += 0.5;
-        // Fade out the current part
-        tl.to(part, { opacity: 0, duration: 0.5 }, time);
-        time += 1;
-      });
-    }, section4Ref);
-    return () => ctx.revert();
+    let ctx;
+    document.fonts.ready.then(() => {
+      console.log('Fonts ready, splitting text for section 4');
+      ctx = gsap.context(() => {
+        const textParts = document.querySelectorAll('.text-part');
+        let splits = [];
+        textParts.forEach((part) => {
+          const p = part.querySelector('p');
+          const split = new SplitText(p, { type: 'words', wordsClass: 'word' });
+          splits.push(split);
+          gsap.set(split.words, { opacity: 0 });
+          gsap.set(part, { opacity: 0 });
+        });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section4Ref.current,
+            start: 'top top',
+            end: '+=900%',
+            pin: true,
+            scrub: true,
+          },
+        });
+        let time = 0;
+        textParts.forEach((part, index) => {
+          const split = splits[index];
+          // Set all parts to opacity 0 before animating the current one
+          if (index > 0) {
+            tl.set(textParts, { opacity: 0 }, time);
+          }
+          tl.set(part, { opacity: 1 }, time);
+          tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
+          time += 1;
+          tl.to({}, { duration: 0.5 }, time); // Hold time
+          time += 0.5;
+          // Fade out the current part
+          tl.to(part, { opacity: 0, duration: 0.5 }, time);
+          time += 1;
+        });
+      }, section4Ref);
+    });
+    return () => {
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (
