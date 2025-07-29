@@ -643,11 +643,25 @@
   height: 50vw;
   }
   .fyve-wrapper {
-    height: 97vh;
+    height: 94vh;
   }
   .fyve-text {
   font-size: 25vw;
   }
   .london-text {
   font-size: 2.5vw;
-  }}
+  }
+  .lottie-container
+   {
+      align-items: center;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      width: calc(100% - 0px);
+      z-index: 2;
+  }
+}
