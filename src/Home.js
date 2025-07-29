@@ -105,12 +105,11 @@ const ctx = gsap.context(() => {
 
   const fyveTextY = -1.11;
   const londonX = 1.3;
-  const londonY = isMobile ? -14.41 : -1.41; // Adjusted for higher position on mobile
-  const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw'; // Increased movement for FYVE text on mobile
-  const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw'; // Increased movement for FYVE text on mobile
-  const londonMoveX = isMobile ? '-52vw' : '-45.9vw'; // Increased movement for LONDON text on mobile
-  const londonMoveXEnd = isMobile ? '52vw' : '45.9vw'; // Increased movement for LONDON text on mobile
-
+  const londonY = isMobile ? -14.41 : -1.41;
+  const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw';
+  const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw';
+  const londonMoveX = isMobile ? '-15vw' : '-48.9vw';
+  const londonMoveXEnd = isMobile ? '15vw' : '48.9vw';
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
