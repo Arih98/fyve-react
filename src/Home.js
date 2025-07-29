@@ -9,6 +9,7 @@ import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
+import DistortionSlider from './DistortionSlider';
 
 gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
@@ -182,42 +183,6 @@ const Home = () => {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const scrollContainer = document.querySelector('.horizontal-scroll-content');
-    if (scrollContainer) {
-      const images = scrollContainer.querySelectorAll('img');
-      const totalImages = images.length;
-      let loadedImages = 0;
-  
-      const checkImagesLoaded = () => {
-        loadedImages++;
-        if (loadedImages === totalImages) {
-          const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
-          gsap.to(scrollContainer, {
-            x: -totalScrollWidth,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '.horizontal-scroll-section',
-              start: 'top top',
-              end: () => "+=" + totalScrollWidth,
-              scrub: true,
-              pin: true,
-              anticipatePin: 1
-            }
-          });
-        }
-      };
-  
-      images.forEach((img) => {
-        if (img.complete) {
-          checkImagesLoaded();
-        } else {
-          img.addEventListener('load', checkImagesLoaded);
-          img.addEventListener('error', checkImagesLoaded); // Handle image load errors
-        }
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -380,31 +345,29 @@ const Home = () => {
           <img src="/api/Uploads/EMBROIDERED-COLLAR-ROMPER3.webp" alt="" className="bottom-right" />
         </div>
       </div>
-      <div className="horizontal-scroll-section">
-  <div className="horizontal-scroll-content">
-    <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
-    <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
-    <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
-    <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
-    <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
-    <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
-    <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
-    <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
-    <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
-    <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
-    <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
-    <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
-    <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
-    <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
-    <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
-    <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
-    <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
-    <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
-    <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
-    <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
-    <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
-  </div>
-</div>
+      <DistortionSlider images={[
+  { url: '/api/Uploads/LOOK-2_191.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-5_531_result.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-3_329.jpg', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-1_011_result.webp', width: 400, height: 280, align: 'flex-start' },
+  { url: '/api/Uploads/LOOK-2_289.webp', width: 400, height: 320, align: 'flex-end' },
+  { url: '/api/Uploads/LOOK-8_1177-1.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/look_12_2435.webp', width: 400, height: 280, align: 'flex-start' },
+  { url: '/api/Uploads/LOOK-6_582_result2.webp', width: 400, height: 280, align: 'flex-end' },
+  { url: '/api/Uploads/LOOK-7_920.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-8_985.webp', width: 400, height: 280, align: 'flex-start' },
+  { url: '/api/Uploads/LOOK-9_1665-1.webp', width: 400, height: 320, align: 'flex-end' },
+  { url: '/api/Uploads/LOOK-9_1452.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-9_1531.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-9_1459.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-9_1361.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-12_2160.webp', width: 400, height: 280, align: 'flex-start' },
+  { url: '/api/Uploads/LOOK_11_1743-1.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK_11_2043.webp', width: 400, height: 320, align: 'flex-start' },
+  { url: '/api/Uploads/LOOK-4_365.webp', width: 400, height: 400 },
+  { url: '/api/Uploads/LOOK-2_191.webp', width: 400, height: 280, align: 'flex-end' },
+  { url: '/api/Uploads/LOOK_11_2082.webp', width: 400, height: 280, align: 'flex-end' },
+]} />
     </div>
   );
 };
