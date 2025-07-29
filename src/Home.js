@@ -105,9 +105,9 @@ const ctx = gsap.context(() => {
 
   const fyveTextY = -1.11;
   const londonX = 1.3;
-  const londonY = isMobile ? -2.41 : -1.41; // Adjusted for higher position on mobile
-  const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw'; // Increased movement for FYVE text on mobile
-  const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw'; // Increased movement for FYVE text on mobile
+  const londonY = isMobile ? -14.41 : -1.41; // Adjusted for higher position on mobile
+  const fyveMoveX = isMobile ? '-3.5vw' : '-0.4vw'; // Increased movement for FYVE text on mobile
+  const fyveMoveXEnd = isMobile ? '3.5vw' : '0.4vw'; // Increased movement for FYVE text on mobile
   const londonMoveX = isMobile ? '-15vw' : '-8.9vw'; // Increased movement for LONDON text on mobile
   const londonMoveXEnd = isMobile ? '15vw' : '8.9vw'; // Increased movement for LONDON text on mobile
 
