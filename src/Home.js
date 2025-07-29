@@ -179,7 +179,12 @@ const Home = () => {
         });
       }
     });
-
+    const setVh = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
+    };
+    setVh();
+    window.addEventListener('resize', setVh);
+    return () => window.removeEventListener('resize', setVh);
     hasAnimated.current = true;
 
     return () => ctx.revert();
