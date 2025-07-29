@@ -636,9 +636,3 @@
     align-self: flex-end;
   }
 }
-
-@media (max-width: 768px) {
-  .fyve-image {
-    content: url('/api/Uploads/FYVE-Hero-Mobile.webp');
-  }
-}

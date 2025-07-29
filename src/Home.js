@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, useState } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,6 +6,7 @@ import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
 import './Home.css';
+import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
 
@@ -17,46 +18,33 @@ const Home = () => {
   const introDone = useRef(false);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
   const lenis = useContext(LenisContext);
-  const [animationData, setAnimationData] = useState(null);
-  const [londonFadeDelay, setLondonFadeDelay] = useState(0);
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
+  const londonFadeDelay = animationDuration * 0.3;
   const scrollDisableTime = 4000;
   const section4Ref = useRef();
 
   useEffect(() => {
-    const isMobile = window.innerWidth <= 768;
-    const jsonPath = isMobile ? '/api/Uploads/FYVEHeroLottieMobile.json' : '/api/Uploads/FYVEHeroLottie.json';
-    fetch(jsonPath)
-      .then(response => response.json())
-      .then(data => {
-        setAnimationData(data);
-        const animationDuration = (data.op - data.ip) / data.fr * 1000;
-        setLondonFadeDelay(animationDuration * 0.3);
-        setDataLoaded(true);
-      })
-      .catch(error => console.error('Failed to load Lottie JSON:', error));
-  }, []);
-
-  useEffect(() => {
-    if (!lottieRef.current) return;
-    if (inView) {
-      if (introDone.current) {
-        lottieRef.current.play();
-        console.log('Lottie played on re-enter');
-        setTimeout(() => {
-          gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-          console.log('Fading in LONDON after re-enter');
-        }, londonFadeDelay);
+    if (lottieRef.current) {
+      if (inView) {
+        if (introDone.current) {
+          lottieRef.current.play();
+          console.log('Lottie played on re-enter');
+          setTimeout(() => {
+            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+            console.log('Fading in LONDON after re-enter');
+          }, londonFadeDelay);
+        }
+      } else {
+        lottieRef.current.goToAndStop(0, true);
+        gsap.set('.london-below', { opacity: 0 });
+        console.log('Lottie reset to frame 0');
       }
     } else {
-      lottieRef.current.goToAndStop(0, true);
-      gsap.set('.london-below', { opacity: 0 });
-      console.log('Lottie reset to frame 0');
+      console.error('Lottie ref not available');
     }
-  }, [inView, londonFadeDelay]);
+  }, [inView]);
 
   useEffect(() => {
-    if (!dataLoaded) return;
     if (lenis) {
       lenis.stop();
       console.log('Lenis scroll stopped');
@@ -72,6 +60,7 @@ const Home = () => {
     hasAnimated.current = false;
     introDone.current = false;
     console.log('Home component mounted');
+    console.log('Lottie data:', FYVEHeroLottie);
     const image = document.querySelector('.fyve-image');
     if (image) {
       console.log('Image element found:', image);
@@ -152,7 +141,7 @@ const Home = () => {
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
         gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => { gsap.set('.fyve-image-container', { autoAlpha: 0 }); } });
+        gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.set('.mobile-header', { opacity: 0 });
         gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
         gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
@@ -191,7 +180,7 @@ const Home = () => {
     hasAnimated.current = true;
 
     return () => ctx.revert();
-  }, [dataLoaded, londonFadeDelay]);
+  }, []);
 
   useEffect(() => {
     const scrollContainer = document.querySelector('.horizontal-scroll-content');
@@ -300,15 +289,13 @@ const Home = () => {
           </div>
         </div>
         <div ref={ref} className="lottie-container">
-          {animationData && (
-            <Lottie 
-              lottieRef={lottieRef}
-              animationData={animationData} 
-              loop={false} 
-              autoplay={false} 
-              style={{ width: '100%', height: '100%' }} 
-            />
-          )}
+          <Lottie 
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie} 
+            loop={false} 
+            autoplay={false} 
+            style={{ width: '100%', height: '100%' }} 
+          />
           <div className="london-below">LONDON</div>
         </div>
       </div>
