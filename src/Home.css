@@ -637,19 +637,3 @@
     align-self: flex-end;
   }
 }
-
-.mobile-lottie-replacement {
-  display: none;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-@media (max-width: 768px) {
-  .lottie-player {
-    display: none;
-  }
-  .mobile-lottie-replacement {
-    display: block;
-  }
-}

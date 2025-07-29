@@ -296,16 +296,13 @@ const Home = () => {
           </div>
         </div>
         <div ref={ref} className="lottie-container">
-          <div className="lottie-player">
-            <Lottie 
-              lottieRef={lottieRef}
-              animationData={FYVEHeroLottie} 
-              loop={false} 
-              autoplay={false} 
-              style={{ width: '100%', height: '100%' }} 
-            />
-          </div>
-          <img src="/api/Uploads/FYVE-Hero-Mobile.webp" className="mobile-lottie-replacement" alt="Mobile Hero" />
+          <Lottie 
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie} 
+            loop={false} 
+            autoplay={false} 
+            style={{ width: '100%', height: '100%' }} 
+          />
           <div className="london-below">LONDON</div>
         </div>
       </div>
