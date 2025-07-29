@@ -463,27 +463,3 @@ body.locked {
     display: none;
   }
 }
-
-@media (max-width: 768px) {
-  .home-page .mobile-header {
-  padding: 20px 15px;
-  }
-  .home-page .a-burger {
-  left: 15px;
-  top: 30px;
-  }
-  .home-page .header-logo img {
-  max-height: 40px;
-  }
-  .home-page .custom-search-trigger img {
-  height: 25px;
-  margin-top: 7.5px;
-  }
-  .home-page .custom-search-container {
-  top: 60px;
-  padding: 15px;
-  }
-  .home-page .custom-search-input {
-  font-size: 14px;
-  }
-  }
