@@ -6,7 +6,7 @@ import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
 import './Home.css';
-import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
+import FYVEHeroLottie from './api/Uploads/FYVEHeroLottie.json';
 import FYVEHeroLottieMobile from './assets/FYVEHeroLottieMobile.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
