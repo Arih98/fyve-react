@@ -106,8 +106,8 @@ const Home = () => {
       const fyveTextY = -1.11;
       const londonX = 1.3;
       const londonY = isMobile ? -14.41 : -1.41;
-      const fyveMoveX = isMobile ? '-185px' : '-0.4vw';
-      const fyveMoveXEnd = isMobile ? '185px' : '0.4vw';
+      const fyveMoveX = isMobile ? '-95px' : '-0.4vw';
+      const fyveMoveXEnd = isMobile ? '95px' : '0.4vw';
       const londonMoveX = isMobile ? '-70px' : '-8.9vw';
       const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
 
