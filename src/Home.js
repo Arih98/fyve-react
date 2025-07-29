@@ -9,8 +9,6 @@ import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
-import * as THREE from 'three';
-import { useLayoutEffect } from 'react';
 
 gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
@@ -24,8 +22,6 @@ const Home = () => {
   const londonFadeDelay = animationDuration * 0.3;
   const scrollDisableTime = 4000;
   const section4Ref = useRef();
-  const glContainerRef = useRef();
-  const horizontalSectionRef = useRef();
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -186,148 +182,45 @@ const Home = () => {
     return () => ctx.revert();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const scrollContainer = document.querySelector('.horizontal-scroll-content');
-    if (!scrollContainer) return;
+    if (scrollContainer) {
+      const images = scrollContainer.querySelectorAll('img');
+      const totalImages = images.length;
+      let loadedImages = 0;
   
-    const images = scrollContainer.querySelectorAll('img');
-    const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
-  
-    const tl = gsap.to(scrollContainer, {
-      x: -totalScrollWidth,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.horizontal-scroll-section',
-        start: 'top top',
-        end: () => `+=${totalScrollWidth}`,
-        scrub: true,
-        pin: true,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          velocity = self.getVelocity() / 10000; // Normalize for uniform
+      const checkImagesLoaded = () => {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+          const totalScrollWidth = scrollContainer.scrollWidth - window.innerWidth;
+          gsap.to(scrollContainer, {
+            x: -totalScrollWidth,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.horizontal-scroll-section',
+              start: 'top top',
+              end: () => "+=" + totalScrollWidth,
+              scrub: true,
+              pin: true,
+              anticipatePin: 1
+            }
+          });
         }
-      }
-    });
+      };
   
-    // WebGL setup
-    let velocity = 0;
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, 1, 10);
-    camera.position.z = 1;
-  
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    glContainerRef.current.appendChild(renderer.domElement);
-  
-    const loader = new THREE.TextureLoader();
-    const planes = [];
-  
-    const vertexShader = `
-      precision mediump float;
-      uniform float uVelo;
-      varying vec2 vUv;
-      #define M_PI 3.1415926535897932384626433832795
-      void main(){
-        vec3 pos = position;
-        pos.x = pos.x + ((sin(uv.y * M_PI) * uVelo) * 0.125);
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos,1.);
-      }
-    `;
-  
-    const fragmentShader = `
-  precision mediump float;
-  vec2 backgroundCoverUv(vec2 screenSize, vec2 imageSize, vec2 uv) {
-    float screenRatio = screenSize.x / screenSize.y;
-    float imageRatio = imageSize.x / imageSize.y;
-    vec2 newSize = screenRatio < imageRatio ? vec2(imageSize.x * screenSize.y / imageSize.y, screenSize.y) : vec2(screenSize.x, imageSize.y * screenSize.x / imageSize.x);
-    vec2 newOffset = (screenRatio < imageRatio ? vec2((newSize.x - screenSize.x) / 2.0, 0.0) : vec2(0.0, (newSize.y - screenSize.y) / 2.0)) / newSize;
-    return uv * screenSize / newSize + newOffset;
-  }
-  uniform sampler2D uTexture;
-  uniform vec2 uMeshSize;
-  uniform vec2 uImageSize;
-  uniform float uVelo;
-  uniform float uScale;
-  varying vec2 vUv;
-  void main() {
-    vec2 uv = vUv;
-    vec2 texCenter = vec2(0.5);
-    vec2 texUv = backgroundCoverUv(uMeshSize, uImageSize, uv);
-    vec2 texScale = (texUv - texCenter) * uScale + texCenter;
-    vec4 texColor = texture2D(uTexture, texScale);
-    texScale.x += 0.15 * uVelo;
-    if(uv.x < 1.) texColor.g = texture2D(uTexture, texScale).g;
-    texScale.x += 0.10 * uVelo;
-    if(uv.x < 1.) texColor.b = texture2D(uTexture, texScale).b;
-    gl_FragColor = texColor;
-  }
-`;
-  
-images.forEach((img) => {
-  const onLoad = () => {
-    loader.load(img.src, (texture) => {
-      const mat = new THREE.ShaderMaterial({
-        transparent: true,
-        vertexShader,
-        fragmentShader,
-        uniforms: {
-          uTexture: { value: texture },
-          uMeshSize: { value: new THREE.Vector2(img.offsetWidth, img.offsetHeight) },
-          uImageSize: { value: new THREE.Vector2(texture.image.width, texture.image.height) },
-          uVelo: { value: 0 },
-          uScale: { value: 1 }
+      images.forEach((img) => {
+        if (img.complete) {
+          checkImagesLoaded();
+        } else {
+          img.addEventListener('load', checkImagesLoaded);
+          img.addEventListener('error', checkImagesLoaded); // Handle image load errors
         }
       });
-      const geo = new THREE.PlaneGeometry(img.offsetWidth, img.offsetHeight, 32, 32);
-      const mesh = new THREE.Mesh(geo, mat);
-      const rect = img.getBoundingClientRect();
-      mesh.position.x = rect.left + rect.width / 2 - window.innerWidth / 2;
-      mesh.position.y = -rect.top - rect.height / 2 + window.innerHeight / 2;
-      scene.add(mesh);
-      planes.push({ mesh, img });
-    });
-  };
-  if (img.complete) {
-    onLoad();
-  } else {
-    img.addEventListener('load', onLoad);
-  }
-});
+    }
+  }, []);
 
-const render = () => {
-  planes.forEach(({ mesh, img }) => {
-    const rect = img.getBoundingClientRect();
-    mesh.position.x = rect.left + rect.width / 2 - window.innerWidth / 2;
-    mesh.position.y = -rect.top - rect.height / 2 + window.innerHeight / 2;
-    mesh.scale.set(rect.width, rect.height, 1);
-    mesh.material.uniforms.uVelo.value = velocity;
-  });
-  renderer.render(scene, camera);
-  requestAnimationFrame(render);
-};
-render();
-
-const handleResize = () => {
-  camera.left = -window.innerWidth / 2;
-  camera.right = window.innerWidth / 2;
-  camera.top = window.innerHeight / 2;
-  camera.bottom = -window.innerHeight / 2;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-};
-window.addEventListener('resize', handleResize);
-
-return () => {
-  tl.kill();
-  window.removeEventListener('resize', handleResize);
-  renderer.dispose();
-};});
-
-useEffect(() => {
-  let ctx;
-  document.fonts.ready.then(() => {
-    ctx = gsap.context(() => {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
       const textParts = document.querySelectorAll('.text-part');
       let splits = [];
       textParts.forEach((part) => {
@@ -349,6 +242,7 @@ useEffect(() => {
       let time = 0;
       textParts.forEach((part, index) => {
         const split = splits[index];
+        // Set all parts to opacity 0 before animating the current one
         if (index > 0) {
           tl.set(textParts, { opacity: 0 }, time);
         }
@@ -357,13 +251,13 @@ useEffect(() => {
         time += 1;
         tl.to({}, { duration: 0.5 }, time); // Hold time
         time += 0.5;
+        // Fade out the current part
         tl.to(part, { opacity: 0, duration: 0.5 }, time);
         time += 1;
       });
     }, section4Ref);
-  });
-  return () => { if (ctx) ctx.revert(); };
-}, []);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div className="home-page">
@@ -486,7 +380,7 @@ useEffect(() => {
           <img src="/api/Uploads/EMBROIDERED-COLLAR-ROMPER3.webp" alt="" className="bottom-right" />
         </div>
       </div>
-      <div className="horizontal-scroll-section" ref={horizontalSectionRef}>
+      <div className="horizontal-scroll-section">
   <div className="horizontal-scroll-content">
     <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
     <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
@@ -509,9 +403,8 @@ useEffect(() => {
     <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
     <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
     <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
-    </div>
+  </div>
 </div>
-<div ref={glContainerRef} className="gl-container"></div>
     </div>
   );
 };
