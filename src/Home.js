@@ -73,39 +73,43 @@ const Home = () => {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const intermediateWidth = isMobile ? '30vw' : '18vw';
-    const ctx = gsap.context(() => {
-      gsap.set('.london-mask', { visibility: 'visible' });
-      const londonMask = document.querySelector('.london-mask');
-      let londonHeight = 0;
-      if (londonMask) {
-        const londonHeightPx = londonMask.offsetHeight;
-        const vwFactor = window.innerWidth / 100;
-        londonHeight = londonHeightPx / vwFactor;
-        console.log('London mask height in vw:', londonHeight);
-      } else {
-        console.error('london-mask not found');
-      }
+const intermediateWidth = isMobile ? '30vw' : '18vw';
+const ctx = gsap.context(() => {
+  gsap.set('.london-mask', { visibility: 'visible' });
+  const londonMask = document.querySelector('.london-mask');
+  let londonHeight = 0;
+  if (londonMask) {
+    const londonHeightPx = londonMask.offsetHeight;
+    const vwFactor = window.innerWidth / 100;
+    londonHeight = londonHeightPx / vwFactor;
+    console.log('London mask height in vw:', londonHeight);
+  } else {
+    console.error('london-mask not found');
+  }
 
-      let rotation = 0;
-      const stamp = document.querySelector('.section1-stamp');
-      Observer.create({
-        type: "wheel,touch,scroll",
-        onDown: () => {
-          rotation -= 5;
-          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-        },
-        onUp: () => {
-          rotation += 5;
-          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-        },
-        tolerance: 10,
-        preventDefault: false
-      });
+  let rotation = 0;
+  const stamp = document.querySelector('.section1-stamp');
+  Observer.create({
+    type: "wheel,touch,scroll",
+    onDown: () => {
+      rotation -= 5;
+      gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+    },
+    onUp: () => {
+      rotation += 5;
+      gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+    },
+    tolerance: 10,
+    preventDefault: false
+  });
 
-      const fyveTextY = -1.11;
-      const londonX = 1.3;
-      const londonY = isMobile ? -10.41 : -1.41;
+  const fyveTextY = -1.11;
+  const londonX = 1.3;
+  const londonY = isMobile ? -2.41 : -1.41; // Adjusted for higher position on mobile
+  const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw'; // Increased movement for FYVE text on mobile
+  const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw'; // Increased movement for FYVE text on mobile
+  const londonMoveX = isMobile ? '-15vw' : '-8.9vw'; // Increased movement for LONDON text on mobile
+  const londonMoveXEnd = isMobile ? '15vw' : '8.9vw'; // Increased movement for LONDON text on mobile
 
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
@@ -137,8 +141,8 @@ const Home = () => {
           { y: '100%' },
           { y: 0, duration: 1.3, ease: 'expo.inOut' }
         );
-        gsap.to('.fyve-text:first-child', { x: '-0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-        gsap.to('.fyve-text:last-child', { x: '0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+        gsap.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+        gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
         gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
@@ -147,8 +151,8 @@ const Home = () => {
         gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.set('.mobile-header', { opacity: 0 });
         gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
-        gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
+        gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.fromTo(
           '.london-letter',
           { y: '100%' },
