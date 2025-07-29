@@ -106,10 +106,10 @@ const Home = () => {
       const fyveTextY = -1.11;
       const londonX = 1.3;
       const londonY = isMobile ? -14.41 : -1.41;
-      const fyveMoveX = isMobile ? '-85px' : '-0.4vw';
-      const fyveMoveXEnd = isMobile ? '85px' : '0.4vw';
-      const londonMoveX = isMobile ? '-90px' : '-8.9vw';
-      const londonMoveXEnd = isMobile ? '90px' : '8.9vw';
+      const fyveMoveX = isMobile ? '-185px' : '-0.4vw';
+      const fyveMoveXEnd = isMobile ? '185px' : '0.4vw';
+      const londonMoveX = isMobile ? '-80px' : '-8.9vw';
+      const londonMoveXEnd = isMobile ? '80px' : '8.9vw';
 
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
