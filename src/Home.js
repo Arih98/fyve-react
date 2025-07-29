@@ -152,7 +152,7 @@ gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut'
 gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
 gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
 gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.fyve-image-container', { width: '100vw', height: '100vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
+gsap.to('.fyve-image-container', { width: '100vw', height: '94vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
 gsap.set('.mobile-header', { opacity: 0 });
 gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
 gsap.fromTo(
