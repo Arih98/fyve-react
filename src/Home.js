@@ -73,6 +73,7 @@ const Home = () => {
     }
 
     const isMobile = window.innerWidth <= 768;
+    const finalHeight = isMobile ? '94vh' : '100vh';
     const intermediateWidth = isMobile ? '30vw' : '18vw';
     const ctx = gsap.context(() => {
       gsap.set('.london-mask', { visibility: 'visible' });
@@ -119,7 +120,7 @@ const Home = () => {
         gsap.set('.fyve-letter', { y: 0 });
         gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
         gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-        gsap.set('.fyve-image-container', { width: '100vw', height: '100vh' });
+        gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
         gsap.set('.mobile-header', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
@@ -152,7 +153,7 @@ gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut'
 gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
 gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
 gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.fyve-image-container', { width: '100vw', height: '94vh', duration: 0.8, ease: 'expo.inOut', delay: 2 });
+gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
 gsap.set('.mobile-header', { opacity: 0 });
 gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
 gsap.fromTo(
