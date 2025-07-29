@@ -73,7 +73,7 @@ const Home = () => {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const intermediateWidth = isMobile ? '30vw' : '18vw';
+    const intermediateWidth = isMobile ? '40vw' : '18vw';
 
     const ctx = gsap.context(() => {
       gsap.set('.london-mask', { visibility: 'visible' });
