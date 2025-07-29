@@ -74,7 +74,7 @@ const Home = () => {
 
     const isMobile = window.innerWidth <= 768;
     const intermediateWidth = isMobile ? '30vw' : '18vw';
-    const intermediateShift = isMobile ? '1vw' : '0.4vw';
+
     const ctx = gsap.context(() => {
       gsap.set('.london-mask', { visibility: 'visible' });
       const londonMask = document.querySelector('.london-mask');
@@ -138,8 +138,8 @@ const Home = () => {
           { y: '100%' },
           { y: 0, duration: 1.3, ease: 'expo.inOut' }
         );
-        gsap.to('.fyve-text:first-child', { x: `-${intermediateShift}`, duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
-        gsap.to('.fyve-text:last-child', { x: intermediateShift, duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+        gsap.to('.fyve-text:first-child', { x: '-0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
+        gsap.to('.fyve-text:last-child', { x: '0.4vw', duration: 0.8, ease: 'expo.inOut', delay: 1.2 });
         gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
