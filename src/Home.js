@@ -268,14 +268,14 @@ const Home = () => {
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
           <div className="fyve-image-container">
-  <img
-    src={window.innerWidth <= 768 ? "/api/Uploads/FYVE-Hero-Mobile.webp" : "/api/Uploads/LOOK-2_137-e1743957431674.webp"}
-    alt="Reveal Image"
-    className="fyve-image"
-  />
-  <div className="mask-left"></div>
-  <div className="mask-right"></div>
-</div>
+            <img
+              src="/api/Uploads/LOOK-2_137-e1743957431674.webp"
+              alt="Reveal Image"
+              className="fyve-image"
+            />
+            <div className="mask-left"></div>
+            <div className="mask-right"></div>
+          </div>
           <div className="fyve-text">
             {'VE'.split('').map((l, i) => <span key={i+2} className="fyve-letter">{l}</span>)}
           </div>

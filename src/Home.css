@@ -638,6 +638,9 @@
 }
 
 @media (max-width: 768px) {
+  .fyve-image {
+    content: url('/api/Uploads/FYVE-Hero-Mobile.webp');
+  }
   .lottie-container {
     background-image: url('/api/Uploads/FYVE-Hero-Mobile.webp');
     background-size: cover;
