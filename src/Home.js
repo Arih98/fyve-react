@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,8 +6,6 @@ import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import HomeHeader from './HomeHeader';
 import './Home.css';
-import FYVEHeroLottie from './api/Uploads/FYVEHeroLottie.json';
-import FYVEHeroLottieMobile from './api/Uploads/FYVEHeroLottieMobile.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
 
@@ -19,10 +17,23 @@ const Home = () => {
   const introDone = useRef(false);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
   const lenis = useContext(LenisContext);
-  const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
-  const londonFadeDelay = animationDuration * 0.3;
+  const [animationData, setAnimationData] = useState(null);
   const scrollDisableTime = 4000;
   const section4Ref = useRef();
+
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    const jsonPath = isMobile ? '/api/Uploads/FYVEHeroLottieMobile.json' : '/api/Uploads/FYVEHeroLottie.json';
+    fetch(jsonPath)
+      .then(response => response.json())
+      .then(data => {
+        setAnimationData(data);
+        const animationDuration = (data.op - data.ip) / data.fr * 1000;
+        const londonFadeDelay = animationDuration * 0.3;
+        // Use animationDuration and londonFadeDelay here if needed
+      })
+      .catch(error => console.error('Failed to load Lottie JSON:', error));
+  }, []);
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -61,7 +72,6 @@ const Home = () => {
     hasAnimated.current = false;
     introDone.current = false;
     console.log('Home component mounted');
-    console.log('Lottie data:', FYVEHeroLottie);
     const image = document.querySelector('.fyve-image');
     if (image) {
       console.log('Image element found:', image);
@@ -290,13 +300,15 @@ const Home = () => {
           </div>
         </div>
         <div ref={ref} className="lottie-container">
-          <Lottie 
-            lottieRef={lottieRef}
-            animationData={window.innerWidth <= 768 ? FYVEHeroLottieMobile : FYVEHeroLottie} 
-            loop={false} 
-            autoplay={false} 
-            style={{ width: '100%', height: '100%' }} 
-          />
+          {animationData && (
+            <Lottie 
+              lottieRef={lottieRef}
+              animationData={animationData} 
+              loop={false} 
+              autoplay={false} 
+              style={{ width: '100%', height: '100%' }} 
+            />
+          )}
           <div className="london-below">LONDON</div>
         </div>
       </div>
