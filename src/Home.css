@@ -640,21 +640,6 @@
 
 @media (max-width: 768px) {
   .fyve-image-container {
-    height: 180vh !important; /* Example: Reduce height */
+  height: 20vw; /* Adjust value as needed; original is 12.2vw */
   }
-  .fyve-image {
-    object-fit: cover; /* Adjust fit if needed */
   }
-}
-
-@media (max-width: 768px) {
-  .fyve-text {
-    font-size: 20vw !important;
-  }
-  .london-text {
-    font-size: 1.5vw !important;
-  }
-  .london-below {
-    font-size: 4vw !important;
-  }
-}
