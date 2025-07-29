@@ -4,8 +4,6 @@
   "private": true,
   "homepage": "/",
   "dependencies": {
-    "@react-three/drei": "^10.6.1",
-    "@react-three/fiber": "^9.3.0",
     "@revolut/checkout": "^1.1.21",
     "@studio-freight/lenis": "^1.0.42",
     "@testing-library/dom": "^10.4.0",
