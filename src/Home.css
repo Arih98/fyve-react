@@ -636,3 +636,11 @@
     align-self: flex-end;
   }
 }
+
+@media (max-width: 768px) {
+  .lottie-container {
+    background-image: url('/api/Uploads/FYVE-Hero-Mobile.webp');
+    background-size: cover;
+    background-position: center;
+  }
+}
