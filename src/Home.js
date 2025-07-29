@@ -10,7 +10,6 @@ import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
 import { LenisContext } from './App';
 import * as THREE from 'three';
-$easeOutExpo: cubic-bezier(0.190, 1.000, 0.220, 1.000);
 
 gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
