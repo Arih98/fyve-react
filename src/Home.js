@@ -106,8 +106,8 @@ const ctx = gsap.context(() => {
   const fyveTextY = -1.11;
   const londonX = 1.3;
   const londonY = isMobile ? -14.41 : -1.41;
-  const fyveMoveX = isMobile ? '-1.5vw' : '-0.4vw';
-  const fyveMoveXEnd = isMobile ? '1.5vw' : '0.4vw';
+  const fyveMoveX = isMobile ? '-5.5vw' : '-0.4vw';
+  const fyveMoveXEnd = isMobile ? '5.5vw' : '0.4vw';
   const londonMoveX = isMobile ? '-60px' : '-8.9vw';
   const londonMoveXEnd = isMobile ? '60px' : '8.9vw';
       if (hasAnimated.current) {
