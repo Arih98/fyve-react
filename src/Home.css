@@ -132,7 +132,7 @@
 
 .lottie-container {
   position: absolute;
-  top: 11%;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 60px);
@@ -667,7 +667,7 @@
   
   .lottie-container {
       align-items: center;
-      margin-top: -118%;
+      bottom: 0;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
