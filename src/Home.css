@@ -30,7 +30,6 @@
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
-  min-height: -webkit-fill-available;
 }
 
 .fyve-mask {
@@ -640,17 +639,15 @@
 }
 
 @media (max-width: 768px) {
-  .fyve-wrapper {
-    height: 100vh;
-    min-height: -webkit-fill-available;
-  }
   .fyve-image-container {
   height: 50vw;
+  }
+  .fyve-wrapper {
+    height: 90vh;
   }
   .fyve-text {
   font-size: 25vw;
   }
   .london-text {
   font-size: 2.5vw;
-  }
-}
+  }}
