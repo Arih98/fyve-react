@@ -648,13 +648,13 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 50vw;
+    height: 100%;
     object-fit: cover;
     object-position: center;
   }
 
   .fyve-wrapper {
-    height: 94vh;
+    height: 700px;
   }
 
   .fyve-text {
