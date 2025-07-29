@@ -432,6 +432,11 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+  .header-logo img {
+    cursor: pointer;
+    max-height: 50px;
+    margin-left: 25px;
+}
   .home-page .menu-columns {
     grid-template-columns: 1fr;
   }
