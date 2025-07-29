@@ -105,7 +105,7 @@ const Home = () => {
 
       const fyveTextY = -1.11;
       const londonX = 1.3;
-      const londonY = isMobile ? -2.41 : -1.41;
+      const londonY = isMobile ? -4.41 : -1.41;
 
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
