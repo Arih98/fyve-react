@@ -665,10 +665,9 @@
   font-size: 2.5vw;
   }
   
-  .lottie-container
-   {
+  .lottie-container {
       align-items: center;
-      bottom: 0;
+      top: 50%;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -676,6 +675,13 @@
       position: absolute;
       transform: translateX(-50%);
       width: calc(100% - 0px);
+      padding: 0;
       z-index: 2;
+  }
+
+  .london-below {
+    color: #fff;
+    font-family: Quasimoda, sans-serif;
+    font-size: 3.6vw;
   }
 }
