@@ -295,45 +295,46 @@ images.forEach((img) => {
   }
 });
 
-  useEffect(() => {
-    document.fonts.ready.then(() => {
-      const ctx = gsap.context(() => {
-        const textParts = document.querySelectorAll('.text-part');
-        let splits = [];
-        textParts.forEach((part) => {
-          const p = part.querySelector('p');
-          const split = new SplitText(p, { type: 'words', wordsClass: 'word' });
-          splits.push(split);
-          gsap.set(split.words, { opacity: 0 });
-          gsap.set(part, { opacity: 0 });
-        });
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section4Ref.current,
-            start: 'top top',
-            end: '+=900%',
-            pin: true,
-            scrub: true,
-          },
-        });
-        let time = 0;
-        textParts.forEach((part, index) => {
-          const split = splits[index];
-          if (index > 0) {
-            tl.set(textParts, { opacity: 0 }, time);
-          }
-          tl.set(part, { opacity: 1 }, time);
-          tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
-          time += 1;
-          tl.to({}, { duration: 0.5 }, time); // Hold time
-          time += 0.5;
-          tl.to(part, { opacity: 0, duration: 0.5 }, time);
-          time += 1;
-        });
-      }, section4Ref);
-      return () => ctx.revert();
-    });
-  }, []);
+useEffect(() => {
+  let ctx;
+  document.fonts.ready.then(() => {
+    ctx = gsap.context(() => {
+      const textParts = document.querySelectorAll('.text-part');
+      let splits = [];
+      textParts.forEach((part) => {
+        const p = part.querySelector('p');
+        const split = new SplitText(p, { type: 'words', wordsClass: 'word' });
+        splits.push(split);
+        gsap.set(split.words, { opacity: 0 });
+        gsap.set(part, { opacity: 0 });
+      });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section4Ref.current,
+          start: 'top top',
+          end: '+=900%',
+          pin: true,
+          scrub: true,
+        },
+      });
+      let time = 0;
+      textParts.forEach((part, index) => {
+        const split = splits[index];
+        if (index > 0) {
+          tl.set(textParts, { opacity: 0 }, time);
+        }
+        tl.set(part, { opacity: 1 }, time);
+        tl.to(split.words, { opacity: 1, duration: 0.5, stagger: 0.05 }, time);
+        time += 1;
+        tl.to({}, { duration: 0.5 }, time); // Hold time
+        time += 0.5;
+        tl.to(part, { opacity: 0, duration: 0.5 }, time);
+        time += 1;
+      });
+    }, section4Ref);
+  });
+  return () => { if (ctx) ctx.revert(); };
+}, []);
 
   return (
     <div className="home-page">
