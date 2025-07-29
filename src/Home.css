@@ -642,6 +642,9 @@
   .fyve-image-container {
   height: 45vw;
   }
+  .fyve-image {
+    object-fit: contain;
+    }
   .fyve-text {
   font-size: 25vw;
   }
