@@ -393,8 +393,8 @@
 
 .section-4 {
   position: relative;
-  height: 100vh!important;
-  width: 100%!important;
+  height: 100vh !important;
+  width: 100% !important;
   display: flex;
   gap: 1vw;
 }
@@ -402,12 +402,12 @@
 .left-images, .right-images {
   height: 100%;
   position: relative;
-  width: 50%;
+  width: 45%;
   overflow: visible;
 }
 
 .middle-text {
-  width: 90vw;
+  width: calc(100% - 90% - 2vw);
   background: white;
   display: flex;
   align-items: center;
@@ -480,16 +480,6 @@
 .top-right, .bottom-right {
   left: auto;
   right: 0;
-}
-
-.top-left, .top-right {
-  height: 50%;
-  object-fit: cover;
-}
-
-.bottom-left, .bottom-right {
-  height: 50%;
-  object-fit: cover;
 }
 
 .horizontal-scroll-section {
