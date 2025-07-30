@@ -92,6 +92,7 @@ const ProductEditor = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
+        console.log('Token used for get_products:', token);
         if (!token) throw new Error('No token found');
         const [catRes, prodRes] = await Promise.all([
           fetch('/api/manage_categories.php'),
@@ -99,6 +100,8 @@ const ProductEditor = () => {
             headers: { 'Authorization': `Bearer ${token}` },
           }),
         ]);
+        console.log('get_products response status:', prodRes.status);
+        console.log('get_products response:', await prodRes.text());
         if (!catRes.ok) throw new Error(`Categories fetch failed: HTTP ${catRes.status}`);
         if (!prodRes.ok) throw new Error(`Products fetch failed: HTTP ${prodRes.status}`);
         const [catData, prodData] = await Promise.all([catRes.json(), prodRes.json()]);
