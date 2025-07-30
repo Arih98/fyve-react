@@ -22,6 +22,7 @@ const Admin = () => {
         .then((data) => {
           if (data.token) {
             setIsAdminLoggedIn(true);
+            localStorage.setItem('token', data.token); // Refresh token
           } else {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
@@ -33,6 +34,8 @@ const Admin = () => {
           localStorage.removeItem('role');
           setError('Failed to verify admin session');
         });
+    } else if (token && role !== 'admin') {
+      setError('Admin access only');
     }
   }, []);
 

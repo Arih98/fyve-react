@@ -50,22 +50,36 @@ const ProductEditor = () => {
   const syncAllStock = async () => {
     setLoading(true);
     try {
-      const updatedProducts = await Promise.all(products.map(async (product) => {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const prodRes = await fetch('/api/get_products.php', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!prodRes.ok) throw new Error(`Products fetch failed: HTTP ${prodRes.status}`);
+      const prodData = await prodRes.json();
+      if (prodData.error) throw new Error(prodData.error);
+      const updatedProducts = await Promise.all(prodData.map(async (product) => {
         let updatedProduct = { ...product };
         if (product.product_type === 'simple' && product.sku) {
           updatedProduct.stock_quantity = await fetchStock(product.sku);
         } else if (product.product_type === 'variable') {
-          updatedProduct.variations = await Promise.all(product.variations.map(async (v) => {
+          updatedProduct.variations = await Promise.all(JSON.parse(product.variations || '[]').map(async (v) => {
             if (v.sku) {
               return { ...v, stock_quantity: await fetchStock(v.sku) };
             }
             return v;
           }));
         }
-        return updatedProduct;
+        return {
+          ...updatedProduct,
+          related_products: JSON.parse(updatedProduct.related_products || '[]').map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+          variations: updatedProduct.variations,
+          gallery: JSON.parse(updatedProduct.gallery || '[]'),
+          categories: JSON.parse(updatedProduct.categories || '[]'),
+          attributes: JSON.parse(updatedProduct.attributes || '[]'),
+        };
       }));
       setProducts(updatedProducts);
-      localStorage.setItem('products', JSON.stringify(updatedProducts));
       setError(null);
     } catch (err) {
       setError(`Failed to sync stock: ${err.message}`);
@@ -77,30 +91,36 @@ const ProductEditor = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const catRes = await fetch('/api/manage_categories.php');
-        if (!catRes.ok) throw new Error(`HTTP ${catRes.status}`);
-        const catData = await catRes.json();
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No token found');
+        const [catRes, prodRes] = await Promise.all([
+          fetch('/api/manage_categories.php'),
+          fetch('/api/get_products.php', {
+            headers: { 'Authorization': `Bearer ${token}` },
+          }),
+        ]);
+        if (!catRes.ok) throw new Error(`Categories fetch failed: HTTP ${catRes.status}`);
+        if (!prodRes.ok) throw new Error(`Products fetch failed: HTTP ${prodRes.status}`);
+        const [catData, prodData] = await Promise.all([catRes.json(), prodRes.json()]);
+        if (prodData.error) throw new Error(prodData.error);
         setCategories(catData);
-
-        const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
-        const normalizedProducts = localProducts.map(product => ({
+        const normalizedProducts = prodData.map(product => ({
           ...product,
           stock_quantity: product.stock_quantity || 0,
-          related_products: (product.related_products || []).map(rel => typeof rel === 'string' ? {productId: rel} : rel),
-          variations: (product.variations || []).map(variation => ({
+          related_products: JSON.parse(product.related_products || '[]').map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+          variations: JSON.parse(product.variations || '[]').map(variation => ({
             ...variation,
             title: variation.title || '',
             description: variation.description || '',
             attributes: Array.isArray(variation.attributes) ? variation.attributes : [],
-            gallery: variation.gallery || [],
-            related_products: (variation.related_products || []).map(rel => typeof rel === 'string' ? {productId: rel} : rel),
+            gallery: JSON.parse(variation.gallery || '[]'),
+            related_products: (variation.related_products || []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
           })),
-          gallery: product.gallery || [],
-          categories: product.categories || [],
-          attributes: product.attributes || [],
+          gallery: JSON.parse(product.gallery || '[]'),
+          categories: JSON.parse(product.categories || '[]'),
+          attributes: JSON.parse(product.attributes || '[]'),
         }));
         setProducts(normalizedProducts);
-        localStorage.setItem('products', JSON.stringify(normalizedProducts));
       } catch (err) {
         setError(`Failed to load: ${err.message}`);
       } finally {
@@ -239,18 +259,16 @@ const ProductEditor = () => {
       gtin: product.gtin || '',
       product_type: product.product_type || 'simple',
       stock_quantity: product.stock_quantity || 0,
-      gallery: product.gallery || [],
-      related_products: (product.related_products || []).map(rel => typeof rel === 'string' ? {productId: rel} : rel),
-      variations: (product.variations || []).map((v) => {
-        const variationAttrs = (product.attributes || []).map(attr => {
+      gallery: JSON.parse(product.gallery || '[]'),
+      related_products: JSON.parse(product.related_products || '[]').map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+      variations: JSON.parse(product.variations || '[]').map((v) => {
+        const variationAttrs = JSON.parse(product.attributes || '[]').map(attr => {
           const existingAttr = Array.isArray(v.attributes)
-            ? v.attributes.find(a => a.attribute_name === attr.name || (Array.isArray(a) && a[0] === attr.name))
+            ? v.attributes.find(a => a.attribute_name === attr.name)
             : null;
           return {
             attribute_name: attr.name,
-            term_name: existingAttr
-              ? (existingAttr.term_name || (Array.isArray(existingAttr) && existingAttr[1]) || `Any ${attr.name}`)
-              : `Any ${attr.name}`,
+            term_name: existingAttr ? existingAttr.term_name : `Any ${attr.name}`,
           };
         });
         return {
@@ -260,17 +278,15 @@ const ProductEditor = () => {
           gtin: v.gtin || '',
           price: v.price || '',
           stock_quantity: v.stock_quantity || 0,
-          gallery: v.gallery || [],
-          related_products: (v.related_products || []).map(rel => typeof rel === 'string' ? {productId: rel} : rel),
+          gallery: JSON.parse(v.gallery || '[]'),
+          related_products: (v.related_products || []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
           attributes: variationAttrs,
         };
       }),
-      categories: product.categories || [],
-      attributes: product.attributes || [],
+      categories: JSON.parse(product.categories || '[]'),
+      attributes: JSON.parse(product.attributes || '[]'),
     };
-
-    setFormData(newFormData);
-
+  
     if (newFormData.product_type === 'simple' && newFormData.sku) {
       const stock = await fetchStock(newFormData.sku);
       newFormData = { ...newFormData, stock_quantity: stock };
@@ -283,12 +299,12 @@ const ProductEditor = () => {
       });
       await Promise.all(promises);
     }
-
-    setFormData({ ...newFormData });
+  
+    setFormData(newFormData);
     setEditingProduct(product.id);
     setActiveTab('product');
     setOpenVariationAccordions(
-      (product.variations || []).reduce((acc, _, index) => ({ ...acc, [index]: false }), {})
+      (newFormData.variations || []).reduce((acc, _, index) => ({ ...acc, [index]: false }), {})
     );
   };
 
@@ -324,59 +340,41 @@ const ProductEditor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = new FormData();
-    form.append('title', formData.title);
-    form.append('description', formData.description);
-    form.append('price', formData.price);
-    form.append('sku', formData.sku);
-    form.append('gtin', formData.gtin);
-    form.append('product_type', formData.product_type);
-    form.append('stock_quantity', formData.stock_quantity);
-    if (formData.id) form.append('id', formData.id);
-
-    const existing_gallery = formData.gallery.filter(g => typeof g === 'string');
-    form.append('gallery', JSON.stringify(existing_gallery));
-    formData.gallery.forEach((image, index) => {
-      if (image instanceof File) {
-        form.append(`gallery_image_${index}`, image);
-      }
-    });
-
-    const variations = formData.variations.map((variation, index) => {
-      const existing_var_gallery = variation.gallery.filter(g => typeof g === 'string');
-      form.append(`variation_${index}_gallery`, JSON.stringify(existing_var_gallery));
-      variation.gallery.forEach((img, imgIndex) => {
-        if (img instanceof File) {
-          form.append(`variation_${index}_gallery_${imgIndex}`, img);
-        }
-      });
-      return {
-        title: variation.title,
-        description: variation.description,
-        sku: variation.sku,
-        gtin: variation.gtin,
-        price: variation.price,
-        stock_quantity: variation.stock_quantity,
-        attributes: variation.attributes,
-      };
-    });
-    if (formData.product_type === 'variable' && variations.length > 0) {
-      form.append('variations', JSON.stringify(variations));
-    }
-
     try {
-      const url = '/api/add_product.php';
-      const res = await fetch(url, { method: 'POST', body: form });
-      const data = await res.json();
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const productData = {
+        id: formData.id || `prod_${Date.now()}`,
+        title: formData.title,
+        description: formData.description,
+        price: formData.price,
+        sku: formData.sku,
+        gtin: formData.gtin,
+        product_type: formData.product_type,
+        stock_quantity: formData.stock_quantity,
+        gallery: formData.gallery.filter(g => typeof g === 'string'),
+        variations: formData.variations,
+        categories: formData.categories,
+        attributes: formData.attributes,
+        related_products: formData.related_products,
+      };
+      const response = await fetch('/api/save_product.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(productData),
+      });
+      const data = await response.json();
       if (data.status === 'success') {
         const updatedProduct = {
-          ...formData,
-          id: formData.id || data.results[0]?.sku || formData.sku || variations[0]?.sku || Date.now().toString(),
-          gallery: data.results[0].gallery_paths || [],
-          variations: data.results.slice(1).map((result, index) => ({
-            ...formData.variations[index],
-            gallery: result.gallery_paths || [],
-          })),
+          ...productData,
+          gallery: productData.gallery,
+          variations: productData.variations,
+          categories: productData.categories,
+          attributes: productData.attributes,
+          related_products: productData.related_products,
         };
         let updatedProducts;
         if (formData.id) {
@@ -385,20 +383,13 @@ const ProductEditor = () => {
           updatedProducts = [...products, updatedProduct];
         }
         setProducts(updatedProducts);
-        localStorage.setItem('products', JSON.stringify(updatedProducts));
         cancelEdit();
       } else {
-        setError(data.message || data.error || 'Unknown error');
+        setError(data.error || 'Failed to save product');
       }
     } catch (err) {
       setError(`Failed to save: ${err.message}`);
     }
-  };
-
-  const handleDelete = (id) => {
-    const updatedProducts = products.filter((p) => p.id !== id);
-    setProducts(updatedProducts);
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
   };
 
   const handleDragStart = (e, index) => {
@@ -417,7 +408,23 @@ const ProductEditor = () => {
       const [movedProduct] = reorderedProducts.splice(fromIndex, 1);
       reorderedProducts.splice(index, 0, movedProduct);
       setProducts(reorderedProducts);
-      localStorage.setItem('products', JSON.stringify(reorderedProducts));
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No token found');
+        const orderData = reorderedProducts.map(product => product.id);
+        const response = await fetch('/api/update_product_order.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ order: orderData }),
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+      } catch (err) {
+        setError(`Failed to save order: ${err.message}`);
+      }
     }
   };
 
@@ -488,24 +495,27 @@ const ProductEditor = () => {
     }
   };
 
-  const handleDeleteCategory = async (categoryId) => {
+  const handleDelete = async (id) => {
     try {
-      const res = await fetch('/api/manage_categories.php', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category_id: categoryId }),
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const response = await fetch('/api/save_product.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id, delete: true }),
       });
-      const data = await res.json();
+      const data = await response.json();
       if (data.status === 'success') {
-        const catRes = await fetch('/api/manage_categories.php');
-        const catData = await catRes.json();
-        setCategories(catData);
-        setOpenCategoryAccordions(prev => ({ ...prev, [categoryId]: false }));
+        const updatedProducts = products.filter((p) => p.id !== id);
+        setProducts(updatedProducts);
       } else {
-        setError(data.message || 'Failed to delete category');
+        setError(data.error || 'Failed to delete product');
       }
     } catch (err) {
-      setError(`Failed to delete category: ${err.message}`);
+      setError(`Failed to delete: ${err.message}`);
     }
   };
 
