@@ -12,7 +12,6 @@ const Admin = () => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
     if (token && role === 'admin') {
-      // Verify token with admin_login endpoint
       fetch('/api/admin_login.php', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -22,7 +21,7 @@ const Admin = () => {
         .then((data) => {
           if (data.token) {
             setIsAdminLoggedIn(true);
-            localStorage.setItem('token', data.token); // Refresh token
+            localStorage.setItem('token', data.token);
           } else {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
