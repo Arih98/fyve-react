@@ -1,4 +1,3 @@
-/* Home.css */
 @font-face {
   font-family: 'Quasimoda';
   src: url('/fonts/Quasimoda-Thin.woff2') format('woff2');
@@ -401,9 +400,10 @@
 }
 
 .left-images, .right-images {
-  height: 100vw;
+  height: 100%;
   position: relative;
-  width: 100%;
+  width: 50%;
+  overflow: visible;
 }
 
 .middle-text {
@@ -422,25 +422,25 @@
   width: 80%;
   height: 80%;
   position: relative;
-  display: flex; /* Ensure flexbox for centering */
-  align-items: center; /* Vertical centering */
-  justify-content: center; /* Horizontal centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .text-wrapper {
   position: absolute;
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Offset for exact centering */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   height: 100%;
 }
 
 .text-part {
   position: absolute;
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Offset for exact centering */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   height: 100%;
   display: flex;
@@ -462,7 +462,9 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: auto;
+  height: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .bottom-left, .bottom-right {
@@ -470,7 +472,9 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: auto;
+  height: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .top-right, .bottom-right {
@@ -478,17 +482,13 @@
   right: 0;
 }
 
-.left-images, .right-images {
-  overflow: hidden;
-}
-
 .top-left, .top-right {
-  height: calc(50% - 0.5vw);
+  height: 50%;
   object-fit: cover;
 }
 
 .bottom-left, .bottom-right {
-  height: calc(50% - 0.5vw);
+  height: 50%;
   object-fit: cover;
 }
 
@@ -586,68 +586,64 @@
 }
 
 @media (max-width: 768px) {
-    
-     .horizontal-scroll-section {
+  .horizontal-scroll-section {
     padding-top: 100px;
-    padding-bottom: 50px
+    padding-bottom: 50px;
   }
   .horizontal-scroll-content img {
     height: 550px;
   }
-  
-  @media (max-width: 768px) {
   .horizontal-scroll-content::after {
     width: 35px;
   }
-}
   
   .custom-img.img4 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-start;
   }
 
   .custom-img.img5 {
-    height: 320px!important;
+    height: 320px !important;
     align-self: flex-end;
   }
 
   .custom-img.img7 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-start;
   }
 
   .custom-img.img8 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-end;
   }
 
   .custom-img.img10 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-start;
   }
 
   .custom-img.img11 {
-    height: 320px!important;
+    height: 320px !important;
     align-self: flex-end;
   }
 
   .custom-img.img16 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-start;
   }
 
   .custom-img.img18 {
-    height: 320px!important;
+    height: 320px !important;
     align-self: flex-start;
   }
 
   .custom-img.img20 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-end;
   }
 
   .custom-img.img21 {
-    height: 280px!important;
+    height: 280px !important;
     align-self: flex-end;
   }
 }
@@ -672,25 +668,25 @@
   }
 
   .fyve-text {
-  font-size: 25vw;
+    font-size: 25vw;
   }
 
   .london-text {
-  font-size: 2.5vw;
+    font-size: 2.5vw;
   }
   
   .lottie-container {
-      align-items: center;
-      bottom: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      left: 50%;
-      position: absolute;
-      transform: translateX(-50%);
-      width: calc(100% - 0px);
-      padding: 0;
-      z-index: 2;
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+    width: calc(100% - 0px);
+    padding: 0;
+    z-index: 2;
   }
 
   .london-below {
