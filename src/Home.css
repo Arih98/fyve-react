@@ -401,9 +401,9 @@
 }
 
 .left-images, .right-images {
-  width: 23.5vw;
+  height: 100vw;
   position: relative;
-  height: 100%;
+  width: 100%;
 }
 
 .middle-text {
