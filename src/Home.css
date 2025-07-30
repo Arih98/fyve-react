@@ -397,6 +397,9 @@
   width: 100% !important;
   display: flex;
   gap: 1vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .left-images, .right-images {
@@ -417,6 +420,8 @@
   font-family: 'Quasimoda', sans-serif;
   color: #4A494A;
   overflow: visible;
+  margin: 0;
+  padding: 0;
 }
 
 .text-container {
