@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const Account = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const [registerData, setRegisterData] = useState({ username: '', email: '', password: '' });
   const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -14,26 +13,13 @@ const Account = () => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
-      fetchOrders(token);
       const storedRole = localStorage.getItem('role');
       setUserRole(storedRole);
+      if (storedRole === 'admin') {
+        navigate('/admin');
+      }
     }
-  }, []);
-
-  const fetchOrders = async (token) => {
-    try {
-      const response = await fetch('/api/my_orders.php', {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error('Failed to fetch orders');
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
-      setOrders(data);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  }, [navigate]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -72,7 +58,6 @@ const Account = () => {
         setUserRole(data.role);
         setError(null);
         setLoginData({ email: '', password: '' });
-        fetchOrders(data.token);
         if (data.role === 'admin') {
           navigate('/admin');
         }
@@ -89,7 +74,6 @@ const Account = () => {
     localStorage.removeItem('role');
     setIsLoggedIn(false);
     setUserRole(null);
-    setOrders([]);
     setError(null);
   };
 
@@ -189,35 +173,7 @@ const Account = () => {
               Logout
             </button>
           </div>
-          <h4 className="text-lg font-medium text-gray-700 mb-4">Your Orders</h4>
-          {orders.length === 0 ? (
-            <p className="text-gray-600">No orders found.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Currency</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{order.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{order.amount}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{order.currency}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{order.status}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{new Date(order.created_at).toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <p className="text-gray-600">Your account details are displayed here.</p>
         </div>
       )}
     </div>

@@ -12,29 +12,11 @@ const Admin = () => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
     if (token && role === 'admin') {
-      fetch('/api/admin_login.php', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.token) {
-            setIsAdminLoggedIn(true);
-            localStorage.setItem('token', data.token);
-          } else {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            setError(data.error || 'Invalid admin session');
-          }
-        })
-        .catch(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-          setError('Failed to verify admin session');
-        });
+      setIsAdminLoggedIn(true);
     } else if (token && role !== 'admin') {
       setError('Admin access only');
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
     }
   }, []);
 

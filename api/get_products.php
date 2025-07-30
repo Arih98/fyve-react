@@ -5,8 +5,13 @@ use \Firebase\JWT\JWT;
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: https://dev.fyvelondon.com');
-header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 $secret = 'FyveLondonSecret2025!';
 
@@ -25,9 +30,9 @@ try {
     $result = $stmt->get_result();
     $products = $result->fetch_all(MYSQLI_ASSOC);
     echo json_encode($products);
+    $stmt->close();
 } catch (Exception $e) {
     http_response_code(401);
     echo json_encode(['error' => 'Invalid token']);
 }
-$stmt->close();
 ?>
