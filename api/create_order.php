@@ -1,8 +1,12 @@
 <?php
+require 'db_connect.php';
+require 'vendor/autoload.php';
+use \Firebase\JWT\JWT;
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: https://dev.fyvelondon.com');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -14,8 +18,24 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_errors.log');
 
-$secret_key = 'sk_H3C_Es27b5Pv-wfcLLEpPj0z1ZcmgGVVRgOJA7YuDDIVBkcLEqQPtg-_XL_SH7Ua'; // Replace with your actual secret key
+$secret_key = 'sk_H3C_Es27b5Pv-wfcLLEpPj0z1ZcmgGVVRgOJA7YuDDIVBkcLEqQPtg-_XL_SH7Ua'; // Replace with your actual Revolut secret key
+$jwt_secret = 'FyveLondonSecret2025!'; // Must match login.php and others
 $api_url = 'https://merchant.revolut.com/api/orders';
+
+$headers = getallheaders();
+$jwt_token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
+$user_id = 0; // Default for guest orders
+
+// Verify JWT if provided
+if (!empty($jwt_token)) {
+    try {
+        $decoded = JWT::decode($jwt_token, new \Firebase\JWT\Key($jwt_secret, 'HS256'));
+        $user_id = $decoded->user_id;
+    } catch (Exception $e) {
+        error_log('Invalid JWT: ' . $e->getMessage());
+        // Allow guest checkout even if JWT is invalid
+    }
+}
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -71,5 +91,18 @@ if ($http_code !== 201) {
 }
 
 $order = json_decode($response, true);
+
+// Store order in database
+$stmt = $conn->prepare("INSERT INTO orders (user_id, order_token, amount, currency) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("isds", $user_id, $order['token'], $data['amount'], $data['currency']);
+if (!$stmt->execute()) {
+    error_log('Failed to save order: ' . $stmt->error);
+    http_response_code(500);
+    echo json_encode(['error' => 'Failed to save order']);
+    $stmt->close();
+    exit;
+}
+$stmt->close();
+
 echo json_encode(['token' => $order['token']]);
 ?>

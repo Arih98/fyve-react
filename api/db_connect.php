@@ -8,10 +8,10 @@ header('Access-Control-Allow-Origin: https://dev.fyvelondon.com');
 header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-$host = "127.0.0.1";
-$user = "root";
-$password = "7050136";
-$database = "ecommerce";
+$host = "localhost";
+$user = "ujragvggaplqc";
+$password = "FyveLondon342!";
+$database = "db1xzt4gbqudj5";
 
 $conn = new mysqli($host, $user, $password, $database);
 

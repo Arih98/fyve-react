@@ -401,13 +401,13 @@
 }
 
 .left-images, .right-images {
-  flex: 1;
-  height: 100%;
+  height: 100vw;
   position: relative;
+  width: 100%;
 }
 
 .middle-text {
-  width: 30em;
+  width: 90vw;
   background: white;
   display: flex;
   align-items: center;
