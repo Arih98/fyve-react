@@ -8,6 +8,7 @@ import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
+import Account from './Account'; // Add this import
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
@@ -145,6 +146,7 @@ function AppContent() {
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/account" element={<Account />} /> {/* Add this route */}
             </Route>
           </Routes>
         </CartProvider>
