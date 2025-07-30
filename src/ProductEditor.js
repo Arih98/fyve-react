@@ -508,6 +508,7 @@ const ProductEditor = () => {
         const catData = await catRes.json();
         setCategories(catData);
         setOpenCategoryAccordions(prev => ({ ...prev, [categoryId]: false }));
+        setError(null);
       } else {
         setError(data.message || 'Failed to delete category');
       }
