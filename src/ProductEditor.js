@@ -400,7 +400,7 @@ const ProductEditor = () => {
     e.preventDefault();
   };
 
-  const handleDrop = (e, index) => {
+  const handleDrop = async (e, index) => {
     e.preventDefault();
     const fromIndex = +e.dataTransfer.getData('text/plain');
     if (fromIndex !== index) {
