@@ -478,6 +478,20 @@
   right: 0;
 }
 
+.left-images, .right-images {
+  overflow: hidden;
+}
+
+.top-left, .top-right {
+  height: calc(50% - 0.5vw);
+  object-fit: cover;
+}
+
+.bottom-left, .bottom-right {
+  height: calc(50% - 0.5vw);
+  object-fit: cover;
+}
+
 .horizontal-scroll-section {
   position: relative;
   width: 100%;
