@@ -495,6 +495,27 @@ const ProductEditor = () => {
     }
   };
 
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      const res = await fetch('/api/manage_categories.php', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category_id: categoryId }),
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        const catRes = await fetch('/api/manage_categories.php');
+        const catData = await catRes.json();
+        setCategories(catData);
+        setOpenCategoryAccordions(prev => ({ ...prev, [categoryId]: false }));
+      } else {
+        setError(data.message || 'Failed to delete category');
+      }
+    } catch (err) {
+      setError(`Failed to delete category: ${err.message}`);
+    }
+  };
+
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
