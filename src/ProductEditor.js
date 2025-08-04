@@ -274,7 +274,7 @@ const ProductEditor = () => {
   const handleEdit = async (product) => {
     try {
       const parseJSON = (str, defaultValue = []) => {
-        if (!str || str === 'null') return defaultValue;
+        if (!str || str === 'null' || str.trim() === '') return defaultValue;
         try {
           return JSON.parse(str);
         } catch (e) {
