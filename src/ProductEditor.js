@@ -107,19 +107,24 @@ const ProductEditor = () => {
         const token = localStorage.getItem('token');
         console.log('Token used for get_products:', token);
         if (!token) throw new Error('No token found');
+  
         const [catRes, prodRes] = await Promise.all([
           fetch('/api/manage_categories.php'),
           fetch('/api/get_products.php', {
             headers: { 'Authorization': `Bearer ${token}` },
           }),
         ]);
+  
         console.log('get_products response status:', prodRes.status);
-        console.log('get_products response:', await prodRes.text());
         if (!catRes.ok) throw new Error(`Categories fetch failed: HTTP ${catRes.status}`);
         if (!prodRes.ok) throw new Error(`Products fetch failed: HTTP ${prodRes.status}`);
+  
         const [catData, prodData] = await Promise.all([catRes.json(), prodRes.json()]);
+        console.log('get_products response:', prodData);
         if (prodData.error) throw new Error(prodData.error);
+  
         setCategories(catData);
+  
         const normalizedProducts = prodData.map(product => ({
           ...product,
           stock_quantity: product.stock_quantity || 0,
@@ -136,6 +141,7 @@ const ProductEditor = () => {
           categories: JSON.parse(product.categories || '[]'),
           attributes: JSON.parse(product.attributes || '[]'),
         }));
+  
         setProducts(normalizedProducts);
       } catch (err) {
         setError(`Failed to load: ${err.message}`);
@@ -144,7 +150,7 @@ const ProductEditor = () => {
       }
     };
     fetchData();
-  }, []);
+  }, []);  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
