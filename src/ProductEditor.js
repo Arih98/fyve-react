@@ -272,62 +272,76 @@ const ProductEditor = () => {
   };
 
   const handleEdit = async (product) => {
-    let newFormData = {
-      id: product.id,
-      title: product.title || '',
-      description: product.description || '',
-      price: product.price || '',
-      sku: product.sku || '',
-      gtin: product.gtin || '',
-      product_type: product.product_type || 'simple',
-      stock_quantity: product.stock_quantity || 0,
-      gallery: JSON.parse(product.gallery || '[]'),
-      related_products: JSON.parse(product.related_products || '[]').map(rel => typeof rel === 'string' ? { productId: rel } : rel),
-      variations: JSON.parse(product.variations || '[]').map((v) => {
-        const variationAttrs = JSON.parse(product.attributes || '[]').map(attr => {
-          const existingAttr = Array.isArray(v.attributes)
-            ? v.attributes.find(a => a.attribute_name === attr.name)
-            : null;
-          return {
-            attribute_name: attr.name,
-            term_name: existingAttr ? existingAttr.term_name : `Any ${attr.name}`,
-          };
-        });
-        return {
-          title: v.title || '',
-          description: v.description || '',
-          sku: v.sku || '',
-          gtin: v.gtin || '',
-          price: v.price || '',
-          stock_quantity: v.stock_quantity || 0,
-          gallery: JSON.parse(v.gallery || '[]'),
-          related_products: (v.related_products || []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
-          attributes: variationAttrs,
-        };
-      }),
-      categories: JSON.parse(product.categories || '[]'),
-      attributes: JSON.parse(product.attributes || '[]'),
-    };
-  
-    if (newFormData.product_type === 'simple' && newFormData.sku) {
-      const stock = await fetchStock(newFormData.sku);
-      newFormData = { ...newFormData, stock_quantity: stock };
-    } else if (newFormData.product_type === 'variable') {
-      const promises = newFormData.variations.map(async (v, index) => {
-        if (v.sku) {
-          const stock = await fetchStock(v.sku);
-          newFormData.variations[index].stock_quantity = stock;
+    try {
+      const parseJSON = (str, defaultValue = []) => {
+        if (!str || str === 'null') return defaultValue;
+        try {
+          return JSON.parse(str);
+        } catch (e) {
+          console.error(`JSON parse error for ${str}: ${e.message}`);
+          return defaultValue;
         }
-      });
-      await Promise.all(promises);
-    }
+      };
   
-    setFormData(newFormData);
-    setEditingProduct(product.id);
-    setActiveTab('product');
-    setOpenVariationAccordions(
-      (newFormData.variations || []).reduce((acc, _, index) => ({ ...acc, [index]: false }), {})
-    );
+      let newFormData = {
+        id: product.id,
+        title: product.title || '',
+        description: product.description || '',
+        price: product.price || '',
+        sku: product.sku || '',
+        gtin: product.gtin || '',
+        product_type: product.product_type || 'simple',
+        stock_quantity: product.stock_quantity || 0,
+        gallery: parseJSON(product.gallery, []),
+        related_products: parseJSON(product.related_products, []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+        variations: parseJSON(product.variations, []).map((v) => {
+          const variationAttrs = parseJSON(product.attributes, []).map(attr => {
+            const existingAttr = Array.isArray(v.attributes)
+              ? v.attributes.find(a => a.attribute_name === attr.name)
+              : null;
+            return {
+              attribute_name: attr.name,
+              term_name: existingAttr ? existingAttr.term_name : `Any ${attr.name}`,
+            };
+          });
+          return {
+            title: v.title || '',
+            description: v.description || '',
+            sku: v.sku || '',
+            gtin: v.gtin || '',
+            price: v.price || '',
+            stock_quantity: v.stock_quantity || 0,
+            gallery: parseJSON(v.gallery, []),
+            related_products: parseJSON(v.related_products, []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+            attributes: variationAttrs,
+          };
+        }),
+        categories: parseJSON(product.categories, []),
+        attributes: parseJSON(product.attributes, []),
+      };
+  
+      if (newFormData.product_type === 'simple' && newFormData.sku) {
+        const stock = await fetchStock(newFormData.sku);
+        newFormData = { ...newFormData, stock_quantity: stock };
+      } else if (newFormData.product_type === 'variable') {
+        const promises = newFormData.variations.map(async (v, index) => {
+          if (v.sku) {
+            const stock = await fetchStock(v.sku);
+            newFormData.variations[index].stock_quantity = stock;
+          }
+        });
+        await Promise.all(promises);
+      }
+  
+      setFormData(newFormData);
+      setEditingProduct(product.id);
+      setActiveTab('product');
+      setOpenVariationAccordions(
+        (newFormData.variations || []).reduce((acc, _, index) => ({ ...acc, [index]: false }), {})
+      );
+    } catch (err) {
+      setError(`Failed to edit product: ${err.message}`);
+    }
   };
 
   const cancelEdit = () => {
