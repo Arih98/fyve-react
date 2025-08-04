@@ -72,7 +72,7 @@ const Home = () => {
     }
     const isMobile = window.innerWidth <= 768;
     const finalHeight = isMobile ? '94vh' : '100vh';
-    const intermediateWidth = isMobile ? '30vw' : '18vw';
+    const intermediate = isMobile ? finalHeight : intermediateWidth;
     const fyveTextY = -1.11;
     const londonX = 1.3;
     const londonY = isMobile ? -14.41 : -1.41;
@@ -144,7 +144,7 @@ const Home = () => {
         // In the else block of the useEffect hook:
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
-        gsap.set('.fyve-image-container', { width: isMobile ? '100vw' : 0, height: isMobile ? 0 : '12.2vw', visibility: 'visible' });
+        gsap.set('.fyve-image-container', { width: isMobile ? '100vw' : 0, height: isMobile ? finalHeight : '12.2vw', visibility: 'visible' });
         gsap.set('.mask-left', { [direction]: '0%', transformOrigin: maskOriginLeft });
         gsap.set('.mask-right', { [direction]: '0%', transformOrigin: maskOriginRight });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
