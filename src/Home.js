@@ -1,4 +1,3 @@
-// Home.js
 import React, { useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
@@ -111,61 +110,76 @@ const Home = () => {
       const fyveMoveXEnd = isMobile ? '5px' : '0.4vw';
       const londonMoveX = isMobile ? '-70px' : '-8.9vw';
       const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
+      const direction = isMobile ? 'y' : 'x';
+      const intermediate = isMobile ? '30vh' : intermediateWidth;
+      const interFyveStart = isMobile ? '-1vh' : fyveMoveX;
+      const interFyveEnd = isMobile ? '-1vh' : fyveMoveXEnd;
+      const interLondonStart = isMobile ? '9vh' : londonMoveX;
+      const interLondonEnd = isMobile ? '9vh' : londonMoveXEnd;
+      const outFyveStart = isMobile ? '-100vh' : '-100vw';
+      const outFyveEnd = isMobile ? '-100vh' : '100vw';
+      const outLondonStart = isMobile ? '100vh' : '-150vw';
+      const outLondonEnd = isMobile ? '100vh' : '150vw';
+      const maskValueStart = '-100%';
+      const maskValueEnd = '100%';
+      const maskOriginLeft = isMobile ? 'center top' : 'left center';
+      const maskOriginRight = isMobile ? 'center bottom' : 'right center';
 
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
-        gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
-        gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
+        gsap.set('.mask-left', { [direction]: maskValueStart, transformOrigin: maskOriginLeft });
+        gsap.set('.mask-right', { [direction]: maskValueEnd, transformOrigin: maskOriginRight });
         gsap.set('.fyve-letter', { y: 0 });
-        gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
-        gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
+        gsap.set('.fyve-text:first-child', { [direction]: outFyveStart, visibility: 'hidden' });
+        gsap.set('.fyve-text:last-child', { [direction]: outFyveEnd, visibility: 'hidden' });
         gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
         gsap.set('.mobile-header', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
-        gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
-        gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:first-child', { [direction]: outLondonStart, transformOrigin: 'left center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:last-child', { [direction]: outLondonEnd, transformOrigin: 'right center', visibility: 'hidden' });
         gsap.set('.lottie-container', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
         // In the else block of the useEffect hook:
-gsap.set('.fyve-mask', { visibility: 'visible' });
-gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
-gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
-gsap.set('.fyve-image', { visibility: 'visible' });
-gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
-gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
-gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
-gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
-gsap.set('.lottie-container', { autoAlpha: 0 });
-gsap.set('.london-below', { opacity: 0 });
-gsap.fromTo(
-  '.fyve-letter',
-  { y: '100%' },
-  { y: 0, duration: 1.3, ease: 'expo.inOut' }
-);
-// Add these lines to restore intermediate FYVE text movement
-gsap.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
-gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-gsap.set('.mobile-header', { opacity: 0 });
-gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
-gsap.fromTo(
-  '.london-letter',
-  { y: '100%' },
-  { y: 0, duration: 1.3, ease: 'expo.inOut' }
-);
-gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-gsap.to('.london-mask .london-text:first-child', { x: '-150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
-gsap.to('.london-mask .london-text:last-child', { x: '150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
-gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+        gsap.set('.fyve-mask', { visibility: 'visible' });
+        gsap.set('.fyve-image', { visibility: 'visible' });
+        gsap.set('.fyve-image-container', { width: isMobile ? '100vw' : 0, height: isMobile ? 0 : '12.2vw', visibility: 'visible' });
+        gsap.set('.mask-left', { [direction]: '0%', transformOrigin: maskOriginLeft });
+        gsap.set('.mask-right', { [direction]: '0%', transformOrigin: maskOriginRight });
+        gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
+        gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
+        gsap.set('.london-mask .london-text:first-child', { [direction]: '0%', transformOrigin: 'left center' });
+        gsap.set('.london-mask .london-text:last-child', { [direction]: '0%', transformOrigin: 'right center' });
+        gsap.set('.lottie-container', { autoAlpha: 0 });
+        gsap.set('.london-below', { opacity: 0 });
+        gsap.fromTo(
+          '.fyve-letter',
+          { y: '100%' },
+          { y: 0, duration: 1.3, ease: 'expo.inOut' }
+        );
+        // Add these lines to restore intermediate FYVE text movement
+        gsap.to('.fyve-text:first-child', { [direction]: interFyveStart, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.fyve-text:last-child', { [direction]: interFyveEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.fyve-text:first-child', { [direction]: outFyveStart, duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
+        gsap.to('.fyve-text:last-child', { [direction]: outFyveEnd, duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
+        gsap.to('.fyve-image-container', { [isMobile ? 'height' : 'width']: intermediate, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.mask-left', { [direction]: maskValueStart, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.mask-right', { [direction]: maskValueEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+        gsap.set('.mobile-header', { opacity: 0 });
+        gsap.to('.mobile-header', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
+        gsap.fromTo(
+          '.london-letter',
+          { y: '100%' },
+          { y: 0, duration: 1.3, ease: 'expo.inOut' }
+        );
+        gsap.to('.london-mask .london-text:first-child', { [direction]: interLondonStart, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.london-mask .london-text:last-child', { [direction]: interLondonEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.london-mask .london-text:first-child', { [direction]: outLondonStart, duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
+        gsap.to('.london-mask .london-text:last-child', { [direction]: outLondonEnd, duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
+        gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
         gsap.to('.lottie-container', { 
           autoAlpha: 1, 
           duration: 0.8, 
@@ -185,11 +199,11 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
           }
         });
       }
-    });
 
-    hasAnimated.current = true;
+      hasAnimated.current = true;
 
-    return () => ctx.revert();
+      return () => ctx.revert();
+    }, []);
   }, []);
 
   useEffect(() => {
@@ -397,30 +411,30 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
         </div>
       </div>
       <div className="horizontal-scroll-section">
-  <div className="horizontal-scroll-content">
-    <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
-    <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
-    <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
-    <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
-    <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
-    <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
-    <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
-    <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
-    <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
-    <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
-    <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
-    <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
-    <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
-    <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
-    <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
-    <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
-    <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
-    <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
-    <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
-    <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
-    <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
-  </div>
-</div>
+        <div className="horizontal-scroll-content">
+          <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
+          <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
+          <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
+          <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
+          <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
+          <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
+          <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
+          <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
+          <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
+          <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
+          <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
+          <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
+          <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
+          <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
+          <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
+          <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
+          <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
+          <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
+          <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
+          <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
+          <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
+        </div>
+      </div>
     </div>
   );
 };
