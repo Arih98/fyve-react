@@ -52,41 +52,54 @@ const ProductEditor = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
+  
       const prodRes = await fetch('/api/get_products.php', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
+  
+      console.log('get_products response status:', prodRes.status);
+  
       if (!prodRes.ok) throw new Error(`Products fetch failed: HTTP ${prodRes.status}`);
+  
       const prodData = await prodRes.json();
+  
+      console.log('get_products response data:', prodData);
+  
       if (prodData.error) throw new Error(prodData.error);
+  
+      if (!Array.isArray(prodData) || prodData.length === 0) {
+        setError('No products found');
+        setProducts([]);
+        return;
+      }
+  
       const updatedProducts = await Promise.all(prodData.map(async (product) => {
         let updatedProduct = { ...product };
         if (product.product_type === 'simple' && product.sku) {
           updatedProduct.stock_quantity = await fetchStock(product.sku);
         } else if (product.product_type === 'variable') {
-          updatedProduct.variations = await Promise.all(JSON.parse(product.variations || '[]').map(async (v) => {
-            if (v.sku) {
-              return { ...v, stock_quantity: await fetchStock(v.sku) };
-            }
-            return v;
-          }));
+          updatedProduct.variations = await Promise.all(
+            JSON.parse(product.variations || '[]').map(async (v) => {
+              if (v.sku) {
+                return { ...v, stock_quantity: await fetchStock(v.sku) };
+              }
+              return v;
+            })
+          );
         }
-        return {
-          ...updatedProduct,
-          related_products: JSON.parse(updatedProduct.related_products || '[]').map(rel => typeof rel === 'string' ? { productId: rel } : rel),
-          variations: updatedProduct.variations,
-          gallery: JSON.parse(updatedProduct.gallery || '[]'),
-          categories: JSON.parse(updatedProduct.categories || '[]'),
-          attributes: JSON.parse(updatedProduct.attributes || '[]'),
-        };
+        return updatedProduct;
       }));
+  
       setProducts(updatedProducts);
       setError(null);
+  
     } catch (err) {
-      setError(`Failed to sync stock: ${err.message}`);
+      setError(`Failed to load: ${err.message}`);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   useEffect(() => {
     const fetchData = async () => {

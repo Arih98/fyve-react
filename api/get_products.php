@@ -16,7 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $secret = 'FyveLondonSecret2025!';
 
 $headers = getallheaders();
-$token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
+$authHeader = $headers['Authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+$token = trim(str_replace('Bearer', '', $authHeader));
+error_log("Token received: [$token]");
 
 try {
     $decoded = JWT::decode($token, new \Firebase\JWT\Key($secret, 'HS256'));
@@ -33,6 +35,6 @@ try {
     $stmt->close();
 } catch (Exception $e) {
     http_response_code(401);
-    echo json_encode(['error' => 'Invalid token']);
+    echo json_encode(['error' => 'Invalid token', 'message' => $e->getMessage()]);
 }
 ?>
