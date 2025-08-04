@@ -81,7 +81,6 @@ const Home = () => {
     const londonMoveX = isMobile ? '-70px' : '-8.9vw';
     const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
     const direction = isMobile ? 'y' : 'x';
-    const intermediate = isMobile ? '30vh' : intermediateWidth;
     const interFyveStart = isMobile ? '-1vh' : fyveMoveX;
     const interFyveEnd = isMobile ? '-1vh' : fyveMoveXEnd;
     const interLondonStart = isMobile ? '9vh' : londonMoveX;
