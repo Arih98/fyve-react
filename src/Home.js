@@ -70,10 +70,33 @@ const Home = () => {
     } else {
       console.error('Image element not found');
     }
-
     const isMobile = window.innerWidth <= 768;
     const finalHeight = isMobile ? '94vh' : '100vh';
     const intermediateWidth = isMobile ? '30vw' : '18vw';
+    const fyveTextY = -1.11;
+    const londonX = 1.3;
+    const londonY = isMobile ? -14.41 : -1.41;
+    const fyveMoveX = isMobile ? '-5px' : '-0.4vw';
+    const fyveMoveXEnd = isMobile ? '5px' : '0.4vw';
+    const londonMoveX = isMobile ? '-70px' : '-8.9vw';
+    const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
+    const direction = isMobile ? 'y' : 'x';
+    const intermediate = isMobile ? '30vh' : intermediateWidth;
+    const interFyveStart = isMobile ? '-1vh' : fyveMoveX;
+    const interFyveEnd = isMobile ? '-1vh' : fyveMoveXEnd;
+    const interLondonStart = isMobile ? '9vh' : londonMoveX;
+    const interLondonEnd = isMobile ? '9vh' : londonMoveXEnd;
+    const outFyveStart = isMobile ? '-100vh' : '-100vw';
+    const outFyveEnd = isMobile ? '-100vh' : '100vw';
+    const outLondonStart = isMobile ? '100vh' : '-150vw';
+    const outLondonEnd = isMobile ? '100vh' : '150vw';
+    const maskValueStart = '-100%';
+    const maskValueEnd = '100%';
+    const maskOriginLeft = isMobile ? 'center top' : 'left center';
+    const maskOriginRight = isMobile ? 'center bottom' : 'right center';
+    const londonOriginStart = isMobile ? 'center bottom' : 'left center';
+    const londonOriginEnd = isMobile ? 'center bottom' : 'right center';
+
     const ctx = gsap.context(() => {
       gsap.set('.london-mask', { visibility: 'visible' });
       const londonMask = document.querySelector('.london-mask');
@@ -86,7 +109,6 @@ const Home = () => {
       } else {
         console.error('london-mask not found');
       }
-
       let rotation = 0;
       const stamp = document.querySelector('.section1-stamp');
       Observer.create({
@@ -102,29 +124,6 @@ const Home = () => {
         tolerance: 10,
         preventDefault: false
       });
-
-      const fyveTextY = -1.11;
-      const londonX = 1.3;
-      const londonY = isMobile ? -14.41 : -1.41;
-      const fyveMoveX = isMobile ? '-5px' : '-0.4vw';
-      const fyveMoveXEnd = isMobile ? '5px' : '0.4vw';
-      const londonMoveX = isMobile ? '-70px' : '-8.9vw';
-      const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
-      const direction = isMobile ? 'y' : 'x';
-      const intermediate = isMobile ? '30vh' : intermediateWidth;
-      const interFyveStart = isMobile ? '-1vh' : fyveMoveX;
-      const interFyveEnd = isMobile ? '-1vh' : fyveMoveXEnd;
-      const interLondonStart = isMobile ? '9vh' : londonMoveX;
-      const interLondonEnd = isMobile ? '9vh' : londonMoveXEnd;
-      const outFyveStart = isMobile ? '-100vh' : '-100vw';
-      const outFyveEnd = isMobile ? '-100vh' : '100vw';
-      const outLondonStart = isMobile ? '100vh' : '-150vw';
-      const outLondonEnd = isMobile ? '100vh' : '150vw';
-      const maskValueStart = '-100%';
-      const maskValueEnd = '100%';
-      const maskOriginLeft = isMobile ? 'center top' : 'left center';
-      const maskOriginRight = isMobile ? 'center bottom' : 'right center';
-
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
         gsap.set('.fyve-image', { visibility: 'visible' });
@@ -137,8 +136,8 @@ const Home = () => {
         gsap.set('.mobile-header', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
-        gsap.set('.london-mask .london-text:first-child', { [direction]: outLondonStart, transformOrigin: 'left center', visibility: 'hidden' });
-        gsap.set('.london-mask .london-text:last-child', { [direction]: outLondonEnd, transformOrigin: 'right center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:first-child', { [direction]: outLondonStart, transformOrigin: londonOriginStart, visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:last-child', { [direction]: outLondonEnd, transformOrigin: londonOriginEnd, visibility: 'hidden' });
         gsap.set('.lottie-container', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
@@ -150,8 +149,8 @@ const Home = () => {
         gsap.set('.mask-right', { [direction]: '0%', transformOrigin: maskOriginRight });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
-        gsap.set('.london-mask .london-text:first-child', { [direction]: '0%', transformOrigin: 'left center' });
-        gsap.set('.london-mask .london-text:last-child', { [direction]: '0%', transformOrigin: 'right center' });
+        gsap.set('.london-mask .london-text:first-child', { [direction]: '0%', transformOrigin: londonOriginStart });
+        gsap.set('.london-mask .london-text:last-child', { [direction]: '0%', transformOrigin: londonOriginEnd });
         gsap.set('.lottie-container', { autoAlpha: 0 });
         gsap.set('.london-below', { opacity: 0 });
         gsap.fromTo(
@@ -199,11 +198,10 @@ const Home = () => {
           }
         });
       }
-
       hasAnimated.current = true;
+    });
 
-      return () => ctx.revert();
-    }, []);
+    return () => ctx.revert();
   }, []);
 
   useEffect(() => {
@@ -411,30 +409,30 @@ const Home = () => {
         </div>
       </div>
       <div className="horizontal-scroll-section">
-        <div className="horizontal-scroll-content">
-          <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
-          <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
-          <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
-          <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
-          <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
-          <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
-          <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
-          <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
-          <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
-          <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
-          <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
-          <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
-          <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
-          <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
-          <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
-          <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
-          <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
-          <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
-          <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
-          <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
-          <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
-        </div>
-      </div>
+  <div className="horizontal-scroll-content">
+    <img className="custom-img img1" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK-2_191" />
+    <img className="custom-img img2" src="/api/Uploads/LOOK-5_531_result.webp" alt="LOOK-5_531_result" />
+    <img className="custom-img img3" src="/api/Uploads/LOOK-3_329.jpg" alt="LOOK-3_329" />
+    <img className="custom-img img4" src="/api/Uploads/LOOK-1_011_result.webp" alt="LOOK-1_011_result" />
+    <img className="custom-img img5" src="/api/Uploads/LOOK-2_289.webp" alt="LOOK-4_365" />
+    <img className="custom-img img6" src="/api/Uploads/LOOK-8_1177-1.webp" alt="LOOK-2_289" />
+    <img className="custom-img img7" src="/api/Uploads/look_12_2435.webp" alt="look_12_2435" />
+    <img className="custom-img img8" src="/api/Uploads/LOOK-6_582_result2.webp" alt="look_12_2435" />
+    <img className="custom-img img9" src="/api/Uploads/LOOK-7_920.webp" alt="LOOK-6_582_result" />
+    <img className="custom-img img10" src="/api/Uploads/LOOK-8_985.webp" alt="LOOK-7_920" />
+    <img className="custom-img img11" src="/api/Uploads/LOOK-9_1665-1.webp" alt="LOOK-8_985" />
+    <img className="custom-img img12" src="/api/Uploads/LOOK-9_1452.webp" alt="LOOK-9_1665-1" />
+    <img className="custom-img img13" src="/api/Uploads/LOOK-9_1531.webp" alt="LOOK-9_1452" />
+    <img className="custom-img img14" src="/api/Uploads/LOOK-9_1459.webp" alt="LOOK-9_1531" />
+    <img className="custom-img img15" src="/api/Uploads/LOOK-9_1361.webp" alt="LOOK-9_1459" />
+    <img className="custom-img img16" src="/api/Uploads/LOOK-12_2160.webp" alt="LOOK-9_1361" />
+    <img className="custom-img img17" src="/api/Uploads/LOOK_11_1743-1.webp" alt="LOOK-12_2160" />
+    <img className="custom-img img18" src="/api/Uploads/LOOK_11_2043.webp" alt="LOOK_11_1743-1" />
+    <img className="custom-img img19" src="/api/Uploads/LOOK-4_365.webp" alt="LOOK_11_2043-1" />
+    <img className="custom-img img20" src="/api/Uploads/LOOK-2_191.webp" alt="LOOK_11_2060-1" />
+    <img className="custom-img img21" src="/api/Uploads/LOOK_11_2082.webp" alt="LOOK_11_2082" />
+  </div>
+</div>
     </div>
   );
 };
