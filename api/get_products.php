@@ -15,12 +15,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $secret = 'FyveLondonSecret2025!';
 
-$token = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'] ?? '');
+$headers = getallheaders();
+$authHeader = $headers['Authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+$token = trim(str_replace('Bearer', '', $authHeader));
+error_log("Token received: [$token]");
 
-$stmt = $conn->prepare("SELECT * FROM products ORDER BY `order` ASC");
-$stmt->execute();
-$result = $stmt->get_result();
-$products = $result->fetch_all(MYSQLI_ASSOC);
-echo json_encode($products);
-$stmt->close();
+try {
+    $decoded = JWT::decode($token, new \Firebase\JWT\Key($secret, 'HS256'));
+    if ($decoded->role !== 'admin') {
+        http_response_code(401);
+        echo json_encode(['error' => 'Admin access only']);
+        exit;
+    }
+    $stmt = $conn->prepare("SELECT * FROM products ORDER BY `order` ASC");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $products = $result->fetch_all(MYSQLI_ASSOC);
+    echo json_encode($products);
+    $stmt->close();
+} catch (Exception $e) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Invalid token', 'message' => $e->getMessage()]);
+}
 ?>
