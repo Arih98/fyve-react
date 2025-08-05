@@ -379,45 +379,44 @@ const ProductEditor = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
-      const productData = {
-        id: formData.id || `prod_${Date.now()}`,
-        title: formData.title,
-        description: formData.description,
-        price: formData.price,
-        sku: formData.sku,
-        gtin: formData.gtin,
-        product_type: formData.product_type,
-        stock_quantity: formData.stock_quantity,
-        gallery: formData.gallery.filter(g => typeof g === 'string'),
-        variations: formData.variations,
-        categories: formData.categories,
-        attributes: formData.attributes,
-        related_products: formData.related_products,
-      };
+  
+      const productData = new FormData();
+      productData.append('id', formData.id || `prod_${Date.now()}`);
+      productData.append('title', formData.title);
+      productData.append('description', formData.description);
+      productData.append('price', formData.price);
+      productData.append('sku', formData.sku);
+      productData.append('gtin', formData.gtin);
+      productData.append('product_type', formData.product_type);
+      productData.append('stock_quantity', formData.stock_quantity);
+      productData.append('variations', JSON.stringify(formData.variations));
+      productData.append('categories', JSON.stringify(formData.categories));
+      productData.append('attributes', JSON.stringify(formData.attributes));
+      productData.append('related_products', JSON.stringify(formData.related_products));
+  
+      // Append existing gallery URLs
+      formData.gallery.filter(g => typeof g === 'string').forEach((url, index) => {
+        productData.append(`gallery[${index}]`, url);
+      });
+  
+      // Append new gallery files
+      formData.gallery.filter(g => g instanceof File).forEach((file, index) => {
+        productData.append('new_gallery', file);
+      });
+  
       const response = await fetch('/api/save_product.php', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(productData),
+        body: productData,
       });
       const data = await response.json();
       if (data.status === 'success') {
-        const updatedProduct = {
-          ...productData,
-          gallery: productData.gallery,
-          variations: productData.variations,
-          categories: productData.categories,
-          attributes: productData.attributes,
-          related_products: productData.related_products,
-        };
-        let updatedProducts;
-        if (formData.id) {
-          updatedProducts = products.map(p => p.id === formData.id ? updatedProduct : p);
-        } else {
-          updatedProducts = [...products, updatedProduct];
-        }
+        // Refresh products
+        const updatedProducts = await fetch('/api/get_products.php', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        }).then(res => res.json());
         setProducts(updatedProducts);
         cancelEdit();
       } else {
