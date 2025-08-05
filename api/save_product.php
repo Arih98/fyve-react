@@ -5,13 +5,18 @@ use \Firebase\JWT\JWT;
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: https://dev.fyvelondon.com');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 $secret = 'FyveLondonSecret2025!';
 
-$headers = getallheaders();
-$token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
+$token = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION'] ?? '');
+file_put_contents(__DIR__ . '/headers.log', json_encode(['Authorization' => $_SERVER['HTTP_AUTHORIZATION'] ?? 'none'], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
 
 try {
     $decoded = JWT::decode($token, new \Firebase\JWT\Key($secret, 'HS256'));
@@ -49,11 +54,11 @@ try {
     $gtin = $data['gtin'] ?? '';
     $product_type = $data['product_type'] ?? 'simple';
     $stock_quantity = $data['stock_quantity'] ?? 0;
-    $gallery = $data['gallery'] ? json_encode($data['gallery']) : '';
-    $variations = $data['variations'] ? json_encode($data['variations']) : '';
-    $categories = $data['categories'] ? json_encode($data['categories']) : '';
-    $attributes = $data['attributes'] ? json_encode($data['attributes']) : '';
-    $related_products = $data['related_products'] ? json_encode($data['related_products']) : '';
+    $gallery = $data['gallery'] ? json_encode($data['gallery']) : '[]';
+    $variations = $data['variations'] ? json_encode($data['variations']) : '[]';
+    $categories = $data['categories'] ? json_encode($data['categories']) : '[]';
+    $attributes = $data['attributes'] ? json_encode($data['attributes']) : '[]';
+    $related_products = $data['related_products'] ? json_encode($data['related_products']) : '[]';
 
     if (empty($id) || empty($title)) {
         http_response_code(400);
@@ -72,6 +77,7 @@ try {
     $stmt->close();
 } catch (Exception $e) {
     http_response_code(401);
+    file_put_contents(__DIR__ . '/jwt_error.log', 'JWT Error: ' . $e->getMessage() . ' | Token: ' . $token . PHP_EOL, FILE_APPEND);
     echo json_encode(['error' => 'Invalid token']);
 }
 ?>
