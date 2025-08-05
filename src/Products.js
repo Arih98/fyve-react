@@ -1,4 +1,3 @@
-// Products.js
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
@@ -22,65 +21,70 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    try {
-      console.log('[Products] Loading products from localStorage');
-      const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
-      const normalizedProducts = localProducts.map(product => ({
-        ...product,
-        variations: product.variations || [],
-        gallery: product.gallery || [],
-      }));
-      console.log('[Products] Loaded', normalizedProducts.length, 'products');
-      setProducts(normalizedProducts);
-
-      // Flatten and deduplicate by product title and color
-      const seenColorsByTitle = new Map();
-      const flattened = normalizedProducts.flatMap(product => {
-        if (product.product_type !== 'variable') return [{...product, displayId: product.id, gallery: product.gallery}];
-        let colorVariants = product.variations.reduce((acc, variation) => {
-          const colorAttr = variation.attributes?.find(a => a.attribute_name === 'Color')?.term_name;
-          if (colorAttr && !colorAttr.startsWith('Any')) {
-            const key = `${product.title}-${colorAttr}`;
-            if (!seenColorsByTitle.has(key)) {
-              seenColorsByTitle.set(key, true);
-              acc.push({
-                displayId: `${product.id}-${colorAttr}`,
-                parentId: product.id,
-                title: variation.title || `${product.title} - ${colorAttr}`,
-                price: variation.price || product.price,
-                selectedColor: colorAttr,
-                sku: variation.sku,
-                gallery: variation.gallery,
-              });
+    const fetchProducts = async () => {
+      try {
+        console.log('[Products] Fetching products from API');
+        const res = await fetch('/api/get_products.php');
+        if (!res.ok) throw new Error(`Failed to fetch products: HTTP ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data)) throw new Error('Invalid products data');
+        console.log('[Products] Loaded', data.length, 'products from API');
+        const normalizedProducts = data.map(product => ({
+          ...product,
+          variations: product.variations || [],
+          gallery: product.gallery || [],
+        }));
+        setProducts(normalizedProducts);
+        // Flatten and deduplicate by product title and color
+        const seenColorsByTitle = new Map();
+        const flattened = normalizedProducts.flatMap(product => {
+          if (product.product_type !== 'variable') return [{...product, displayId: product.id, gallery: product.gallery}];
+          let colorVariants = product.variations.reduce((acc, variation) => {
+            const colorAttr = variation.attributes?.find(a => a.attribute_name === 'Color')?.term_name;
+            if (colorAttr && !colorAttr.startsWith('Any')) {
+              const key = `${product.title}-${colorAttr}`;
+              if (!seenColorsByTitle.has(key)) {
+                seenColorsByTitle.set(key, true);
+                acc.push({
+                  displayId: `${product.id}-${colorAttr}`,
+                  parentId: product.id,
+                  title: variation.title || `${product.title} - ${colorAttr}`,
+                  price: variation.price || product.price,
+                  selectedColor: colorAttr,
+                  sku: variation.sku,
+                  gallery: variation.gallery,
+                });
+              }
             }
+            return acc;
+          }, []);
+          if (colorVariants.length === 0) {
+            const defaultVariation = product.variations[0] || {};
+            const defaultGallery = defaultVariation.gallery || product.gallery || [];
+            const defaultTitle = product.title;
+            const defaultPrice = defaultVariation.price || product.price;
+            const defaultSku = defaultVariation.sku || product.sku;
+            colorVariants.push({
+              displayId: `${product.id}-default`,
+              parentId: product.id,
+              title: defaultTitle,
+              price: defaultPrice,
+              selectedColor: null,
+              sku: defaultSku,
+              gallery: defaultGallery,
+            });
           }
-          return acc;
-        }, []);
-        if (colorVariants.length === 0) {
-          const defaultVariation = product.variations[0] || {};
-          const defaultGallery = defaultVariation.gallery || product.gallery || [];
-          const defaultTitle = product.title;
-          const defaultPrice = defaultVariation.price || product.price;
-          const defaultSku = defaultVariation.sku || product.sku;
-          colorVariants.push({
-            displayId: `${product.id}-default`,
-            parentId: product.id,
-            title: defaultTitle,
-            price: defaultPrice,
-            selectedColor: null,
-            sku: defaultSku,
-            gallery: defaultGallery,
-          });
-        }
-        return colorVariants;
-      });
-      setDisplay(flattened);
-      setLoading(false);
-    } catch (err) {
-      console.error('[Products] Error loading products:', err.message);
-      setError(`Failed to load: ${err.message}`);
-      setLoading(false);
-    }
+          return colorVariants;
+        });
+        setDisplay(flattened);
+        setLoading(false);
+      } catch (err) {
+        console.error('[Products] Error fetching products:', err.message);
+        setError(`Failed to load: ${err.message}`);
+        setLoading(false);
+      }
+    };
+    fetchProducts();
   }, []);
 
   const handleProductClick = (item, e) => {
@@ -92,7 +96,7 @@ const Products = () => {
       galleryLength: item.gallery?.length || 0,
       isMenuOpen,
     });
-    const imgElement = document.getElementById(`img-${item.displayId}`);
+    const imgElement = document.getItemById(`img-${item.displayId}`);
     if (imgElement) {
       console.log('[Products] Source image details on click:', {
         src: imgElement.src,
@@ -116,12 +120,12 @@ const Products = () => {
       initialColor: item.selectedColor,
       transitionKey: item.displayId,
     });
-    navigate(`/product/${item.parentId}`, { 
-      state: { 
-        product: targetProduct, 
-        initialColor: item.selectedColor, 
-        transitionKey: `main-${item.displayId}-${Date.now()}` 
-      } 
+    navigate(`/product/${item.parentId}`, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionKey: `main-${item.displayId}-${Date.now()}`
+      }
     });
   };
 
@@ -195,7 +199,6 @@ const Products = () => {
             </div>
           ))}
         </div>
-
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, i) => (
             <button
@@ -211,5 +214,4 @@ const Products = () => {
     </div>
   );
 };
-
 export default Products;
