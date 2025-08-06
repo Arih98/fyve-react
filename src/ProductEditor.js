@@ -422,19 +422,31 @@ const ProductEditor = () => {
       productData.append('gtin', formData.gtin);
       productData.append('product_type', formData.product_type);
       productData.append('stock_quantity', formData.stock_quantity);
-      productData.append('variations', JSON.stringify(formData.variations));
+      // Update variations to include gallery URLs
+      const updatedVariations = formData.variations.map(variation => ({
+        ...variation,
+        gallery: variation.gallery.filter(g => typeof g === 'string')
+      }));
+      productData.append('variations', JSON.stringify(updatedVariations));
       productData.append('categories', JSON.stringify(formData.categories));
       productData.append('attributes', JSON.stringify(formData.attributes));
       productData.append('related_products', JSON.stringify(formData.related_products));
   
-      // Append existing gallery URLs
+      // Append existing product gallery URLs
       formData.gallery.filter(g => typeof g === 'string').forEach((url, index) => {
         productData.append(`gallery[${index}]`, url);
       });
   
-      // Append new gallery files
+      // Append new product gallery files
       formData.gallery.filter(g => g instanceof File).forEach((file, index) => {
         productData.append('new_gallery', file);
+      });
+  
+      // Append new variation gallery files
+      formData.variations.forEach((variation, varIndex) => {
+        variation.gallery.filter(g => g instanceof File).forEach((file, fileIndex) => {
+          productData.append(`variations[${varIndex}][gallery][${fileIndex}]`, file);
+        });
       });
   
       const response = await fetch('/api/save_product.php', {

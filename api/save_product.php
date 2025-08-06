@@ -81,37 +81,74 @@ $related_products = $_POST['related_products'] ?? '[]';
 
 $gallery = [];
 if (isset($_POST['gallery']) && is_array($_POST['gallery'])) {
-    $gallery = $_POST['gallery'];
+    $gallery = array_filter($_POST['gallery'], 'is_string');
+    file_put_contents(__DIR__ . '/save_log.log', 'Existing gallery URLs: ' . json_encode($gallery) . PHP_EOL, FILE_APPEND);
 }
 
 $upload_dir = __DIR__ . '/../Uploads/';
 if (!file_exists($upload_dir)) {
     mkdir($upload_dir, 0777, true);
+    file_put_contents(__DIR__ . '/save_log.log', 'Created upload directory: ' . $upload_dir . PHP_EOL, FILE_APPEND);
 }
 
-if (isset($_FILES['new_gallery'])) {
+if (isset($_FILES['new_gallery']) && !empty($_FILES['new_gallery']['tmp_name'])) {
+    file_put_contents(__DIR__ . '/save_log.log', 'New product gallery files received: ' . json_encode($_FILES['new_gallery']) . PHP_EOL, FILE_APPEND);
     foreach ($_FILES['new_gallery']['tmp_name'] as $key => $tmp_name) {
         if ($_FILES['new_gallery']['error'][$key] === UPLOAD_ERR_OK) {
-            $file_name = basename($_FILES['new_gallery']['name'][$key]);
+            $file_name = time() . '_' . basename($_FILES['new_gallery']['name'][$key]);
             $target_file = $upload_dir . $file_name;
             if (move_uploaded_file($tmp_name, $target_file)) {
                 $gallery[] = '/Uploads/' . $file_name;
+                file_put_contents(__DIR__ . '/save_log.log', 'Uploaded product file: ' . $target_file . PHP_EOL, FILE_APPEND);
+            } else {
+                file_put_contents(__DIR__ . '/save_log.log', 'Failed to move product file: ' . $file_name . PHP_EOL, FILE_APPEND);
             }
+        } else {
+            file_put_contents(__DIR__ . '/save_log.log', 'Upload error for product file ' . $key . ': ' . $_FILES['new_gallery']['error'][$key] . PHP_EOL, FILE_APPEND);
         }
     }
 }
 
+// Process variation gallery files
+$variations_data = json_decode($variations, true) ?? [];
+foreach ($variations_data as $varIndex => $variation) {
+    if (isset($_FILES["variations"][$varIndex]['gallery'])) {
+        $variation_files = $_FILES["variations"][$varIndex]['gallery'];
+        $variation_gallery = [];
+        foreach ($variation_files['tmp_name'] as $fileIndex => $tmp_name) {
+            if ($variation_files['error'][$fileIndex] === UPLOAD_ERR_OK) {
+                $file_name = time() . '_' . basename($variation_files['name'][$fileIndex]);
+                $target_file = $upload_dir . $file_name;
+                if (move_uploaded_file($tmp_name, $target_file)) {
+                    $variation_gallery[] = '/Uploads/' . $file_name;
+                    file_put_contents(__DIR__ . '/save_log.log', 'Uploaded variation file: ' . $target_file . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
+                } else {
+                    file_put_contents(__DIR__ . '/save_log.log', 'Failed to move variation file: ' . $file_name . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
+                }
+            } else {
+                file_put_contents(__DIR__ . '/save_log.log', 'Upload error for variation file ' . $fileIndex . ' in variation ' . $varIndex . ': ' . $variation_files['error'][$fileIndex] . PHP_EOL, FILE_APPEND);
+            }
+        }
+        $variations_data[$varIndex]['gallery'] = $variation_gallery;
+    }
+}
+$variations = json_encode($variations_data);
+
 $gallery_json = json_encode($gallery);
+file_put_contents(__DIR__ . '/save_log.log', 'Saving gallery JSON: ' . $gallery_json . ' for product ID: ' . $id . PHP_EOL, FILE_APPEND);
+file_put_contents(__DIR__ . '/save_log.log', 'Saving variations JSON: ' . $variations . ' for product ID: ' . $id . PHP_EOL, FILE_APPEND);
 
 if (empty($id) || empty($title)) {
     http_response_code(400);
+    file_put_contents(__DIR__ . '/save_log.log', 'Missing required fields: id=' . $id . ', title=' . $title . PHP_EOL, FILE_APPEND);
     echo json_encode(['error' => 'Missing required fields']);
     exit;
 }
 
 $stmt = $conn->prepare("REPLACE INTO products (id, title, description, price, sku, gtin, product_type, stock_quantity, gallery, variations, categories, attributes, related_products) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssdsdsiissss", $id, $title, $description, $price, $sku, $gtin, $product_type, $stock_quantity, $gallery_json, $variations, $categories, $related_products, $attributes);
+$stmt->bind_param("sssdsdsiissss", $id, $title, $description, $price, $sku, $gtin, $product_type, $stock_quantity, $gallery_json, $variations, $categories, $attributes, $related_products);
 if ($stmt->execute()) {
+    file_put_contents(__DIR__ . '/save_log.log', 'Successfully saved product ID: ' . $id . PHP_EOL, FILE_APPEND);
     echo json_encode(['status' => 'success']);
 } else {
     file_put_contents(__DIR__ . '/save_log.log', 'Save query failed for ID: ' . $id . ' - Error: ' . $stmt->error . PHP_EOL, FILE_APPEND);
