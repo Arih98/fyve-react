@@ -247,129 +247,129 @@ const ProductDetail = () => {
   };
 
   const currentColor = selectedAttributes.Color || 'default';
-  const currentDisplayId = `${product.id}-${currentColor}`;
+const currentDisplayId = `${product.id}-${currentColor}`;
+const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
-  const gallery = current?.gallery || product.gallery || [];
-  const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-  const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
-  const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
-  const stock = current?.stock_quantity ?? 'N/A';
+const gallery = current?.gallery || product.gallery || [];
+const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
+const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
+const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
+const stock = current?.stock_quantity ?? 'N/A';
 
-  console.log('[ProductDetail] Rendering with:', {
-    displayTitle,
-    galleryLength: gallery.length,
-    mainImage,
-    stock,
-    currentSku: current?.sku,
+console.log('[ProductDetail] Rendering with:', {
+  displayTitle,
+  galleryLength: gallery.length,
+  mainImage,
+  stock,
+  currentSku: current?.sku,
+  transitionKey,
+});
+
+const isAddDisabled = availableStock !== null && availableStock < quantity;
+
+const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
+const relatedProducts = relatedProductsRaw.map(rel => {
+  const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
+  const p = allProducts.find(p => p.id === normalizedRel.productId);
+  if (!p) return null;
+  const color = normalizedRel.selectedColor;
+  if (color) {
+    const v = p.variations.find(v => v.attributes.some(a => a.attribute_name === 'Color' && a.term_name === color));
+    return {
+      ...p,
+      displayId: `${p.id}-${color}`,
+      selectedColor: color,
+      displayTitle: v?.title || `${p.title} - ${color}`,
+      displayPrice: v?.price || p.price,
+      displayGallery: v?.gallery || p.gallery,
+    };
+  } else {
+    return {
+      ...p,
+      displayId: p.id,
+      selectedColor: null,
+      displayTitle: p.title,
+      displayPrice: p.price,
+      displayGallery: p.gallery,
+    };
+  }
+}).filter(Boolean);
+
+const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
+const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
+
+const handleRelatedClick = (relItem) => {
+  const originalProduct = allProducts.find(p => p.id === relItem.id);
+  navigate(`/product/${relItem.id}`, { 
+    state: { 
+      product: originalProduct, 
+      initialColor: relItem.selectedColor, 
+      transitionKey: `product-image-${relItem.displayId}` // Consistent layoutId
+    } 
   });
+};
 
-  const isAddDisabled = availableStock !== null && availableStock < quantity;
-
-  const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
-  const relatedProducts = relatedProductsRaw.map(rel => {
-    const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
-    const p = allProducts.find(p => p.id === normalizedRel.productId);
-    if (!p) return null;
-    const color = normalizedRel.selectedColor;
-    if (color) {
-      const v = p.variations.find(v => v.attributes.some(a => a.attribute_name === 'Color' && a.term_name === color));
-      return {
-        ...p,
-        displayId: `${p.id}-${color}`,
-        selectedColor: color,
-        displayTitle: v?.title || `${p.title} - ${color}`,
-        displayPrice: v?.price || p.price,
-        displayGallery: v?.gallery || p.gallery,
-      };
-    } else {
-      return {
-        ...p,
-        displayId: p.id,
-        selectedColor: null,
-        displayTitle: p.title,
-        displayPrice: p.price,
-        displayGallery: p.gallery,
-      };
-    }
-  }).filter(Boolean);
-
-  const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
-  const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
-
-  const handleRelatedClick = (relItem) => {
-    const originalProduct = allProducts.find(p => p.id === relItem.id);
-    // Use a unique transition key to avoid conflicts with main product layoutId
-    const uniqueTransitionKey = `related-${relItem.displayId}-${Date.now()}`;
-    navigate(`/product/${relItem.id}`, { 
-      state: { 
-        product: originalProduct, 
-        initialColor: relItem.selectedColor, 
-        transitionKey: uniqueTransitionKey 
-      } 
-    });
-  };
-
-  return (
-    <>
-      <motion.div className="product-detail-container">
-        <div className="images-container">
-          <div className="product-image-gallery">
-            {gallery.length > 0 ? (
-              gallery.map((img, idx) => {
-                const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? `product-image-${currentDisplayId}` : undefined;
-                return (
-                  <motion.img
-                    initial={false}
-                    ref={el => galleryRefs.current.set(imageKey, el)}
-                    key={imageKey}
-                    layoutId={layoutIdValue}
-                    src={img}
-                    alt={`${displayTitle} ${idx + 1}`}
-                    className="product-gallery-image"
-                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                    onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
-                    transition={{ duration: 0.5 }}
-                    onAnimationStart={() => console.log('[ProductDetail] Animation start')}
-                    onAnimationComplete={() => console.log('[ProductDetail] Animation complete')}
-                    onLayoutAnimationStart={() => {
-                      if (layoutIdValue) {
-                        const el = galleryRefs.current.get(imageKey);
-                        if (el) el.style.zIndex = '10000';
-                      }
-                    }}
-                    onLayoutAnimationComplete={() => {
-                      if (layoutIdValue) {
-                        const el = galleryRefs.current.get(imageKey);
-                        if (el) el.style.zIndex = '';
-                      }
-                    }}
-                  />
-                );
-              })
-            ) : (
-              <motion.img
-                initial={false}
-                ref={mainImageRef}
-                layoutId={`product-image-${currentDisplayId}`}
-                src={mainImage}
-                alt={displayTitle}
-                className="product-main-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
-                transition={{ duration: 0.5 }}
-                onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
-                onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
-                onLayoutAnimationStart={() => {
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
-                }}
-                onLayoutAnimationComplete={() => {
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
-                }}
-              />
-            )}
-          </div>
+return (
+  <>
+    <motion.div className="product-detail-container">
+      <div className="images-container">
+        <div className="product-image-gallery">
+          {gallery.length > 0 ? (
+            gallery.map((img, idx) => {
+              const imageKey = `${current?.sku || product.id}-${idx}`;
+              const layoutIdValue = idx === 0 ? transitionKey : undefined;
+              return (
+                <motion.img
+                  initial={false}
+                  ref={el => galleryRefs.current.set(imageKey, el)}
+                  key={imageKey}
+                  layoutId={layoutIdValue}
+                  src={img}
+                  alt={`${displayTitle} ${idx + 1}`}
+                  className="product-gallery-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
+                  transition={{ duration: 0.5 }}
+                  onAnimationStart={() => console.log('[ProductDetail] Animation start for', imageKey)}
+                  onAnimationComplete={() => console.log('[ProductDetail] Animation complete for', imageKey)}
+                  onLayoutAnimationStart={() => {
+                    if (layoutIdValue) {
+                      const el = galleryRefs.current.get(imageKey);
+                      if (el) el.style.zIndex = '10000';
+                    }
+                  }}
+                  onLayoutAnimationComplete={() => {
+                    if (layoutIdValue) {
+                      const el = galleryRefs.current.get(imageKey);
+                      if (el) el.style.zIndex = '';
+                    }
+                  }}
+                />
+              );
+            })
+          ) : (
+            <motion.img
+              initial={false}
+              ref={mainImageRef}
+              layoutId={transitionKey}
+              src={mainImage}
+              alt={displayTitle}
+              className="product-main-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+              onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
+              transition={{ duration: 0.5 }}
+              onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
+              onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
+              onLayoutAnimationStart={() => {
+                if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
+              }}
+              onLayoutAnimationComplete={() => {
+                if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+              }}
+            />
+          )}
         </div>
+      </div>
         <motion.div
           className="details-container"
           initial={{ x: '100%' }}
