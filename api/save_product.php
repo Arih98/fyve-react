@@ -131,27 +131,25 @@ if (isset($_FILES['new_gallery']) && !empty($_FILES['new_gallery']['tmp_name']))
 
 // Process variation gallery files
 $variations_data = json_decode($variations, true) ?? [];
-if (!empty($_FILES['variations'])) {
-    file_put_contents(__DIR__ . '/save_log.log', 'Variation files received: ' . json_encode($_FILES['variations']) . PHP_EOL, FILE_APPEND);
-    foreach ($_FILES['variations'] as $varIndex => $variation_files) {
-        if (isset($variation_files['gallery'])) {
-            $variation_gallery = $variations_data[$varIndex]['gallery'] ?? [];
-            foreach ($variation_files['gallery']['tmp_name'] as $fileIndex => $tmp_name) {
-                if ($variation_files['gallery']['error'][$fileIndex] === UPLOAD_ERR_OK) {
-                    $file_name = time() . '_' . basename($variation_files['gallery']['name'][$fileIndex]);
-                    $target_file = $upload_dir . $file_name;
-                    if (move_uploaded_file($tmp_name, $target_file)) {
-                        $variation_gallery[] = '/Uploads/' . $file_name;
-                        file_put_contents(__DIR__ . '/save_log.log', 'Uploaded variation file: ' . $target_file . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
-                    } else {
-                        file_put_contents(__DIR__ . '/save_log.log', 'Failed to move variation file: ' . $file_name . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
-                    }
+if (!empty($_FILES['new_variation_gallery'])) {
+    file_put_contents(__DIR__ . '/save_log.log', 'New variation gallery files received: ' . json_encode($_FILES['new_variation_gallery']) . PHP_EOL, FILE_APPEND);
+    foreach ($_FILES['new_variation_gallery']['tmp_name'] as $varIndex => $files) {
+        $variation_gallery = $variations_data[$varIndex]['gallery'] ?? [];
+        foreach ($files as $fileIndex => $tmp_name) {
+            if ($_FILES['new_variation_gallery']['error'][$varIndex][$fileIndex] === UPLOAD_ERR_OK) {
+                $file_name = time() . '_' . basename($_FILES['new_variation_gallery']['name'][$varIndex][$fileIndex]);
+                $target_file = $upload_dir . $file_name;
+                if (move_uploaded_file($tmp_name, $target_file)) {
+                    $variation_gallery[] = '/Uploads/' . $file_name;
+                    file_put_contents(__DIR__ . '/save_log.log', 'Uploaded variation file: ' . $target_file . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
                 } else {
-                    file_put_contents(__DIR__ . '/save_log.log', 'Upload error for variation file ' . $fileIndex . ' in variation ' . $varIndex . ': ' . $variation_files['gallery']['error'][$fileIndex] . PHP_EOL, FILE_APPEND);
+                    file_put_contents(__DIR__ . '/save_log.log', 'Failed to move variation file: ' . $file_name . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
                 }
+            } else {
+                file_put_contents(__DIR__ . '/save_log.log', 'Upload error for variation file ' . $fileIndex . ' in variation ' . $varIndex . ': ' . $_FILES['new_variation_gallery']['error'][$varIndex][$fileIndex] . PHP_EOL, FILE_APPEND);
             }
-            $variations_data[$varIndex]['gallery'] = $variation_gallery;
         }
+        $variations_data[$varIndex]['gallery'] = $variation_gallery;
     }
 }
 $variations = json_encode($variations_data);

@@ -415,22 +415,30 @@ const ProductEditor = () => {
   
       const productData = new FormData();
       productData.append('id', formData.id || `prod_${Date.now()}`);
-      productData.append('title', formData.title);
-      productData.append('description', formData.description);
-      productData.append('price', formData.price);
-      productData.append('sku', formData.sku);
-      productData.append('gtin', formData.gtin);
-      productData.append('product_type', formData.product_type);
-      productData.append('stock_quantity', formData.stock_quantity);
-      // Update variations to include gallery URLs
+      productData.append('title', formData.title || '');
+      productData.append('description', formData.description || '');
+      productData.append('price', formData.price || '');
+      productData.append('sku', formData.sku || '');
+      productData.append('gtin', formData.gtin || '');
+      productData.append('product_type', formData.product_type || 'simple');
+      productData.append('stock_quantity', formData.stock_quantity || 0);
+  
+      // Ensure variations include all fields
       const updatedVariations = formData.variations.map(variation => ({
-        ...variation,
-        gallery: variation.gallery.filter(g => typeof g === 'string')
+        title: variation.title || '',
+        description: variation.description || '',
+        price: variation.price || '',
+        sku: variation.sku || '',
+        gtin: variation.gtin || '',
+        stock_quantity: variation.stock_quantity || 0,
+        gallery: variation.gallery.filter(g => typeof g === 'string'),
+        attributes: variation.attributes || [],
+        related_products: variation.related_products || [],
       }));
       productData.append('variations', JSON.stringify(updatedVariations));
-      productData.append('categories', JSON.stringify(formData.categories));
-      productData.append('attributes', JSON.stringify(formData.attributes));
-      productData.append('related_products', JSON.stringify(formData.related_products));
+      productData.append('categories', JSON.stringify(formData.categories || []));
+      productData.append('attributes', JSON.stringify(formData.attributes || []));
+      productData.append('related_products', JSON.stringify(formData.related_products || []));
   
       // Append existing product gallery URLs
       formData.gallery.filter(g => typeof g === 'string').forEach((url, index) => {
@@ -439,15 +447,21 @@ const ProductEditor = () => {
   
       // Append new product gallery files
       formData.gallery.filter(g => g instanceof File).forEach((file, index) => {
-        productData.append('new_gallery', file);
+        productData.append(`new_gallery[${index}]`, file);
       });
   
       // Append new variation gallery files
       formData.variations.forEach((variation, varIndex) => {
         variation.gallery.filter(g => g instanceof File).forEach((file, fileIndex) => {
-          productData.append(`variations[${varIndex}][gallery][${fileIndex}]`, file);
+          productData.append(`new_variation_gallery[${varIndex}][${fileIndex}]`, file);
         });
       });
+  
+      // Log FormData contents
+      console.log('FormData contents:');
+      for (let [key, value] of productData.entries()) {
+        console.log(`${key}: ${value instanceof File ? value.name : value}`);
+      }
   
       const response = await fetch('/api/save_product.php', {
         method: 'POST',
@@ -457,17 +471,30 @@ const ProductEditor = () => {
         body: productData,
       });
       const data = await response.json();
+      console.log('Save product response:', data);
+  
       if (data.status === 'success') {
-        // Refresh products
+        // Refresh products with no-cache headers
         const updatedProducts = await fetch('/api/get_products.php', {
-          headers: { 'Authorization': `Bearer ${token}` },
-        }).then(res => res.json());
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+        }).then(res => {
+          console.log('get_products response status:', res.status);
+          return res.json();
+        });
+        console.log('Updated products:', updatedProducts);
         setProducts(updatedProducts);
         cancelEdit();
       } else {
+        console.error('Save failed:', data.error);
         setError(data.error || 'Failed to save product');
       }
     } catch (err) {
+      console.error('Save error:', err.message);
       setError(`Failed to save: ${err.message}`);
     }
   };
