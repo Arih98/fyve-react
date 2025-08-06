@@ -921,23 +921,23 @@ const ProductEditor = () => {
                       accept="image/*"
                     />
                     <div className="mt-2 flex flex-wrap">
-                      {formData.gallery.map((img, index) => (
-                        <div key={index} className="m-1">
-                          <img
-                            src={img instanceof File ? URL.createObjectURL(img) : img}
-                            alt={`Gallery ${index + 1}`}
-                            className="w-32 rounded"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeGalleryImage(index)}
-                            className="text-red-600 hover:text-red-800"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+  {formData.gallery.map((img, index) => (
+    <div key={index} className="m-1">
+      <img
+        src={img instanceof File ? URL.createObjectURL(img) : `/api/Uploads/${img.split('/').pop()}`}
+        alt={`Gallery ${index + 1}`}
+        className="w-32 rounded"
+      />
+      <button
+        type="button"
+        onClick={() => removeGalleryImage(index)}
+        className="text-red-600 hover:text-red-800"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+</div>
                   </div>
                   {formData.product_type === 'simple' && (
                     <div className="mt-4">
@@ -1052,23 +1052,23 @@ const ProductEditor = () => {
                               accept="image/*"
                             />
                             <div className="mt-2 flex flex-wrap">
-                              {variation.gallery.map((img, index) => (
-                                <div key={index} className="m-1">
-                                  <img
-                                    src={img instanceof File ? URL.createObjectURL(img) : img}
-                                    alt={`Variation Gallery ${index + 1}`}
-                                    className="w-32 rounded"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => removeVariationGalleryImage(varIndex, index)}
-                                    className="text-red-600 hover:text-red-800"
-                                  >
-                                    Remove
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
+  {variation.gallery.map((img, index) => (
+    <div key={index} className="m-1">
+      <img
+        src={img instanceof File ? URL.createObjectURL(img) : `/api/Uploads/${img.split('/').pop()}`}
+        alt={`Variation Gallery ${index + 1}`}
+        className="w-32 rounded"
+      />
+      <button
+        type="button"
+        onClick={() => removeVariationGalleryImage(varIndex, index)}
+        className="text-red-600 hover:text-red-800"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+</div>
                           </div>
                           <div className="mt-4">
                             <label className="block text-sm font-medium text-gray-700">Related Products</label>

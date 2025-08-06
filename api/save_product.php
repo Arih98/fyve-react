@@ -105,10 +105,22 @@ if (isset($_POST['gallery']) && is_array($_POST['gallery'])) {
     file_put_contents(__DIR__ . '/save_log.log', 'Existing gallery URLs: ' . json_encode($gallery) . PHP_EOL, FILE_APPEND);
 }
 
-$upload_dir = __DIR__ . '/../Uploads/';
+$upload_dir = __DIR__ . '/Uploads/';
 if (!file_exists($upload_dir)) {
-    mkdir($upload_dir, 0777, true);
+    if (!mkdir($upload_dir, 0775, true)) {
+        file_put_contents(__DIR__ . '/save_log.log', 'Failed to create upload directory: ' . $upload_dir . PHP_EOL, FILE_APPEND);
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to create upload directory']);
+        exit;
+    }
     file_put_contents(__DIR__ . '/save_log.log', 'Created upload directory: ' . $upload_dir . PHP_EOL, FILE_APPEND);
+}
+
+if (!is_writable($upload_dir)) {
+    file_put_contents(__DIR__ . '/save_log.log', 'Upload directory not writable: ' . $upload_dir . PHP_EOL, FILE_APPEND);
+    http_response_code(500);
+    echo json_encode(['error' => 'Upload directory not writable']);
+    exit;
 }
 
 if (isset($_FILES['new_gallery']) && !empty($_FILES['new_gallery']['tmp_name'])) {
@@ -118,7 +130,7 @@ if (isset($_FILES['new_gallery']) && !empty($_FILES['new_gallery']['tmp_name']))
             $file_name = time() . '_' . basename($_FILES['new_gallery']['name'][$key]);
             $target_file = $upload_dir . $file_name;
             if (move_uploaded_file($tmp_name, $target_file)) {
-                $gallery[] = '/Uploads/' . $file_name;
+                $gallery[] = '/api/Uploads/' . $file_name;
                 file_put_contents(__DIR__ . '/save_log.log', 'Uploaded product file: ' . $target_file . PHP_EOL, FILE_APPEND);
             } else {
                 file_put_contents(__DIR__ . '/save_log.log', 'Failed to move product file: ' . $file_name . PHP_EOL, FILE_APPEND);
@@ -134,13 +146,16 @@ $variations_data = json_decode($variations, true) ?? [];
 if (!empty($_FILES['new_variation_gallery'])) {
     file_put_contents(__DIR__ . '/save_log.log', 'New variation gallery files received: ' . json_encode($_FILES['new_variation_gallery']) . PHP_EOL, FILE_APPEND);
     foreach ($_FILES['new_variation_gallery']['tmp_name'] as $varIndex => $files) {
+        if (!isset($variations_data[$varIndex])) {
+            $variations_data[$varIndex] = ['gallery' => []];
+        }
         $variation_gallery = $variations_data[$varIndex]['gallery'] ?? [];
         foreach ($files as $fileIndex => $tmp_name) {
             if ($_FILES['new_variation_gallery']['error'][$varIndex][$fileIndex] === UPLOAD_ERR_OK) {
                 $file_name = time() . '_' . basename($_FILES['new_variation_gallery']['name'][$varIndex][$fileIndex]);
                 $target_file = $upload_dir . $file_name;
                 if (move_uploaded_file($tmp_name, $target_file)) {
-                    $variation_gallery[] = '/Uploads/' . $file_name;
+                    $variation_gallery[] = '/api/Uploads/' . $file_name;
                     file_put_contents(__DIR__ . '/save_log.log', 'Uploaded variation file: ' . $target_file . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
                 } else {
                     file_put_contents(__DIR__ . '/save_log.log', 'Failed to move variation file: ' . $file_name . ' for variation index ' . $varIndex . PHP_EOL, FILE_APPEND);
@@ -150,6 +165,15 @@ if (!empty($_FILES['new_variation_gallery'])) {
             }
         }
         $variations_data[$varIndex]['gallery'] = $variation_gallery;
+        // Preserve other variation fields
+        $variations_data[$varIndex]['title'] = $variations_data[$varIndex]['title'] ?? '';
+        $variations_data[$varIndex]['description'] = $variations_data[$varIndex]['description'] ?? '';
+        $variations_data[$varIndex]['price'] = $variations_data[$varIndex]['price'] ?? '';
+        $variations_data[$varIndex]['sku'] = $variations_data[$varIndex]['sku'] ?? '';
+        $variations_data[$varIndex]['gtin'] = $variations_data[$varIndex]['gtin'] ?? '';
+        $variations_data[$varIndex]['stock_quantity'] = $variations_data[$varIndex]['stock_quantity'] ?? 0;
+        $variations_data[$varIndex]['attributes'] = $variations_data[$varIndex]['attributes'] ?? [];
+        $variations_data[$varIndex]['related_products'] = $variations_data[$varIndex]['related_products'] ?? [];
     }
 }
 $variations = json_encode($variations_data);
