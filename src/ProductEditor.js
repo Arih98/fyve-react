@@ -326,7 +326,7 @@ const ProductEditor = () => {
         product_type: product.product_type || 'simple',
         stock_quantity: product.stock_quantity || 0,
         gallery: parseJSON(product.gallery, []),
-        related_products: parseJSON(product.related_products, []).URRED
+        related_products: parseJSON(product.related_products, []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
         variations: parseJSON(product.variations, []).map((v) => {
           const variationAttrs = parseJSON(product.attributes, []).map(attr => {
             const existingAttr = Array.isArray(v.attributes)
