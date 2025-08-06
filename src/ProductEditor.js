@@ -601,6 +601,7 @@ const ProductEditor = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
+      console.log('Deleting product ID:', id);
       const response = await fetch('/api/save_product.php', {
         method: 'POST',
         headers: {
@@ -611,12 +612,18 @@ const ProductEditor = () => {
       });
       const data = await response.json();
       if (data.status === 'success') {
-        const updatedProducts = products.filter((p) => p.id !== id);
+        console.log('Successfully deleted product ID:', id);
+        // Refresh products
+        const updatedProducts = await fetch('/api/get_products.php', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        }).then(res => res.json());
         setProducts(updatedProducts);
       } else {
+        console.error('Delete failed:', data.error);
         setError(data.error || 'Failed to delete product');
       }
     } catch (err) {
+      console.error('Delete error:', err.message);
       setError(`Failed to delete: ${err.message}`);
     }
   };

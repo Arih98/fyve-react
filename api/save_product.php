@@ -39,11 +39,28 @@ if (strpos($contentType, 'application/json') !== false) {
     if (isset($data['delete']) && $data['delete'] === true) {
         $id = $data['id'] ?? '';
         file_put_contents(__DIR__ . '/delete_log.log', 'Delete attempt for ID: ' . $id . PHP_EOL, FILE_APPEND);
+
         if (empty($id)) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing product ID']);
             exit;
         }
+
+        // Verify if product exists before deletion
+        $checkStmt = $conn->prepare("SELECT id FROM products WHERE id = ?");
+        $checkStmt->bind_param("s", $id);
+        $checkStmt->execute();
+        $checkResult = $checkStmt->get_result();
+        $exists = $checkResult->num_rows > 0;
+        $checkStmt->close();
+        file_put_contents(__DIR__ . '/delete_log.log', 'Product exists check for ID ' . $id . ': ' . ($exists ? 'Found' : 'Not Found') . PHP_EOL, FILE_APPEND);
+
+        if (!$exists) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Product not found']);
+            exit;
+        }
+
         $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
         $stmt->bind_param("s", $id);
         if ($stmt->execute()) {
