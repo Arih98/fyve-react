@@ -126,8 +126,12 @@ const ProductEditor = () => {
   
         let catData, prodData;
         try {
-          catData = await catRes.json();
-          prodData = await prodRes.json();
+          const catText = await catRes.text();
+          console.log('manage_categories response text:', catText);
+          catData = catText ? JSON.parse(catText) : [];
+          const prodText = await prodRes.text();
+          console.log('get_products response text:', prodText);
+          prodData = prodText ? JSON.parse(prodText) : [];
         } catch (jsonErr) {
           console.error('JSON parse error:', jsonErr.message);
           throw new Error('Unexpected end of JSON input');
@@ -142,21 +146,31 @@ const ProductEditor = () => {
   
         setCategories(catData);
   
+        const parseJSON = (str, defaultValue = []) => {
+          if (str == null || typeof str !== 'string' || str.trim() === '') return defaultValue;
+          try {
+            return JSON.parse(str);
+          } catch (e) {
+            console.error(`JSON parse error for ${str}: ${e.message}`);
+            return defaultValue;
+          }
+        };
+  
         const normalizedProducts = prodData.map(product => ({
           ...product,
           stock_quantity: product.stock_quantity || 0,
-          related_products: JSON.parse(product.related_products || '[]').map(rel => typeof rel === 'string' ? { productId: rel } : rel),
-          variations: JSON.parse(product.variations || '[]').map(variation => ({
+          related_products: parseJSON(product.related_products, []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+          variations: parseJSON(product.variations, []).map(variation => ({
             ...variation,
             title: variation.title || '',
             description: variation.description || '',
             attributes: Array.isArray(variation.attributes) ? variation.attributes : [],
-            gallery: JSON.parse(variation.gallery || '[]'),
-            related_products: (variation.related_products || []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+            gallery: parseJSON(variation.gallery, []),
+            related_products: parseJSON(variation.related_products, []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
           })),
-          gallery: JSON.parse(product.gallery || '[]'),
-          categories: JSON.parse(product.categories || '[]'),
-          attributes: JSON.parse(product.attributes || '[]'),
+          gallery: parseJSON(product.gallery, []),
+          categories: parseJSON(product.categories, []),
+          attributes: parseJSON(product.attributes, []),
         }));
   
         setProducts(normalizedProducts);
