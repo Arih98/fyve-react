@@ -106,10 +106,15 @@ const ProductEditor = () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Token used for get_products:', token);
-        if (!token) throw new Error('No token found');
+        if (!token) {
+          navigate('/account');
+          throw new Error('No token found');
+        }
   
         const [catRes, prodRes] = await Promise.all([
-          fetch('/api/manage_categories.php'),
+          fetch('/api/manage_categories.php', {
+            headers: { 'Authorization': `Bearer ${token}` },
+          }),
           fetch('/api/get_products.php', {
             headers: { 'Authorization': `Bearer ${token}` },
           }),
@@ -119,9 +124,21 @@ const ProductEditor = () => {
         if (!catRes.ok) throw new Error(`Categories fetch failed: HTTP ${catRes.status}`);
         if (!prodRes.ok) throw new Error(`Products fetch failed: HTTP ${prodRes.status}`);
   
-        const [catData, prodData] = await Promise.all([catRes.json(), prodRes.json()]);
+        let catData, prodData;
+        try {
+          catData = await catRes.json();
+          prodData = await prodRes.json();
+        } catch (jsonErr) {
+          console.error('JSON parse error:', jsonErr.message);
+          throw new Error('Unexpected end of JSON input');
+        }
         console.log('get_products response:', prodData);
+  
         if (prodData.error) throw new Error(prodData.error);
+        if (!Array.isArray(catData)) {
+          console.warn('Categories data is not an array, defaulting to []');
+          catData = [];
+        }
   
         setCategories(catData);
   
@@ -143,6 +160,7 @@ const ProductEditor = () => {
         }));
   
         setProducts(normalizedProducts);
+        setError(null);
       } catch (err) {
         setError(`Failed to load: ${err.message}`);
       } finally {
@@ -150,7 +168,7 @@ const ProductEditor = () => {
       }
     };
     fetchData();
-  }, []);  
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
