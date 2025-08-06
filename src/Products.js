@@ -29,16 +29,31 @@ const Products = () => {
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error('Invalid products data');
         console.log('[Products] Loaded', data.length, 'products from API');
+  
+        const parseJSON = (str, defaultValue = []) => {
+          if (!str || typeof str !== 'string' || str.trim() === '') return defaultValue;
+          try {
+            return JSON.parse(str);
+          } catch (e) {
+            console.error(`JSON parse error for ${str}: ${e.message}`);
+            return defaultValue;
+          }
+        };
+  
         const normalizedProducts = data.map(product => ({
           ...product,
-          variations: product.variations || [],
-          gallery: product.gallery || [],
+          variations: parseJSON(product.variations, []),
+          gallery: parseJSON(product.gallery, []),
+          categories: parseJSON(product.categories, []),
+          attributes: parseJSON(product.attributes, []),
+          related_products: parseJSON(product.related_products, []),
         }));
         setProducts(normalizedProducts);
+  
         // Flatten and deduplicate by product title and color
         const seenColorsByTitle = new Map();
         const flattened = normalizedProducts.flatMap(product => {
-          if (product.product_type !== 'variable') return [{...product, displayId: product.id, gallery: product.gallery}];
+          if (product.product_type !== 'variable') return [{ ...product, displayId: product.id, gallery: product.gallery }];
           let colorVariants = product.variations.reduce((acc, variation) => {
             const colorAttr = variation.attributes?.find(a => a.attribute_name === 'Color')?.term_name;
             if (colorAttr && !colorAttr.startsWith('Any')) {
