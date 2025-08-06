@@ -143,7 +143,7 @@ const Products = () => {
       state: {
         product: targetProduct,
         initialColor: item.selectedColor,
-        transitionKey: `main-${item.displayId}-${Date.now()}`
+        transitionKey: `product-image-${item.displayId}` // Use consistent layoutId
       }
     });
   };
