@@ -38,6 +38,7 @@ if (strpos($contentType, 'application/json') !== false) {
     $data = json_decode(file_get_contents('php://input'), true);
     if (isset($data['delete']) && $data['delete'] === true) {
         $id = $data['id'] ?? '';
+        file_put_contents(__DIR__ . '/delete_log.log', 'Delete attempt for ID: ' . $id . PHP_EOL, FILE_APPEND);
         if (empty($id)) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing product ID']);
@@ -46,10 +47,18 @@ if (strpos($contentType, 'application/json') !== false) {
         $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
         $stmt->bind_param("s", $id);
         if ($stmt->execute()) {
-            echo json_encode(['status' => 'success']);
+            if ($stmt->affected_rows > 0) {
+                file_put_contents(__DIR__ . '/delete_log.log', 'Successfully deleted product ID: ' . $id . PHP_EOL, FILE_APPEND);
+                echo json_encode(['status' => 'success']);
+            } else {
+                file_put_contents(__DIR__ . '/delete_log.log', 'No rows affected for ID: ' . $id . PHP_EOL, FILE_APPEND);
+                http_response_code(404);
+                echo json_encode(['error' => 'Product not found or already deleted']);
+            }
         } else {
+            file_put_contents(__DIR__ . '/delete_log.log', 'Delete query failed for ID: ' . $id . ' - Error: ' . $stmt->error . PHP_EOL, FILE_APPEND);
             http_response_code(500);
-            echo json_encode(['error' => 'Failed to delete product']);
+            echo json_encode(['error' => 'Failed to delete product: ' . $stmt->error]);
         }
         $stmt->close();
         exit;
@@ -101,12 +110,13 @@ if (empty($id) || empty($title)) {
 }
 
 $stmt = $conn->prepare("REPLACE INTO products (id, title, description, price, sku, gtin, product_type, stock_quantity, gallery, variations, categories, attributes, related_products) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssdsdsiissss", $id, $title, $description, $price, $sku, $gtin, $product_type, $stock_quantity, $gallery_json, $variations, $categories, $attributes, $related_products);
+$stmt->bind_param("sssdsdsiissss", $id, $title, $description, $price, $sku, $gtin, $product_type, $stock_quantity, $gallery_json, $variations, $categories, $related_products, $attributes);
 if ($stmt->execute()) {
     echo json_encode(['status' => 'success']);
 } else {
+    file_put_contents(__DIR__ . '/save_log.log', 'Save query failed for ID: ' . $id . ' - Error: ' . $stmt->error . PHP_EOL, FILE_APPEND);
     http_response_code(500);
-    echo json_encode(['error' => 'Failed to save product']);
+    echo json_encode(['error' => 'Failed to save product: ' . $stmt->error]);
 }
 $stmt->close();
 ?>

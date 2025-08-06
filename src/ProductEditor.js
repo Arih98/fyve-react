@@ -306,9 +306,10 @@ const ProductEditor = () => {
   const handleEdit = async (product) => {
     try {
       const parseJSON = (str, defaultValue = []) => {
-        if (str == null || typeof str !== 'string' || str.trim() === '') return defaultValue;
+        if (str == null || typeof str !== 'string' || str.trim() === '' || str === '0') return defaultValue;
         try {
-          return JSON.parse(str);
+          const parsed = JSON.parse(str);
+          return Array.isArray(parsed) ? parsed : defaultValue;
         } catch (e) {
           console.error(`JSON parse error for ${str}: ${e.message}`);
           return defaultValue;
@@ -325,7 +326,7 @@ const ProductEditor = () => {
         product_type: product.product_type || 'simple',
         stock_quantity: product.stock_quantity || 0,
         gallery: parseJSON(product.gallery, []),
-        related_products: parseJSON(product.related_products, []).map(rel => typeof rel === 'string' ? { productId: rel } : rel),
+        related_products: parseJSON(product.related_products, []).URRED
         variations: parseJSON(product.variations, []).map((v) => {
           const variationAttrs = parseJSON(product.attributes, []).map(attr => {
             const existingAttr = Array.isArray(v.attributes)
