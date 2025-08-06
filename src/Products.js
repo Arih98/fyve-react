@@ -111,7 +111,7 @@ const Products = () => {
       galleryLength: item.gallery?.length || 0,
       isMenuOpen,
     });
-    const imgElement = document.getItemById(`img-${item.displayId}`);
+    const imgElement = document.getElementById(`img-${item.displayId}`);
     if (imgElement) {
       console.log('[Products] Source image details on click:', {
         src: imgElement.src,
@@ -126,10 +126,14 @@ const Products = () => {
       console.warn('[Products] Source image element not found for', item.displayId);
     }
     const targetProduct = products.find(p => p.id === item.parentId);
+    if (!targetProduct) {
+      console.error('[Products] Target product not found for parentId:', item.parentId);
+      return;
+    }
     console.log('[Products] Navigating with product:', {
-      id: targetProduct?.id,
-      title: targetProduct?.title,
-      productType: targetProduct?.product_type,
+      id: targetProduct.id,
+      title: targetProduct.title,
+      productType: targetProduct.product_type,
       variationsLength: targetProduct?.variations?.length || 0,
       galleryLength: targetProduct?.gallery?.length || 0,
       initialColor: item.selectedColor,
