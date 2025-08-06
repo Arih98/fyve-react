@@ -143,7 +143,7 @@ const Products = () => {
       state: {
         product: targetProduct,
         initialColor: item.selectedColor,
-        transitionKey: item.displayId // Use consistent transitionKey
+        transitionKey: `main-${item.displayId}-${Date.now()}`
       }
     });
   };
