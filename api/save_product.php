@@ -32,25 +32,31 @@ try {
     exit;
 }
 
-if (isset($_POST['delete']) && $_POST['delete'] === 'true') {
-    $id = $_POST['id'] ?? '';
-    if (empty($id)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing product ID']);
+// Check if it's a JSON payload (for delete) or FormData (for save)
+$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+if (strpos($contentType, 'application/json') !== false) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (isset($data['delete']) && $data['delete'] === true) {
+        $id = $data['id'] ?? '';
+        if (empty($id)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing product ID']);
+            exit;
+        }
+        $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
+        $stmt->bind_param("s", $id);
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to delete product']);
+        }
+        $stmt->close();
         exit;
     }
-    $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->bind_param("s", $id);
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success']);
-    } else {
-        http_response_code(500);
-        echo json_encode(['error' => 'Failed to delete product']);
-    }
-    $stmt->close();
-    exit;
 }
 
+// Handle FormData for product save
 $id = $_POST['id'] ?? '';
 $title = $_POST['title'] ?? '';
 $description = $_POST['description'] ?? '';
