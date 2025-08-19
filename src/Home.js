@@ -286,7 +286,7 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
           </div>
           <div className="fyve-image-container">
             <picture>
-              <source media="(max-width: 768px)" srcSet="/api/Uploads/FYVE-Hero-Mobile.webp" />
+              <source media="(max-width: 768px)" srcSet="/api/Uploads/2025_07_30_FYVE_4491.webp" />
               <img src="/api/Uploads/LOOK-2_137-e1743957431674.webp" alt="Reveal Image" className="fyve-image" />
             </picture>
             <div className="mask-left"></div>
