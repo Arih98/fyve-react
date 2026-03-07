@@ -1,4 +1,16 @@
 function normalizePrice(raw) {
+  if (raw?.price !== undefined && raw?.price !== null && raw?.price !== "") {
+    const simplePrice = Number(raw.price) || 0;
+
+    return {
+      regular: simplePrice,
+      sale: null,
+      current: simplePrice,
+      currency: "GBP",
+      isOnSale: false
+    };
+  }
+
   const regular = Number(raw?.regular_price || 0);
   const sale = raw?.sale_price ? Number(raw.sale_price) : null;
   const current = sale || regular;
@@ -17,6 +29,14 @@ function normalizeImage(image) {
     return {
       id: null,
       src: "",
+      alt: ""
+    };
+  }
+
+  if (typeof image === "string") {
+    return {
+      id: null,
+      src: image,
       alt: ""
     };
   }
@@ -76,18 +96,34 @@ function normalizeVariant(variant) {
 }
 
 export function mapProductForList(raw) {
-  const images = raw.images || [];
-  const variations = raw.variations || [];
+  const images = Array.isArray(raw.images) ? raw.images : [];
+  const gallery = Array.isArray(raw.gallery) ? raw.gallery : [];
+  const variations = Array.isArray(raw.variations) ? raw.variations : [];
   const price = normalizePrice(raw);
+
+  const thumbnail =
+    gallery[0] ||
+    images[0]?.src ||
+    images[0] ||
+    "";
+
+  const hoverImage =
+    gallery[1] ||
+    gallery[0] ||
+    images[1]?.src ||
+    images[1] ||
+    images[0]?.src ||
+    images[0] ||
+    thumbnail;
 
   return {
     id: raw.id,
     slug: raw.slug || "",
-    name: raw.name || "",
+    name: raw.name || raw.title || "",
     subtitle: raw.short_description || "",
     price,
-    thumbnail: images[0]?.src || "",
-    hoverImage: images[1]?.src || images[0]?.src || "",
+    thumbnail,
+    hoverImage,
     badges: price.isOnSale ? ["Sale"] : [],
     stockStatus: raw.stock_status || "out_of_stock",
     colorOptions: extractColorOptions(variations),
@@ -97,16 +133,18 @@ export function mapProductForList(raw) {
 
 export function mapProductForDetail(raw) {
   const variants = (raw.variations || []).map(normalizeVariant);
+  const images = Array.isArray(raw.images) ? raw.images : [];
+  const gallery = Array.isArray(raw.gallery) ? raw.gallery : [];
 
   return {
     id: raw.id,
     slug: raw.slug || "",
-    name: raw.name || "",
+    name: raw.name || raw.title || "",
     description: raw.description || "",
     shortDescription: raw.short_description || "",
     price: normalizePrice(raw),
     stockStatus: raw.stock_status || "out_of_stock",
-    images: (raw.images || []).map(normalizeImage),
+    images: gallery.length > 0 ? gallery.map(normalizeImage) : images.map(normalizeImage),
     attributes: raw.attributes || [],
     variants,
     defaultVariantId: variants[0]?.id || null
