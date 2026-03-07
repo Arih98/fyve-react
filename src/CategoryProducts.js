@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
 import { motion } from 'framer-motion';
-import './Products.css'; // Reuse the same CSS as Products.js
+import './pages/ProductsPage.css';
 
 const CategoryProducts = () => {
   const [display, setDisplay] = useState([]);
