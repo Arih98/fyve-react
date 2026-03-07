@@ -29,7 +29,7 @@ const Products = () => {
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error('Invalid products data');
         console.log('[Products] Loaded', data.length, 'products from API');
-  
+  console.log('USING WOO PRODUCTS ENDPOINT NOW')
         const normalizedProducts = data.map(product => ({
   ...product,
   variations: Array.isArray(product.variations) ? product.variations : [],
