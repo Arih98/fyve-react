@@ -1,20 +1,24 @@
 // ProductDetail.js
 import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { CartContext } from './CartContext';
 import './ProductDetail.css';
+import { useProduct } from './hooks/useProduct';
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
   const location = useLocation();
   const navigate = useNavigate();
+  const { id: productId } = useParams();
   const [cartError, setCartError] = useState(null);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
   const [allProducts, setAllProducts] = useState([]);
-  const product = location.state?.product;
+  const fallbackProduct = location.state?.product;
+const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
+const product = loadedProduct || fallbackProduct;
   const [scrollDirection, setScrollDirection] = useState('down');
 
   useEffect(() => {
@@ -185,7 +189,9 @@ const ProductDetail = () => {
     }
   }, [selectedAttributes, product, attributeNames]);
 
-  if (!product) return <div className="product-not-found">Product not found</div>;
+  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
+if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
   const handleAttributeChange = (attrName, value) => {
