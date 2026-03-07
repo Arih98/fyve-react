@@ -41,47 +41,17 @@ const Products = () => {
         setProducts(normalizedProducts);
   
         // Flatten and deduplicate by product title and color
-        const seenColorsByTitle = new Map();
-        const flattened = normalizedProducts.flatMap(product => {
-          if (product.product_type !== 'variable') return [{ ...product, displayId: product.id, gallery: product.gallery }];
-          let colorVariants = product.variations.reduce((acc, variation) => {
-            const colorAttr = variation.attributes?.find(a => a.attribute_name?.toLowerCase().includes('color') || a.attribute_name?.toLowerCase().includes('colour'))?.term_name;
-            if (colorAttr && !colorAttr.startsWith('Any')) {
-              const key = `${product.title}-${colorAttr}`;
-              if (!seenColorsByTitle.has(key)) {
-                seenColorsByTitle.set(key, true);
-                acc.push({
-                  displayId: `${product.id}-${colorAttr}`,
-                  parentId: product.id,
-                  title: variation.title || `${product.title} - ${colorAttr}`,
-                  price: variation.price || product.price,
-                  selectedColor: colorAttr,
-                  sku: variation.sku,
-                  gallery: variation.gallery,
-                });
-              }
-            }
-            return acc;
-          }, []);
-          if (colorVariants.length === 0) {
-            const defaultVariation = product.variations[0] || {};
-            const defaultGallery = defaultVariation.gallery || product.gallery || [];
-            const defaultTitle = product.title;
-            const defaultPrice = defaultVariation.price || product.price;
-            const defaultSku = defaultVariation.sku || product.sku;
-            colorVariants.push({
-              displayId: `${product.id}-default`,
-              parentId: product.id,
-              title: defaultTitle,
-              price: defaultPrice,
-              selectedColor: null,
-              sku: defaultSku,
-              gallery: defaultGallery,
-            });
-          }
-          return colorVariants;
-        });
-        setDisplay(flattened);
+        const flattened = normalizedProducts.map(product => ({
+  ...product,
+  displayId: product.id,
+  parentId: product.id,
+  selectedColor: null,
+  gallery: product.gallery || [],
+}));
+
+setDisplay(flattened);
+console.log('[Products] NORMALIZED COUNT', normalizedProducts.length);
+console.log('[Products] DISPLAY COUNT', flattened.length);
         setLoading(false);
       } catch (err) {
         console.error('[Products] Error fetching products:', err.message);
