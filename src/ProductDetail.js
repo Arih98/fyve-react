@@ -19,6 +19,16 @@ const ProductDetail = () => {
   const fallbackProduct = location.state?.product;
 const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
 const product = loadedProduct || fallbackProduct;
+useEffect(() => {
+  if (!product) return;
+
+  console.log('[ProductDetail] RAW PRODUCT', product);
+  console.log('[ProductDetail] PRODUCT TYPE', product.product_type);
+  console.log('[ProductDetail] VARIATIONS', product.variations);
+  console.log('[ProductDetail] FIRST VARIATION', product.variations?.[0]);
+  console.log('[ProductDetail] FIRST VARIATION ATTRIBUTES', product.variations?.[0]?.attributes);
+  console.log('[ProductDetail] PRODUCT ATTRIBUTES', product.attributes);
+}, [product]);
   const [scrollDirection, setScrollDirection] = useState('down');
 
   useEffect(() => {
