@@ -1,8 +1,8 @@
 import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
-import { motion } from 'framer-motion';
 import { useProducts } from '../hooks/useProducts';
+import ProductGrid from '../components/product/ProductGrid';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -15,6 +15,7 @@ const ProductsPage = () => {
   const navigate = useNavigate();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
+  const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
   const display = products.map((product) => ({
     ...product,
@@ -37,6 +38,7 @@ const ProductsPage = () => {
       galleryLength: item.gallery?.length || 0,
       isMenuOpen,
     });
+
     const imgElement = document.getElementById(`img-${item.displayId}`);
     if (imgElement) {
       console.log('[Products] Source image details on click:', {
@@ -87,63 +89,13 @@ const ProductsPage = () => {
   return (
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-        <div className="products-grid">
-          {currentProducts.map((item, idx) => (
-            <div
-              key={`${item.displayId}-${idx}`}
-              onClick={(e) => handleProductClick(item, e)}
-              className="product-card"
-            >
-              <motion.img
-                initial={false}
-                layoutId={`product-image-${item.displayId}`}
-                ref={el => imageRefs.current.set(item.displayId, el)}
-                id={`img-${item.displayId}`}
-                src={
-                  item.gallery && item.gallery.length > 0
-                    ? item.gallery[0]
-                    : 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png'
-                }
-                alt={item.title}
-                onError={e => { e.target.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png'; }}
-                onLoad={e => console.log('[Products] Image loaded for', item.displayId, {
-                  src: e.target.src,
-                  naturalWidth: e.target.naturalWidth,
-                  naturalHeight: e.target.naturalHeight,
-                })}
-                className="product-image"
-                onAnimationStart={() => console.log('[Products] Animation start for image', item.displayId)}
-                onAnimationComplete={() => console.log('[Products] Animation complete for image', item.displayId)}
-                onLayoutAnimationStart={() => {
-                  const el = imageRefs.current.get(item.displayId);
-                  if (el) {
-                    const currentZ = window.getComputedStyle(el).zIndex;
-                    console.log('[Products] Layout animation start for', item.displayId, '- current z-index:', currentZ);
-                    el.style.zIndex = '10000';
-                    console.log('[Products] Set high z-index to 10000 for', item.displayId, '- new z-index:', window.getComputedStyle(el).zIndex);
-                  }
-                }}
-                onLayoutAnimationComplete={() => {
-                  const el = imageRefs.current.get(item.displayId);
-                  if (el) {
-                    const currentZ = window.getComputedStyle(el).zIndex;
-                    console.log('[Products] Layout animation complete for', item.displayId, '- current z-index:', currentZ);
-                    el.style.zIndex = '';
-                    console.log('[Products] Reset z-index for', item.displayId, '- new z-index:', window.getComputedStyle(el).zIndex);
-                  }
-                }}
-              />
-              <div className="product-info">
-                <h3 className="product-title">
-                  {item.title}
-                </h3>
-                <p className="product-price">
-                  £{item.price}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <ProductGrid
+          products={currentProducts}
+          onProductClick={handleProductClick}
+          imageRefs={imageRefs}
+          placeholderImage={placeholderImage}
+        />
+
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, i) => (
             <button
