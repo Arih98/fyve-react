@@ -1,61 +1,45 @@
 import { useEffect, useState } from "react";
-import { fetchProductById, fetchProducts } from "../api/products";
+import { fetchProducts } from "../api/products";
+import { mapProductForList } from "../domain/product/product.mappers";
 
-export function useProduct(productId) {
-  const [product, setProduct] = useState(null);
+export function useProducts({ page = 1, perPage = 24 } = {}) {
+  const [data, setData] = useState([]);
+  const [meta, setMeta] = useState({
+    page,
+    perPage,
+    total: 0,
+    totalPages: 1
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!productId) {
-      setProduct(null);
-      setLoading(false);
-      return;
-    }
-
     let active = true;
 
-    async function loadProduct() {
+    async function loadProducts() {
       try {
         setLoading(true);
         setError(null);
 
-        let matched = null;
+        const response = await fetchProducts({ page, perPage });
 
-        try {
-          const singleResponse = await fetchProductById(productId);
+        if (!active) return;
 
-          if (!active) return;
+        const rawItems = Array.isArray(response)
+          ? response
+          : response.items || response.products || [];
 
-          if (Array.isArray(singleResponse)) {
-            matched = singleResponse.find((item) => String(item.id) === String(productId)) || null;
-          } else if (singleResponse?.id && String(singleResponse.id) === String(productId)) {
-            matched = singleResponse;
-          } else if (singleResponse?.item?.id && String(singleResponse.item.id) === String(productId)) {
-            matched = singleResponse.item;
-          } else if (singleResponse?.product?.id && String(singleResponse.product.id) === String(productId)) {
-            matched = singleResponse.product;
-          }
-        } catch (singleErr) {
-        }
+        const items = rawItems.map(mapProductForList);
 
-        if (!matched) {
-          const response = await fetchProducts({ page: 1, perPage: 500 });
-
-          if (!active) return;
-
-          const rawItems = Array.isArray(response)
-            ? response
-            : response.items || response.products || [];
-
-          matched = rawItems.find((item) => String(item.id) === String(productId)) || null;
-        }
-
-        if (!matched) {
-          throw new Error(`Product ${productId} not found`);
-        }
-
-        setProduct(matched);
+        setData(items);
+        setMeta({
+          page: Array.isArray(response) ? page : response.page || page,
+          perPage: Array.isArray(response) ? perPage : response.per_page || perPage,
+          total: Array.isArray(response) ? items.length : response.total || items.length,
+          totalPages: Array.isArray(response)
+            ? Math.max(1, Math.ceil(items.length / perPage))
+            : response.total_pages || 1
+        });
       } catch (err) {
         if (!active) return;
         setError(err);
@@ -66,15 +50,16 @@ export function useProduct(productId) {
       }
     }
 
-    loadProduct();
+    loadProducts();
 
     return () => {
       active = false;
     };
-  }, [productId]);
+  }, [page, perPage]);
 
   return {
-    product,
+    data,
+    meta,
     loading,
     error
   };
