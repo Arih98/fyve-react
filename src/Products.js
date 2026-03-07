@@ -24,30 +24,20 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         console.log('[Products] Fetching products from API');
-        const res = await fetch('/api/get_products.php');
+        const res = await fetch('https://fyvelondon.com/wp-json/fyve/v1/products');
         if (!res.ok) throw new Error(`Failed to fetch products: HTTP ${res.status}`);
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error('Invalid products data');
         console.log('[Products] Loaded', data.length, 'products from API');
   
-        const parseJSON = (str, defaultValue = []) => {
-          if (!str || typeof str !== 'string' || str.trim() === '') return defaultValue;
-          try {
-            return JSON.parse(str);
-          } catch (e) {
-            console.error(`JSON parse error for ${str}: ${e.message}`);
-            return defaultValue;
-          }
-        };
-  
         const normalizedProducts = data.map(product => ({
-          ...product,
-          variations: parseJSON(product.variations, []),
-          gallery: parseJSON(product.gallery, []),
-          categories: parseJSON(product.categories, []),
-          attributes: parseJSON(product.attributes, []),
-          related_products: parseJSON(product.related_products, []),
-        }));
+  ...product,
+  variations: Array.isArray(product.variations) ? product.variations : [],
+  gallery: Array.isArray(product.gallery) ? product.gallery : [],
+  categories: Array.isArray(product.categories) ? product.categories : [],
+  attributes: Array.isArray(product.attributes) ? product.attributes : [],
+  related_products: Array.isArray(product.related_products) ? product.related_products : [],
+}));
         setProducts(normalizedProducts);
   
         // Flatten and deduplicate by product title and color
@@ -173,13 +163,13 @@ const Products = () => {
   layoutId={`product-image-${item.displayId}`}
   ref={el => imageRefs.current.set(item.displayId, el)}
   id={`img-${item.displayId}`}
-  src={
-    item.gallery && item.gallery.length > 0
-      ? `/api/Uploads/${item.gallery[0].split('/').pop()}`
-      : '/api/Uploads/fallback-image.png'
-  }
+src={
+  item.gallery && item.gallery.length > 0
+    ? item.gallery[0]
+    : 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png'
+}
   alt={item.title}
-  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+  onError={e => { e.target.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png'; }}
   onLoad={e => console.log('[Products] Image loaded for', item.displayId, {
     src: e.target.src,
     naturalWidth: e.target.naturalWidth,
