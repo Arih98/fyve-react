@@ -24,6 +24,7 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         console.log('[Products] Fetching products from API');
+        console.log('USING WOO PRODUCTS ENDPOINT NOW');
         const res = await fetch('https://fyvelondon.com/wp-json/fyve/v1/products');
         if (!res.ok) throw new Error(`Failed to fetch products: HTTP ${res.status}`);
         const data = await res.json();
