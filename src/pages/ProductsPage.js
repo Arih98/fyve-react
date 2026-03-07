@@ -1,11 +1,11 @@
 import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MenuContext } from './MenuContext';
+import { MenuContext } from '../MenuContext';
 import { motion } from 'framer-motion';
-import { useProducts } from './hooks/useProducts';
-import './Products.css';
+import { useProducts } from '../hooks/useProducts';
+import './ProductsPage.css';
 
-const Products = () => {
+const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
   const { data: products, loading, error } = useProducts({
@@ -160,4 +160,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductsPage;

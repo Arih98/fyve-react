@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
-import Products from './Products';
+import ProductsPage from './pages/ProductsPage';
 import ProductDetail from './ProductDetail';
 import Header from './Header';
 import Admin from './Admin';
@@ -142,7 +142,7 @@ function AppContent() {
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/products" element={<Products />} />
+              <Route path="/products" element={<ProductsPage />} />
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
