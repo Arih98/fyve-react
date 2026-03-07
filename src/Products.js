@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
 import { motion } from 'framer-motion';
-import { useProducts } from '../hooks/useProducts';
+import { useProducts } from './hooks/useProducts';
 import './Products.css';
 
 const Products = () => {
