@@ -45,7 +45,7 @@ const Products = () => {
         const flattened = normalizedProducts.flatMap(product => {
           if (product.product_type !== 'variable') return [{ ...product, displayId: product.id, gallery: product.gallery }];
           let colorVariants = product.variations.reduce((acc, variation) => {
-            const colorAttr = variation.attributes?.find(a => a.attribute_name === 'Color')?.term_name;
+            const colorAttr = variation.attributes?.find(a => a.attribute_name?.toLowerCase().includes('color') || a.attribute_name?.toLowerCase().includes('colour'))?.term_name;
             if (colorAttr && !colorAttr.startsWith('Any')) {
               const key = `${product.title}-${colorAttr}`;
               if (!seenColorsByTitle.has(key)) {
