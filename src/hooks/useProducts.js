@@ -25,15 +25,20 @@ export function useProducts({ page = 1, perPage = 24 } = {}) {
 
         if (!active) return;
 
-        const rawItems = response.items || response.products || [];
+        const rawItems = Array.isArray(response)
+          ? response
+          : response.items || response.products || [];
+
         const items = rawItems.map(mapProductForList);
 
         setData(items);
         setMeta({
-          page: response.page || page,
-          perPage: response.per_page || perPage,
-          total: response.total || items.length,
-          totalPages: response.total_pages || 1
+          page: Array.isArray(response) ? page : response.page || page,
+          perPage: Array.isArray(response) ? perPage : response.per_page || perPage,
+          total: Array.isArray(response) ? items.length : response.total || items.length,
+          totalPages: Array.isArray(response)
+            ? Math.max(1, Math.ceil(items.length / perPage))
+            : response.total_pages || 1
         });
       } catch (err) {
         if (!active) return;
