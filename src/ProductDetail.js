@@ -19,16 +19,6 @@ const ProductDetail = () => {
   const fallbackProduct = location.state?.product;
 const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
 const product = loadedProduct || fallbackProduct;
-useEffect(() => {
-  if (!product) return;
-
-  console.log('[ProductDetail] RAW PRODUCT', product);
-  console.log('[ProductDetail] PRODUCT TYPE', product.product_type);
-  console.log('[ProductDetail] VARIATIONS', product.variations);
-  console.log('[ProductDetail] FIRST VARIATION', product.variations?.[0]);
-  console.log('[ProductDetail] FIRST VARIATION ATTRIBUTES', product.variations?.[0]?.attributes);
-  console.log('[ProductDetail] PRODUCT ATTRIBUTES', product.attributes);
-}, [product]);
   const [scrollDirection, setScrollDirection] = useState('down');
 
   useEffect(() => {
@@ -52,44 +42,42 @@ useEffect(() => {
   }, []);
 
   const [selectedAttributes, setSelectedAttributes] = useState(() => {
-    if (!product) return {};
-    const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
-    let initialAttrs = initialColor ? { Color: location.state.initialColor } : {};
-    if (product.product_type === 'variable' && product.variations?.length > 0) {
-      const initialVariation = product.variations.find(v => {
-        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
-      }) || product.variations[0];
-      initialVariation?.attributes.forEach(attr => {
-        if (!attr.term_name.startsWith('Any')) {
-          initialAttrs[attr.attribute_name] = attr.term_name;
-        }
-      });
-      console.log('[ProductDetail] Initialized selectedAttributes:', initialAttrs);
-      return initialAttrs;
+
+    useEffect(() => {
+  if (!product || product.product_type !== 'variable' || !product.variations?.length) {
+    setSelectedAttributes({});
+    setCurrentVariation(null);
+    return;
+  }
+
+  const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
+
+  const initialVariation = product.variations.find(v => {
+    const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
+    return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+  }) || product.variations[0];
+
+  const initialAttrs = {};
+
+  initialVariation?.attributes.forEach(attr => {
+    if (!attr.term_name.startsWith('Any')) {
+      initialAttrs[attr.attribute_name] = attr.term_name;
     }
-    return initialAttrs;
   });
 
-  const [currentVariation, setCurrentVariation] = useState(() => {
-    if (!product) return null;
-    const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
-    if (product.product_type === 'variable' && product.variations?.length > 0) {
-      const initialVariation = product.variations.find(v => {
-        const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
-      }) || product.variations[0];
-      console.log('[ProductDetail] Initialized currentVariation:', {
-        variationId: initialVariation?.id,
-        title: initialVariation?.title,
-        sku: initialVariation?.sku,
-        galleryLength: initialVariation?.gallery?.length || 0,
-        attributes: selectedAttributes,
-      });
-      return initialVariation;
-    }
-    return null;
+  if (location.state?.initialColor && !initialAttrs.Color) {
+    initialAttrs.Color = location.state.initialColor;
+  }
+
+  setSelectedAttributes(initialAttrs);
+  setCurrentVariation(initialVariation);
+
+  console.log('[ProductDetail] Reinitialized variation state:', {
+    initialAttrs,
+    variationId: initialVariation?.id,
+    title: initialVariation?.title
   });
+}, [product, location.state]);
 
   const [quantity, setQuantity] = useState(1);
   const [availableStock, setAvailableStock] = useState(null);
