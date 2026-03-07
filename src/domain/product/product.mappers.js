@@ -6,7 +6,7 @@ function normalizePrice(raw) {
       regular: simplePrice,
       sale: null,
       current: simplePrice,
-      currency: "GBP",
+      currency: "USD",
       isOnSale: false
     };
   }
@@ -19,7 +19,7 @@ function normalizePrice(raw) {
     regular,
     sale,
     current,
-    currency: "GBP",
+    currency: "USD",
     isOnSale: !!sale && sale < regular
   };
 }

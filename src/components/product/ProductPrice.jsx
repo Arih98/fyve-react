@@ -9,12 +9,12 @@ const ProductPrice = ({ price }) => {
     <p className="product-price">
       {isOnSale ? (
         <>
-          <span>£{current}</span>
+          <span>${current}</span>
           {' '}
-          <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>£{regular}</span>
+          <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>${regular}</span>
         </>
       ) : (
-        <span>£{current}</span>
+        <span>${current}</span>
       )}
     </p>
   );
