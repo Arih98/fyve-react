@@ -70,7 +70,8 @@ const ProductDetail = () => {
 
   const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
   const { stock: availableStock } = useInventory(current?.sku);
-
+console.log('[ProductDetail] SKU', current?.sku);
+console.log('[ProductDetail] availableStock', availableStock);
   useEffect(() => {
     setQuantity(1);
   }, [current?.sku]);
