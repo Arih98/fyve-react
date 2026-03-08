@@ -58,9 +58,11 @@ const display = products.map((product) => ({
       console.warn('[Products] Source image element not found for', item.displayId);
     }
 
-const targetProduct = {
-  id: item.parentId || item.id
-};
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) {
+      console.error('[Products] Target product not found for parentId:', item.parentId);
+      return;
+    }
 
     console.log('[Products] Navigating with product:', {
       id: targetProduct.id,
@@ -69,13 +71,17 @@ const targetProduct = {
       transitionKey: item.displayId
     });
 
-    navigate(`/product/${item.parentId}`, {
-      state: {
-        product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionKey: `product-image-${item.displayId}`
-      }
-    });
+const colorQuery = item.selectedColor
+  ? `?color=${encodeURIComponent(item.selectedColor)}`
+  : '';
+
+navigate(`/product/${item.parentId}${colorQuery}`, {
+  state: {
+    product: targetProduct,
+    initialColor: item.selectedColor,
+    transitionKey: `product-image-${item.displayId}`
+  }
+});
   };
 
   const idxLast = currentPage * productsPerPage;
