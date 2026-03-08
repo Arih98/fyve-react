@@ -206,6 +206,10 @@ const ProductDetail = () => {
     }
   }, [selectedAttributes, product, attributeNames]);
 
+  useEffect(() => {
+  setIsTransitionImageReady(!hasSharedImageTransition);
+}, [hasSharedImageTransition, current?.sku, product?.id]);
+
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -213,16 +217,12 @@ const ProductDetail = () => {
 
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
-  const currentDisplayId = `${product.id}-${currentColor}`;
+  const currentDisplayId = `${product?.id || productId}-${currentColor}`;
   const transitionKey = location.state?.transitionKey || null;
   const hasSharedImageTransition = !!transitionKey;
 
   const gallery = current?.gallery || product.gallery || [];
   const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-
-  useEffect(() => {
-    setIsTransitionImageReady(!hasSharedImageTransition);
-  }, [hasSharedImageTransition, current?.sku, product?.id]);
 
   const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
   const displayDescription =
