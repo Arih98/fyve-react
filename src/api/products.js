@@ -1,5 +1,7 @@
 import { apiFetch } from "./client";
 
+const productsCache = new Map();
+
 function extractItems(response) {
   if (Array.isArray(response)) return response;
   if (Array.isArray(response?.items)) return response.items;
@@ -18,7 +20,16 @@ function extractSingleItem(response) {
 }
 
 export async function fetchProducts({ page = 1, perPage = 24 } = {}) {
-  return apiFetch(`/fyve/v1/products?page=${page}&per_page=${perPage}`);
+  const cacheKey = `${page}:${perPage}`;
+
+  if (productsCache.has(cacheKey)) {
+    return productsCache.get(cacheKey);
+  }
+
+  const response = await apiFetch(`/fyve/v1/products?page=${page}&per_page=${perPage}`);
+  productsCache.set(cacheKey, response);
+
+  return response;
 }
 
 export async function fetchProductById(productId) {
