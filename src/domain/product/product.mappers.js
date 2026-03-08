@@ -43,8 +43,28 @@ function getVariationImageGallery(variation, product) {
   const variationGallery = Array.isArray(variation?.gallery) ? variation.gallery : [];
   const productGallery = Array.isArray(product?.gallery) ? product.gallery : [];
 
-  if (variationGallery.length > 0) return variationGallery;
-  if (productGallery.length > 0) return productGallery;
+  if (variationGallery.length > 0) {
+    const firstImage = variationGallery[0] || "";
+    const hoverImage =
+      variationGallery[2] ||
+      variationGallery[1] ||
+      variationGallery[0] ||
+      "";
+
+    return [firstImage, hoverImage].filter(Boolean);
+  }
+
+  if (productGallery.length > 0) {
+    const firstImage = productGallery[0] || "";
+    const hoverImage =
+      productGallery[2] ||
+      productGallery[1] ||
+      productGallery[0] ||
+      "";
+
+    return [firstImage, hoverImage].filter(Boolean);
+  }
+
   return [];
 }
 
