@@ -63,11 +63,12 @@ const initialColor = initialColorValue;
 
   const initialAttrs = {};
 
-  initialVariation?.attributes.forEach(attr => {
-    if (!attr.term_name.startsWith('Any')) {
-      initialAttrs[attr.attribute_name] = attr.term_name;
-    }
-  });
+initialVariation?.attributes.forEach(attr => {
+  const termName = String(attr.term_name || '').trim();
+  if (termName && !termName.startsWith('Any')) {
+    initialAttrs[attr.attribute_name] = termName;
+  }
+});
 
   if (location.state?.initialColor && !initialAttrs.Color) {
     initialAttrs.Color = location.state.initialColor;
