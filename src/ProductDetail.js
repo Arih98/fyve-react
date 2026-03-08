@@ -265,6 +265,23 @@ const ProductDetail = () => {
     }
   }, [selectedAttributes, product, attributeNames]);
 
+
+  useEffect(() => {
+  if (!product) return;
+
+  const debugGallery = current?.gallery || product.gallery || [];
+  const debugMainImage = debugGallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
+  const debugDisplayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
+  const debugTransitionKey = location.state?.transitionKey || `product-image-${product.id}-${selectedColorKey ? selectedAttributes[selectedColorKey] : 'default'}`;
+
+  debugLog('gallery decision', {
+    displayTitle: debugDisplayTitle,
+    gallery: debugGallery,
+    mainImage: debugMainImage,
+    transitionKey: debugTransitionKey,
+    currentSku: current?.sku || null
+  });
+}, [product, currentVariation, current, location.state, selectedAttributes, selectedColorKey]);
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -351,22 +368,6 @@ const ProductDetail = () => {
       setQuantity(quantity - 1);
     }
   };
-
-  const gallery = current?.gallery || product.gallery || [];
-  const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-  const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
-  const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
-  const stock = current?.stock_quantity ?? 'N/A';
-
-  useEffect(() => {
-    debugLog('gallery decision', {
-      displayTitle,
-      gallery,
-      mainImage,
-      transitionKey,
-      currentSku: current?.sku || null
-    });
-  }, [displayTitle, gallery, mainImage, transitionKey, current]);
 
   console.log('[ProductDetail] CURRENT VARIATION GALLERY', currentVariation?.gallery);
   console.log('[ProductDetail] CURRENT GALLERY USED', gallery);
