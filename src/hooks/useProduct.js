@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchProductById, fetchProducts } from "../api/products";
+import { fetchProductById } from "../api/products";
+import { mapProductForDetail } from "../domain/product/product.mappers";
 
 export function useProduct(productId) {
   const [product, setProduct] = useState(null);
@@ -10,6 +11,7 @@ export function useProduct(productId) {
     if (!productId) {
       setProduct(null);
       setLoading(false);
+      setError(null);
       return;
     }
 
@@ -20,45 +22,16 @@ export function useProduct(productId) {
         setLoading(true);
         setError(null);
 
-        let matched = null;
+        const rawProduct = await fetchProductById(productId);
 
-        try {
-          const singleResponse = await fetchProductById(productId);
+        if (!active) return;
 
-          if (!active) return;
-
-          if (Array.isArray(singleResponse)) {
-            matched = singleResponse.find((item) => String(item.id) === String(productId)) || null;
-          } else if (singleResponse?.id && String(singleResponse.id) === String(productId)) {
-            matched = singleResponse;
-          } else if (singleResponse?.item?.id && String(singleResponse.item.id) === String(productId)) {
-            matched = singleResponse.item;
-          } else if (singleResponse?.product?.id && String(singleResponse.product.id) === String(productId)) {
-            matched = singleResponse.product;
-          }
-        } catch (singleErr) {
-        }
-
-        if (!matched) {
-          const response = await fetchProducts({ page: 1, perPage: 500 });
-
-          if (!active) return;
-
-          const rawItems = Array.isArray(response)
-            ? response
-            : response.items || response.products || [];
-
-          matched = rawItems.find((item) => String(item.id) === String(productId)) || null;
-        }
-
-        if (!matched) {
-          throw new Error(`Product ${productId} not found`);
-        }
-
-        setProduct(matched);
+        const mappedProduct = mapProductForDetail(rawProduct);
+        setProduct(mappedProduct);
       } catch (err) {
         if (!active) return;
         setError(err);
+        setProduct(null);
       } finally {
         if (active) {
           setLoading(false);

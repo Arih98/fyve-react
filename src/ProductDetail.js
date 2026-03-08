@@ -69,7 +69,7 @@ const ProductDetail = () => {
   }, []);
 
   const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
-  const availableStock = current?.stock_quantity ?? null;
+  const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
 console.log('[ProductDetail] SKU', current?.sku);
 console.log('[ProductDetail] availableStock', availableStock);
   useEffect(() => {
@@ -105,7 +105,7 @@ console.log('[ProductDetail] availableStock', availableStock);
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
   const handleAddToCart = () => {
-  const freshStock = current?.stock_quantity ?? 0;
+  const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
 
   if (freshStock < quantity) {
     setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
@@ -115,7 +115,7 @@ console.log('[ProductDetail] availableStock', availableStock);
   const newItem = {
     id: current.id || product.id,
     name: current.title || product.title,
-    price: parseFloat(current.price || product.price),
+    price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
     quantity,
     image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
     size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
@@ -157,11 +157,19 @@ console.log('[ProductDetail] availableStock', availableStock);
   const currentDisplayId = `${product.id}-${currentColor}`;
   const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
-  const gallery = current?.gallery || product.gallery || [];
-  const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-  const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
-  const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
-  const stock = current?.stock_quantity ?? 'N/A';
+  const gallery = Array.isArray(current?.gallery)
+  ? current.gallery
+  : Array.isArray(product?.gallery)
+    ? product.gallery
+    : [];
+  const mainImage = gallery[0] || product.thumbnail || '/api/Uploads/fallback-image.png';
+  const displayTitle = product.product_type === 'variable' && (currentVariation?.title || currentVariation?.name)
+  ? (currentVariation?.title || currentVariation?.name)
+  : (product.title || product.name);
+  const displayDescription = product.product_type === 'variable'
+  ? (currentVariation?.description || currentVariation?.shortDescription || currentVariation?.short_description || product.description || product.shortDescription || "")
+  : (product.description || product.shortDescription || "");
+  const stock = current?.stockQuantity ?? current?.stock_quantity ?? 'N/A';
 
   console.log('[ProductDetail] CURRENT VARIATION GALLERY', currentVariation?.gallery);
   console.log('[ProductDetail] CURRENT GALLERY USED', gallery);
@@ -207,7 +215,7 @@ console.log('[ProductDetail] availableStock', availableStock);
   }).filter(Boolean);
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
-  const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
+  const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
 
   const handleRelatedClick = (relItem) => {
     const originalProduct = allProducts.find(p => p.id === relItem.id);
@@ -295,7 +303,7 @@ console.log('[ProductDetail] availableStock', availableStock);
             />
             <p
               className="product-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || product.shortDescription || "") }}
             />
             {product.product_type === 'variable' && (
               <div className="product-attributes">
@@ -356,7 +364,7 @@ console.log('[ProductDetail] availableStock', availableStock);
             </div>
             <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
               <span className="add-to-cart-text">Add to Cart</span>
-              <span className="add-to-cart-price">${(parseFloat(current?.price || 0) * quantity).toFixed(2)}</span>
+              <span className="add-to-cart-price">${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}</span>
             </button>
           </div>
         </motion.div>
@@ -376,7 +384,7 @@ console.log('[ProductDetail] availableStock', availableStock);
                 />
                 <div className="related-product-info">
                   <h3 className="related-product-title">{relItem.displayTitle}</h3>
-                  <p className="related-product-price">${getDisplayPrice(relItem)}</p>
+                  <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
                 </div>
               </div>
             ))}

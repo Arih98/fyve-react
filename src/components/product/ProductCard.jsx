@@ -58,7 +58,7 @@ const ProductCard = ({
         <h3 className="product-title">
           {item.title}
         </h3>
-        <ProductPrice price={item.rawPrice} />
+        <ProductPrice price={item.price} />
       </div>
     </div>
   );

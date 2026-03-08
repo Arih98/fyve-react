@@ -186,5 +186,16 @@ export function mapProductsForList(rawProducts = []) {
 }
 
 export function mapProductForDetail(raw) {
-  return raw;
+  const base = mapBaseProduct(raw);
+
+  return {
+    ...base,
+    description: raw.description || "",
+    shortDescription: raw.short_description || "",
+    sku: raw.sku || "",
+    stockQuantity: raw.stock_quantity ?? null,
+    stockStatus: raw.stock_status || "out_of_stock",
+    attributes: Array.isArray(raw.attributes) ? raw.attributes : [],
+    variations: Array.isArray(raw.variations) ? raw.variations : []
+  };
 }
