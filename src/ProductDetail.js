@@ -226,10 +226,29 @@ if (error && !product) return <div className="product-not-found">{error.message 
 if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
-  const handleAttributeChange = (attrName, value) => {
-    setSelectedAttributes(prev => ({ ...prev, [attrName]: value }));
-    setCartError(null);
-  };
+const handleAttributeChange = (attrName, value) => {
+  setSelectedAttributes(prev => {
+    const next = { ...prev, [attrName]: value };
+
+    if (isColorAttribute(attrName)) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set('color', value);
+      navigate(`/product/${product.id}?${nextParams.toString()}`, {
+        replace: true,
+        state: {
+          ...location.state,
+          product,
+          initialColor: value,
+          transitionKey
+        }
+      });
+    }
+
+    return next;
+  });
+
+  setCartError(null);
+};
 
   const handleAddToCart = async () => {
     if (current?.sku) {
