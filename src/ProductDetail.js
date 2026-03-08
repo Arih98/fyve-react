@@ -68,6 +68,8 @@ const ProductDetail = () => {
 
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [currentVariation, setCurrentVariation] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [availableStock, setAvailableStock] = useState(null);
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable' || !product.variations?.length) {
@@ -92,9 +94,10 @@ const ProductDetail = () => {
       }
     });
 
-    const colorKey = Object.keys(initialAttrs).find(isColorAttribute)
-      || initialVariation?.attributes?.find(attr => isColorAttribute(attr.attribute_name))?.attribute_name
-      || 'Color';
+    const colorKey =
+      Object.keys(initialAttrs).find(isColorAttribute) ||
+      initialVariation?.attributes?.find(attr => isColorAttribute(attr.attribute_name))?.attribute_name ||
+      'Color';
 
     if (location.state?.initialColor && !initialAttrs[colorKey]) {
       initialAttrs[colorKey] = location.state.initialColor;
@@ -110,15 +113,23 @@ const ProductDetail = () => {
     });
   }, [product, initialColorValue]);
 
-  const [quantity, setQuantity] = useState(1);
-  const [availableStock, setAvailableStock] = useState(null);
-
   useEffect(() => {
     const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
     setAllProducts(localProducts);
   }, []);
 
   const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
+
+  const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
+  const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
+  const currentDisplayId = product ? `${product.id}-${currentColor}` : `unknown-${currentColor}`;
+  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
+
+  const gallery = current?.gallery || product?.gallery || [];
+  const mainImage = gallery[0] || product?.archiveImage || '/api/Uploads/fallback-image.png';
+  const displayTitle = product?.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product?.title;
+  const displayDescription = product?.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product?.description;
+  const stock = current?.stock_quantity ?? 'N/A';
 
   useEffect(() => {
     debugLog('product resolved', {
@@ -137,6 +148,18 @@ const ProductDetail = () => {
       currentVariationGallery: currentVariation?.gallery || null
     });
   }, [currentVariation]);
+
+  useEffect(() => {
+    if (!product) return;
+
+    debugLog('gallery decision', {
+      displayTitle,
+      gallery,
+      mainImage,
+      transitionKey,
+      currentSku: current?.sku || null
+    });
+  }, [product, currentVariation, current, displayTitle, gallery, mainImage, transitionKey]);
 
   useEffect(() => {
     if (!current) return;
@@ -265,32 +288,10 @@ const ProductDetail = () => {
     }
   }, [selectedAttributes, product, attributeNames]);
 
-
-  useEffect(() => {
-  if (!product) return;
-
-  const debugGallery = current?.gallery || product.gallery || [];
-  const debugMainImage = debugGallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
-  const debugDisplayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
-  const debugTransitionKey = location.state?.transitionKey || `product-image-${product.id}-${selectedColorKey ? selectedAttributes[selectedColorKey] : 'default'}`;
-
-  debugLog('gallery decision', {
-    displayTitle: debugDisplayTitle,
-    gallery: debugGallery,
-    mainImage: debugMainImage,
-    transitionKey: debugTransitionKey,
-    currentSku: current?.sku || null
-  });
-}, [product, currentVariation, current, location.state, selectedAttributes, selectedColorKey]);
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
-
-  const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
-  const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
-  const currentDisplayId = `${product.id}-${currentColor}`;
-  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
   const handleAttributeChange = (attrName, value) => {
     setSelectedAttributes(prev => {
