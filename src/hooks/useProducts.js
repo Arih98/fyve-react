@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../api/products";
-import { mapProductForList } from "../domain/product/product.mappers";
+import { mapProductsForList } from "../domain/product/product.mappers";
 
 export function useProducts({ page = 1, perPage = 24 } = {}) {
   const [data, setData] = useState([]);
@@ -29,7 +29,7 @@ export function useProducts({ page = 1, perPage = 24 } = {}) {
           ? response
           : response.items || response.products || [];
 
-        const items = rawItems.map(mapProductForList);
+        const items = mapProductsForList(rawItems);
 
         setData(items);
         setMeta({
