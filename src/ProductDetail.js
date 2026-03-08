@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const [cartError, setCartError] = useState(null);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
+  const hasAnimatedInRef = useRef(false);
   const [allProducts, setAllProducts] = useState([]);
   const fallbackProduct = location.state?.product;
 const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
@@ -23,6 +24,10 @@ const product = loadedProduct || fallbackProduct;
 const urlColor = searchParams.get('color') || '';
 const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
   const [scrollDirection, setScrollDirection] = useState('down');
+
+useEffect(() => {
+  hasAnimatedInRef.current = true;
+}, []);
 
   useEffect(() => {
     console.log('[ProductDetail] Component mounted');
@@ -431,12 +436,12 @@ return (
           )}
         </div>
       </div>
-        <motion.div
-          className="details-container"
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+<motion.div
+  className="details-container"
+  initial={hasAnimatedInRef.current ? false : { x: '100%' }}
+  animate={{ x: 0 }}
+  transition={{ duration: 0.5 }}
+>
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
             <p
