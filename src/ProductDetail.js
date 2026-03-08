@@ -24,10 +24,7 @@ const urlColor = searchParams.get('color') || '';
 const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
 const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
   const [scrollDirection, setScrollDirection] = useState('down');
-
-useEffect(() => {
-  setIsTransitionImageReady(false);
-}, [transitionKey, current?.sku, product?.id]);
+const [isTransitionImageReady, setIsTransitionImageReady] = useState(false);
 
   useEffect(() => {
     console.log('[ProductDetail] Component mounted');
@@ -307,7 +304,6 @@ color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)
       setQuantity(quantity - 1);
     }
   };
-const [isTransitionImageReady, setIsTransitionImageReady] = useState(false);
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
 const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
 const currentDisplayId = `${product.id}-${currentColor}`;
@@ -315,6 +311,9 @@ const transitionKey = location.state?.transitionKey || `product-image-${currentD
 
 const gallery = current?.gallery || product.gallery || [];
 const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
+useEffect(() => {
+  setIsTransitionImageReady(false);
+}, [transitionKey, current?.sku, product?.id]);
 const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
 const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
 const stock = current?.stock_quantity ?? 'N/A';
@@ -400,8 +399,11 @@ style={idx === 0 && layoutIdValue ? { opacity: isTransitionImageReady ? 1 : 0 } 
                   onAnimationStart={() => console.log('[ProductDetail] Animation start for', imageKey)}
                   onAnimationComplete={() => console.log('[ProductDetail] Animation complete for', imageKey)}
 onLayoutAnimationStart={() => {
-  setIsTransitionImageReady(true);
-  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
+  if (layoutIdValue) {
+    setIsTransitionImageReady(true);
+    const el = galleryRefs.current.get(imageKey);
+    if (el) el.style.zIndex = '10000';
+  }
 }}
                   onLayoutAnimationComplete={() => {
                     if (layoutIdValue) {
