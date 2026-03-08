@@ -50,7 +50,12 @@ const { product: loadedProduct, loading, error } = useProduct(resolvedProductId)
 const current = product ? (isVariableProduct ? currentVariation : product) : null;
   const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
+const relatedProducts = useRelatedProducts(product, currentVariation, allProducts, isColorAttribute);
 
+const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
+const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
+
+const handleRelatedClick = useRelatedProductNavigation(allProducts);
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -119,13 +124,6 @@ console.log('[ProductDetail] Rendering with:', {
 });
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
-
-  const relatedProducts = useRelatedProducts(product, currentVariation, allProducts, isColorAttribute);
-
-  const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
-  const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
-
-  const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   return (
     <>
