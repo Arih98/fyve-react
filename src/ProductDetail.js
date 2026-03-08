@@ -172,7 +172,7 @@ const initialColor = initialColorValue;
   return options;
 };
 
-  useEffect(() => {useEffect(() => {
+  useEffect(() => {
   if (!product || product.product_type !== 'variable') return;
   if (!attributeNames.length) return;
 
