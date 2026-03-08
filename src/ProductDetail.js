@@ -260,6 +260,9 @@ const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-i
 const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
 const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
 const stock = current?.stock_quantity ?? 'N/A';
+console.log('[ProductDetail] CURRENT VARIATION GALLERY', currentVariation?.gallery);
+console.log('[ProductDetail] CURRENT GALLERY USED', gallery);
+console.log('[ProductDetail] PRODUCT FALLBACK GALLERY', product?.gallery);
 
 console.log('[ProductDetail] Rendering with:', {
   displayTitle,
