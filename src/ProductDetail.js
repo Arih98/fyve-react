@@ -135,6 +135,11 @@ initialVariation?.attributes.forEach(attr => {
     ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) => a === 'Color' ? 1 : -1)
     : [];
 
+    console.log('[ProductDetail] PRODUCT TITLE', product?.title);
+console.log('[ProductDetail] ATTRIBUTE NAMES', attributeNames);
+console.log('[ProductDetail] PRODUCT ATTRIBUTES', product?.attributes);
+console.log('[ProductDetail] FIRST VARIATION ATTRIBUTES', product?.variations?.[0]?.attributes);
+console.log('[ProductDetail] ALL VARIATIONS', product?.variations);
   const getAvailableOptions = (attrName) => {
   if (!product?.variations?.length) return [];
 
