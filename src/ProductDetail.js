@@ -163,17 +163,23 @@ const initialColor = initialColorValue;
   };
 
   useEffect(() => {
-    if (!product || product.product_type !== 'variable') return;
-    const matchingVariation = product.variations.find(v =>
-      attributeNames.every(attr => {
-        const sel = selectedAttributes[attr];
-        if (!sel) return true;
-        const vAttr = v.attributes.find(a => a.attribute_name === attr);
-        return vAttr && (vAttr.term_name === sel || vAttr.term_name === `Any ${attr}`);
-      })
-    );
-    setCurrentVariation(matchingVariation || null);
-  }, [selectedAttributes, product, attributeNames]);
+  if (!product || product.product_type !== 'variable') return;
+  if (!attributeNames.length) return;
+
+  const hasAnySelection = attributeNames.some(attr => !!selectedAttributes[attr]);
+  if (!hasAnySelection) return;
+
+  const matchingVariation = product.variations.find(v =>
+    attributeNames.every(attr => {
+      const sel = selectedAttributes[attr];
+      if (!sel) return true;
+      const vAttr = v.attributes.find(a => a.attribute_name === attr);
+      return vAttr && (vAttr.term_name === sel || vAttr.term_name === `Any ${attr}`);
+    })
+  );
+
+  setCurrentVariation(matchingVariation || null);
+}, [selectedAttributes, product, attributeNames]);
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable') return;
