@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext, useMemo } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
@@ -18,7 +18,6 @@ const ProductDetail = () => {
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
-  const [isTransitionImageReady, setIsTransitionImageReady] = useState(!location.state?.transitionKey);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
   const allProducts = useStoredProducts();
@@ -48,12 +47,31 @@ const ProductDetail = () => {
   });
 
   const isVariableProduct = product?.product_type === 'variable';
-  const current = product ? (isVariableProduct ? currentVariation : product) : null;
-  const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
+
+const fallbackVariation = useMemo(() => {
+  if (!isVariableProduct || !Array.isArray(product?.variations) || !product.variations.length) {
+    return null;
+  }
+
+  const normalizedInitialColor = String(initialColorValue || '').trim().toLowerCase();
+
+  if (!normalizedInitialColor) {
+    return product.variations[0] || null;
+  }
+
+  return product.variations.find((variation) =>
+    Array.isArray(variation.attributes) &&
+    variation.attributes.some((attr) =>
+      String(attr.attribute_name || '').trim().toLowerCase() === 'color' &&
+      String(attr.term_name || '').trim().toLowerCase() === normalizedInitialColor
+    )
+  ) || product.variations[0] || null;
+}, [isVariableProduct, product, initialColorValue]);
+
+const effectiveVariation = currentVariation || fallbackVariation;
+const current = product ? (isVariableProduct ? effectiveVariation : product) : null;
+const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
-  useEffect(() => {
-  setIsTransitionImageReady(!location.state?.transitionKey);
-}, [location.state?.transitionKey, productId]);
 
   const relatedProducts = useRelatedProducts(product, currentVariation, allProducts, isColorAttribute);
   const handleRelatedClick = useRelatedProductNavigation(allProducts);
@@ -73,13 +91,13 @@ const ProductDetail = () => {
       : [];
 
   const mainImage = gallery[0] || product?.thumbnail || '/api/Uploads/fallback-image.png';
-  const displayTitle = product?.product_type === 'variable' && (currentVariation?.title || currentVariation?.name)
-    ? (currentVariation?.title || currentVariation?.name)
-    : (product?.title || product?.name || '');
+  const displayTitle = product?.product_type === 'variable' && (effectiveVariation?.title || effectiveVariation?.name)
+  ? (effectiveVariation?.title || effectiveVariation?.name)
+  : (product?.title || product?.name || '');
 
   const displayDescription = product?.product_type === 'variable'
-    ? (currentVariation?.description || currentVariation?.shortDescription || currentVariation?.short_description || product?.description || product?.shortDescription || '')
-    : (product?.description || product?.shortDescription || '');
+  ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
+  : (product?.description || product?.shortDescription || '');
 
   useEffect(() => {
     console.log('[PDP] route state', {
@@ -116,7 +134,7 @@ const ProductDetail = () => {
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
-  if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
+  if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
 
   const handleAddToCart = () => {
     const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
@@ -186,11 +204,7 @@ const ProductDetail = () => {
                     src={img}
                     alt={`${displayTitle} ${idx + 1}`}
                     className="product-gallery-image"
-style={
-  idx === 0 && layoutIdValue && !isTransitionImageReady
-    ? { opacity: 0.01 }
-    : undefined
-}
+
                     onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                     onLoad={e => console.log('[PDP] gallery image loaded', {
                       imageKey,
@@ -219,7 +233,6 @@ style={
     rect: el ? el.getBoundingClientRect() : null
   });
   if (layoutIdValue && el) {
-    setIsTransitionImageReady(true);
     el.style.zIndex = '10000';
   }
 }}
@@ -256,7 +269,6 @@ style={
                 src={mainImage}
                 alt={displayTitle}
                 className="product-main-image"
-                style={!isTransitionImageReady ? { opacity: 0.01 } : undefined}
                 onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                 onLoad={e => console.log('[PDP] main image loaded', {
                   layoutId: transitionKey,
@@ -279,7 +291,6 @@ style={
     rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
   });
   if (mainImageRef.current) {
-    setIsTransitionImageReady(true);
     mainImageRef.current.style.zIndex = '10000';
   }
 }}
