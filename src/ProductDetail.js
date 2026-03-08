@@ -234,15 +234,15 @@ const handleAttributeChange = (attrName, value) => {
     if (isColorAttribute(attrName)) {
       const nextParams = new URLSearchParams(searchParams);
       nextParams.set('color', value);
-      navigate(`/product/${product.id}?${nextParams.toString()}`, {
-        replace: true,
-        state: {
-          ...location.state,
-          product,
-          initialColor: value,
-          transitionKey
-        }
-      });
+navigate(`/product/${product.id}?${nextParams.toString()}`, {
+  replace: true,
+  state: {
+    ...location.state,
+    product,
+    initialColor: value,
+    transitionKey: null
+  }
+});
     }
 
     return next;
