@@ -28,6 +28,11 @@ export function useProducts({ page = 1, perPage = 24 } = {}) {
         const rawItems = Array.isArray(response)
           ? response
           : response.items || response.products || [];
+          
+          if (rawItems[0]?.variations?.[0]) {
+  console.log('[useProducts] FIRST PRODUCT', rawItems[0]);
+  console.log('[useProducts] FIRST VARIATION', rawItems[0].variations[0]);
+}
 
         const items = mapProductsForList(rawItems);
 
