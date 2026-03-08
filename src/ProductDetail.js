@@ -18,6 +18,7 @@ const ProductDetail = () => {
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
+  const [isTransitionImageReady, setIsTransitionImageReady] = useState(!location.state?.transitionKey);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
   const allProducts = useStoredProducts();
@@ -50,6 +51,9 @@ const ProductDetail = () => {
   const current = product ? (isVariableProduct ? currentVariation : product) : null;
   const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
+  useEffect(() => {
+  setIsTransitionImageReady(!location.state?.transitionKey);
+}, [location.state?.transitionKey, productId]);
 
   const relatedProducts = useRelatedProducts(product, currentVariation, allProducts, isColorAttribute);
   const handleRelatedClick = useRelatedProductNavigation(allProducts);
@@ -182,6 +186,11 @@ const ProductDetail = () => {
                     src={img}
                     alt={`${displayTitle} ${idx + 1}`}
                     className="product-gallery-image"
+                    style={
+  idx === 0 && layoutIdValue && !isTransitionImageReady
+    ? { opacity: 0 }
+    : undefined
+}
                     onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                     onLoad={e => console.log('[PDP] gallery image loaded', {
                       imageKey,
@@ -202,17 +211,18 @@ const ProductDetail = () => {
                       layoutId: layoutIdValue
                     })}
                     onLayoutAnimationStart={() => {
-                      const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation start', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        hasElement: !!el,
-                        rect: el ? el.getBoundingClientRect() : null
-                      });
-                      if (layoutIdValue && el) {
-                        el.style.zIndex = '10000';
-                      }
-                    }}
+  const el = galleryRefs.current.get(imageKey);
+  console.log('[PDP] gallery layout animation start', {
+    imageKey,
+    layoutId: layoutIdValue,
+    hasElement: !!el,
+    rect: el ? el.getBoundingClientRect() : null
+  });
+  if (layoutIdValue && el) {
+    setIsTransitionImageReady(true);
+    el.style.zIndex = '10000';
+  }
+}}
                     onLayoutAnimationComplete={() => {
                       const el = galleryRefs.current.get(imageKey);
                       console.log('[PDP] gallery layout animation complete', {
@@ -246,6 +256,7 @@ const ProductDetail = () => {
                 src={mainImage}
                 alt={displayTitle}
                 className="product-main-image"
+                style={!isTransitionImageReady ? { opacity: 0 } : undefined}
                 onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                 onLoad={e => console.log('[PDP] main image loaded', {
                   layoutId: transitionKey,
@@ -263,12 +274,15 @@ const ProductDetail = () => {
                   layoutId: transitionKey
                 })}
                 onLayoutAnimationStart={() => {
-                  console.log('[PDP] main layout animation start', {
-                    layoutId: transitionKey,
-                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
-                  });
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
-                }}
+  console.log('[PDP] main layout animation start', {
+    layoutId: transitionKey,
+    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+  });
+  if (mainImageRef.current) {
+    setIsTransitionImageReady(true);
+    mainImageRef.current.style.zIndex = '10000';
+  }
+}}
                 onLayoutAnimationComplete={() => {
                   console.log('[PDP] main layout animation complete', {
                     layoutId: transitionKey,
