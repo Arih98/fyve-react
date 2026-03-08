@@ -43,7 +43,8 @@ const initialColorValue = (urlColor || location.state?.initialColor || '').trim(
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
+const isColorAttribute = (name) => String(name || '').trim().toLowerCase() === 'color';
+const isSizeAttribute = (name) => String(name || '').trim().toLowerCase() === 'size';
   const [selectedAttributes, setSelectedAttributes] = useState({});
 const [currentVariation, setCurrentVariation] = useState(null);
 
@@ -56,10 +57,10 @@ useEffect(() => {
 
 const initialColor = initialColorValue;
 
-  const initialVariation = product.variations.find(v => {
-    const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
-    return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
-  }) || product.variations[0];
+const initialVariation = product.variations.find(v => {
+  const colorAttr = v.attributes.find(a => isColorAttribute(a.attribute_name));
+  return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+}) || product.variations[0];
 
   const initialAttrs = {};
 
@@ -70,9 +71,13 @@ initialVariation?.attributes.forEach(attr => {
   }
 });
 
-  if (location.state?.initialColor && !initialAttrs.Color) {
-    initialAttrs.Color = location.state.initialColor;
-  }
+const colorKey = Object.keys(initialAttrs).find(isColorAttribute)
+  || initialVariation?.attributes?.find(attr => isColorAttribute(attr.attribute_name))?.attribute_name
+  || 'Color';
+
+if (location.state?.initialColor && !initialAttrs[colorKey]) {
+  initialAttrs[colorKey] = location.state.initialColor;
+}
 
   setSelectedAttributes(initialAttrs);
   setCurrentVariation(initialVariation);
@@ -169,7 +174,7 @@ console.log('[ProductDetail] ALL VARIATIONS', product?.variations);
 
   const options = [...optionsSet];
 
-  if (attrName === 'Size') {
+  if (isSizeAttribute(attrName)) {
     options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
   } else {
     options.sort();
@@ -242,8 +247,8 @@ if (!product) return <div className="product-not-found">Product not found</div>;
             price: parseFloat(current.price || product.price),
             quantity,
             image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
-            size: selectedAttributes.Size || '',
-            color: selectedAttributes.Color || '',
+            size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
+color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
           };
           setCartItems(prev => {
             const variationKey = `${newItem.size}-${newItem.color}`;
@@ -279,7 +284,8 @@ if (!product) return <div className="product-not-found">Product not found</div>;
     }
   };
 
-  const currentColor = selectedAttributes.Color || 'default';
+  const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
+const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
 const currentDisplayId = `${product.id}-${currentColor}`;
 const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
@@ -310,7 +316,7 @@ const relatedProducts = relatedProductsRaw.map(rel => {
   if (!p) return null;
   const color = normalizedRel.selectedColor;
   if (color) {
-    const v = p.variations.find(v => v.attributes.some(a => a.attribute_name === 'Color' && a.term_name === color));
+    const v = p.variations.find(v => v.attributes.some(a => isColorAttribute(a.attribute_name) && a.term_name === color));
     return {
       ...p,
       displayId: `${p.id}-${color}`,
@@ -429,7 +435,7 @@ return (
                   return (
                     <div key={attrName} className="attribute-group">
                       <label className="attribute-label">{attrName}</label>
-                      {attrName === 'Color' ? (
+                      {isColorAttribute(attrName) ? (
                         <div className="color-options">
                           {options.map(term => (
                             <div key={term} className="color-option">
