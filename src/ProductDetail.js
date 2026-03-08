@@ -41,9 +41,10 @@ const product = loadedProduct || fallbackProduct;
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const [selectedAttributes, setSelectedAttributes] = useState(() => {
+  const [selectedAttributes, setSelectedAttributes] = useState({});
+const [currentVariation, setCurrentVariation] = useState(null);
 
-    useEffect(() => {
+useEffect(() => {
   if (!product || product.product_type !== 'variable' || !product.variations?.length) {
     setSelectedAttributes({});
     setCurrentVariation(null);
