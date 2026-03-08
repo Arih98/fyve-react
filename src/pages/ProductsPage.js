@@ -22,7 +22,7 @@ const display = products.map((product) => ({
   displayId: product.displayId || product.id,
   parentId: product.parentId || product.id,
   selectedColor: product.selectedColor || null,
-  gallery: product.gallery?.length
+  gallery: Array.isArray(product.gallery) && product.gallery.length > 0
     ? product.gallery
     : product.thumbnail
       ? [product.thumbnail, product.hoverImage].filter(Boolean)
