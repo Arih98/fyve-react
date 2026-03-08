@@ -125,8 +125,7 @@ console.log('[ProductDetail] Rendering with:', {
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
 
-  const handleRelatedClick = (relItem) => {
-const handleRelatedClick = useRelatedProductNavigation(allProducts);
+  const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   return (
     <>
