@@ -50,20 +50,16 @@ const ProductDetail = () => {
   const current = product ? (isVariableProduct ? currentVariation : product) : null;
   const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
+
   const relatedProducts = useRelatedProducts(product, currentVariation, allProducts, isColorAttribute);
   const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
 
-  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
-  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
-  if (!product) return <div className="product-not-found">Product not found</div>;
-  if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
-
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
-  const currentDisplayId = `${product.id}-${currentColor}`;
+  const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
   const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
   const gallery = Array.isArray(current?.gallery)
@@ -72,14 +68,14 @@ const ProductDetail = () => {
       ? product.gallery
       : [];
 
-  const mainImage = gallery[0] || product.thumbnail || '/api/Uploads/fallback-image.png';
-  const displayTitle = product.product_type === 'variable' && (currentVariation?.title || currentVariation?.name)
+  const mainImage = gallery[0] || product?.thumbnail || '/api/Uploads/fallback-image.png';
+  const displayTitle = product?.product_type === 'variable' && (currentVariation?.title || currentVariation?.name)
     ? (currentVariation?.title || currentVariation?.name)
-    : (product.title || product.name);
-  const displayDescription = product.product_type === 'variable'
-    ? (currentVariation?.description || currentVariation?.shortDescription || currentVariation?.short_description || product.description || product.shortDescription || "")
-    : (product.description || product.shortDescription || "");
-  const isAddDisabled = availableStock !== null && availableStock < quantity;
+    : (product?.title || product?.name || '');
+
+  const displayDescription = product?.product_type === 'variable'
+    ? (currentVariation?.description || currentVariation?.shortDescription || currentVariation?.short_description || product?.description || product?.shortDescription || '')
+    : (product?.description || product?.shortDescription || '');
 
   useEffect(() => {
     console.log('[PDP] route state', {
@@ -112,6 +108,11 @@ const ProductDetail = () => {
     mainImage,
     currentVariation?.id
   ]);
+
+  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
+  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+  if (!product) return <div className="product-not-found">Product not found</div>;
+  if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
   const handleAddToCart = () => {
     const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
@@ -148,6 +149,8 @@ const ProductDetail = () => {
 
     setCartError(null);
   };
+
+  const isAddDisabled = availableStock !== null && availableStock < quantity;
 
   return (
     <>
@@ -264,18 +267,14 @@ const ProductDetail = () => {
                     layoutId: transitionKey,
                     rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
                   });
-                  if (mainImageRef.current) {
-                    mainImageRef.current.style.zIndex = '10000';
-                  }
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
                 }}
                 onLayoutAnimationComplete={() => {
                   console.log('[PDP] main layout animation complete', {
                     layoutId: transitionKey,
                     rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
                   });
-                  if (mainImageRef.current) {
-                    mainImageRef.current.style.zIndex = '';
-                  }
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
                 }}
               />
             )}
