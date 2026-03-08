@@ -22,8 +22,7 @@ export async function fetchProducts({ page = 1, perPage = 24 } = {}) {
 }
 
 export async function fetchProductById(productId) {
-  const response = await apiFetch(`/fyve/v1/products?id=${encodeURIComponent(productId)}`);
-  const item = extractSingleItem(response);
+  const item = await apiFetch(`/fyve/v1/products/${encodeURIComponent(productId)}`);
 
   if (!item || String(item.id) !== String(productId)) {
     throw new Error(`Product ${productId} not found`);
