@@ -1,13 +1,16 @@
 function normalizePrice(raw) {
   if (raw?.price !== undefined && raw?.price !== null && raw?.price !== "") {
     const simplePrice = Number(raw.price) || 0;
+    const regular = raw?.regular_price ? Number(raw.regular_price) || simplePrice : simplePrice;
+    const sale = raw?.sale_price ? Number(raw.sale_price) || null : null;
+    const current = sale && sale < regular ? sale : simplePrice;
 
     return {
-      regular: simplePrice,
-      sale: null,
-      current: simplePrice,
+      regular,
+      sale,
+      current,
       currency: "USD",
-      isOnSale: false
+      isOnSale: !!sale && sale < regular
     };
   }
 
@@ -24,80 +27,30 @@ function normalizePrice(raw) {
   };
 }
 
-function normalizeImage(image) {
-  if (!image) {
-    return {
-      id: null,
-      src: "",
-      alt: ""
-    };
-  }
+function getVariationColor(variation) {
+  const attrs = Array.isArray(variation?.attributes) ? variation.attributes : [];
 
-  if (typeof image === "string") {
-    return {
-      id: null,
-      src: image,
-      alt: ""
-    };
-  }
-
-  return {
-    id: image.id || null,
-    src: image.src || "",
-    alt: image.alt || ""
-  };
-}
-
-function getColorOptionFromAttributes(attributes = []) {
-  const colorAttr = attributes.find((attr) => {
-    const name = String(attr.name || "").toLowerCase();
+  const colorAttr = attrs.find((attr) => {
+    const name = String(attr.attribute_name || attr.name || "").toLowerCase();
     const slug = String(attr.slug || "").toLowerCase();
     return name === "color" || slug === "pa_color" || slug === "color";
   });
 
-  if (!colorAttr?.option) return null;
-
-  return {
-    name: colorAttr.option,
-    slug: String(colorAttr.option).toLowerCase().replace(/\s+/g, "-")
-  };
+  return colorAttr?.term_name || colorAttr?.option || null;
 }
 
-function extractColorOptions(variations = []) {
-  const seen = new Map();
+function getVariationImageGallery(variation, product) {
+  const variationGallery = Array.isArray(variation?.gallery) ? variation.gallery : [];
+  const productGallery = Array.isArray(product?.gallery) ? product.gallery : [];
 
-  variations.forEach((variation) => {
-    const color = getColorOptionFromAttributes(variation.attributes || []);
-    if (color && !seen.has(color.slug)) {
-      seen.set(color.slug, color);
-    }
-  });
-
-  return Array.from(seen.values());
+  if (variationGallery.length > 0) return variationGallery;
+  if (productGallery.length > 0) return productGallery;
+  return [];
 }
 
-function normalizeVariant(variant) {
-  const attributes = (variant.attributes || []).reduce((acc, attr) => {
-    const key = String(attr.slug || attr.name || "")
-      .toLowerCase()
-      .replace(/^pa_/, "");
-    acc[key] = attr.option || "";
-    return acc;
-  }, {});
-
-  return {
-    id: variant.id,
-    sku: variant.sku || "",
-    price: normalizePrice(variant),
-    stockStatus: variant.stock_status || "out_of_stock",
-    attributes,
-    image: normalizeImage(variant.image)
-  };
-}
-
-export function mapProductForList(raw) {
-  const images = Array.isArray(raw.images) ? raw.images : [];
+function mapBaseProduct(raw) {
   const gallery = Array.isArray(raw.gallery) ? raw.gallery : [];
+  const images = Array.isArray(raw.images) ? raw.images : [];
   const variations = Array.isArray(raw.variations) ? raw.variations : [];
   const price = normalizePrice(raw);
 
@@ -118,35 +71,78 @@ export function mapProductForList(raw) {
 
   return {
     id: raw.id,
+    parentId: raw.id,
     slug: raw.slug || "",
     name: raw.name || raw.title || "",
+    title: raw.title || raw.name || "",
     subtitle: raw.short_description || "",
     price,
     thumbnail,
     hoverImage,
+    gallery: gallery.length > 0 ? gallery : [thumbnail, hoverImage].filter(Boolean),
     badges: price.isOnSale ? ["Sale"] : [],
     stockStatus: raw.stock_status || "out_of_stock",
-    colorOptions: extractColorOptions(variations),
-    defaultVariantId: variations[0]?.id || null
+    product_type: raw.product_type,
+    variations,
+    selectedColor: null,
+    variationId: null
   };
 }
 
-export function mapProductForDetail(raw) {
-  const variants = (raw.variations || []).map(normalizeVariant);
-  const images = Array.isArray(raw.images) ? raw.images : [];
-  const gallery = Array.isArray(raw.gallery) ? raw.gallery : [];
+export function mapProductForList(raw) {
+  return mapBaseProduct(raw);
+}
 
-  return {
-    id: raw.id,
-    slug: raw.slug || "",
-    name: raw.name || raw.title || "",
-    description: raw.description || "",
-    shortDescription: raw.short_description || "",
-    price: normalizePrice(raw),
-    stockStatus: raw.stock_status || "out_of_stock",
-    images: gallery.length > 0 ? gallery.map(normalizeImage) : images.map(normalizeImage),
-    attributes: raw.attributes || [],
-    variants,
-    defaultVariantId: variants[0]?.id || null
-  };
+export function mapProductsForList(rawProducts = []) {
+  const output = [];
+
+  rawProducts.forEach((raw) => {
+    const base = mapBaseProduct(raw);
+
+    if (raw?.product_type !== "variable" || !Array.isArray(raw?.variations) || raw.variations.length === 0) {
+      output.push(base);
+      return;
+    }
+
+    const seenColors = new Set();
+
+    raw.variations.forEach((variation) => {
+      const color = getVariationColor(variation);
+
+      if (!color) return;
+
+      const colorKey = color.trim().toLowerCase();
+      if (seenColors.has(colorKey)) return;
+      seenColors.add(colorKey);
+
+      const variationPrice = normalizePrice(variation);
+      const variationGallery = getVariationImageGallery(variation, raw);
+
+      output.push({
+        ...base,
+        displayId: `${raw.id}-${colorKey}`,
+        variationId: variation.id,
+        selectedColor: color,
+        title: variation.title || raw.title || raw.name || "",
+        name: variation.title || raw.title || raw.name || "",
+        price: variationPrice,
+        thumbnail: variationGallery[0] || base.thumbnail,
+        hoverImage: variationGallery[1] || variationGallery[0] || base.hoverImage,
+        gallery: variationGallery.length > 0 ? variationGallery : base.gallery
+      });
+    });
+
+    if (!seenColors.size) {
+      output.push({
+        ...base,
+        displayId: `${raw.id}-default`
+      });
+    }
+  });
+
+  return output;
+}
+
+export function mapProductForDetail(raw) {
+  return raw;
 }
