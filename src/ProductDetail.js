@@ -186,9 +186,9 @@ const ProductDetail = () => {
                     src={img}
                     alt={`${displayTitle} ${idx + 1}`}
                     className="product-gallery-image"
-                    style={
+style={
   idx === 0 && layoutIdValue && !isTransitionImageReady
-    ? { opacity: 0 }
+    ? { opacity: 0.01 }
     : undefined
 }
                     onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
@@ -256,7 +256,7 @@ const ProductDetail = () => {
                 src={mainImage}
                 alt={displayTitle}
                 className="product-main-image"
-                style={!isTransitionImageReady ? { opacity: 0 } : undefined}
+                style={!isTransitionImageReady ? { opacity: 0.01 } : undefined}
                 onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                 onLoad={e => console.log('[PDP] main image loaded', {
                   layoutId: transitionKey,
