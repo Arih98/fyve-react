@@ -9,6 +9,11 @@ const ProductCard = ({
   imageRefs,
   placeholderImage
 }) => {
+  console.log('[ProductCard] item', item);
+  console.log('[ProductCard] item.gallery', item.gallery);
+  console.log('[ProductCard] item.thumbnail', item.thumbnail);
+  console.log('[ProductCard] item.hoverImage', item.hoverImage);
+
   return (
     <div
       key={`${item.displayId}-${index}`}
