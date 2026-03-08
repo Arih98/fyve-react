@@ -30,8 +30,8 @@ export function useProducts({ page = 1, perPage = 24 } = {}) {
           : response.items || response.products || [];
           
           if (rawItems[0]?.variations?.[0]) {
-  console.log('[useProducts] FIRST PRODUCT', rawItems[0]);
-  console.log('[useProducts] FIRST VARIATION', rawItems[0].variations[0]);
+  console.log('[useProducts] FIRST PRODUCT JSON', JSON.stringify(rawItems[0], null, 2));
+  console.log('[useProducts] FIRST VARIATION JSON', JSON.stringify(rawItems[0].variations[0], null, 2));
 }
 
         const items = mapProductsForList(rawItems);
