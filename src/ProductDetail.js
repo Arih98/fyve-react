@@ -25,6 +25,10 @@ const initialColorValue = (urlColor || location.state?.initialColor || '').trim(
 const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
   const [scrollDirection, setScrollDirection] = useState('down');
 
+useEffect(() => {
+  setIsTransitionImageReady(false);
+}, [transitionKey, current?.sku, product?.id]);
+
   useEffect(() => {
     console.log('[ProductDetail] Component mounted');
     return () => console.log('[ProductDetail] Component unmounted');
@@ -303,7 +307,7 @@ color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)
       setQuantity(quantity - 1);
     }
   };
-
+const [isTransitionImageReady, setIsTransitionImageReady] = useState(false);
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
 const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
 const currentDisplayId = `${product.id}-${currentColor}`;
@@ -389,17 +393,16 @@ return (
                   src={img}
                   alt={`${displayTitle} ${idx + 1}`}
                   className="product-gallery-image"
+style={idx === 0 && layoutIdValue ? { opacity: isTransitionImageReady ? 1 : 0 } : undefined}
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                   onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
                   transition={{ duration: 0.5 }}
                   onAnimationStart={() => console.log('[ProductDetail] Animation start for', imageKey)}
                   onAnimationComplete={() => console.log('[ProductDetail] Animation complete for', imageKey)}
-                  onLayoutAnimationStart={() => {
-                    if (layoutIdValue) {
-                      const el = galleryRefs.current.get(imageKey);
-                      if (el) el.style.zIndex = '10000';
-                    }
-                  }}
+onLayoutAnimationStart={() => {
+  setIsTransitionImageReady(true);
+  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
+}}
                   onLayoutAnimationComplete={() => {
                     if (layoutIdValue) {
                       const el = galleryRefs.current.get(imageKey);
@@ -417,14 +420,16 @@ return (
               src={mainImage}
               alt={displayTitle}
               className="product-main-image"
+              style={transitionKey ? { opacity: isTransitionImageReady ? 1 : 0 } : undefined}
               onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
               onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
               transition={{ duration: 0.5 }}
               onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
               onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
-              onLayoutAnimationStart={() => {
-                if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
-              }}
+onLayoutAnimationStart={() => {
+  setIsTransitionImageReady(true);
+  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
+}}
               onLayoutAnimationComplete={() => {
                 if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
               }}
