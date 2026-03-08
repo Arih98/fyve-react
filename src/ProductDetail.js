@@ -1,29 +1,32 @@
-import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { CartContext } from './CartContext';
 import './ProductDetail.css';
 import { useProduct } from './hooks/useProduct';
-import { useInventory } from './hooks/useInventory';
 import { useProductSelection } from './hooks/useProductSelection';
+import { useStoredProducts } from './hooks/useStoredProducts';
+import { useQuantity } from './hooks/useQuantity';
+import { useScrollDirection } from './hooks/useScrollDirection';
+import { useRelatedProducts } from './hooks/useRelatedProducts';
+import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
   const location = useLocation();
-  const navigate = useNavigate();
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
-  const [allProducts, setAllProducts] = useState([]);
-  const [scrollDirection, setScrollDirection] = useState('down');
-  const [quantity, setQuantity] = useState(1);
+  const allProducts = useStoredProducts();
+  const scrollDirection = useScrollDirection();
 
   const fallbackProduct = location.state?.product;
-  const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
-  const product = loadedProduct || fallbackProduct;
+  const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
+const { product: loadedProduct, loading, error } = useProduct(resolvedProductId);
+  const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
   const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
@@ -43,61 +46,10 @@ const ProductDetail = () => {
     initialColorValue
   });
 
-  useEffect(() => {
-    console.log('[ProductDetail] Component mounted');
-    return () => console.log('[ProductDetail] Component unmounted');
-  }, []);
-
-  useEffect(() => {
-    let lastScrollY = window.pageYOffset;
-    const handleScroll = () => {
-      const currentScrollY = window.pageYOffset;
-      if (currentScrollY > lastScrollY) {
-        setScrollDirection('down');
-      } else if (currentScrollY < lastScrollY) {
-        setScrollDirection('up');
-      }
-      lastScrollY = currentScrollY;
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
-    setAllProducts(localProducts);
-  }, []);
-
-  const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
+  const isVariableProduct = product?.product_type === 'variable';
+const current = product ? (isVariableProduct ? currentVariation : product) : null;
   const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
-console.log('[ProductDetail] SKU', current?.sku);
-console.log('[ProductDetail] availableStock', availableStock);
-  useEffect(() => {
-    setQuantity(1);
-  }, [current?.sku]);
-
-  useLayoutEffect(() => {
-    if (mainImageRef.current) {
-      const img = mainImageRef.current;
-      console.log('[ProductDetail] Target image layout details:', {
-        src: img.src,
-        clientWidth: img.clientWidth,
-        clientHeight: img.clientHeight,
-        naturalWidth: img.naturalWidth,
-        naturalHeight: img.naturalHeight,
-        boundingRect: img.getBoundingClientRect(),
-        complete: img.complete,
-      });
-    } else {
-      console.warn('[ProductDetail] Main image ref not available');
-    }
-  }, [currentVariation]);
-
-  console.log('[ProductDetail] PRODUCT TITLE', product?.title);
-  console.log('[ProductDetail] ATTRIBUTE NAMES', attributeNames);
-  console.log('[ProductDetail] PRODUCT ATTRIBUTES', product?.attributes);
-  console.log('[ProductDetail] FIRST VARIATION ATTRIBUTES', product?.variations?.[0]?.attributes);
-  console.log('[ProductDetail] ALL VARIATIONS', product?.variations);
+  const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
 
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
@@ -140,18 +92,6 @@ console.log('[ProductDetail] availableStock', availableStock);
   setCartError(null);
 };
 
-  const increaseQuantity = () => {
-    if (availableStock === null || quantity < availableStock) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product.id}-${currentColor}`;
@@ -169,64 +109,24 @@ console.log('[ProductDetail] availableStock', availableStock);
   const displayDescription = product.product_type === 'variable'
   ? (currentVariation?.description || currentVariation?.shortDescription || currentVariation?.short_description || product.description || product.shortDescription || "")
   : (product.description || product.shortDescription || "");
-  const stock = current?.stockQuantity ?? current?.stock_quantity ?? 'N/A';
 
-  console.log('[ProductDetail] CURRENT VARIATION GALLERY', currentVariation?.gallery);
-  console.log('[ProductDetail] CURRENT GALLERY USED', gallery);
-  console.log('[ProductDetail] PRODUCT FALLBACK GALLERY', product?.gallery);
-
-  console.log('[ProductDetail] Rendering with:', {
-    displayTitle,
-    galleryLength: gallery.length,
-    mainImage,
-    stock,
-    currentSku: current?.sku,
-    transitionKey,
-  });
+console.log('[ProductDetail] Rendering with:', {
+  displayTitle,
+  galleryLength: gallery.length,
+  mainImage,
+  currentSku: current?.sku,
+  transitionKey,
+});
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
-  const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
-  const relatedProducts = relatedProductsRaw.map(rel => {
-    const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
-    const p = allProducts.find(p => p.id === normalizedRel.productId);
-    if (!p) return null;
-    const color = normalizedRel.selectedColor;
-    if (color) {
-      const v = p.variations.find(v => v.attributes.some(a => isColorAttribute(a.attribute_name) && a.term_name === color));
-      return {
-        ...p,
-        displayId: `${p.id}-${color}`,
-        selectedColor: color,
-        displayTitle: v?.title || `${p.title} - ${color}`,
-        displayPrice: v?.price || p.price,
-        displayGallery: v?.gallery || p.gallery,
-      };
-    } else {
-      return {
-        ...p,
-        displayId: p.id,
-        selectedColor: null,
-        displayTitle: p.title,
-        displayPrice: p.price,
-        displayGallery: p.gallery,
-      };
-    }
-  }).filter(Boolean);
+  const relatedProducts = useRelatedProducts(product, currentVariation, allProducts, isColorAttribute);
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
 
   const handleRelatedClick = (relItem) => {
-    const originalProduct = allProducts.find(p => p.id === relItem.id);
-    navigate(`/product/${relItem.id}`, {
-      state: {
-        product: originalProduct,
-        initialColor: relItem.selectedColor,
-        transitionKey: `product-image-${relItem.displayId}`
-      }
-    });
-  };
+const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   return (
     <>
@@ -357,7 +257,7 @@ console.log('[ProductDetail] availableStock', availableStock);
                   <span className="qty-symbol">-</span>
                 </button>
                 <span className="qty-value">{quantity}</span>
-                <button onClick={increaseQuantity} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
+                <button onClick={() => increaseQuantity(availableStock)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
                   <span className="qty-symbol">+</span>
                 </button>
               </div>
