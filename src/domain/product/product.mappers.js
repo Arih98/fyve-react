@@ -153,11 +153,33 @@ export function mapProductsForList(rawProducts = []) {
     });
 
     if (!seenColors.size) {
-      output.push({
-        ...base,
-        displayId: `${raw.id}-default`
-      });
-    }
+  const firstVariation = Array.isArray(raw.variations) && raw.variations.length > 0
+    ? raw.variations[0]
+    : null;
+
+  if (firstVariation) {
+    const variationPrice = normalizePrice(firstVariation);
+    const variationGallery = getVariationImageGallery(firstVariation, raw);
+
+    output.push({
+      ...base,
+      displayId: `${raw.id}-default`,
+      variationId: firstVariation.id,
+      selectedColor: null,
+      title: firstVariation.title || raw.title || raw.name || "",
+      name: firstVariation.title || raw.title || raw.name || "",
+      price: variationPrice,
+      thumbnail: variationGallery[0] || base.thumbnail,
+      hoverImage: variationGallery[1] || variationGallery[0] || base.hoverImage,
+      gallery: variationGallery.length > 0 ? variationGallery : base.gallery
+    });
+  } else {
+    output.push({
+      ...base,
+      displayId: `${raw.id}-default`
+    });
+  }
+}
   });
 
   return output;
