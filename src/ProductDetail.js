@@ -104,46 +104,41 @@ console.log('[ProductDetail] availableStock', availableStock);
   if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
-  const handleAddToCart = async () => {
-    if (current?.sku) {
-      try {
-        const res = await fetch(`/api/get_inventory.php?sku=${encodeURIComponent(current.sku)}`);
-        const data = await res.json();
-        const freshStock = data.stock_quantity ?? 0;
-        console.log('[ProductDetail] Add to cart stock check:', { sku: current.sku, freshStock });
-        if (freshStock < quantity) {
-          setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
-        } else {
-          const newItem = {
-            id: current.id || product.id,
-            name: current.title || product.title,
-            price: parseFloat(current.price || product.price),
-            quantity,
-            image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
-            size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
-            color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
-          };
-          setCartItems(prev => {
-            const variationKey = `${newItem.size}-${newItem.color}`;
-            const existingIndex = prev.findIndex(i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey);
-            if (existingIndex !== -1) {
-              const newPrev = [...prev];
-              newPrev[existingIndex].quantity += quantity;
-              return newPrev;
-            } else {
-              return [...prev, newItem];
-            }
-          });
-          setCartError(null);
-        }
-      } catch (err) {
-        console.error('[ProductDetail] Error verifying stock:', err);
-        setCartError('Failed to verify stock');
-      }
-    } else {
-      console.warn('[ProductDetail] No SKU for current');
-    }
+  const handleAddToCart = () => {
+  const freshStock = current?.stock_quantity ?? 0;
+
+  if (freshStock < quantity) {
+    setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
+    return;
+  }
+
+  const newItem = {
+    id: current.id || product.id,
+    name: current.title || product.title,
+    price: parseFloat(current.price || product.price),
+    quantity,
+    image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
+    size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
+    color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
   };
+
+  setCartItems(prev => {
+    const variationKey = `${newItem.size}-${newItem.color}`;
+    const existingIndex = prev.findIndex(
+      i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey
+    );
+
+    if (existingIndex !== -1) {
+      const newPrev = [...prev];
+      newPrev[existingIndex].quantity += quantity;
+      return newPrev;
+    }
+
+    return [...prev, newItem];
+  });
+
+  setCartError(null);
+};
 
   const increaseQuantity = () => {
     if (availableStock === null || quantity < availableStock) {
