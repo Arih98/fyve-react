@@ -1,3 +1,4 @@
+// ProductDetail.js
 import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
@@ -15,37 +16,18 @@ const ProductDetail = () => {
   const [cartError, setCartError] = useState(null);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
-  const debugStartRef = useRef(performance.now());
   const [allProducts, setAllProducts] = useState([]);
   const fallbackProduct = location.state?.product;
-  const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
-  const product = loadedProduct || fallbackProduct;
-  const urlColor = searchParams.get('color') || '';
-  const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
+const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
+const product = loadedProduct || fallbackProduct;
+const urlColor = searchParams.get('color') || '';
+const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
+const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
   const [scrollDirection, setScrollDirection] = useState('down');
-
-  const debugLog = (label, data = {}) => {
-    const t = Math.round(performance.now() - debugStartRef.current);
-    console.log(`[PDP DEBUG +${t}ms] ${label}`, data);
-  };
 
   useEffect(() => {
     console.log('[ProductDetail] Component mounted');
     return () => console.log('[ProductDetail] Component unmounted');
-  }, []);
-
-  useEffect(() => {
-    debugLog('route/state on mount', {
-      pathname: location.pathname,
-      search: location.search,
-      productId,
-      urlColor,
-      initialColorValue,
-      transitionKey: location.state?.transitionKey || null,
-      stateProductId: location.state?.product?.id || null,
-      stateProductTitle: location.state?.product?.title || null
-    });
   }, []);
 
   useEffect(() => {
@@ -62,56 +44,54 @@ const ProductDetail = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const isColorAttribute = (name) => String(name || '').trim().toLowerCase() === 'color';
-  const isSizeAttribute = (name) => String(name || '').trim().toLowerCase() === 'size';
-
+const isColorAttribute = (name) => String(name || '').trim().toLowerCase() === 'color';
+const isSizeAttribute = (name) => String(name || '').trim().toLowerCase() === 'size';
   const [selectedAttributes, setSelectedAttributes] = useState({});
-  const [currentVariation, setCurrentVariation] = useState(null);
+const [currentVariation, setCurrentVariation] = useState(null);
+
+useEffect(() => {
+  if (!product || product.product_type !== 'variable' || !product.variations?.length) {
+    setSelectedAttributes({});
+    setCurrentVariation(null);
+    return;
+  }
+
+const initialColor = initialColorValue;
+
+const initialVariation = product.variations.find(v => {
+  const colorAttr = v.attributes.find(a => isColorAttribute(a.attribute_name));
+  return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
+}) || product.variations[0];
+
+  const initialAttrs = {};
+
+initialVariation?.attributes.forEach(attr => {
+  const termName = String(attr.term_name || '').trim();
+  if (termName && !termName.startsWith('Any')) {
+    initialAttrs[attr.attribute_name] = termName;
+  }
+});
+
+const colorKey = Object.keys(initialAttrs).find(isColorAttribute)
+  || initialVariation?.attributes?.find(attr => isColorAttribute(attr.attribute_name))?.attribute_name
+  || 'Color';
+
+if (location.state?.initialColor && !initialAttrs[colorKey]) {
+  initialAttrs[colorKey] = location.state.initialColor;
+}
+
+  setSelectedAttributes(initialAttrs);
+  setCurrentVariation(initialVariation);
+
+  console.log('[ProductDetail] Reinitialized variation state:', {
+    initialAttrs,
+    variationId: initialVariation?.id,
+    title: initialVariation?.title
+  });
+}, [product, initialColorValue]);
+
   const [quantity, setQuantity] = useState(1);
   const [availableStock, setAvailableStock] = useState(null);
-
-  useEffect(() => {
-    if (!product || product.product_type !== 'variable' || !product.variations?.length) {
-      setSelectedAttributes({});
-      setCurrentVariation(null);
-      return;
-    }
-
-    const initialColor = initialColorValue;
-
-    const initialVariation = product.variations.find(v => {
-      const colorAttr = v.attributes.find(a => isColorAttribute(a.attribute_name));
-      return colorAttr?.term_name?.trim().toLowerCase() === initialColor;
-    }) || product.variations[0];
-
-    const initialAttrs = {};
-
-    initialVariation?.attributes.forEach(attr => {
-      const termName = String(attr.term_name || '').trim();
-      if (termName && !termName.startsWith('Any')) {
-        initialAttrs[attr.attribute_name] = termName;
-      }
-    });
-
-    const colorKey =
-      Object.keys(initialAttrs).find(isColorAttribute) ||
-      initialVariation?.attributes?.find(attr => isColorAttribute(attr.attribute_name))?.attribute_name ||
-      'Color';
-
-    if (location.state?.initialColor && !initialAttrs[colorKey]) {
-      initialAttrs[colorKey] = location.state.initialColor;
-    }
-
-    setSelectedAttributes(initialAttrs);
-    setCurrentVariation(initialVariation);
-
-    console.log('[ProductDetail] Reinitialized variation state:', {
-      initialAttrs,
-      variationId: initialVariation?.id,
-      title: initialVariation?.title
-    });
-  }, [product, initialColorValue]);
 
   useEffect(() => {
     const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
@@ -119,47 +99,6 @@ const ProductDetail = () => {
   }, []);
 
   const current = product ? (product.product_type === 'variable' ? currentVariation : product) : null;
-
-  const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
-  const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
-  const currentDisplayId = product ? `${product.id}-${currentColor}` : `unknown-${currentColor}`;
-  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
-
-  const gallery = current?.gallery || product?.gallery || [];
-  const mainImage = gallery[0] || product?.archiveImage || '/api/Uploads/fallback-image.png';
-  const displayTitle = product?.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product?.title;
-  const displayDescription = product?.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product?.description;
-  const stock = current?.stock_quantity ?? 'N/A';
-
-  useEffect(() => {
-    debugLog('product resolved', {
-      productId: product?.id || null,
-      productTitle: product?.title || null,
-      productType: product?.product_type || null,
-      variationCount: product?.variations?.length || 0
-    });
-  }, [product]);
-
-  useEffect(() => {
-    debugLog('current variation changed', {
-      currentVariationId: currentVariation?.id || null,
-      currentVariationTitle: currentVariation?.title || null,
-      currentVariationSku: currentVariation?.sku || null,
-      currentVariationGallery: currentVariation?.gallery || null
-    });
-  }, [currentVariation]);
-
-  useEffect(() => {
-    if (!product) return;
-
-    debugLog('gallery decision', {
-      displayTitle,
-      gallery,
-      mainImage,
-      transitionKey,
-      currentSku: current?.sku || null
-    });
-  }, [product, currentVariation, current, displayTitle, gallery, mainImage, transitionKey]);
 
   useEffect(() => {
     if (!current) return;
@@ -199,78 +138,73 @@ const ProductDetail = () => {
   }, [currentVariation]);
 
   const attributeNames = product && product.product_type === 'variable' && product.variations.length > 0
-    ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) => {
-        if (isColorAttribute(a) && !isColorAttribute(b)) return 1;
-        if (!isColorAttribute(a) && isColorAttribute(b)) return -1;
-        return String(a).localeCompare(String(b));
-      })
+    ? [...new Set(product.variations.flatMap(v => v.attributes.map(a => a.attribute_name)))].sort((a, b) => a === 'Color' ? 1 : -1)
     : [];
 
-  console.log('[ProductDetail] PRODUCT TITLE', product?.title);
-  console.log('[ProductDetail] ATTRIBUTE NAMES', attributeNames);
-  console.log('[ProductDetail] PRODUCT ATTRIBUTES', product?.attributes);
-  console.log('[ProductDetail] FIRST VARIATION ATTRIBUTES', product?.variations?.[0]?.attributes);
-  console.log('[ProductDetail] ALL VARIATIONS', product?.variations);
-
+    console.log('[ProductDetail] PRODUCT TITLE', product?.title);
+console.log('[ProductDetail] ATTRIBUTE NAMES', attributeNames);
+console.log('[ProductDetail] PRODUCT ATTRIBUTES', product?.attributes);
+console.log('[ProductDetail] FIRST VARIATION ATTRIBUTES', product?.variations?.[0]?.attributes);
+console.log('[ProductDetail] ALL VARIATIONS', product?.variations);
   const getAvailableOptions = (attrName) => {
-    if (!product?.variations?.length) return [];
+  if (!product?.variations?.length) return [];
 
-    const otherSelected = { ...selectedAttributes };
-    delete otherSelected[attrName];
+  const otherSelected = { ...selectedAttributes };
+  delete otherSelected[attrName];
 
-    const optionsSet = new Set(
-      product.variations
-        .filter(v =>
-          Object.entries(otherSelected).every(([otherAttr, term]) => {
-            const vAttr = v.attributes.find(a => a.attribute_name === otherAttr);
-            const vTermName = String(vAttr?.term_name || '');
-            return vTermName === term || vTermName.startsWith('Any');
-          })
-        )
-        .flatMap(v => {
-          const thisAttr = v.attributes.find(a => a.attribute_name === attrName);
-          const thisTermName = String(thisAttr?.term_name || '').trim();
-
-          if (!thisTermName || thisTermName.startsWith('Any')) {
-            return [];
-          }
-
-          return [thisTermName];
+  const optionsSet = new Set(
+    product.variations
+      .filter(v =>
+        Object.entries(otherSelected).every(([otherAttr, term]) => {
+          const vAttr = v.attributes.find(a => a.attribute_name === otherAttr);
+          const vTermName = String(vAttr?.term_name || '');
+          return vTermName === term || vTermName.startsWith('Any');
         })
-    );
+      )
+      .flatMap(v => {
+        const thisAttr = v.attributes.find(a => a.attribute_name === attrName);
+        const thisTermName = String(thisAttr?.term_name || '').trim();
 
-    const options = [...optionsSet];
+        if (!thisTermName || thisTermName.startsWith('Any')) {
+          return [];
+        }
 
-    if (isSizeAttribute(attrName)) {
-      options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
-    } else {
-      options.sort();
-    }
+        return [thisTermName];
+      })
+  );
 
-    return options;
-  };
+  const options = [...optionsSet];
+
+  if (isSizeAttribute(attrName)) {
+    options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  } else {
+    options.sort();
+  }
+
+  return options;
+};
 
   useEffect(() => {
-    if (!product || product.product_type !== 'variable') return;
-    if (!attributeNames.length) return;
+  if (!product || product.product_type !== 'variable') return;
+  if (!attributeNames.length) return;
 
-    const hasAnySelection = attributeNames.some(attr => !!selectedAttributes[attr]);
-    if (!hasAnySelection) return;
+  const hasAnySelection = attributeNames.some(attr => !!selectedAttributes[attr]);
+  if (!hasAnySelection) return;
 
-    const matchingVariation = product.variations.find(v =>
-      attributeNames.every(attr => {
-        const sel = selectedAttributes[attr];
-        if (!sel) return true;
+  const matchingVariation = product.variations.find(v =>
+    attributeNames.every(attr => {
+      const sel = selectedAttributes[attr];
+      if (!sel) return true;
 
-        const vAttr = v.attributes.find(a => a.attribute_name === attr);
-        const vTermName = String(vAttr?.term_name || '');
+      const vAttr = v.attributes.find(a => a.attribute_name === attr);
+      const vTermName = String(vAttr?.term_name || '');
 
-        return vTermName === sel || vTermName === `Any ${attr}`;
-      })
-    );
+      return vTermName === sel || vTermName === `Any ${attr}`;
+    })
+  );
 
-    setCurrentVariation(matchingVariation || null);
-  }, [selectedAttributes, product, attributeNames]);
+  setCurrentVariation(matchingVariation || null);
+}, [selectedAttributes, product, attributeNames]);
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable') return;
@@ -289,33 +223,33 @@ const ProductDetail = () => {
   }, [selectedAttributes, product, attributeNames]);
 
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
-  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
-  if (!product) return <div className="product-not-found">Product not found</div>;
+if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !currentVariation) return <div>Loading variation...</div>;
 
-  const handleAttributeChange = (attrName, value) => {
-    setSelectedAttributes(prev => {
-      const next = { ...prev, [attrName]: value };
+const handleAttributeChange = (attrName, value) => {
+  setSelectedAttributes(prev => {
+    const next = { ...prev, [attrName]: value };
 
-      if (isColorAttribute(attrName)) {
-        const nextParams = new URLSearchParams(searchParams);
-        nextParams.set('color', value);
-        navigate(`/product/${product.id}?${nextParams.toString()}`, {
-          replace: true,
-          state: {
-            ...location.state,
-            product,
-            initialColor: value,
-            transitionKey: null
-          }
-        });
-      }
+    if (isColorAttribute(attrName)) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set('color', value);
+navigate(`/product/${product.id}?${nextParams.toString()}`, {
+  replace: true,
+  state: {
+    ...location.state,
+    product,
+    initialColor: value,
+    transitionKey: null
+  }
+});
+    }
 
-      return next;
-    });
+    return next;
+  });
 
-    setCartError(null);
-  };
+  setCartError(null);
+};
 
   const handleAddToCart = async () => {
     if (current?.sku) {
@@ -334,7 +268,7 @@ const ProductDetail = () => {
             quantity,
             image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
             size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
-            color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
+color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
           };
           setCartItems(prev => {
             const variationKey = `${newItem.size}-${newItem.color}`;
@@ -370,213 +304,140 @@ const ProductDetail = () => {
     }
   };
 
-  console.log('[ProductDetail] CURRENT VARIATION GALLERY', currentVariation?.gallery);
-  console.log('[ProductDetail] CURRENT GALLERY USED', gallery);
-  console.log('[ProductDetail] PRODUCT FALLBACK GALLERY', product?.gallery);
+  const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
+const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
+const currentDisplayId = `${product.id}-${currentColor}`;
+const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
-  console.log('[ProductDetail] Rendering with:', {
-    displayTitle,
-    galleryLength: gallery.length,
-    mainImage,
-    stock,
-    currentSku: current?.sku,
-    transitionKey,
+const gallery = current?.gallery || product.gallery || [];
+const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
+const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
+const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
+const stock = current?.stock_quantity ?? 'N/A';
+console.log('[ProductDetail] CURRENT VARIATION GALLERY', currentVariation?.gallery);
+console.log('[ProductDetail] CURRENT GALLERY USED', gallery);
+console.log('[ProductDetail] PRODUCT FALLBACK GALLERY', product?.gallery);
+
+console.log('[ProductDetail] Rendering with:', {
+  displayTitle,
+  galleryLength: gallery.length,
+  mainImage,
+  stock,
+  currentSku: current?.sku,
+  transitionKey,
+});
+
+const isAddDisabled = availableStock !== null && availableStock < quantity;
+
+const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
+const relatedProducts = relatedProductsRaw.map(rel => {
+  const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
+  const p = allProducts.find(p => p.id === normalizedRel.productId);
+  if (!p) return null;
+  const color = normalizedRel.selectedColor;
+  if (color) {
+    const v = p.variations.find(v => v.attributes.some(a => isColorAttribute(a.attribute_name) && a.term_name === color));
+    return {
+      ...p,
+      displayId: `${p.id}-${color}`,
+      selectedColor: color,
+      displayTitle: v?.title || `${p.title} - ${color}`,
+      displayPrice: v?.price || p.price,
+      displayGallery: v?.gallery || p.gallery,
+    };
+  } else {
+    return {
+      ...p,
+      displayId: p.id,
+      selectedColor: null,
+      displayTitle: p.title,
+      displayPrice: p.price,
+      displayGallery: p.gallery,
+    };
+  }
+}).filter(Boolean);
+
+const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
+const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
+
+const handleRelatedClick = (relItem) => {
+  const originalProduct = allProducts.find(p => p.id === relItem.id);
+  navigate(`/product/${relItem.id}`, { 
+    state: { 
+      product: originalProduct, 
+      initialColor: relItem.selectedColor, 
+      transitionKey: `product-image-${relItem.displayId}` // Consistent layoutId
+    } 
   });
+};
 
-  const isAddDisabled = availableStock !== null && availableStock < quantity;
-
-  const relatedProductsRaw = product.product_type === 'variable' ? currentVariation?.related_products || [] : product.related_products || [];
-  const relatedProducts = relatedProductsRaw.map(rel => {
-    const normalizedRel = typeof rel === 'string' ? { productId: rel } : rel;
-    const p = allProducts.find(p => p.id === normalizedRel.productId);
-    if (!p) return null;
-    const color = normalizedRel.selectedColor;
-    if (color) {
-      const v = p.variations.find(v => v.attributes.some(a => isColorAttribute(a.attribute_name) && a.term_name === color));
-      return {
-        ...p,
-        displayId: `${p.id}-${color}`,
-        selectedColor: color,
-        displayTitle: v?.title || `${p.title} - ${color}`,
-        displayPrice: v?.price || p.price,
-        displayGallery: v?.gallery || p.gallery,
-      };
-    } else {
-      return {
-        ...p,
-        displayId: p.id,
-        selectedColor: null,
-        displayTitle: p.title,
-        displayPrice: p.price,
-        displayGallery: p.gallery,
-      };
-    }
-  }).filter(Boolean);
-
-  const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
-  const getDisplayPrice = (relItem) => relItem.displayPrice || 0;
-
-  const handleRelatedClick = (relItem) => {
-    const originalProduct = allProducts.find(p => p.id === relItem.id);
-    navigate(`/product/${relItem.id}`, {
-      state: {
-        product: originalProduct,
-        initialColor: relItem.selectedColor,
-        transitionKey: `product-image-${relItem.displayId}`
-      }
-    });
-  };
-
-  return (
-    <>
-      <motion.div className="product-detail-container">
-        <div className="images-container">
-          <div className="product-image-gallery">
-            {gallery.length > 0 ? (
-              gallery.map((img, idx) => {
-                const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? transitionKey : undefined;
-
-                debugLog('render gallery image', {
-                  idx,
-                  img,
-                  transitionKey,
-                  isShared: idx === 0,
-                  currentSku: current?.sku || null
-                });
-
-                return (
-                  <motion.img
-                    initial={false}
-                    ref={el => galleryRefs.current.set(imageKey, el)}
-                    key={imageKey}
-                    layoutId={layoutIdValue}
-                    src={img}
-                    alt={`${displayTitle} ${idx + 1}`}
-                    className="product-gallery-image"
-                    onLoadStart={() => debugLog('gallery image load start', {
-                      idx,
-                      img,
-                      imageKey
-                    })}
-                    onError={e => {
-                      debugLog('gallery image error', {
-                        idx,
-                        img,
-                        imageKey,
-                        failedSrc: e.target.currentSrc || e.target.src
-                      });
-                      e.target.src = '/api/Uploads/fallback-image.png';
-                    }}
-                    onLoad={e => {
-                      debugLog('gallery image loaded', {
-                        idx,
-                        img,
-                        imageKey,
-                        currentSrc: e.target.currentSrc || e.target.src,
-                        naturalWidth: e.target.naturalWidth,
-                        naturalHeight: e.target.naturalHeight
-                      });
-                    }}
-                    transition={{ duration: 0.5 }}
-                    onAnimationStart={() => debugLog('gallery animation start', {
-                      idx,
-                      img,
-                      imageKey
-                    })}
-                    onAnimationComplete={() => debugLog('gallery animation complete', {
-                      idx,
-                      img,
-                      imageKey
-                    })}
-                    onLayoutAnimationStart={() => {
-                      debugLog('gallery layout animation start', {
-                        idx,
-                        img,
-                        imageKey,
-                        layoutIdValue
-                      });
-                      if (layoutIdValue) {
-                        const el = galleryRefs.current.get(imageKey);
-                        if (el) el.style.zIndex = '10000';
-                      }
-                    }}
-                    onLayoutAnimationComplete={() => {
-                      debugLog('gallery layout animation complete', {
-                        idx,
-                        img,
-                        imageKey,
-                        layoutIdValue
-                      });
-                      if (layoutIdValue) {
-                        const el = galleryRefs.current.get(imageKey);
-                        if (el) el.style.zIndex = '';
-                      }
-                    }}
-                  />
-                );
-              })
-            ) : (
-              <motion.img
-                initial={false}
-                ref={mainImageRef}
-                layoutId={transitionKey}
-                src={mainImage}
-                alt={displayTitle}
-                className="product-main-image"
-                onLoadStart={() => debugLog('fallback main image load start', {
-                  mainImage,
-                  transitionKey
-                })}
-                onError={e => {
-                  debugLog('fallback main image error', {
-                    mainImage,
-                    failedSrc: e.target.currentSrc || e.target.src
-                  });
-                  e.target.src = '/api/Uploads/fallback-image.png';
-                }}
-                onLoad={e => {
-                  debugLog('fallback main image loaded', {
-                    mainImage,
-                    currentSrc: e.target.currentSrc || e.target.src,
-                    naturalWidth: e.target.naturalWidth,
-                    naturalHeight: e.target.naturalHeight
-                  });
-                }}
-                transition={{ duration: 0.5 }}
-                onAnimationStart={() => debugLog('fallback main animation start', {
-                  mainImage,
-                  transitionKey
-                })}
-                onAnimationComplete={() => debugLog('fallback main animation complete', {
-                  mainImage,
-                  transitionKey
-                })}
-                onLayoutAnimationStart={() => {
-                  debugLog('fallback main layout animation start', {
-                    mainImage,
-                    transitionKey
-                  });
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
-                }}
-                onLayoutAnimationComplete={() => {
-                  debugLog('fallback main layout animation complete', {
-                    mainImage,
-                    transitionKey
-                  });
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
-                }}
-              />
-            )}
-          </div>
+return (
+  <>
+    <motion.div className="product-detail-container">
+      <div className="images-container">
+        <div className="product-image-gallery">
+          {gallery.length > 0 ? (
+            gallery.map((img, idx) => {
+              const imageKey = `${current?.sku || product.id}-${idx}`;
+              const layoutIdValue = idx === 0 ? transitionKey : undefined;
+              return (
+                <motion.img
+                  initial={false}
+                  ref={el => galleryRefs.current.set(imageKey, el)}
+                  key={imageKey}
+                  layoutId={layoutIdValue}
+                  src={img}
+                  alt={`${displayTitle} ${idx + 1}`}
+                  className="product-gallery-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
+                  transition={{ duration: 0.5 }}
+                  onAnimationStart={() => console.log('[ProductDetail] Animation start for', imageKey)}
+                  onAnimationComplete={() => console.log('[ProductDetail] Animation complete for', imageKey)}
+                  onLayoutAnimationStart={() => {
+                    if (layoutIdValue) {
+                      const el = galleryRefs.current.get(imageKey);
+                      if (el) el.style.zIndex = '10000';
+                    }
+                  }}
+                  onLayoutAnimationComplete={() => {
+                    if (layoutIdValue) {
+                      const el = galleryRefs.current.get(imageKey);
+                      if (el) el.style.zIndex = '';
+                    }
+                  }}
+                />
+              );
+            })
+          ) : (
+            <motion.img
+              initial={false}
+              ref={mainImageRef}
+              layoutId={transitionKey}
+              src={mainImage}
+              alt={displayTitle}
+              className="product-main-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+              onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
+              transition={{ duration: 0.5 }}
+              onAnimationStart={() => console.log('[ProductDetail] Main animation start')}
+              onAnimationComplete={() => console.log('[ProductDetail] Main animation complete')}
+              onLayoutAnimationStart={() => {
+                if (mainImageRef.current) mainImageRef.current.style.zIndex = '10000';
+              }}
+              onLayoutAnimationComplete={() => {
+                if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+              }}
+            />
+          )}
         </div>
-
-        <motion.div
-          className="details-container"
-          initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+      </div>
+<motion.div
+  className="details-container"
+  initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
+  animate={{ x: 0 }}
+  transition={{ duration: 0.5 }}
+>
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
             <p
@@ -645,7 +506,6 @@ const ProductDetail = () => {
           </div>
         </motion.div>
       </motion.div>
-
       {relatedProducts.length > 0 && (
         <div className="related-products-container">
           <h2 className="related-products-title">Related Products</h2>
