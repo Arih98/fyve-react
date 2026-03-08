@@ -1,6 +1,6 @@
 // ProductDetail.js
 import React, { useEffect, useState, useRef, useLayoutEffect, useContext } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { CartContext } from './CartContext';
@@ -12,6 +12,7 @@ const ProductDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id: productId } = useParams();
+  const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
@@ -19,6 +20,8 @@ const ProductDetail = () => {
   const fallbackProduct = location.state?.product;
 const { product: loadedProduct, loading, error } = useProduct(productId || fallbackProduct?.id);
 const product = loadedProduct || fallbackProduct;
+const urlColor = searchParams.get('color') || '';
+const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
   const [scrollDirection, setScrollDirection] = useState('down');
 
   useEffect(() => {
@@ -51,7 +54,7 @@ useEffect(() => {
     return;
   }
 
-  const initialColor = location.state?.initialColor?.trim().toLowerCase() || '';
+const initialColor = initialColorValue;
 
   const initialVariation = product.variations.find(v => {
     const colorAttr = v.attributes.find(a => a.attribute_name === 'Color');
@@ -78,7 +81,7 @@ useEffect(() => {
     variationId: initialVariation?.id,
     title: initialVariation?.title
   });
-}, [product, location.state]);
+}, [product, initialColorValue]);
 
   const [quantity, setQuantity] = useState(1);
   const [availableStock, setAvailableStock] = useState(null);
