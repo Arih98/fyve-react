@@ -135,34 +135,44 @@ const initialColor = initialColorValue;
     : [];
 
   const getAvailableOptions = (attrName) => {
-    const otherSelected = { ...selectedAttributes };
-    delete otherSelected[attrName];
-    const optionsSet = new Set(
-      product.variations
-        .filter(v =>
-          Object.entries(otherSelected).every(([otherAttr, term]) => {
-            const vAttr = v.attributes.find(a => a.attribute_name === otherAttr);
-            return vAttr?.term_name === term || vAttr?.term_name.startsWith('Any');
-          })
-        )
-        .flatMap(v => {
-          const thisAttr = v.attributes.find(a => a.attribute_name === attrName);
-          if (thisAttr && !thisAttr.term_name.startsWith('Any')) {
-            return [thisAttr.term_name];
-          }
-          return [];
-        })
-    );
-    const options = [...optionsSet];
-    if (attrName === 'Size') {
-      options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
-    } else {
-      options.sort();
-    }
-    return options;
-  };
+  if (!product?.variations?.length) return [];
 
-  useEffect(() => {
+  const otherSelected = { ...selectedAttributes };
+  delete otherSelected[attrName];
+
+  const optionsSet = new Set(
+    product.variations
+      .filter(v =>
+        Object.entries(otherSelected).every(([otherAttr, term]) => {
+          const vAttr = v.attributes.find(a => a.attribute_name === otherAttr);
+          const vTermName = String(vAttr?.term_name || '');
+          return vTermName === term || vTermName.startsWith('Any');
+        })
+      )
+      .flatMap(v => {
+        const thisAttr = v.attributes.find(a => a.attribute_name === attrName);
+        const thisTermName = String(thisAttr?.term_name || '').trim();
+
+        if (!thisTermName || thisTermName.startsWith('Any')) {
+          return [];
+        }
+
+        return [thisTermName];
+      })
+  );
+
+  const options = [...optionsSet];
+
+  if (attrName === 'Size') {
+    options.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  } else {
+    options.sort();
+  }
+
+  return options;
+};
+
+  useEffect(() => {useEffect(() => {
   if (!product || product.product_type !== 'variable') return;
   if (!attributeNames.length) return;
 
@@ -173,8 +183,11 @@ const initialColor = initialColorValue;
     attributeNames.every(attr => {
       const sel = selectedAttributes[attr];
       if (!sel) return true;
+
       const vAttr = v.attributes.find(a => a.attribute_name === attr);
-      return vAttr && (vAttr.term_name === sel || vAttr.term_name === `Any ${attr}`);
+      const vTermName = String(vAttr?.term_name || '');
+
+      return vTermName === sel || vTermName === `Any ${attr}`;
     })
   );
 
