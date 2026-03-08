@@ -308,12 +308,13 @@ color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)
 const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
 const currentDisplayId = `${product.id}-${currentColor}`;
 const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
+const hasSharedImageTransition = !!location.state?.transitionKey;
 
 const gallery = current?.gallery || product.gallery || [];
 const mainImage = gallery[0] || product.archiveImage || '/api/Uploads/fallback-image.png';
 useEffect(() => {
-  setIsTransitionImageReady(false);
-}, [transitionKey, current?.sku, product?.id]);
+  setIsTransitionImageReady(!hasSharedImageTransition);
+}, [hasSharedImageTransition, current?.sku, product?.id]);
 const displayTitle = product.product_type === 'variable' && currentVariation?.title ? currentVariation.title : product.title;
 const displayDescription = product.product_type === 'variable' && currentVariation?.description ? currentVariation.description : product.description;
 const stock = current?.stock_quantity ?? 'N/A';
@@ -392,7 +393,7 @@ return (
                   src={img}
                   alt={`${displayTitle} ${idx + 1}`}
                   className="product-gallery-image"
-style={idx === 0 && layoutIdValue ? { opacity: isTransitionImageReady ? 1 : 0 } : undefined}
+style={idx === 0 && hasSharedImageTransition ? { opacity: isTransitionImageReady ? 1 : 0 } : undefined}
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                   onLoad={e => console.log('[ProductDetail] Image loaded', { src: e.target.src })}
                   transition={{ duration: 0.5 }}
@@ -422,7 +423,7 @@ onLayoutAnimationStart={() => {
               src={mainImage}
               alt={displayTitle}
               className="product-main-image"
-              style={transitionKey ? { opacity: isTransitionImageReady ? 1 : 0 } : undefined}
+              style={hasSharedImageTransition ? { opacity: isTransitionImageReady ? 1 : 0 } : undefined}
               onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
               onLoad={e => console.log('[ProductDetail] Main image loaded', { src: e.target.src })}
               transition={{ duration: 0.5 }}
