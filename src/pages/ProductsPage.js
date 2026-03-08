@@ -17,17 +17,21 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
-  const display = products.map((product) => ({
-    ...product,
-    displayId: product.id,
-    parentId: product.id,
-    selectedColor: null,
-    gallery: product.thumbnail ? [product.thumbnail, product.hoverImage].filter(Boolean) : [],
-    title: product.name,
-    image: product.thumbnail,
-    rawPrice: product.price,
-    price: product.price?.current ?? 0
-  }));
+const display = products.map((product) => ({
+  ...product,
+  displayId: product.displayId || product.id,
+  parentId: product.parentId || product.id,
+  selectedColor: product.selectedColor || null,
+  gallery: product.gallery?.length
+    ? product.gallery
+    : product.thumbnail
+      ? [product.thumbnail, product.hoverImage].filter(Boolean)
+      : [],
+  title: product.title || product.name,
+  image: product.thumbnail,
+  rawPrice: product.price,
+  price: product.price?.current ?? 0
+}));
 
   const handleProductClick = (item, e) => {
     console.log('[Products] Product click:', {
