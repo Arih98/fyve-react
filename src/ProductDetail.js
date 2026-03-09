@@ -11,6 +11,7 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
+
 const getRectData = (el) => {
   if (!el) return null;
   const r = el.getBoundingClientRect();
@@ -46,6 +47,7 @@ const trackFrames = (label, wrapperEl, imageEl, frameCount = 20) => {
   };
   requestAnimationFrame(tick);
 };
+
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
   const location = useLocation();
@@ -114,9 +116,11 @@ const ProductDetail = () => {
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
 
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
-  const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
-  const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
-  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
+  const selectedColorValue = selectedColorKey ? selectedAttributes[selectedColorKey] : null;
+  const currentColor = selectedColorValue || initialColorValue || 'default';
+  const normalizedCurrentColor = String(currentColor).trim();
+  const currentDisplayId = `${product?.id || fallbackProduct?.id || 'unknown'}-${normalizedCurrentColor}`;
+  const transitionKey = location.state?.transitionKey ?? `product-image-${currentDisplayId}`;
 
   const gallery = Array.isArray(current?.gallery)
     ? current.gallery
@@ -132,6 +136,16 @@ const ProductDetail = () => {
   const displayDescription = product?.product_type === 'variable'
     ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
     : (product?.description || product?.shortDescription || '');
+
+  const hasStableSharedImage =
+    !!product &&
+    !!transitionKey &&
+    !!mainImage &&
+    (
+      !isVariableProduct ||
+      !!effectiveVariation ||
+      !!initialColorValue
+    );
 
   useEffect(() => {
     console.log('[PDP] route state', {
@@ -164,28 +178,52 @@ const ProductDetail = () => {
     mainImage,
     currentVariation?.id
   ]);
-useEffect(() => {
-  const firstKey = `${current?.sku || product?.id}-0`;
-  const wrapperEl = galleryRefs.current.get(firstKey) || mainImageRef.current || null;
-  const imageEl =
-    wrapperEl?.querySelector('.product-gallery-image, .product-main-image') || null;
 
-  logElementState('[PDP] mounted first shared element', wrapperEl, imageEl);
+  useEffect(() => {
+    const firstKey = `${current?.sku || product?.id}-0`;
+    const wrapperEl = galleryRefs.current.get(firstKey) || mainImageRef.current || null;
+    const imageEl =
+      wrapperEl?.querySelector('.product-gallery-image, .product-main-image') || null;
 
-  requestAnimationFrame(() => {
-    logElementState('[PDP] mounted first shared element rAF 1', wrapperEl, imageEl);
-  });
+    logElementState('[PDP] mounted first shared element', wrapperEl, imageEl);
 
-  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      logElementState('[PDP] mounted first shared element rAF 2', wrapperEl, imageEl);
+      logElementState('[PDP] mounted first shared element rAF 1', wrapperEl, imageEl);
     });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        logElementState('[PDP] mounted first shared element rAF 2', wrapperEl, imageEl);
+      });
+    });
+  }, [product?.id, current?.sku, transitionKey]);
+
+  console.log('[PDP] shared identity check', {
+    productId: product?.id,
+    initialColorValue,
+    currentColor,
+    currentDisplayId,
+    transitionKey,
+    effectiveVariationId: effectiveVariation?.id,
+    mainImage,
+    hasStableSharedImage
   });
-}, [product?.id, current?.sku, transitionKey]);
-  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
-  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
-  if (!product) return <div className="product-not-found">Product not found</div>;
-  if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
+
+  if (loading && !product && !fallbackProduct) {
+    return <div className="product-not-found">Loading product...</div>;
+  }
+
+  if (error && !product && !fallbackProduct) {
+    return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+  }
+
+  if (!product && !fallbackProduct) {
+    return <div className="product-not-found">Product not found</div>;
+  }
+
+  if ((product || fallbackProduct)?.product_type === 'variable' && !effectiveVariation && !initialColorValue) {
+    return <div>Loading variation...</div>;
+  }
 
   const handleAddToCart = () => {
     const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
@@ -224,22 +262,7 @@ useEffect(() => {
   };
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
-const hasStableSharedImage =
-  !!product &&
-  !!transitionKey &&
-  !!mainImage &&
-  (!isVariableProduct || !!effectiveVariation || !!initialColorValue);
 
-console.log('[PDP] shared identity check', {
-  productId: product?.id,
-  initialColorValue,
-  currentColor,
-  currentDisplayId,
-  transitionKey,
-  effectiveVariationId: effectiveVariation?.id,
-  mainImage,
-  hasStableSharedImage
-});
   return (
     <>
       <motion.div className="product-detail-container">
@@ -248,103 +271,103 @@ console.log('[PDP] shared identity check', {
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
                 const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? transitionKey : undefined;
+                const layoutIdValue = idx === 0 && hasStableSharedImage ? transitionKey : undefined;
 
                 return (
                   <motion.div
-  initial={false}
-  ref={el => {
-    galleryRefs.current.set(imageKey, el);
-    if (el) {
-      const imageEl = el.querySelector('.product-gallery-image');
-      logElementState('[PDP] gallery wrapper ref set', el, imageEl);
-    }
-  }}
-  key={imageKey}
-  layoutId={layoutIdValue}
-  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-  transition={{ duration: 0.5 }}
-  onLayoutAnimationStart={() => {
-    const wrapperEl = galleryRefs.current.get(imageKey);
-    const imageEl = wrapperEl?.querySelector('.product-gallery-image') || null;
+                    initial={false}
+                    ref={el => {
+                      galleryRefs.current.set(imageKey, el);
+                      if (el) {
+                        const imageEl = el.querySelector('.product-gallery-image');
+                        logElementState('[PDP] gallery wrapper ref set', el, imageEl);
+                      }
+                    }}
+                    key={imageKey}
+                    layoutId={layoutIdValue}
+                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+                    transition={{ duration: 0.5 }}
+                    onLayoutAnimationStart={() => {
+                      const wrapperEl = galleryRefs.current.get(imageKey);
+                      const imageEl = wrapperEl?.querySelector('.product-gallery-image') || null;
 
-    logElementState('[PDP] gallery layout animation start', wrapperEl, imageEl);
-    trackFrames('[PDP] gallery animating', wrapperEl, imageEl, 20);
+                      logElementState('[PDP] gallery layout animation start', wrapperEl, imageEl);
+                      trackFrames('[PDP] gallery animating', wrapperEl, imageEl, 20);
 
-    if (layoutIdValue && wrapperEl) {
-      wrapperEl.style.zIndex = '10000';
-    }
-  }}
-  onLayoutAnimationComplete={() => {
-    const wrapperEl = galleryRefs.current.get(imageKey);
-    const imageEl = wrapperEl?.querySelector('.product-gallery-image') || null;
+                      if (layoutIdValue && wrapperEl) {
+                        wrapperEl.style.zIndex = '10000';
+                      }
+                    }}
+                    onLayoutAnimationComplete={() => {
+                      const wrapperEl = galleryRefs.current.get(imageKey);
+                      const imageEl = wrapperEl?.querySelector('.product-gallery-image') || null;
 
-    logElementState('[PDP] gallery layout animation complete', wrapperEl, imageEl);
+                      logElementState('[PDP] gallery layout animation complete', wrapperEl, imageEl);
 
-    if (layoutIdValue && wrapperEl) {
-      wrapperEl.style.zIndex = '';
-    }
-  }}
->
-  <img
-    src={img}
-    alt={`${displayTitle} ${idx + 1}`}
-    className="product-gallery-image"
-    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-    onLoad={e => {
-      const wrapperEl = galleryRefs.current.get(imageKey);
-      logElementState('[PDP] gallery image loaded', wrapperEl, e.target);
-    }}
-  />
-</motion.div>
+                      if (layoutIdValue && wrapperEl) {
+                        wrapperEl.style.zIndex = '';
+                      }
+                    }}
+                  >
+                    <img
+                      src={img}
+                      alt={`${displayTitle} ${idx + 1}`}
+                      className="product-gallery-image"
+                      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                      onLoad={e => {
+                        const wrapperEl = galleryRefs.current.get(imageKey);
+                        logElementState('[PDP] gallery image loaded', wrapperEl, e.target);
+                      }}
+                    />
+                  </motion.div>
                 );
               })
             ) : (
               <motion.div
-  initial={false}
-  ref={el => {
-    mainImageRef.current = el;
-    if (el) {
-      const imageEl = el.querySelector('.product-main-image');
-      logElementState('[PDP] main wrapper ref set', el, imageEl);
-    }
-  }}
-  layoutId={transitionKey}
-  className="product-main-image-wrapper"
-  transition={{ duration: 0.5 }}
-  onLayoutAnimationStart={() => {
-    const wrapperEl = mainImageRef.current;
-    const imageEl = wrapperEl?.querySelector('.product-main-image') || null;
+                initial={false}
+                ref={el => {
+                  mainImageRef.current = el;
+                  if (el) {
+                    const imageEl = el.querySelector('.product-main-image');
+                    logElementState('[PDP] main wrapper ref set', el, imageEl);
+                  }
+                }}
+                layoutId={hasStableSharedImage ? transitionKey : undefined}
+                className="product-main-image-wrapper"
+                transition={{ duration: 0.5 }}
+                onLayoutAnimationStart={() => {
+                  const wrapperEl = mainImageRef.current;
+                  const imageEl = wrapperEl?.querySelector('.product-main-image') || null;
 
-    logElementState('[PDP] main layout animation start', wrapperEl, imageEl);
-    trackFrames('[PDP] main animating', wrapperEl, imageEl, 20);
+                  logElementState('[PDP] main layout animation start', wrapperEl, imageEl);
+                  trackFrames('[PDP] main animating', wrapperEl, imageEl, 20);
 
-    if (wrapperEl) {
-      wrapperEl.style.zIndex = '10000';
-    }
-  }}
-  onLayoutAnimationComplete={() => {
-    const wrapperEl = mainImageRef.current;
-    const imageEl = wrapperEl?.querySelector('.product-main-image') || null;
+                  if (wrapperEl) {
+                    wrapperEl.style.zIndex = '10000';
+                  }
+                }}
+                onLayoutAnimationComplete={() => {
+                  const wrapperEl = mainImageRef.current;
+                  const imageEl = wrapperEl?.querySelector('.product-main-image') || null;
 
-    logElementState('[PDP] main layout animation complete', wrapperEl, imageEl);
+                  logElementState('[PDP] main layout animation complete', wrapperEl, imageEl);
 
-    if (wrapperEl) {
-      wrapperEl.style.zIndex = '';
-    }
-  }}
->
-  <img
-    src={mainImage}
-    alt={displayTitle}
-    className="product-main-image"
-    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-    onLoad={e => {
-      const wrapperEl = mainImageRef.current;
-      logElementState('[PDP] main image loaded', wrapperEl, e.target);
-    }}
-  />
-</motion.div>
+                  if (wrapperEl) {
+                    wrapperEl.style.zIndex = '';
+                  }
+                }}
+              >
+                <img
+                  src={mainImage}
+                  alt={displayTitle}
+                  className="product-main-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLoad={e => {
+                    const wrapperEl = mainImageRef.current;
+                    logElementState('[PDP] main image loaded', wrapperEl, e.target);
+                  }}
+                />
+              </motion.div>
             )}
           </div>
         </div>

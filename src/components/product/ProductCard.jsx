@@ -2,42 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ProductPrice from './ProductPrice';
 
-const getRectData = (el) => {
-  if (!el) return null;
-  const r = el.getBoundingClientRect();
-  return {
-    x: Number(r.x.toFixed(2)),
-    y: Number(r.y.toFixed(2)),
-    width: Number(r.width.toFixed(2)),
-    height: Number(r.height.toFixed(2)),
-    top: Number(r.top.toFixed(2)),
-    left: Number(r.left.toFixed(2)),
-    bottom: Number(r.bottom.toFixed(2)),
-    right: Number(r.right.toFixed(2))
-  };
-};
-
-const logElementState = (label, wrapperEl, imageEl) => {
-  console.log(label, {
-    wrapper: getRectData(wrapperEl),
-    image: getRectData(imageEl)
-  });
-};
-
-const trackFrames = (label, wrapperEl, imageEl, frameCount = 20) => {
-  let frame = 0;
-  const tick = () => {
-    if (!wrapperEl) return;
-    console.log(`${label} frame ${frame}`, {
-      wrapper: getRectData(wrapperEl),
-      image: getRectData(imageEl)
-    });
-    frame += 1;
-    if (frame < frameCount) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-};
-
 const ProductCard = ({
   item,
   index,
@@ -56,19 +20,12 @@ const ProductCard = ({
     <div
       key={`${item.displayId}-${index}`}
       onClick={(e) => {
-        const wrapperEl = imageRefs.current.get(item.displayId);
-        const imageEl = wrapperEl?.querySelector('.product-image') || null;
-
-        logElementState('[PLP] before navigation', wrapperEl, imageEl);
-        trackFrames('[PLP] after click', wrapperEl, imageEl, 12);
-
         console.log('[PLP] card click', {
           displayId: item.displayId,
           layoutId,
           title: item.title,
           image: imageSrc
         });
-
         onClick(item, e);
       }}
       className="product-card"
@@ -79,31 +36,37 @@ const ProductCard = ({
         ref={el => {
           imageRefs.current.set(item.displayId, el);
           if (el) {
-            const imageEl = el.querySelector('.product-image');
-            logElementState('[PLP] wrapper ref set', el, imageEl);
+            console.log('[PLP] wrapper ref set', {
+              displayId: item.displayId,
+              layoutId,
+              rect: el.getBoundingClientRect()
+            });
           }
         }}
         id={`img-${item.displayId}`}
         className="product-image-wrapper"
         onLayoutAnimationStart={() => {
-          const wrapperEl = imageRefs.current.get(item.displayId);
-          const imageEl = wrapperEl?.querySelector('.product-image') || null;
-
-          logElementState('[PLP] layout animation start', wrapperEl, imageEl);
-          trackFrames('[PLP] animating', wrapperEl, imageEl, 20);
-
-          if (wrapperEl) {
-            wrapperEl.style.zIndex = '10000';
+          const el = imageRefs.current.get(item.displayId);
+          console.log('[PLP] layout animation start', {
+            displayId: item.displayId,
+            layoutId,
+            hasElement: !!el,
+            rect: el ? el.getBoundingClientRect() : null
+          });
+          if (el) {
+            el.style.zIndex = '10000';
           }
         }}
         onLayoutAnimationComplete={() => {
-          const wrapperEl = imageRefs.current.get(item.displayId);
-          const imageEl = wrapperEl?.querySelector('.product-image') || null;
-
-          logElementState('[PLP] layout animation complete', wrapperEl, imageEl);
-
-          if (wrapperEl) {
-            wrapperEl.style.zIndex = '';
+          const el = imageRefs.current.get(item.displayId);
+          console.log('[PLP] layout animation complete', {
+            displayId: item.displayId,
+            layoutId,
+            hasElement: !!el,
+            rect: el ? el.getBoundingClientRect() : null
+          });
+          if (el) {
+            el.style.zIndex = '';
           }
         }}
       >
@@ -112,10 +75,14 @@ const ProductCard = ({
           alt={item.title}
           className="product-image"
           onError={e => { e.target.src = placeholderImage; }}
-          onLoad={e => {
-            const wrapperEl = imageRefs.current.get(item.displayId);
-            logElementState('[PLP] image loaded', wrapperEl, e.target);
-          }}
+          onLoad={e => console.log('[PLP] image loaded', {
+            displayId: item.displayId,
+            layoutId,
+            src: e.target.currentSrc || e.target.src,
+            naturalWidth: e.target.naturalWidth,
+            naturalHeight: e.target.naturalHeight,
+            rect: e.target.getBoundingClientRect()
+          })}
         />
       </motion.div>
 
