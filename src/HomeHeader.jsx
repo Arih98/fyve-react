@@ -254,7 +254,7 @@ const HomeHeader = () => {
         </div>
         <div className="header-logo">
           <img
-            src="/api/Uploads/FYVEDarkLogoMark.svg"
+            src="/assets/FYVE-Dark-Logo.png"
             alt="FYVE Coloured Logo"
             onClick={() => navigate('/')}
           />
