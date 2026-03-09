@@ -339,12 +339,12 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
         </div>
         <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
           SHOP NOW
-          <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
+          <img src="/assets/home/FYVE-Arrow-Icon.svg" alt="" />
         </a>
         <div className="section1-new-text">
           We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
         </div>
-        <img src="/api/Uploads/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
+        <img src="/assets/home/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
       </div>
       <div className="section-2">
         <div className="section2-overlay-text">SS25</div>
