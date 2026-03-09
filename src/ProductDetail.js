@@ -224,6 +224,12 @@ useEffect(() => {
   };
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
+const hasStableSharedImage =
+  !!product &&
+  !!transitionKey &&
+  !!mainImage &&
+  (!isVariableProduct || !!effectiveVariation || !!initialColorValue);
+
 console.log('[PDP] shared identity check', {
   productId: product?.id,
   initialColorValue,
