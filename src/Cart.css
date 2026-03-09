@@ -246,7 +246,7 @@ li.cart-item {
   font-family: quasimoda, sans-serif;
   font-weight: 500;
   line-height: 1.5em;
-  max-width: 100%;
+  max-width: 65%;
   overflow-wrap: break-word;
   white-space: normal;
 }

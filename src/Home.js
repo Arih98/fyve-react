@@ -14,6 +14,27 @@ import { LenisContext } from './App';
 gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
 const Home = () => {
+  useEffect(() => {
+  console.log("Image debug starting");
+
+  const imgs = document.querySelectorAll("img");
+
+  imgs.forEach((img) => {
+    console.log("Checking image:", img.src);
+
+    if (img.complete) {
+      console.log("Already loaded:", img.src);
+    }
+
+    img.addEventListener("load", () => {
+      console.log("Loaded successfully:", img.src);
+    });
+
+    img.addEventListener("error", () => {
+      console.error("Failed to load:", img.src);
+    });
+  });
+}, []);
   const lottieRef = useRef();
   const hasAnimated = useRef(false);
   const introDone = useRef(false);
