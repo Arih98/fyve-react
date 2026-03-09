@@ -30,21 +30,66 @@ const ProductCard = ({
       }}
       className="product-card"
     >
-      <motion.img
+      <motion.div
         initial={false}
         layoutId={layoutId}
         ref={el => {
           imageRefs.current.set(item.displayId, el);
+          if (el) {
+            console.log('[PLP] wrapper ref set', {
+              displayId: item.displayId,
+              layoutId,
+              rect: el.getBoundingClientRect()
+            });
+          }
         }}
         id={`img-${item.displayId}`}
-        src={imageSrc}
-        alt={item.title}
-        className="product-image-box"
-        onError={e => { e.target.src = placeholderImage; }}
-      />
+        className="product-image-wrapper"
+        onLayoutAnimationStart={() => {
+          const el = imageRefs.current.get(item.displayId);
+          console.log('[PLP] layout animation start', {
+            displayId: item.displayId,
+            layoutId,
+            hasElement: !!el,
+            rect: el ? el.getBoundingClientRect() : null
+          });
+          if (el) {
+            el.style.zIndex = '10000';
+          }
+        }}
+        onLayoutAnimationComplete={() => {
+          const el = imageRefs.current.get(item.displayId);
+          console.log('[PLP] layout animation complete', {
+            displayId: item.displayId,
+            layoutId,
+            hasElement: !!el,
+            rect: el ? el.getBoundingClientRect() : null
+          });
+          if (el) {
+            el.style.zIndex = '';
+          }
+        }}
+      >
+        <img
+          src={imageSrc}
+          alt={item.title}
+          className="product-image"
+          onError={e => { e.target.src = placeholderImage; }}
+          onLoad={e => console.log('[PLP] image loaded', {
+            displayId: item.displayId,
+            layoutId,
+            src: e.target.currentSrc || e.target.src,
+            naturalWidth: e.target.naturalWidth,
+            naturalHeight: e.target.naturalHeight,
+            rect: e.target.getBoundingClientRect()
+          })}
+        />
+      </motion.div>
 
       <div className="product-info">
-        <h3 className="product-title">{item.title}</h3>
+        <h3 className="product-title">
+          {item.title}
+        </h3>
         <ProductPrice price={item.price} />
       </div>
     </div>

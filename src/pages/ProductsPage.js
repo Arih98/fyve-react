@@ -43,19 +43,15 @@ const ProductsPage = () => {
       isMenuOpen,
     });
 
-    const imgElement = document.getElementById(`img-${item.displayId}`);
-    if (imgElement) {
-      console.log('[Products] Source image details on click:', {
-        src: imgElement.src,
-        clientWidth: imgElement.clientWidth,
-        clientHeight: imgElement.clientHeight,
-        naturalWidth: imgElement.naturalWidth,
-        naturalHeight: imgElement.naturalHeight,
-        boundingRect: imgElement.getBoundingClientRect(),
-        complete: imgElement.complete,
+    const wrapperElement = document.getElementById(`img-${item.displayId}`);
+    if (wrapperElement) {
+      console.log('[Products] Source wrapper details on click:', {
+        clientWidth: wrapperElement.clientWidth,
+        clientHeight: wrapperElement.clientHeight,
+        boundingRect: wrapperElement.getBoundingClientRect(),
       });
     } else {
-      console.warn('[Products] Source image element not found for', item.displayId);
+      console.warn('[Products] Source wrapper element not found for', item.displayId);
     }
 
     const targetProduct = products.find((p) => p.id === item.parentId);

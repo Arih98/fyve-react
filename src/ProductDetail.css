@@ -18,13 +18,21 @@
   gap: 20px;
 }
 
-.product-gallery-image-box,
-.product-main-image-box {
+.product-gallery-image-wrapper,
+.product-main-image-wrapper {
+  position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  display: block;
   background: #f7f7f7;
+  overflow: hidden;
+}
+
+.product-gallery-image,
+.product-main-image {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  display: block;
   padding: 24px;
   box-sizing: border-box;
 }

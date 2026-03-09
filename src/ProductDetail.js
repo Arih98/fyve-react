@@ -80,11 +80,9 @@ const ProductDetail = () => {
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
 
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
-  const selectedColorValue = selectedColorKey ? selectedAttributes[selectedColorKey] : null;
-  const currentColor = selectedColorValue || initialColorValue || 'default';
-  const normalizedCurrentColor = String(currentColor).trim();
-  const currentDisplayId = `${product?.id || fallbackProduct?.id || 'unknown'}-${normalizedCurrentColor}`;
-  const transitionKey = location.state?.transitionKey ?? `product-image-${currentDisplayId}`;
+  const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
+  const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
+  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
   const gallery = Array.isArray(current?.gallery)
     ? current.gallery
@@ -133,21 +131,10 @@ const ProductDetail = () => {
     currentVariation?.id
   ]);
 
-  if (loading && !product && !fallbackProduct) {
-    return <div className="product-not-found">Loading product...</div>;
-  }
-
-  if (error && !product && !fallbackProduct) {
-    return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
-  }
-
-  if (!product && !fallbackProduct) {
-    return <div className="product-not-found">Product not found</div>;
-  }
-
-  if ((product || fallbackProduct)?.product_type === 'variable' && !effectiveVariation && !initialColorValue) {
-    return <div>Loading variation...</div>;
-  }
+  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
+  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+  if (!product) return <div className="product-not-found">Product not found</div>;
+  if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
 
   const handleAddToCart = () => {
     const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
@@ -195,36 +182,115 @@ const ProductDetail = () => {
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
                 const imageKey = `${current?.sku || product.id}-${idx}`;
+                const layoutIdValue = idx === 0 ? transitionKey : undefined;
 
                 return (
-                  <motion.img
+                  <motion.div
                     initial={false}
                     ref={el => {
                       galleryRefs.current.set(imageKey, el);
+                      if (el) {
+                        console.log('[PDP] gallery wrapper ref set', {
+                          imageKey,
+                          layoutId: layoutIdValue,
+                          rect: el.getBoundingClientRect()
+                        });
+                      }
                     }}
                     key={imageKey}
-                    layoutId={idx === 0 ? transitionKey : undefined}
-                    src={img}
-                    alt={`${displayTitle} ${idx + 1}`}
-                    className="product-gallery-image-box"
-                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                    layoutId={layoutIdValue}
+                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
                     transition={{ duration: 0.5 }}
-                  />
+                    onLayoutAnimationStart={() => {
+                      const el = galleryRefs.current.get(imageKey);
+                      console.log('[PDP] gallery layout animation start', {
+                        imageKey,
+                        layoutId: layoutIdValue,
+                        hasElement: !!el,
+                        rect: el ? el.getBoundingClientRect() : null
+                      });
+                      if (layoutIdValue && el) {
+                        el.style.zIndex = '10000';
+                      }
+                    }}
+                    onLayoutAnimationComplete={() => {
+                      const el = galleryRefs.current.get(imageKey);
+                      console.log('[PDP] gallery layout animation complete', {
+                        imageKey,
+                        layoutId: layoutIdValue,
+                        hasElement: !!el,
+                        rect: el ? el.getBoundingClientRect() : null
+                      });
+                      if (layoutIdValue && el) {
+                        el.style.zIndex = '';
+                      }
+                    }}
+                  >
+                    <img
+                      src={img}
+                      alt={`${displayTitle} ${idx + 1}`}
+                      className="product-gallery-image"
+                      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                      onLoad={e => console.log('[PDP] gallery image loaded', {
+                        imageKey,
+                        layoutId: layoutIdValue,
+                        src: e.target.currentSrc || e.target.src,
+                        naturalWidth: e.target.naturalWidth,
+                        naturalHeight: e.target.naturalHeight,
+                        rect: e.target.getBoundingClientRect(),
+                        complete: e.target.complete
+                      })}
+                    />
+                  </motion.div>
                 );
               })
             ) : (
-              <motion.img
+              <motion.div
                 initial={false}
                 ref={el => {
                   mainImageRef.current = el;
+                  if (el) {
+                    console.log('[PDP] main wrapper ref set', {
+                      layoutId: transitionKey,
+                      rect: el.getBoundingClientRect()
+                    });
+                  }
                 }}
                 layoutId={transitionKey}
-                src={mainImage}
-                alt={displayTitle}
-                className="product-main-image-box"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                className="product-main-image-wrapper"
                 transition={{ duration: 0.5 }}
-              />
+                onLayoutAnimationStart={() => {
+                  console.log('[PDP] main layout animation start', {
+                    layoutId: transitionKey,
+                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+                  });
+                  if (mainImageRef.current) {
+                    mainImageRef.current.style.zIndex = '10000';
+                  }
+                }}
+                onLayoutAnimationComplete={() => {
+                  console.log('[PDP] main layout animation complete', {
+                    layoutId: transitionKey,
+                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+                  });
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+                }}
+              >
+                <img
+                  src={mainImage}
+                  alt={displayTitle}
+                  className="product-main-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLoad={e => console.log('[PDP] main image loaded', {
+                    layoutId: transitionKey,
+                    src: e.target.currentSrc || e.target.src,
+                    naturalWidth: e.target.naturalWidth,
+                    naturalHeight: e.target.naturalHeight,
+                    rect: e.target.getBoundingClientRect(),
+                    complete: e.target.complete
+                  })}
+                />
+              </motion.div>
             )}
           </div>
         </div>
