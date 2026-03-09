@@ -14,27 +14,6 @@ import { LenisContext } from './App';
 gsap.registerPlugin(Observer, SplitText, ScrollTrigger);
 
 const Home = () => {
-  useEffect(() => {
-  console.log("Image debug starting");
-
-  const imgs = document.querySelectorAll("img");
-
-  imgs.forEach((img) => {
-    console.log("Checking image:", img.src);
-
-    if (img.complete) {
-      console.log("Already loaded:", img.src);
-    }
-
-    img.addEventListener("load", () => {
-      console.log("Loaded successfully:", img.src);
-    });
-
-    img.addEventListener("error", () => {
-      console.error("Failed to load:", img.src);
-    });
-  });
-}, []);
   const lottieRef = useRef();
   const hasAnimated = useRef(false);
   const introDone = useRef(false);
@@ -323,7 +302,7 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
           <div className="fyve-image-container">
             <picture>
               <source media="(max-width: 768px)" srcSet="/api/Uploads/2025_07_30_FYVE_4491B(1).webp" />
-              <img src="/api/Uploads/2025_07_30_FYVE_4491.webp" alt="Reveal Image" className="fyve-image" />
+              <img src="https://fyvelondon.com/wp-content/uploads/2026/02/FYVE-SS26-WF623456.webp" alt="Reveal Image" className="fyve-image" />
             </picture>
             <div className="mask-left"></div>
             <div className="mask-right"></div>
