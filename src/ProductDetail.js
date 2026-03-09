@@ -224,7 +224,16 @@ useEffect(() => {
   };
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
-
+console.log('[PDP] shared identity check', {
+  productId: product?.id,
+  initialColorValue,
+  currentColor,
+  currentDisplayId,
+  transitionKey,
+  effectiveVariationId: effectiveVariation?.id,
+  mainImage,
+  hasStableSharedImage
+});
   return (
     <>
       <motion.div className="product-detail-container">
