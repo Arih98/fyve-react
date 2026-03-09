@@ -21,7 +21,7 @@
 .product-image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 4.7;
   background: #f7f7f7;
   overflow: hidden;
 }
@@ -31,7 +31,7 @@
   height: 100%;
   object-fit: contain;
   display: block;
-  padding: 24px;
+  padding: 52px;
   box-sizing: border-box;
 }
 
