@@ -301,8 +301,8 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
           </div>
           <div className="fyve-image-container">
             <picture>
-              <source media="(max-width: 768px)" srcSet="/api/Uploads/2025_07_30_FYVE_4491B(1).webp" />
-              <img src="/assets/home/2025_07_30_FYVE_4491.webp" alt="Reveal Image" className="fyve-image" />
+              <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+              <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
             </picture>
             <div className="mask-left"></div>
             <div className="mask-right"></div>
@@ -339,12 +339,12 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
         </div>
         <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
           SHOP NOW
-          <img src="/assets/home/FYVE-Arrow-Icon.svg" alt="" />
+          <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
         </a>
         <div className="section1-new-text">
           We combine iconic British design with modern comfort<br/>and ease, creating a wardrobe that<br/>blends timeless elegance with<br/>everyday<br/>practicality.
         </div>
-        <img src="/assets/home/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
+        <img src="/api/Uploads/FYVE-collection-stamp.svg" alt="Stamp" className="section1-stamp" />
       </div>
       <div className="section-2">
         <div className="section2-overlay-text">SS25</div>
