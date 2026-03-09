@@ -176,13 +176,7 @@ const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null
 
   return (
     <>
-      <motion.div
-  className="product-detail-container"
-  initial={false}
-  animate={{ opacity: 1 }}
-  exit={{ opacity: 1 }}
-  style={{ position: 'relative', zIndex: 2 }}
->
+      <motion.div className="product-detail-container">
         <div className="images-container">
           <div className="product-image-gallery">
             {gallery.length > 0 ? (
@@ -313,12 +307,11 @@ const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null
         </div>
 
         <motion.div
-  className="details-container"
-  initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
-  animate={{ x: 0 }}
-  exit={{ x: '100%' }}
-  transition={{ duration: 0.5, ease: 'easeInOut' }}
->
+          className="details-container"
+          initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
+          animate={{ x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
 
