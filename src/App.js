@@ -8,7 +8,7 @@ import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
-import Account from './Account'; // Add this import
+import Account from './Account';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
@@ -21,23 +21,9 @@ import { gsap } from 'gsap';
 
 export const LenisContext = createContext(null);
 
-const ProductDetailWrapper = () => {
-  const location = useLocation();
-  return <ProductDetail key={location.key} />;
-}
-
-const AnimatedOutlet = () => {
-  return useOutlet();
-}
-
-const StableOutlet = () => {
-  const o = useOutlet();
-  const [outlet] = useState(o);
-  return outlet;
-};
-
 const Layout = () => {
   const location = useLocation();
+  const outlet = useOutlet();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
   const containerRef = useRef(null);
@@ -46,35 +32,39 @@ const Layout = () => {
   useEffect(() => {
     const updateHeight = () => {
       if (containerRef.current) {
-        const contentHeight = containerRef.current.querySelector('motion.div')?.scrollHeight || 0;
+        const contentHeight = containerRef.current.querySelector('[data-route-shell="true"]')?.scrollHeight || 0;
         containerRef.current.style.height = `${contentHeight}px`;
         lenis?.resize();
       }
     };
+
     updateHeight();
     window.addEventListener('resize', updateHeight);
     const interval = setInterval(updateHeight, 100);
+
     return () => {
       window.removeEventListener('resize', updateHeight);
       clearInterval(interval);
     };
-  }, [lenis]);
+  }, [lenis, location.pathname, location.search]);
 
   return (
     <div className="App" ref={containerRef} style={{ position: 'relative' }}>
       {showHeader && <Header />}
       {showCart && <Cart />}
+
       <LayoutGroup>
-        <AnimatePresence initial={false}>
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={location.pathname}
+            key={`${location.pathname}${location.search}`}
+            data-route-shell="true"
             initial={false}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 0 }}
+            exit={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
-            <StableOutlet />
+            {outlet}
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
@@ -143,10 +133,10 @@ function AppContent() {
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/products" element={<ProductsPage />} />
-              <Route path="/product/:id" element={<ProductDetailWrapper />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} /> {/* Add this route */}
+              <Route path="/account" element={<Account />} />
             </Route>
           </Routes>
         </CartProvider>

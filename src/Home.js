@@ -277,8 +277,23 @@ gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londo
   }, []);
 
   return (
-    <div className="home-page">
-      <HomeHeader />
+  <div className="home-page">
+    <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Fyve London",
+      url: "https://fyvelondon.com",
+      logo: "https://fyvelondon.com/api/Uploads/your-logo-file.png",
+      sameAs: [
+        "https://www.instagram.com/fyvelondon"
+      ]
+    })
+  }}
+/>
+    <HomeHeader />
       <div className="fyve-wrapper">
         <div className="fyve-mask">
           <div className="fyve-text">
