@@ -18,6 +18,7 @@ import './HomeHeader.css';
 import Lenis from '@studio-freight/lenis';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { gsap } from 'gsap';
+import ScrollManager from './components/ScrollManager';
 
 export const LenisContext = createContext(null);
 
@@ -135,10 +136,11 @@ function AppContent() {
   requestAnimationFrame(raf);
 
   return (
-    <LenisContext.Provider value={lenis}>
-      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-        <CartProvider>
-          <Routes>
+  <LenisContext.Provider value={lenis}>
+    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+      <CartProvider>
+        <ScrollManager />
+        <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
