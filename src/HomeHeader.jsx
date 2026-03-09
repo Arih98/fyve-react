@@ -210,7 +210,7 @@ const HomeHeader = () => {
         </div>
         <div className="header-logo">
           <img
-            src="/api/Uploads/FYVEWhiteLogoMark.svg"
+            src="/assets/FYVE-White-Logo.png"
             alt="FYVE Coloured Logo"
             onClick={() => navigate('/')}
           />
