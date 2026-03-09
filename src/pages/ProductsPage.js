@@ -18,20 +18,20 @@ const ProductsPage = () => {
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
   const display = products.map((product) => ({
-  ...product,
-  displayId: product.displayId || product.id,
-  parentId: product.parentId || product.id,
-  selectedColor: product.selectedColor || null,
-  gallery: Array.isArray(product.gallery) && product.gallery.length > 0
-    ? product.gallery
-    : product.thumbnail
-      ? [product.thumbnail, product.hoverImage].filter(Boolean)
-      : [],
-  title: product.title || product.name,
-  image: product.thumbnail,
-  rawPrice: product.price,
-  price: Number(product.price?.current ?? product.price ?? 0)
-}));
+    ...product,
+    displayId: product.displayId || product.id,
+    parentId: product.parentId || product.id,
+    selectedColor: product.selectedColor || null,
+    gallery: Array.isArray(product.gallery) && product.gallery.length > 0
+      ? product.gallery
+      : product.thumbnail
+        ? [product.thumbnail, product.hoverImage].filter(Boolean)
+        : [],
+    title: product.title || product.name,
+    image: product.thumbnail,
+    rawPrice: product.price,
+    price: product.price?.current ?? 0
+  }));
 
   const handleProductClick = (item, e) => {
     console.log('[Products] Product click:', {
