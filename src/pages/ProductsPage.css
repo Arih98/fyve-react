@@ -8,11 +8,11 @@
     background-color: #fff;
   }
   
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
   
   .product-card {
     display: flex;
@@ -27,10 +27,10 @@
   }
   
   .product-info {
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     z-index: 10;
-    padding: 20px;
     font-size: 1rem;
+    text-align: center;
   }
   
   .product-card .product-title {
