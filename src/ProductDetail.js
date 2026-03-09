@@ -181,6 +181,7 @@ const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null
   initial={false}
   animate={{ opacity: 1 }}
   exit={{ opacity: 1 }}
+  style={{ position: 'relative', zIndex: 2 }}
 >
         <div className="images-container">
           <div className="product-image-gallery">
@@ -316,7 +317,7 @@ const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null
   initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
   animate={{ x: 0 }}
   exit={{ x: '100%' }}
-  transition={{ duration: 0.5 }}
+  transition={{ duration: 0.5, ease: 'easeInOut' }}
 >
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>

@@ -54,7 +54,7 @@ const Layout = () => {
       {showCart && <Cart />}
 
       <LayoutGroup>
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="sync" initial={false}>
           <motion.div
             key={`${location.pathname}${location.search}`}
             data-route-shell="true"
@@ -62,7 +62,7 @@ const Layout = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 0 }}
           >
             {outlet}
           </motion.div>
