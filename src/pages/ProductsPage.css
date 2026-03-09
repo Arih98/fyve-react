@@ -31,6 +31,7 @@
     z-index: 10;
     font-size: 1rem;
     text-align: center;
+    padding: 10px;
   }
   
   .product-card .product-title {
