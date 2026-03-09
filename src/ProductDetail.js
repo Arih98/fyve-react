@@ -175,9 +175,8 @@ const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
   return (
-    <>
-      <>
-  <motion.div className="product-detail-container">
+  <>
+    <motion.div className="product-detail-container">
     <div className="images-container">
       <div className="product-image-gallery">
         {gallery.length > 0 ? (
