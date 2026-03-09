@@ -107,15 +107,7 @@
     gap: 15px;
   }
 
-  .product-image-wrapper {
-    aspect-ratio: 3 / 4;
-  }
-
   .product-image {
-    padding: 14px;
-  }
-
-  .product-info {
-    padding: 8px;
+    padding: 16px;
   }
 }

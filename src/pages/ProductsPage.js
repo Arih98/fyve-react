@@ -17,68 +17,68 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
-const display = products.map((product) => ({
-  ...product,
-  displayId: product.displayId || product.id,
-  parentId: product.parentId || product.id,
-  selectedColor: product.selectedColor || null,
-  gallery: Array.isArray(product.gallery) && product.gallery.length > 0
-    ? product.gallery
-    : product.thumbnail
-      ? [product.thumbnail, product.hoverImage].filter(Boolean)
-      : [],
-  title: product.title || product.name,
-  image: product.thumbnail,
-  rawPrice: product.price,
-  price: product.price?.current ?? 0
-}));
+  const display = products.map((product) => ({
+    ...product,
+    displayId: product.displayId || product.id,
+    parentId: product.parentId || product.id,
+    selectedColor: product.selectedColor || null,
+    gallery: Array.isArray(product.gallery) && product.gallery.length > 0
+      ? product.gallery
+      : product.thumbnail
+        ? [product.thumbnail, product.hoverImage].filter(Boolean)
+        : [],
+    title: product.title || product.name,
+    image: product.thumbnail,
+    rawPrice: product.price,
+    price: product.price?.current ?? 0
+  }));
 
   const handleProductClick = (item, e) => {
-  console.log('[Products] Product click:', {
-    displayId: item.displayId,
-    parentId: item.parentId,
-    title: item.title,
-    selectedColor: item.selectedColor,
-    galleryLength: item.gallery?.length || 0,
-    isMenuOpen,
-  });
-
-  const wrapperElement = document.getElementById(`img-${item.displayId}`);
-  if (wrapperElement) {
-    console.log('[Products] Source wrapper details on click:', {
-      clientWidth: wrapperElement.clientWidth,
-      clientHeight: wrapperElement.clientHeight,
-      boundingRect: wrapperElement.getBoundingClientRect(),
+    console.log('[Products] Product click:', {
+      displayId: item.displayId,
+      parentId: item.parentId,
+      title: item.title,
+      selectedColor: item.selectedColor,
+      galleryLength: item.gallery?.length || 0,
+      isMenuOpen,
     });
-  } else {
-    console.warn('[Products] Source wrapper element not found for', item.displayId);
-  }
 
-  const targetProduct = products.find((p) => p.id === item.parentId);
-  if (!targetProduct) {
-    console.error('[Products] Target product not found for parentId:', item.parentId);
-    return;
-  }
-
-  console.log('[Products] Navigating with product:', {
-    id: targetProduct.id,
-    title: targetProduct.name,
-    initialColor: item.selectedColor,
-    transitionKey: item.displayId
-  });
-
-  const colorQuery = item.selectedColor
-    ? `?color=${encodeURIComponent(item.selectedColor)}`
-    : '';
-
-  navigate(`/product/${item.parentId}${colorQuery}`, {
-    state: {
-      product: targetProduct,
-      initialColor: item.selectedColor,
-      transitionKey: `product-image-${item.displayId}`
+    const wrapperElement = document.getElementById(`img-${item.displayId}`);
+    if (wrapperElement) {
+      console.log('[Products] Source wrapper details on click:', {
+        clientWidth: wrapperElement.clientWidth,
+        clientHeight: wrapperElement.clientHeight,
+        boundingRect: wrapperElement.getBoundingClientRect(),
+      });
+    } else {
+      console.warn('[Products] Source wrapper element not found for', item.displayId);
     }
-  });
-};
+
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) {
+      console.error('[Products] Target product not found for parentId:', item.parentId);
+      return;
+    }
+
+    console.log('[Products] Navigating with product:', {
+      id: targetProduct.id,
+      title: targetProduct.name,
+      initialColor: item.selectedColor,
+      transitionKey: item.displayId
+    });
+
+    const colorQuery = item.selectedColor
+      ? `?color=${encodeURIComponent(item.selectedColor)}`
+      : '';
+
+    navigate(`/product/${item.parentId}${colorQuery}`, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionKey: `product-image-${item.displayId}`
+      }
+    });
+  };
 
   const idxLast = currentPage * productsPerPage;
   const idxFirst = idxLast - productsPerPage;
