@@ -34,55 +34,51 @@ const display = products.map((product) => ({
 }));
 
   const handleProductClick = (item, e) => {
-    console.log('[Products] Product click:', {
-      displayId: item.displayId,
-      parentId: item.parentId,
-      title: item.title,
-      selectedColor: item.selectedColor,
-      galleryLength: item.gallery?.length || 0,
-      isMenuOpen,
+  console.log('[Products] Product click:', {
+    displayId: item.displayId,
+    parentId: item.parentId,
+    title: item.title,
+    selectedColor: item.selectedColor,
+    galleryLength: item.gallery?.length || 0,
+    isMenuOpen,
+  });
+
+  const wrapperElement = document.getElementById(`img-${item.displayId}`);
+  if (wrapperElement) {
+    console.log('[Products] Source wrapper details on click:', {
+      clientWidth: wrapperElement.clientWidth,
+      clientHeight: wrapperElement.clientHeight,
+      boundingRect: wrapperElement.getBoundingClientRect(),
     });
-
-    const imgElement = document.getElementById(`img-${item.displayId}`);
-    if (imgElement) {
-      console.log('[Products] Source image details on click:', {
-        src: imgElement.src,
-        clientWidth: imgElement.clientWidth,
-        clientHeight: imgElement.clientHeight,
-        naturalWidth: imgElement.naturalWidth,
-        naturalHeight: imgElement.naturalHeight,
-        boundingRect: imgElement.getBoundingClientRect(),
-        complete: imgElement.complete,
-      });
-    } else {
-      console.warn('[Products] Source image element not found for', item.displayId);
-    }
-
-    const targetProduct = products.find((p) => p.id === item.parentId);
-    if (!targetProduct) {
-      console.error('[Products] Target product not found for parentId:', item.parentId);
-      return;
-    }
-
-    console.log('[Products] Navigating with product:', {
-      id: targetProduct.id,
-      title: targetProduct.name,
-      initialColor: item.selectedColor,
-      transitionKey: item.displayId
-    });
-
-const colorQuery = item.selectedColor
-  ? `?color=${encodeURIComponent(item.selectedColor)}`
-  : '';
-
-navigate(`/product/${item.parentId}${colorQuery}`, {
-  state: {
-    product: targetProduct,
-    initialColor: item.selectedColor,
-    transitionKey: `product-image-${item.displayId}`
+  } else {
+    console.warn('[Products] Source wrapper element not found for', item.displayId);
   }
-});
-  };
+
+  const targetProduct = products.find((p) => p.id === item.parentId);
+  if (!targetProduct) {
+    console.error('[Products] Target product not found for parentId:', item.parentId);
+    return;
+  }
+
+  console.log('[Products] Navigating with product:', {
+    id: targetProduct.id,
+    title: targetProduct.name,
+    initialColor: item.selectedColor,
+    transitionKey: item.displayId
+  });
+
+  const colorQuery = item.selectedColor
+    ? `?color=${encodeURIComponent(item.selectedColor)}`
+    : '';
+
+  navigate(`/product/${item.parentId}${colorQuery}`, {
+    state: {
+      product: targetProduct,
+      initialColor: item.selectedColor,
+      transitionKey: `product-image-${item.displayId}`
+    }
+  });
+};
 
   const idxLast = currentPage * productsPerPage;
   const idxFirst = idxLast - productsPerPage;

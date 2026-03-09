@@ -176,248 +176,238 @@ const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null
 
   return (
     <>
-      <motion.div className="product-detail-container">
-        <div className="images-container">
-          <div className="product-image-gallery">
-            {gallery.length > 0 ? (
-              gallery.map((img, idx) => {
-                const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? transitionKey : undefined;
+      <>
+  <motion.div className="product-detail-container">
+    <div className="images-container">
+      <div className="product-image-gallery">
+        {gallery.length > 0 ? (
+          gallery.map((img, idx) => {
+            const imageKey = `${current?.sku || product.id}-${idx}`;
+            const layoutIdValue = idx === 0 ? transitionKey : undefined;
 
-                return (
-                  <motion.img
-                    initial={false}
-                    ref={el => {
-                      galleryRefs.current.set(imageKey, el);
-                      if (el) {
-                        console.log('[PDP] gallery image ref set', {
-                          imageKey,
-                          layoutId: layoutIdValue,
-                          src: el.currentSrc || el.src,
-                          rect: el.getBoundingClientRect(),
-                          complete: el.complete
-                        });
-                      }
-                    }}
-                    key={imageKey}
-                    layoutId={layoutIdValue}
-                    src={img}
-                    alt={`${displayTitle} ${idx + 1}`}
-                    className="product-gallery-image"
-
-                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                    onLoad={e => console.log('[PDP] gallery image loaded', {
-                      imageKey,
-                      layoutId: layoutIdValue,
-                      src: e.target.currentSrc || e.target.src,
-                      naturalWidth: e.target.naturalWidth,
-                      naturalHeight: e.target.naturalHeight,
-                      rect: e.target.getBoundingClientRect(),
-                      complete: e.target.complete
-                    })}
-                    transition={{ duration: 0.5 }}
-                    onAnimationStart={() => console.log('[PDP] gallery animation start', {
-                      imageKey,
-                      layoutId: layoutIdValue
-                    })}
-                    onAnimationComplete={() => console.log('[PDP] gallery animation complete', {
-                      imageKey,
-                      layoutId: layoutIdValue
-                    })}
-                    onLayoutAnimationStart={() => {
-  const el = galleryRefs.current.get(imageKey);
-  console.log('[PDP] gallery layout animation start', {
-    imageKey,
-    layoutId: layoutIdValue,
-    hasElement: !!el,
-    rect: el ? el.getBoundingClientRect() : null
-  });
-  if (layoutIdValue && el) {
-    el.style.zIndex = '10000';
-  }
-}}
-                    onLayoutAnimationComplete={() => {
-                      const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation complete', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        hasElement: !!el,
-                        rect: el ? el.getBoundingClientRect() : null
-                      });
-                      if (layoutIdValue && el) {
-                        el.style.zIndex = '';
-                      }
-                    }}
-                  />
-                );
-              })
-            ) : (
-              <motion.img
+            return (
+              <motion.div
                 initial={false}
                 ref={el => {
-                  mainImageRef.current = el;
+                  galleryRefs.current.set(imageKey, el);
                   if (el) {
-                    console.log('[PDP] main image ref set', {
-                      layoutId: transitionKey,
-                      src: el.currentSrc || el.src,
-                      rect: el.getBoundingClientRect(),
-                      complete: el.complete
+                    console.log('[PDP] gallery wrapper ref set', {
+                      imageKey,
+                      layoutId: layoutIdValue,
+                      rect: el.getBoundingClientRect()
                     });
                   }
                 }}
-                layoutId={transitionKey}
-                src={mainImage}
-                alt={displayTitle}
-                className="product-main-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                onLoad={e => console.log('[PDP] main image loaded', {
-                  layoutId: transitionKey,
-                  src: e.target.currentSrc || e.target.src,
-                  naturalWidth: e.target.naturalWidth,
-                  naturalHeight: e.target.naturalHeight,
-                  rect: e.target.getBoundingClientRect(),
-                  complete: e.target.complete
-                })}
+                key={imageKey}
+                layoutId={layoutIdValue}
+                className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
                 transition={{ duration: 0.5 }}
-                onAnimationStart={() => console.log('[PDP] main animation start', {
-                  layoutId: transitionKey
-                })}
-                onAnimationComplete={() => console.log('[PDP] main animation complete', {
-                  layoutId: transitionKey
-                })}
                 onLayoutAnimationStart={() => {
-  console.log('[PDP] main layout animation start', {
-    layoutId: transitionKey,
-    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
-  });
-  if (mainImageRef.current) {
-    mainImageRef.current.style.zIndex = '10000';
-  }
-}}
-                onLayoutAnimationComplete={() => {
-                  console.log('[PDP] main layout animation complete', {
-                    layoutId: transitionKey,
-                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+                  const el = galleryRefs.current.get(imageKey);
+                  console.log('[PDP] gallery layout animation start', {
+                    imageKey,
+                    layoutId: layoutIdValue,
+                    hasElement: !!el,
+                    rect: el ? el.getBoundingClientRect() : null
                   });
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+                  if (layoutIdValue && el) {
+                    el.style.zIndex = '10000';
+                  }
                 }}
-              />
-            )}
-          </div>
-        </div>
-
-        <motion.div
-          className="details-container"
-          initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
-            <h1 className="product-title">{displayTitle}</h1>
-
-            <p
-              className="product-variation-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+                onLayoutAnimationComplete={() => {
+                  const el = galleryRefs.current.get(imageKey);
+                  console.log('[PDP] gallery layout animation complete', {
+                    imageKey,
+                    layoutId: layoutIdValue,
+                    hasElement: !!el,
+                    rect: el ? el.getBoundingClientRect() : null
+                  });
+                  if (layoutIdValue && el) {
+                    el.style.zIndex = '';
+                  }
+                }}
+              >
+                <img
+                  src={img}
+                  alt={`${displayTitle} ${idx + 1}`}
+                  className="product-gallery-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLoad={e => console.log('[PDP] gallery image loaded', {
+                    imageKey,
+                    layoutId: layoutIdValue,
+                    src: e.target.currentSrc || e.target.src,
+                    naturalWidth: e.target.naturalWidth,
+                    naturalHeight: e.target.naturalHeight,
+                    rect: e.target.getBoundingClientRect(),
+                    complete: e.target.complete
+                  })}
+                />
+              </motion.div>
+            );
+          })
+        ) : (
+          <motion.div
+            initial={false}
+            ref={el => {
+              mainImageRef.current = el;
+              if (el) {
+                console.log('[PDP] main wrapper ref set', {
+                  layoutId: transitionKey,
+                  rect: el.getBoundingClientRect()
+                });
+              }
+            }}
+            layoutId={transitionKey}
+            className="product-main-image-wrapper"
+            transition={{ duration: 0.5 }}
+            onLayoutAnimationStart={() => {
+              console.log('[PDP] main layout animation start', {
+                layoutId: transitionKey,
+                rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+              });
+              if (mainImageRef.current) {
+                mainImageRef.current.style.zIndex = '10000';
+              }
+            }}
+            onLayoutAnimationComplete={() => {
+              console.log('[PDP] main layout animation complete', {
+                layoutId: transitionKey,
+                rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+              });
+              if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+            }}
+          >
+            <img
+              src={mainImage}
+              alt={displayTitle}
+              className="product-main-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+              onLoad={e => console.log('[PDP] main image loaded', {
+                layoutId: transitionKey,
+                src: e.target.currentSrc || e.target.src,
+                naturalWidth: e.target.naturalWidth,
+                naturalHeight: e.target.naturalHeight,
+                rect: e.target.getBoundingClientRect(),
+                complete: e.target.complete
+              })}
             />
+          </motion.div>
+        )}
+      </div>
+    </div>
 
-            <p
-              className="product-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || product.shortDescription || "") }}
-            />
+    <motion.div
+      className="details-container"
+      initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
+      animate={{ x: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
+        <h1 className="product-title">{displayTitle}</h1>
 
-            {product.product_type === 'variable' && (
-              <div className="product-attributes">
-                {attributeNames.map(attrName => {
-                  const options = getAvailableOptions(attrName);
+        <p
+          className="product-variation-description"
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+        />
 
-                  return (
-                    <div key={attrName} className="attribute-group">
-                      <label className="attribute-label">{attrName}</label>
+        <p
+          className="product-description"
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || product.shortDescription || "") }}
+        />
 
-                      {isColorAttribute(attrName) ? (
-                        <div className="color-options">
-                          {options.map(term => (
-                            <div key={term} className="color-option">
-                              <button
-                                onClick={() => {
-                                  handleAttributeChange(attrName, term);
-                                  setCartError(null);
-                                }}
-                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
-                              />
-                              <span className="color-label">{term}</span>
-                            </div>
-                          ))}
+        {product.product_type === 'variable' && (
+          <div className="product-attributes">
+            {attributeNames.map(attrName => {
+              const options = getAvailableOptions(attrName);
+
+              return (
+                <div key={attrName} className="attribute-group">
+                  <label className="attribute-label">{attrName}</label>
+
+                  {isColorAttribute(attrName) ? (
+                    <div className="color-options">
+                      {options.map(term => (
+                        <div key={term} className="color-option">
+                          <button
+                            onClick={() => {
+                              handleAttributeChange(attrName, term);
+                              setCartError(null);
+                            }}
+                            className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
+                          />
+                          <span className="color-label">{term}</span>
                         </div>
-                      ) : (
-                        <div className="size-options">
-                          {options.map(term => (
-                            <div key={term} className="size-option">
-                              <button
-                                onClick={() => {
-                                  handleAttributeChange(attrName, term);
-                                  setCartError(null);
-                                }}
-                                className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-                              >
-                                {term}
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  ) : (
+                    <div className="size-options">
+                      {options.map(term => (
+                        <div key={term} className="size-option">
+                          <button
+                            onClick={() => {
+                              handleAttributeChange(attrName, term);
+                              setCartError(null);
+                            }}
+                            className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+                          >
+                            {term}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
-            {cartError && <p className="cart-error">{cartError}</p>}
+        {cartError && <p className="cart-error">{cartError}</p>}
 
-            <div className="quantity-selector">
-              <label className="quantity-label">QTY</label>
-              <div className="quantity-controls">
-                <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
-                  <span className="qty-symbol">-</span>
-                </button>
-                <span className="qty-value">{quantity}</span>
-                <button onClick={() => increaseQuantity(availableStock)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
-                  <span className="qty-symbol">+</span>
-                </button>
-              </div>
-            </div>
-
-            <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
-              <span className="add-to-cart-text">Add to Cart</span>
-              <span className="add-to-cart-price">${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}</span>
+        <div className="quantity-selector">
+          <label className="quantity-label">QTY</label>
+          <div className="quantity-controls">
+            <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
+              <span className="qty-symbol">-</span>
+            </button>
+            <span className="qty-value">{quantity}</span>
+            <button onClick={() => increaseQuantity(availableStock)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
+              <span className="qty-symbol">+</span>
             </button>
           </div>
-        </motion.div>
-      </motion.div>
-
-      {relatedProducts.length > 0 && (
-        <div className="related-products-container">
-          <h2 className="related-products-title">Related Products</h2>
-          <div className="related-products-grid">
-            {relatedProducts.map(relItem => (
-              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-                <motion.img
-                  initial={false}
-                  src={getDisplayImage(relItem)}
-                  alt={relItem.displayTitle}
-                  className="related-product-image"
-                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                />
-                <div className="related-product-info">
-                  <h3 className="related-product-title">{relItem.displayTitle}</h3>
-                  <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
-      )}
-    </>
+
+        <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
+          <span className="add-to-cart-text">Add to Cart</span>
+          <span className="add-to-cart-price">${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}</span>
+        </button>
+      </div>
+    </motion.div>
+  </motion.div>
+
+  {relatedProducts.length > 0 && (
+    <div className="related-products-container">
+      <h2 className="related-products-title">Related Products</h2>
+      <div className="related-products-grid">
+        {relatedProducts.map(relItem => (
+          <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
+            <motion.img
+              initial={false}
+              src={getDisplayImage(relItem)}
+              alt={relItem.displayTitle}
+              className="related-product-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+            />
+            <div className="related-product-info">
+              <h3 className="related-product-title">{relItem.displayTitle}</h3>
+              <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</>
   );
 };
 
