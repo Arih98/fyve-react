@@ -100,7 +100,7 @@ const Cart = () => {
   return (
     <div className={`cart-slide-menu${isCartOpen ? ' active' : ''}`} ref={cartRef} style={{ opacity: 0, transform: 'translateX(100px)', pointerEvents: 'none' }}>
       <div className={`cart-icon${cartItems.length > 0 ? ' has-items' : ''}`} onClick={toggleCart} ref={cartIconRef}>
-      <img src="/api/Uploads/FYVEDarkCartIcon.svg" alt="Cart Icon" />
+      <img src="/assets/FYVEDarkCartIcon.svg" alt="Cart Icon" />
         <span className={`cart-count${cartItems.length > 0 ? ' has-items' : ''}`}>{cartItems.length}</span>
       </div>
       <div className="cart-menu-background" ref={backgroundRef}></div>
