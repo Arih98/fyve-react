@@ -45,7 +45,20 @@ const ProductCard = ({ item, onProductClick, imageRefs, placeholderImage }) => {
   return (
     <div
       className="product-card"
-      onClick={(e) => onProductClick(item, e)}
+      onClick={(e) => {
+        console.log(`[ProductCard ${item.displayId}] card click`, {
+          hasOnProductClick: typeof onProductClick === 'function',
+          onProductClickType: typeof onProductClick,
+          item
+        });
+        if (typeof onProductClick === 'function') {
+          onProductClick(item, e);
+        } else {
+          console.error(`[ProductCard ${item.displayId}] onProductClick is not a function`, {
+            onProductClick
+          });
+        }
+      }}
     >
       <motion.div
         ref={(el) => {
