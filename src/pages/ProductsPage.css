@@ -34,6 +34,7 @@
   padding: 24px;
   box-sizing: border-box;
   transform: scale(0.78);
+  transform-origin: center;
 }
 
 .product-info {
