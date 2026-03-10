@@ -24,18 +24,18 @@
   aspect-ratio: 3 / 4.7;
   background: #f7f7f7;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image {
-  width: 100%;
-  height: 100%;
+  width: 78%;
+  height: 78%;
   object-fit: contain;
   display: block;
   padding: 24px;
   box-sizing: border-box;
-    max-width: 78%;
-    max-height: 78%;
-    margin: auto;
 }
 
 .product-info {
