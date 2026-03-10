@@ -31,12 +31,6 @@ const AnimatedOutlet = () => {
   return useOutlet();
 }
 
-const StableOutlet = () => {
-  const o = useOutlet();
-  const [outlet] = useState(o);
-  return outlet;
-};
-
 const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
@@ -121,7 +115,7 @@ const Layout = () => {
         <AnimatePresence initial={false}>
           <motion.div
             ref={pageMotionRef}
-            key={location.pathname}
+            key={location.key}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
@@ -144,7 +138,7 @@ const Layout = () => {
               });
             }}
           >
-            <StableOutlet />
+            <AnimatedOutlet />
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
@@ -154,6 +148,7 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [lenis, setLenis] = useState(null);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -163,61 +158,78 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const lenis = new Lenis({
-    duration: 1.5,
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    mouseMultiplier: 3,
-    smoothTouch: true,
-    touchMultiplier: 2,
-    infinite: false,
-    easing: (t) => 1 - Math.pow(1 - t, 6)
-  });
+  useEffect(() => {
+    const lenisInstance = new Lenis({
+      duration: 1.5,
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 3,
+      smoothTouch: true,
+      touchMultiplier: 2,
+      infinite: false,
+      easing: (t) => 1 - Math.pow(1 - t, 6)
+    });
 
-  lenis.on('scroll', (data) => {
-  console.log('[Lenis] scroll', {
-    scroll: data?.scroll,
-    limit: data?.limit,
-    velocity: data?.velocity,
-    direction: data?.direction,
-    progress: data?.progress,
-    windowScrollY: window.scrollY,
-    pathname: window.location.pathname
-  });
-});
+    setLenis(lenisInstance);
 
-  gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger);
 
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add(ScrollTrigger.update);
-  gsap.ticker.lagSmoothing(0);
+    const onLenisScroll = (data) => {
+      console.log('[Lenis] scroll', {
+        scroll: data?.scroll,
+        limit: data?.limit,
+        velocity: data?.velocity,
+        direction: data?.direction,
+        progress: data?.progress,
+        windowScrollY: window.scrollY,
+        pathname: window.location.pathname
+      });
+      ScrollTrigger.update();
+    };
 
-  ScrollTrigger.scrollerProxy('body', {
-    scrollTop(value) {
-      if (arguments.length) {
-        lenis.scrollTo(value, { immediate: true });
-      }
-      return lenis.scroll;
-    },
-    getBoundingClientRect() {
-      return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-    },
-    pinType: 'transform'
-  });
+    lenisInstance.on('scroll', onLenisScroll);
+    gsap.ticker.add(ScrollTrigger.update);
+    gsap.ticker.lagSmoothing(0);
 
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
+    ScrollTrigger.scrollerProxy('body', {
+      scrollTop(value) {
+        if (arguments.length) {
+          lenisInstance.scrollTo(value, { immediate: true });
+        }
+        return lenisInstance.scroll;
+      },
+      getBoundingClientRect() {
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+      },
+      pinType: 'transform'
+    });
+
+    let rafId;
+
+    const raf = (time) => {
+      lenisInstance.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenisInstance.off('scroll', onLenisScroll);
+      gsap.ticker.remove(ScrollTrigger.update);
+      lenisInstance.destroy();
+    };
+  }, []);
+
+  if (!lenis) return null;
 
   return (
-  <LenisContext.Provider value={lenis}>
-    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-      <CartProvider>
-        <ScrollManager />
-        <Routes>
+    <LenisContext.Provider value={lenis}>
+      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+        <CartProvider>
+          <ScrollManager />
+          <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
@@ -225,7 +237,7 @@ function AppContent() {
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} /> {/* Add this route */}
+              <Route path="/account" element={<Account />} />
             </Route>
           </Routes>
         </CartProvider>
