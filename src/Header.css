@@ -78,64 +78,39 @@ body.locked {
   position: relative;
 }
 
-.c-open .hamburger-line {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  z-index: 2;
-  overflow: hidden;
-}
-
-.c-open .hamburger-line-inner {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-color: #4A494A;
-}
-
-.c-open .hamburger-line.top {
-  top: 0;
-}
-
-.c-open .hamburger-line.middle {
-  top: 8px;
-}
-
-.c-open .hamburger-line.bottom {
-  top: 16px;
-}
-
-.c-open .hamburger-line.top .hamburger-line-inner {
-  transform-origin: left center;
-}
-
-.c-open .hamburger-line.middle .hamburger-line-inner {
-  transform-origin: right center;
-}
-
-.c-open .hamburger-line.bottom .hamburger-line-inner {
-  transform-origin: left center;
-}
-
+.c-open .burger-svg,
 .c-open .x-svg {
   position: absolute;
   top: 0;
-  left: -10px;
-  width: 130%;
-  height: 130%;
+  left: 0;
+  width: 40px;
+  height: 18px;
+  overflow: visible;
+}
+
+.c-open .burger-svg {
+  z-index: 2;
+}
+
+.c-open .x-svg {
   z-index: 1;
   pointer-events: none;
-  opacity: 0;
 }
 
-.c-open .x-svg .x-line {
+.c-open .burger-line {
+  stroke: #4A494A;
+  stroke-width: 2;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+}
+
+.c-open .x-line {
+  stroke: #4A494A;
+  stroke-width: 1.4;
+  stroke-linecap: square;
   stroke-dasharray: 44;
   stroke-dashoffset: 44;
-}
-
-.a-burger.menu-open .c-open .x-svg {
-  opacity: 1;
+  vector-effect: non-scaling-stroke;
 }
 
 .header-logo {
