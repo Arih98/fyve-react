@@ -30,7 +30,7 @@ const ProductsPage = () => {
     title: product.title || product.name,
     image: product.thumbnail,
     rawPrice: product.price,
-    price: product.price?.current ?? 0
+    price: product.price
   }));
 
   const handleProductClick = (item, e) => {
