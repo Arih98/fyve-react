@@ -64,23 +64,51 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
         delay: 1.3,
         onComplete: () => setIsAnimating(false),
       });
-    } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
-  setIsAnimating(true);
-  gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-  gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-  gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-  gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-  gsap.to(topLine, {
-    scaleX: 1,
-    duration: 0.3,
-    ease: 'power2.inOut',
-    delay: 1.1,
-    onComplete: () => {
-      gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
-      setIsAnimating(false);
-    },
-  });
-}
+    useEffect(() => {
+  if (!burgerRef.current) return;
+  const cOpen = burgerRef.current.querySelector('.c-open');
+  const topLine = cOpen.querySelector('.hamburger-line.top .hamburger-line-inner');
+  const middleLine = cOpen.querySelector('.hamburger-line.middle .hamburger-line-inner');
+  const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-inner');
+  const xSvg = cOpen.querySelector('.x-svg');
+  const xLineLeft = xSvg.querySelector('.x-line.left');
+  const xLineRight = xSvg.querySelector('.x-line.right');
+
+  if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
+    setIsAnimating(true);
+    gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
+    gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
+    gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+    gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+    gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+    gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
+    gsap.to(xLineRight, {
+      strokeDashoffset: 0,
+      duration: 0.3,
+      ease: 'power2.inOut',
+      delay: 1.3,
+      onComplete: () => setIsAnimating(false),
+    });
+  } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
+    setIsAnimating(true);
+    gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
+    gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+    gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+    gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+    gsap.to(topLine, {
+      scaleX: 1,
+      duration: 0.3,
+      ease: 'power2.inOut',
+      delay: 1.1,
+      onComplete: () => {
+        gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
+        setIsAnimating(false);
+      },
+    });
+  }
+
+  prevMenuStateRef.current = menuState;
+}, [menuState]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
