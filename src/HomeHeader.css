@@ -126,7 +126,7 @@ body.locked {
   transform-origin: center;
 }
 
-.home-page .c-open .hamburger-line:last-child {
+.home-page .c-open .hamburger-line.bottom {
   margin-bottom: 0;
 }
 
