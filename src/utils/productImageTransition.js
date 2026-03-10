@@ -48,7 +48,7 @@ export const startProductImageTransition = async ({
   src,
   fromElement,
   toElementGetter,
-  duration = 450
+  duration = 650
 }) => {
   if (!src || !fromElement) return;
 
