@@ -111,23 +111,31 @@ body.locked {
 .home-page .c-open {
   width: 40px;
   height: 21px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   position: relative;
 }
 
 .home-page .c-open .hamburger-line {
-  display: block;
+  position: absolute;
+  left: 0;
   width: 100%;
   height: 3px;
   background-color: #fff;
-  margin-bottom: 5px;
-  transform-origin: center;
+  box-sizing: border-box;
+}
+
+.home-page .c-open .hamburger-line.top {
+  top: 0;
+  transform-origin: left;
+}
+
+.home-page .c-open .hamburger-line.middle {
+  top: 9px;
+  transform-origin: right;
 }
 
 .home-page .c-open .hamburger-line.bottom {
-  margin-bottom: 0;
+  top: 18px;
+  transform-origin: left;
 }
 
 .home-page .c-open .x-svg {
