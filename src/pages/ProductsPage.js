@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { useNavigate, useLocation, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
@@ -13,8 +13,12 @@ const ProductsPage = () => {
     perPage: 200
   });
   const navigate = useNavigate();
+  const location = useLocation();
+  const navigationType = useNavigationType();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
+  const pageRef = useRef(null);
+  const gridRef = useRef(null);
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
   const display = products.map((product) => ({
@@ -33,6 +37,52 @@ const ProductsPage = () => {
     price: product.price
   }));
 
+  useEffect(() => {
+    const pageEl = pageRef.current;
+    const gridEl = gridRef.current;
+
+    const logPageState = (label) => {
+      console.log(`[ProductsPage] ${label}`, {
+        pathname: location.pathname,
+        key: location.key,
+        navigationType,
+        scrollY: window.scrollY,
+        pageRect: pageEl ? pageEl.getBoundingClientRect() : null,
+        gridRect: gridEl ? gridEl.getBoundingClientRect() : null,
+        gridScrollWidth: gridEl ? gridEl.scrollWidth : null,
+        gridScrollHeight: gridEl ? gridEl.scrollHeight : null,
+        childCount: gridEl ? gridEl.children.length : null
+      });
+    };
+
+    logPageState('mounted');
+
+    requestAnimationFrame(() => {
+      logPageState('mounted rAF 1');
+      requestAnimationFrame(() => {
+        logPageState('mounted rAF 2');
+      });
+    });
+
+    setTimeout(() => logPageState('mounted +100ms'), 100);
+    setTimeout(() => logPageState('mounted +300ms'), 300);
+    setTimeout(() => logPageState('mounted +600ms'), 600);
+
+    const onPopState = () => {
+      console.log('[ProductsPage] window popstate observed', {
+        pathname: window.location.pathname,
+        scrollY: window.scrollY
+      });
+    };
+
+    window.addEventListener('popstate', onPopState);
+
+    return () => {
+      logPageState('unmounting');
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, [location.key, location.pathname, navigationType]);
+
   const handleProductClick = (item, e) => {
     console.log('[Products] Product click:', {
       displayId: item.displayId,
@@ -41,6 +91,7 @@ const ProductsPage = () => {
       selectedColor: item.selectedColor,
       galleryLength: item.gallery?.length || 0,
       isMenuOpen,
+      scrollY: window.scrollY
     });
 
     const wrapperElement = document.getElementById(`img-${item.displayId}`);
@@ -49,6 +100,7 @@ const ProductsPage = () => {
         clientWidth: wrapperElement.clientWidth,
         clientHeight: wrapperElement.clientHeight,
         boundingRect: wrapperElement.getBoundingClientRect(),
+        scrollY: window.scrollY
       });
     } else {
       console.warn('[Products] Source wrapper element not found for', item.displayId);
@@ -64,7 +116,8 @@ const ProductsPage = () => {
       id: targetProduct.id,
       title: targetProduct.name,
       initialColor: item.selectedColor,
-      transitionKey: item.displayId
+      transitionKey: item.displayId,
+      scrollY: window.scrollY
     });
 
     const colorQuery = item.selectedColor
@@ -88,17 +141,24 @@ const ProductsPage = () => {
   if (loading) return <div className="products-loading">Loading...</div>;
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
 
-  console.log('[Products] Rendering', currentProducts.length, 'of', display.length);
+  console.log('[Products] Rendering', currentProducts.length, 'of', display.length, {
+    currentPage,
+    scrollY: window.scrollY,
+    locationKey: location.key,
+    navigationType
+  });
 
   return (
-    <div className="products-container">
+    <div className="products-container" ref={pageRef}>
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-        <ProductGrid
-          products={currentProducts}
-          onProductClick={handleProductClick}
-          imageRefs={imageRefs}
-          placeholderImage={placeholderImage}
-        />
+        <div ref={gridRef}>
+          <ProductGrid
+            products={currentProducts}
+            onProductClick={handleProductClick}
+            imageRefs={imageRefs}
+            placeholderImage={placeholderImage}
+          />
+        </div>
 
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, i) => (

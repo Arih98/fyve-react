@@ -42,39 +42,75 @@ const Layout = () => {
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
   const containerRef = useRef(null);
+  const pageMotionRef = useRef(null);
   const lenis = useContext(LenisContext);
 
   useEffect(() => {
-  const updateHeight = () => {
-    if (!containerRef.current) return;
+    const updateHeight = () => {
+      if (containerRef.current) {
+        const contentHeight = containerRef.current.querySelector('div')?.scrollHeight || 0;
+        containerRef.current.style.height = `${contentHeight}px`;
+        lenis?.resize();
+        console.log('[Layout] updateHeight', {
+          pathname: location.pathname,
+          locationKey: location.key,
+          scrollY: window.scrollY,
+          contentHeight,
+          containerRect: containerRef.current.getBoundingClientRect(),
+          pageRect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+        });
+      }
+    };
 
-    // Target the currently visible page (more reliable during AnimatePresence)
-    const activePage = containerRef.current.querySelector('motion.div[style*="absolute"]') ||
-                       containerRef.current.querySelector('.products-container') ||
-                       containerRef.current.querySelector('.product-detail-container');
-
-    const contentHeight = activePage?.scrollHeight || 0;
-    containerRef.current.style.height = `${contentHeight}px`;
-    lenis?.resize();
-  };
-
-  // Run once after the new page has painted
-  const raf = requestAnimationFrame(() => {
     updateHeight();
-  });
+    window.addEventListener('resize', updateHeight);
+    const interval = setInterval(updateHeight, 100);
 
-  window.addEventListener('resize', updateHeight);
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      clearInterval(interval);
+    };
+  }, [lenis, location.pathname, location.key]);
 
-  // Also force a resize when route actually changes
-  const handleRouteChange = () => updateHeight();
-  window.addEventListener('popstate', handleRouteChange);
+  useEffect(() => {
+    console.log('[Layout] mounted route container', {
+      pathname: location.pathname,
+      locationKey: location.key,
+      scrollY: window.scrollY,
+      containerRect: containerRef.current ? containerRef.current.getBoundingClientRect() : null,
+      pageRect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+    });
 
-  return () => {
-    window.removeEventListener('resize', updateHeight);
-    window.removeEventListener('popstate', handleRouteChange);
-    cancelAnimationFrame(raf);
-  };
-}, [lenis, location.pathname]); // ← important: re-run on route change
+    requestAnimationFrame(() => {
+      console.log('[Layout] mounted route container rAF 1', {
+        pathname: location.pathname,
+        locationKey: location.key,
+        scrollY: window.scrollY,
+        containerRect: containerRef.current ? containerRef.current.getBoundingClientRect() : null,
+        pageRect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+      });
+
+      requestAnimationFrame(() => {
+        console.log('[Layout] mounted route container rAF 2', {
+          pathname: location.pathname,
+          locationKey: location.key,
+          scrollY: window.scrollY,
+          containerRect: containerRef.current ? containerRef.current.getBoundingClientRect() : null,
+          pageRect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+        });
+      });
+    });
+
+    return () => {
+      console.log('[Layout] unmounting route container', {
+        pathname: location.pathname,
+        locationKey: location.key,
+        scrollY: window.scrollY,
+        containerRect: containerRef.current ? containerRef.current.getBoundingClientRect() : null,
+        pageRect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+      });
+    };
+  }, [location.pathname, location.key]);
 
   return (
     <div className="App" ref={containerRef} style={{ position: 'relative' }}>
@@ -83,12 +119,29 @@ const Layout = () => {
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
+            ref={pageMotionRef}
             key={location.pathname}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+            onAnimationStart={() => {
+              console.log('[Layout] route motion animation start', {
+                pathname: location.pathname,
+                locationKey: location.key,
+                scrollY: window.scrollY,
+                rect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+              });
+            }}
+            onAnimationComplete={() => {
+              console.log('[Layout] route motion animation complete', {
+                pathname: location.pathname,
+                locationKey: location.key,
+                scrollY: window.scrollY,
+                rect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+              });
+            }}
           >
             <StableOutlet />
           </motion.div>
@@ -122,8 +175,16 @@ function AppContent() {
   });
 
   lenis.on('scroll', (data) => {
-    console.log(data);
+  console.log('[Lenis] scroll', {
+    scroll: data?.scroll,
+    limit: data?.limit,
+    velocity: data?.velocity,
+    direction: data?.direction,
+    progress: data?.progress,
+    windowScrollY: window.scrollY,
+    pathname: window.location.pathname
   });
+});
 
   gsap.registerPlugin(ScrollTrigger);
 

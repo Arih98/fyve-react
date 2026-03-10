@@ -98,6 +98,58 @@ const ProductDetail = () => {
   const displayDescription = product?.product_type === 'variable'
     ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
     : (product?.description || product?.shortDescription || '');
+  useEffect(() => {
+    const logMain = (label) => {
+      console.log(`[PDP] ${label}`, {
+        transitionKey,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        scrollY: window.scrollY,
+        currentDisplayId,
+        productId: product?.id,
+        currentSku: current?.sku,
+        mainImage,
+        rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+      });
+    };
+
+    logMain('mounted');
+
+    requestAnimationFrame(() => {
+      logMain('mounted rAF 1');
+      requestAnimationFrame(() => {
+        logMain('mounted rAF 2');
+      });
+    });
+
+    setTimeout(() => logMain('mounted +100ms'), 100);
+    setTimeout(() => logMain('mounted +300ms'), 300);
+
+    return () => {
+      logMain('unmounting');
+    };
+  }, [transitionKey, currentDisplayId, product?.id, current?.sku, mainImage]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      console.log('[PDP] popstate while PDP active', {
+        transitionKey,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        scrollY: window.scrollY,
+        currentDisplayId,
+        productId: product?.id,
+        currentSku: current?.sku,
+        rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+      });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [transitionKey, currentDisplayId, product?.id, current?.sku]);
 
   useEffect(() => {
     console.log('[PDP] route state', {
@@ -190,11 +242,14 @@ const ProductDetail = () => {
                     ref={el => {
                       galleryRefs.current.set(imageKey, el);
                       if (el) {
-                        console.log('[PDP] gallery wrapper ref set', {
-                          imageKey,
-                          layoutId: layoutIdValue,
-                          rect: el.getBoundingClientRect()
-                        });
+                                                  console.log('[PDP] gallery wrapper ref set', {
+                            imageKey,
+                            layoutId: layoutIdValue,
+                            pathname: window.location.pathname,
+                            search: window.location.search,
+                            scrollY: window.scrollY,
+                            rect: el.getBoundingClientRect()
+                          });
                       }
                     }}
                     key={imageKey}
@@ -203,9 +258,12 @@ const ProductDetail = () => {
                     transition={{ duration: 0.5 }}
                     onLayoutAnimationStart={() => {
                       const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation start', {
+                                            console.log('[PDP] gallery layout animation start', {
                         imageKey,
                         layoutId: layoutIdValue,
+                        pathname: window.location.pathname,
+                        search: window.location.search,
+                        scrollY: window.scrollY,
                         hasElement: !!el,
                         rect: el ? el.getBoundingClientRect() : null
                       });
@@ -215,9 +273,12 @@ const ProductDetail = () => {
                     }}
                     onLayoutAnimationComplete={() => {
                       const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation complete', {
+                                            console.log('[PDP] gallery layout animation complete', {
                         imageKey,
                         layoutId: layoutIdValue,
+                        pathname: window.location.pathname,
+                        search: window.location.search,
+                        scrollY: window.scrollY,
                         hasElement: !!el,
                         rect: el ? el.getBoundingClientRect() : null
                       });
@@ -231,9 +292,12 @@ const ProductDetail = () => {
                       alt={`${displayTitle} ${idx + 1}`}
                       className="product-gallery-image"
                       onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      onLoad={e => console.log('[PDP] gallery image loaded', {
+                                            onLoad={e => console.log('[PDP] gallery image loaded', {
                         imageKey,
                         layoutId: layoutIdValue,
+                        pathname: window.location.pathname,
+                        search: window.location.search,
+                        scrollY: window.scrollY,
                         src: e.target.currentSrc || e.target.src,
                         naturalWidth: e.target.naturalWidth,
                         naturalHeight: e.target.naturalHeight,
@@ -245,13 +309,16 @@ const ProductDetail = () => {
                 );
               })
             ) : (
-              <motion.div
+                            <motion.div
                 initial={false}
                 ref={el => {
                   mainImageRef.current = el;
                   if (el) {
                     console.log('[PDP] main wrapper ref set', {
                       layoutId: transitionKey,
+                      pathname: window.location.pathname,
+                      search: window.location.search,
+                      scrollY: window.scrollY,
                       rect: el.getBoundingClientRect()
                     });
                   }
@@ -262,6 +329,9 @@ const ProductDetail = () => {
                 onLayoutAnimationStart={() => {
                   console.log('[PDP] main layout animation start', {
                     layoutId: transitionKey,
+                    pathname: window.location.pathname,
+                    search: window.location.search,
+                    scrollY: window.scrollY,
                     rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
                   });
                   if (mainImageRef.current) {
@@ -271,18 +341,24 @@ const ProductDetail = () => {
                 onLayoutAnimationComplete={() => {
                   console.log('[PDP] main layout animation complete', {
                     layoutId: transitionKey,
+                    pathname: window.location.pathname,
+                    search: window.location.search,
+                    scrollY: window.scrollY,
                     rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
                   });
                   if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
                 }}
               >
-                <img
+                                <img
                   src={mainImage}
                   alt={displayTitle}
                   className="product-main-image"
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                   onLoad={e => console.log('[PDP] main image loaded', {
                     layoutId: transitionKey,
+                    pathname: window.location.pathname,
+                    search: window.location.search,
+                    scrollY: window.scrollY,
                     src: e.target.currentSrc || e.target.src,
                     naturalWidth: e.target.naturalWidth,
                     naturalHeight: e.target.naturalHeight,
