@@ -121,6 +121,7 @@ body.locked {
   height: 3px;
   background-color: #fff;
   box-sizing: border-box;
+  transform: translateZ(0);
 }
 
 .home-page .c-open .hamburger-line.top {
