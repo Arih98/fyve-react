@@ -41,41 +41,22 @@ const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
-  const containerRef = useRef(null);
-  const lenis = useContext(LenisContext);
-
-  useEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        const contentHeight = containerRef.current.querySelector('motion.div')?.scrollHeight || 0;
-        containerRef.current.style.height = `${contentHeight}px`;
-        lenis?.resize();
-      }
-    };
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    const interval = setInterval(updateHeight, 100);
-    return () => {
-      window.removeEventListener('resize', updateHeight);
-      clearInterval(interval);
-    };
-  }, [lenis]);
 
   return (
-    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
+    <div className="App">
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
-            key={location.pathname}
+            key={location.key}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+            style={{ width: '100%' }}
           >
-            <StableOutlet />
+            <AnimatedOutlet />
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
