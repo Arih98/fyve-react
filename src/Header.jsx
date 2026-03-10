@@ -65,23 +65,22 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
         onComplete: () => setIsAnimating(false),
       });
     } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
-      setIsAnimating(true);
-      gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-      gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-      gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-      gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-      gsap.to(topLine, {
-  scaleX: 1,
-  duration: 0.3,
-  ease: 'power2.inOut',
-  delay: 1.1,
-  onComplete: () => {
-    gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
-    setIsAnimating(false);
-  },
-});
-    prevMenuStateRef.current = menuState;
-  }, [menuState]);
+  setIsAnimating(true);
+  gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
+  gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+  gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+  gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+  gsap.to(topLine, {
+    scaleX: 1,
+    duration: 0.3,
+    ease: 'power2.inOut',
+    delay: 1.1,
+    onComplete: () => {
+      gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
+      setIsAnimating(false);
+    },
+  });
+}
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
