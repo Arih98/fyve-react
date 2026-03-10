@@ -8,7 +8,7 @@ import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
-import Account from './Account';
+import Account from './Account'; // Add this import
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
@@ -23,11 +23,18 @@ import ScrollManager from './components/ScrollManager';
 export const LenisContext = createContext(null);
 
 const ProductDetailWrapper = () => {
-  return <ProductDetail />;
-};
+  const location = useLocation();
+  return <ProductDetail key={location.key} />;
+}
 
 const AnimatedOutlet = () => {
   return useOutlet();
+}
+
+const StableOutlet = () => {
+  const o = useOutlet();
+  const [outlet] = useState(o);
+  return outlet;
 };
 
 const Layout = () => {
@@ -40,21 +47,19 @@ const Layout = () => {
   useEffect(() => {
     const updateHeight = () => {
       if (containerRef.current) {
-        const contentHeight = containerRef.current.querySelector('div')?.scrollHeight || 0;
+        const contentHeight = containerRef.current.querySelector('motion.div')?.scrollHeight || 0;
         containerRef.current.style.height = `${contentHeight}px`;
         lenis?.resize();
       }
     };
-
     updateHeight();
     window.addEventListener('resize', updateHeight);
     const interval = setInterval(updateHeight, 100);
-
     return () => {
       window.removeEventListener('resize', updateHeight);
       clearInterval(interval);
     };
-  }, [lenis, location.pathname, location.key]);
+  }, [lenis]);
 
   return (
     <div className="App" ref={containerRef} style={{ position: 'relative' }}>
@@ -63,14 +68,14 @@ const Layout = () => {
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
-            key={location.key}
+            key={location.pathname}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
-            <AnimatedOutlet />
+            <StableOutlet />
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
@@ -80,71 +85,62 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [lenis, setLenis] = useState(null);
 
   useEffect(() => {
-    const lenisInstance = new Lenis({
-      duration: 1.5,
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 3,
-      smoothTouch: true,
-      touchMultiplier: 2,
-      infinite: false,
-      easing: (t) => 1 - Math.pow(1 - t, 6)
-    });
-
-    setLenis(lenisInstance);
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const onLenisScroll = () => {
-      ScrollTrigger.update();
+    const handlePopState = () => {
+      console.log('Browser history popstate event triggered (back or forward)');
     };
-
-    lenisInstance.on('scroll', onLenisScroll);
-    gsap.ticker.add(ScrollTrigger.update);
-    gsap.ticker.lagSmoothing(0);
-
-    ScrollTrigger.scrollerProxy('body', {
-      scrollTop(value) {
-        if (arguments.length) {
-          lenisInstance.scrollTo(value, { immediate: true });
-        }
-        return lenisInstance.scroll;
-      },
-      getBoundingClientRect() {
-        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-      },
-      pinType: 'transform'
-    });
-
-    let rafId;
-
-    const raf = (time) => {
-      lenisInstance.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenisInstance.off('scroll', onLenisScroll);
-      gsap.ticker.remove(ScrollTrigger.update);
-      lenisInstance.destroy();
-    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  if (!lenis) return null;
+  const lenis = new Lenis({
+    duration: 1.5,
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 3,
+    smoothTouch: true,
+    touchMultiplier: 2,
+    infinite: false,
+    easing: (t) => 1 - Math.pow(1 - t, 6)
+  });
+
+  lenis.on('scroll', (data) => {
+    console.log(data);
+  });
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(ScrollTrigger.update);
+  gsap.ticker.lagSmoothing(0);
+
+  ScrollTrigger.scrollerProxy('body', {
+    scrollTop(value) {
+      if (arguments.length) {
+        lenis.scrollTo(value, { immediate: true });
+      }
+      return lenis.scroll;
+    },
+    getBoundingClientRect() {
+      return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+    },
+    pinType: 'transform'
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
 
   return (
-    <LenisContext.Provider value={lenis}>
-      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-        <CartProvider>
-          <ScrollManager />
-          <Routes>
+  <LenisContext.Provider value={lenis}>
+    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+      <CartProvider>
+        <ScrollManager />
+        <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
@@ -152,7 +148,7 @@ function AppContent() {
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/account" element={<Account />} /> {/* Add this route */}
             </Route>
           </Routes>
         </CartProvider>
