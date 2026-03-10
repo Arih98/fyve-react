@@ -38,20 +38,17 @@ const ProductsPage = () => {
   }));
 
   useEffect(() => {
-    const pageEl = pageRef.current;
-    const gridEl = gridRef.current;
-
     const logPageState = (label) => {
       console.log(`[ProductsPage] ${label}`, {
         pathname: location.pathname,
         key: location.key,
         navigationType,
         scrollY: window.scrollY,
-        pageRect: pageEl ? pageEl.getBoundingClientRect() : null,
-        gridRect: gridEl ? gridEl.getBoundingClientRect() : null,
-        gridScrollWidth: gridEl ? gridEl.scrollWidth : null,
-        gridScrollHeight: gridEl ? gridEl.scrollHeight : null,
-        childCount: gridEl ? gridEl.children.length : null
+        pageRect: pageRef.current ? pageRef.current.getBoundingClientRect() : null,
+        gridRect: gridRef.current ? gridRef.current.getBoundingClientRect() : null,
+        gridScrollWidth: gridRef.current ? gridRef.current.scrollWidth : null,
+        gridScrollHeight: gridRef.current ? gridRef.current.scrollHeight : null,
+        childCount: gridRef.current ? gridRef.current.children.length : null
       });
     };
 
@@ -94,7 +91,8 @@ const ProductsPage = () => {
       scrollY: window.scrollY
     });
 
-    const wrapperElement = document.getElementById(`img-${item.displayId}`);
+    const wrapperElement = imageRefs.current.get(item.displayId);
+
     if (wrapperElement) {
       console.log('[Products] Source wrapper details on click:', {
         clientWidth: wrapperElement.clientWidth,
@@ -116,7 +114,7 @@ const ProductsPage = () => {
       id: targetProduct.id,
       title: targetProduct.name,
       initialColor: item.selectedColor,
-      transitionKey: item.displayId,
+      transitionKey: `product-image-${item.displayId}`,
       scrollY: window.scrollY
     });
 
@@ -149,9 +147,9 @@ const ProductsPage = () => {
   });
 
   return (
-    <div className="products-container" ref={pageRef}>
+    <div ref={pageRef} className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-        <div ref={gridRef}>
+        <div ref={gridRef} className="products-grid-debug-root">
           <ProductGrid
             products={currentProducts}
             onProductClick={handleProductClick}

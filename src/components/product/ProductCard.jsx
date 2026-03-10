@@ -46,16 +46,17 @@ const ProductCard = ({ item, onProductClick, imageRefs, placeholderImage }) => {
     <div
       className="product-card"
       onClick={(e) => {
-        console.log(`[ProductCard ${item.displayId}] card click`, {
+        console.log(`[ProductCard ${item.displayId}] click`, {
           hasOnProductClick: typeof onProductClick === 'function',
           onProductClickType: typeof onProductClick,
-          item
+          scrollY: window.scrollY
         });
+
         if (typeof onProductClick === 'function') {
           onProductClick(item, e);
         } else {
           console.error(`[ProductCard ${item.displayId}] onProductClick is not a function`, {
-            onProductClick
+            received: onProductClick
           });
         }
       }}

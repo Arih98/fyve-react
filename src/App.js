@@ -47,17 +47,18 @@ const Layout = () => {
 
   useEffect(() => {
     const updateHeight = () => {
-      if (containerRef.current) {
-        const contentHeight = containerRef.current.querySelector('div')?.scrollHeight || 0;
+      if (containerRef.current && pageMotionRef.current) {
+        const contentHeight = pageMotionRef.current.scrollHeight || 0;
         containerRef.current.style.height = `${contentHeight}px`;
         lenis?.resize();
+
         console.log('[Layout] updateHeight', {
           pathname: location.pathname,
           locationKey: location.key,
           scrollY: window.scrollY,
           contentHeight,
           containerRect: containerRef.current.getBoundingClientRect(),
-          pageRect: pageMotionRef.current ? pageMotionRef.current.getBoundingClientRect() : null
+          pageRect: pageMotionRef.current.getBoundingClientRect()
         });
       }
     };
