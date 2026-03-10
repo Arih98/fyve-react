@@ -34,38 +34,45 @@ const ProductsPage = () => {
   }));
 
   const handleProductClick = (item, e) => {
-    console.log('[Products] Product click:', {
+    const wrapperElement = imageRefs.current.get(item.displayId);
+    const imgElement = wrapperElement?.querySelector('img');
+
+    const rect = wrapperElement ? wrapperElement.getBoundingClientRect() : null;
+    const imgRect = imgElement ? imgElement.getBoundingClientRect() : null;
+
+    console.log('[PLP CLICK] before navigate', {
       displayId: item.displayId,
       parentId: item.parentId,
       title: item.title,
       selectedColor: item.selectedColor,
-      galleryLength: item.gallery?.length || 0,
-      isMenuOpen,
+      scrollY: window.scrollY,
+      viewport: {
+        wrapperTop: rect?.top ?? null,
+        wrapperLeft: rect?.left ?? null,
+        wrapperWidth: rect?.width ?? null,
+        wrapperHeight: rect?.height ?? null,
+        imgTop: imgRect?.top ?? null,
+        imgLeft: imgRect?.left ?? null,
+        imgWidth: imgRect?.width ?? null,
+        imgHeight: imgRect?.height ?? null
+      },
+      document: {
+        wrapperTop: rect ? rect.top + window.scrollY : null,
+        wrapperLeft: rect ? rect.left + window.scrollX : null,
+        imgTop: imgRect ? imgRect.top + window.scrollY : null,
+        imgLeft: imgRect ? imgRect.left + window.scrollX : null
+      },
+      viewportMeta: {
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight
+      }
     });
-
-    const wrapperElement = document.getElementById(`img-${item.displayId}`);
-    if (wrapperElement) {
-      console.log('[Products] Source wrapper details on click:', {
-        clientWidth: wrapperElement.clientWidth,
-        clientHeight: wrapperElement.clientHeight,
-        boundingRect: wrapperElement.getBoundingClientRect(),
-      });
-    } else {
-      console.warn('[Products] Source wrapper element not found for', item.displayId);
-    }
 
     const targetProduct = products.find((p) => p.id === item.parentId);
     if (!targetProduct) {
-      console.error('[Products] Target product not found for parentId:', item.parentId);
+      console.error('[PLP CLICK] target product not found', { parentId: item.parentId });
       return;
     }
-
-    console.log('[Products] Navigating with product:', {
-      id: targetProduct.id,
-      title: targetProduct.name,
-      initialColor: item.selectedColor,
-      transitionKey: item.displayId
-    });
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
