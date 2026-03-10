@@ -1,3 +1,4 @@
+// Modified Header.jsx
 import { MenuContext } from './MenuContext';
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
@@ -15,70 +16,43 @@ const Header = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
   const burgerRef = useRef(null);
-  const closeTimerRef = useRef(null);
-  const prevScrollYRef = useRef(window.scrollY);
+  const prevMenuStateRef = useRef(menuState);
 
   useEffect(() => {
     if (isMenuOpen) {
-      if (closeTimerRef.current) {
-        clearTimeout(closeTimerRef.current);
-        closeTimerRef.current = null;
-      }
       setMenuState('open');
-      setHideHeader(false);
-      return;
-    }
-
-    if (!isMenuOpen && menuState === 'open') {
+    } else if (menuState === 'open') {
       setMenuState('closing');
-      closeTimerRef.current = setTimeout(() => {
+      const timeout = setTimeout(() => {
         setMenuState('closed');
-        closeTimerRef.current = null;
       }, 750);
+      return () => clearTimeout(timeout);
     }
-
-    return () => {
-      if (closeTimerRef.current) {
-        clearTimeout(closeTimerRef.current);
-        closeTimerRef.current = null;
-      }
-    };
-  }, [isMenuOpen, menuState]);
+  }, [isMenuOpen]);
 
   useEffect(() => {
     if (!burgerRef.current) return;
-
     const cOpen = burgerRef.current.querySelector('.c-open');
     const xSvg = cOpen.querySelector('.x-svg');
     const xLineLeft = xSvg.querySelector('.x-line.left');
     const xLineRight = xSvg.querySelector('.x-line.right');
-
     gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
   }, []);
 
   useEffect(() => {
     if (!burgerRef.current) return;
-
     const cOpen = burgerRef.current.querySelector('.c-open');
-    const topLine = cOpen.querySelector('.burger-line.top');
-    const middleLine = cOpen.querySelector('.burger-line.middle');
-    const bottomLine = cOpen.querySelector('.burger-line.bottom');
+    const topLine = cOpen.querySelector('.hamburger-line.top');
+    const middleLine = cOpen.querySelector('.hamburger-line.middle');
+    const bottomLine = cOpen.querySelector('.hamburger-line.bottom');
     const xSvg = cOpen.querySelector('.x-svg');
     const xLineLeft = xSvg.querySelector('.x-line.left');
     const xLineRight = xSvg.querySelector('.x-line.right');
 
-    if (!topLine || !middleLine || !bottomLine || !xLineLeft || !xLineRight) return;
-
-    if (menuState === 'open') {
+    if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
       setIsAnimating(true);
-
-      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
-
-      gsap.set(topLine, { transformOrigin: '0px 1px', scaleX: 1, opacity: 1 });
-      gsap.set(middleLine, { transformOrigin: '40px 9px', scaleX: 1, opacity: 1 });
-      gsap.set(bottomLine, { transformOrigin: '0px 17px', scaleX: 1, opacity: 1 });
+      gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
       gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-
       gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
       gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
       gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
@@ -88,17 +62,10 @@ const Header = () => {
         duration: 0.3,
         ease: 'power2.inOut',
         delay: 1.3,
-        onComplete: () => {
-          setIsAnimating(false);
-        },
+        onComplete: () => setIsAnimating(false),
       });
-    }
-
-    if (menuState === 'closing') {
+    } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
       setIsAnimating(true);
-
-      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
-
       gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
       gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
       gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
@@ -108,65 +75,42 @@ const Header = () => {
         duration: 0.3,
         ease: 'power2.inOut',
         delay: 1.1,
-        onComplete: () => {
-          gsap.set(topLine, { clearProps: 'transform,opacity' });
-          gsap.set(middleLine, { clearProps: 'transform,opacity' });
-          gsap.set(bottomLine, { clearProps: 'transform,opacity' });
-          setIsAnimating(false);
-        },
+        onComplete: () => setIsAnimating(false),
       });
     }
+    prevMenuStateRef.current = menuState;
   }, [menuState]);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const menuVisible = menuState === 'open' || menuState === 'closing';
-
-      if (menuVisible) {
-        setHideHeader(false);
-        prevScrollYRef.current = currentScrollY;
-        return;
-      }
-
+      if (isMenuOpen) return;
       if (currentScrollY <= 0) {
         setHideHeader(false);
-      } else if (currentScrollY > prevScrollYRef.current) {
+      } else if (currentScrollY > lastScrollY) {
         setHideHeader(true);
-      } else if (currentScrollY < prevScrollYRef.current) {
+      } else if (currentScrollY < lastScrollY) {
         setHideHeader(false);
       }
-
-      prevScrollYRef.current = currentScrollY;
+      lastScrollY = currentScrollY;
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [menuState]);
+  }, [isMenuOpen]);
 
   useEffect(() => {
-    const menuVisible = menuState === 'open' || menuState === 'closing';
-
-    if (menuVisible) {
+    if (isMenuOpen) {
       document.body.classList.add('locked');
     } else {
       document.body.classList.remove('locked');
     }
-
-    return () => {
-      document.body.classList.remove('locked');
-    };
-  }, [menuState]);
+  }, [isMenuOpen]);
 
   const toggleMenu = () => {
-    if (isAnimating) return;
-
-    if (menuState === 'open') {
-      setIsMenuOpen(false);
-    } else if (menuState === 'closed') {
-      setIsMenuOpen(true);
-      if (isSearchOpen) setIsSearchOpen(false);
-    }
+    if (isAnimating || menuState === 'closing') return;
+    setIsMenuOpen(v => !v);
+    if (isSearchOpen) setIsSearchOpen(false);
   };
 
   const toggleSearch = () => {
@@ -174,35 +118,27 @@ const Header = () => {
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
-  const handleSearch = e => {
+  const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleMenuImageChange = newId => {
+  const handleMenuImageChange = (newId) => {
     if (isImageAnimating || newId === activeMenuImage) return;
-
     const prevId = activeMenuImage;
     const prevElem = document.querySelector(`.menu-image[data-menu-item="${prevId}"]`);
     const newElem = document.querySelector(`.menu-image[data-menu-item="${newId}"]`);
-
     if (!newElem) return;
-
     setIsImageAnimating(true);
-
     if (prevElem) {
       prevElem.style.opacity = '1';
       prevElem.style.zIndex = '1';
     }
-
     newElem.style.opacity = '1';
     newElem.style.zIndex = '2';
-
     const newImg = newElem.querySelector('img');
     gsap.set(newImg, { yPercent: -100 });
     gsap.to(newImg, { yPercent: 0, duration: 0.6, ease: 'power2.inOut' });
-
     const prevImg = prevElem ? prevElem.querySelector('img') : null;
-
     if (prevImg) {
       gsap.to(prevImg, {
         yPercent: 100,
@@ -214,12 +150,11 @@ const Header = () => {
             prevElem.style.zIndex = '1';
           }
           setIsImageAnimating(false);
-        },
+        }
       });
     } else {
       setIsImageAnimating(false);
     }
-
     setActiveMenuImage(newId);
   };
 
@@ -239,14 +174,12 @@ const Header = () => {
       onClick={toggleMenu}
     >
       <div className="c-open">
-        <svg className="burger-svg" width="40" height="18" viewBox="0 0 40 18">
-          <line className="burger-line top" x1="0" y1="1" x2="40" y2="1" />
-          <line className="burger-line middle" x1="0" y1="9" x2="40" y2="9" />
-          <line className="burger-line bottom" x1="0" y1="17" x2="40" y2="17" />
-        </svg>
+        <span className="hamburger-line top"></span>
+        <span className="hamburger-line middle"></span>
+        <span className="hamburger-line bottom"></span>
         <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-          <line className="x-line left" x1="10" y1="18" x2="30" y2="0" />
-          <line className="x-line right" x1="30" y1="18" x2="10" y2="0" />
+          <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+          <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
         </svg>
       </div>
     </div>
@@ -255,21 +188,18 @@ const Header = () => {
   return (
     <>
       {BurgerIcon}
-
       <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
-        <div className="header-logo">
-          <img
-            src="/assets/FYVE-Dark-Logo.png"
-            alt="FYVE White Logo"
-            onClick={() => navigate('/')}
-          />
-        </div>
-
+      <div className="header-logo">
+  <img 
+    src="/assets/FYVE-Dark-Logo.png" 
+    alt="FYVE White Logo" 
+    onClick={() => navigate('/')} 
+  />
+</div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
-
           <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
             <div className="custom-search-inner">
               <input
@@ -287,26 +217,19 @@ const Header = () => {
           </div>
         </div>
       </div>
-
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
-
         <div className="menu-content">
           <div className="menu-columns">
             <div className="menu-image-column">
               {menuItems.map(item => (
-                <div
-                  key={item.id}
-                  className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`}
-                  data-menu-item={item.id}
-                >
+                <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
                   <div className="menu-image-reveal">
                     <img src={item.image} alt={`${item.name} Image`} />
                   </div>
                 </div>
               ))}
             </div>
-
             <div className="menu-items-wrapper">
               <ul className="menu-items">
                 {menuItems.map(item => (
@@ -321,13 +244,10 @@ const Header = () => {
                       document.body.classList.remove('locked');
                     }}
                   >
-                    <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>
-                      {item.name}
-                    </NavLink>
+                    <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
                   </li>
                 ))}
               </ul>
-
               <div className="login-section">
                 <div className="fyve-login-container">
                   <a href="/my-account" className="fyve-account-link">My Account</a>
