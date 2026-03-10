@@ -15,116 +15,158 @@ const Header = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
   const burgerRef = useRef(null);
-  const prevMenuStateRef = useRef(menuState);
+  const closeTimerRef = useRef(null);
+  const prevScrollYRef = useRef(window.scrollY);
 
   useEffect(() => {
     if (isMenuOpen) {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
       setMenuState('open');
-    } else if (menuState === 'open') {
-      setMenuState('closing');
-      const timeout = setTimeout(() => {
-        setMenuState('closed');
-      }, 750);
-      return () => clearTimeout(timeout);
+      setHideHeader(false);
+      return;
     }
+
+    if (!isMenuOpen && menuState === 'open') {
+      setMenuState('closing');
+      closeTimerRef.current = setTimeout(() => {
+        setMenuState('closed');
+        closeTimerRef.current = null;
+      }, 750);
+    }
+
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    };
   }, [isMenuOpen, menuState]);
 
-useEffect(() => {
-  if (!burgerRef.current) return;
-  const cOpen = burgerRef.current.querySelector('.c-open');
-  const xSvg = cOpen.querySelector('.x-svg');
-  const xLineLeft = xSvg.querySelector('.x-line.left');
-  const xLineRight = xSvg.querySelector('.x-line.right');
-  gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-}, []);
-
   useEffect(() => {
-  if (!burgerRef.current) return;
+    if (!burgerRef.current) return;
 
-  const cOpen = burgerRef.current.querySelector('.c-open');
-  const topLine = cOpen.querySelector('.burger-line.top');
-  const middleLine = cOpen.querySelector('.burger-line.middle');
-  const bottomLine = cOpen.querySelector('.burger-line.bottom');
-  const xSvg = cOpen.querySelector('.x-svg');
-  const xLineLeft = xSvg.querySelector('.x-line.left');
-  const xLineRight = xSvg.querySelector('.x-line.right');
+    const cOpen = burgerRef.current.querySelector('.c-open');
+    const xSvg = cOpen.querySelector('.x-svg');
+    const xLineLeft = xSvg.querySelector('.x-line.left');
+    const xLineRight = xSvg.querySelector('.x-line.right');
 
-  if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
-    setIsAnimating(true);
-
-    gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform,opacity' });
-    gsap.set([topLine, middleLine, bottomLine], { transformOrigin: 'left center', scaleX: 1, opacity: 1 });
-    gsap.set(middleLine, { transformOrigin: 'right center' });
     gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-
-    gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-    gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-    gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-    gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
-    gsap.to(xLineRight, {
-      strokeDashoffset: 0,
-      duration: 0.3,
-      ease: 'power2.inOut',
-      delay: 1.3,
-      onComplete: () => setIsAnimating(false),
-    });
-  } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
-    setIsAnimating(true);
-
-    gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-    gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-    gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-    gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-    gsap.to(topLine, {
-      scaleX: 1,
-      duration: 0.3,
-      ease: 'power2.inOut',
-      delay: 1.1,
-      onComplete: () => {
-        gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform,opacity' });
-        setIsAnimating(false);
-      },
-    });
-  }
-
-  prevMenuStateRef.current = menuState;
-}, [menuState]);
+  }, []);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
+    if (!burgerRef.current) return;
 
+    const cOpen = burgerRef.current.querySelector('.c-open');
+    const topLine = cOpen.querySelector('.burger-line.top');
+    const middleLine = cOpen.querySelector('.burger-line.middle');
+    const bottomLine = cOpen.querySelector('.burger-line.bottom');
+    const xSvg = cOpen.querySelector('.x-svg');
+    const xLineLeft = xSvg.querySelector('.x-line.left');
+    const xLineRight = xSvg.querySelector('.x-line.right');
+
+    if (!topLine || !middleLine || !bottomLine || !xLineLeft || !xLineRight) return;
+
+    if (menuState === 'open') {
+      setIsAnimating(true);
+
+      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
+
+      gsap.set(topLine, { transformOrigin: '0px 1px', scaleX: 1, opacity: 1 });
+      gsap.set(middleLine, { transformOrigin: '40px 9px', scaleX: 1, opacity: 1 });
+      gsap.set(bottomLine, { transformOrigin: '0px 17px', scaleX: 1, opacity: 1 });
+      gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
+
+      gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+      gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+      gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+      gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
+      gsap.to(xLineRight, {
+        strokeDashoffset: 0,
+        duration: 0.3,
+        ease: 'power2.inOut',
+        delay: 1.3,
+        onComplete: () => {
+          setIsAnimating(false);
+        },
+      });
+    }
+
+    if (menuState === 'closing') {
+      setIsAnimating(true);
+
+      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
+
+      gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
+      gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+      gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+      gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+      gsap.to(topLine, {
+        scaleX: 1,
+        duration: 0.3,
+        ease: 'power2.inOut',
+        delay: 1.1,
+        onComplete: () => {
+          gsap.set(topLine, { clearProps: 'transform,opacity' });
+          gsap.set(middleLine, { clearProps: 'transform,opacity' });
+          gsap.set(bottomLine, { clearProps: 'transform,opacity' });
+          setIsAnimating(false);
+        },
+      });
+    }
+  }, [menuState]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const menuVisible = menuState === 'open' || menuState === 'closing';
 
-      if (isMenuOpen) return;
+      if (menuVisible) {
+        setHideHeader(false);
+        prevScrollYRef.current = currentScrollY;
+        return;
+      }
 
       if (currentScrollY <= 0) {
         setHideHeader(false);
-      } else if (currentScrollY > lastScrollY) {
+      } else if (currentScrollY > prevScrollYRef.current) {
         setHideHeader(true);
-      } else if (currentScrollY < lastScrollY) {
+      } else if (currentScrollY < prevScrollYRef.current) {
         setHideHeader(false);
       }
 
-      lastScrollY = currentScrollY;
+      prevScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMenuOpen]);
+  }, [menuState]);
 
   useEffect(() => {
-    if (isMenuOpen) {
+    const menuVisible = menuState === 'open' || menuState === 'closing';
+
+    if (menuVisible) {
       document.body.classList.add('locked');
     } else {
       document.body.classList.remove('locked');
     }
-  }, [isMenuOpen]);
+
+    return () => {
+      document.body.classList.remove('locked');
+    };
+  }, [menuState]);
 
   const toggleMenu = () => {
-    if (isAnimating || menuState === 'closing') return;
-    setIsMenuOpen(v => !v);
-    if (isSearchOpen) setIsSearchOpen(false);
+    if (isAnimating) return;
+
+    if (menuState === 'open') {
+      setIsMenuOpen(false);
+    } else if (menuState === 'closed') {
+      setIsMenuOpen(true);
+      if (isSearchOpen) setIsSearchOpen(false);
+    }
   };
 
   const toggleSearch = () => {
@@ -191,24 +233,24 @@ useEffect(() => {
   ];
 
   const BurgerIcon = (
-  <div
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
-    ref={burgerRef}
-    onClick={toggleMenu}
-  >
-    <div className="c-open">
-      <svg className="burger-svg" width="40" height="18" viewBox="0 0 40 18">
-        <line className="burger-line top" x1="0" y1="1" x2="40" y2="1" />
-        <line className="burger-line middle" x1="0" y1="9" x2="40" y2="9" />
-        <line className="burger-line bottom" x1="0" y1="17" x2="40" y2="17" />
-      </svg>
-      <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-        <line className="x-line left" x1="10" y1="18" x2="30" y2="0" />
-        <line className="x-line right" x1="30" y1="18" x2="10" y2="0" />
-      </svg>
+    <div
+      className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+      ref={burgerRef}
+      onClick={toggleMenu}
+    >
+      <div className="c-open">
+        <svg className="burger-svg" width="40" height="18" viewBox="0 0 40 18">
+          <line className="burger-line top" x1="0" y1="1" x2="40" y2="1" />
+          <line className="burger-line middle" x1="0" y1="9" x2="40" y2="9" />
+          <line className="burger-line bottom" x1="0" y1="17" x2="40" y2="17" />
+        </svg>
+        <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
+          <line className="x-line left" x1="10" y1="18" x2="30" y2="0" />
+          <line className="x-line right" x1="30" y1="18" x2="10" y2="0" />
+        </svg>
+      </div>
     </div>
-  </div>
-);
+  );
 
   return (
     <>
