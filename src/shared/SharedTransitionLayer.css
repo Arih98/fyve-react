@@ -1,0 +1,16 @@
+.shared-transition-overlay {
+  position: fixed;
+  z-index: 30000;
+  pointer-events: none;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+.shared-transition-overlay-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 24px;
+  box-sizing: border-box;
+}

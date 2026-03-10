@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
+import { useSharedTransition } from '../shared/SharedTransitionContext';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -16,6 +17,7 @@ const ProductsPage = () => {
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+  const { beginTransition } = useSharedTransition();
 
   const display = products.map((product) => ({
     ...product,
@@ -34,48 +36,36 @@ const ProductsPage = () => {
   }));
 
   const handleProductClick = (item, e) => {
-    console.log('[Products] Product click:', {
-      displayId: item.displayId,
-      parentId: item.parentId,
-      title: item.title,
-      selectedColor: item.selectedColor,
-      galleryLength: item.gallery?.length || 0,
-      isMenuOpen,
-    });
-
-    const wrapperElement = document.getElementById(`img-${item.displayId}`);
-    if (wrapperElement) {
-      console.log('[Products] Source wrapper details on click:', {
-        clientWidth: wrapperElement.clientWidth,
-        clientHeight: wrapperElement.clientHeight,
-        boundingRect: wrapperElement.getBoundingClientRect(),
-      });
-    } else {
-      console.warn('[Products] Source wrapper element not found for', item.displayId);
-    }
+    const wrapperElement = imageRefs.current.get(item.displayId);
+    const imgElement = wrapperElement?.querySelector('img');
+    const rect = wrapperElement ? wrapperElement.getBoundingClientRect() : null;
 
     const targetProduct = products.find((p) => p.id === item.parentId);
-    if (!targetProduct) {
-      console.error('[Products] Target product not found for parentId:', item.parentId);
-      return;
-    }
-
-    console.log('[Products] Navigating with product:', {
-      id: targetProduct.id,
-      title: targetProduct.name,
-      initialColor: item.selectedColor,
-      transitionKey: item.displayId
-    });
+    if (!targetProduct || !rect) return;
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
       : '';
 
-    navigate(`/product/${item.parentId}${colorQuery}`, {
+    const targetPath = `/product/${item.parentId}${colorQuery}`;
+    const imageSrc = imgElement?.currentSrc || imgElement?.src || item.gallery?.[0] || item.image || placeholderImage;
+
+    beginTransition({
+      targetPath,
+      title: item.title,
+      imageSrc,
+      sourceRect: {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      }
+    });
+
+    navigate(targetPath, {
       state: {
         product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionKey: `product-image-${item.displayId}`
+        initialColor: item.selectedColor
       }
     });
   };
@@ -87,8 +77,6 @@ const ProductsPage = () => {
 
   if (loading) return <div className="products-loading">Loading...</div>;
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
-
-  console.log('[Products] Rendering', currentProducts.length, 'of', display.length);
 
   return (
     <div className="products-container">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useContext, useMemo, useLayoutEffect } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
@@ -11,6 +11,7 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
+import { useSharedTransition } from './shared/SharedTransitionContext';
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
@@ -18,10 +19,10 @@ const ProductDetail = () => {
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
-  const mainImageRef = useRef(null);
-  const galleryRefs = useRef(new Map());
+  const primaryImageWrapperRef = useRef(null);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
+  const { transition, registerDestination } = useSharedTransition();
 
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
@@ -29,7 +30,7 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
+  const shouldAnimateDetailsIn = !searchParams.get('color');
 
   const {
     selectedAttributes,
@@ -82,7 +83,6 @@ const ProductDetail = () => {
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
-  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
   const gallery = Array.isArray(current?.gallery)
     ? current.gallery
@@ -99,37 +99,23 @@ const ProductDetail = () => {
     ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
     : (product?.description || product?.shortDescription || '');
 
-  useEffect(() => {
-    console.log('[PDP] route state', {
-      productId,
-      locationState: location.state,
-      search: location.search
-    });
-  }, [productId, location.state, location.search]);
+  const currentPath = `${location.pathname}${location.search}`;
+  const hidePrimaryImage = !!transition && transition.targetPath === currentPath;
 
-  useEffect(() => {
-    console.log('[PDP] render state', {
-      productId: product?.id,
-      productTitle: product?.title,
-      currentSku: current?.sku,
-      currentDisplayId,
-      transitionKey,
-      shouldAnimateDetailsIn,
-      galleryLength: gallery.length,
-      mainImage,
-      currentVariationId: currentVariation?.id
+  useLayoutEffect(() => {
+    if (!transition) return;
+    if (transition.targetPath !== currentPath) return;
+    if (!primaryImageWrapperRef.current) return;
+
+    const rect = primaryImageWrapperRef.current.getBoundingClientRect();
+
+    registerDestination(transition.id, {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height
     });
-  }, [
-    product?.id,
-    product?.title,
-    current?.sku,
-    currentDisplayId,
-    transitionKey,
-    shouldAnimateDetailsIn,
-    gallery.length,
-    mainImage,
-    currentVariation?.id
-  ]);
+  }, [transition, currentPath, registerDestination, gallery.length, mainImage, current?.sku]);
 
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
@@ -182,115 +168,36 @@ const ProductDetail = () => {
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
                 const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? transitionKey : undefined;
 
                 return (
-                  <motion.div
-                    initial={false}
-                    ref={el => {
-                      galleryRefs.current.set(imageKey, el);
-                      if (el) {
-                        console.log('[PDP] gallery wrapper ref set', {
-                          imageKey,
-                          layoutId: layoutIdValue,
-                          rect: el.getBoundingClientRect()
-                        });
-                      }
-                    }}
+                  <div
+                    ref={idx === 0 ? primaryImageWrapperRef : null}
                     key={imageKey}
-                    layoutId={layoutIdValue}
                     className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-                    transition={{ duration: 0.5 }}
-                    onLayoutAnimationStart={() => {
-                      const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation start', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        hasElement: !!el,
-                        rect: el ? el.getBoundingClientRect() : null
-                      });
-                      if (layoutIdValue && el) {
-                        el.style.zIndex = '10000';
-                      }
-                    }}
-                    onLayoutAnimationComplete={() => {
-                      const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation complete', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        hasElement: !!el,
-                        rect: el ? el.getBoundingClientRect() : null
-                      });
-                      if (layoutIdValue && el) {
-                        el.style.zIndex = '';
-                      }
-                    }}
+                    style={idx === 0 && hidePrimaryImage ? { opacity: 0 } : undefined}
                   >
                     <img
                       src={img}
                       alt={`${displayTitle} ${idx + 1}`}
                       className="product-gallery-image"
                       onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      onLoad={e => console.log('[PDP] gallery image loaded', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        src: e.target.currentSrc || e.target.src,
-                        naturalWidth: e.target.naturalWidth,
-                        naturalHeight: e.target.naturalHeight,
-                        rect: e.target.getBoundingClientRect(),
-                        complete: e.target.complete
-                      })}
                     />
-                  </motion.div>
+                  </div>
                 );
               })
             ) : (
-              <motion.div
-                initial={false}
-                ref={el => {
-                  mainImageRef.current = el;
-                  if (el) {
-                    console.log('[PDP] main wrapper ref set', {
-                      layoutId: transitionKey,
-                      rect: el.getBoundingClientRect()
-                    });
-                  }
-                }}
-                layoutId={transitionKey}
+              <div
+                ref={primaryImageWrapperRef}
                 className="product-main-image-wrapper"
-                transition={{ duration: 0.5 }}
-                onLayoutAnimationStart={() => {
-                  console.log('[PDP] main layout animation start', {
-                    layoutId: transitionKey,
-                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
-                  });
-                  if (mainImageRef.current) {
-                    mainImageRef.current.style.zIndex = '10000';
-                  }
-                }}
-                onLayoutAnimationComplete={() => {
-                  console.log('[PDP] main layout animation complete', {
-                    layoutId: transitionKey,
-                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
-                  });
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
-                }}
+                style={hidePrimaryImage ? { opacity: 0 } : undefined}
               >
                 <img
                   src={mainImage}
                   alt={displayTitle}
                   className="product-main-image"
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                  onLoad={e => console.log('[PDP] main image loaded', {
-                    layoutId: transitionKey,
-                    src: e.target.currentSrc || e.target.src,
-                    naturalWidth: e.target.naturalWidth,
-                    naturalHeight: e.target.naturalHeight,
-                    rect: e.target.getBoundingClientRect(),
-                    complete: e.target.complete
-                  })}
                 />
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
