@@ -42,8 +42,6 @@ export default function ScrollManager() {
       lenis.scrollTo(savedY, { immediate: true });
       return;
     }
-
-    lenis.scrollTo(0, { immediate: true });
   }, [lenis, location.key, location.pathname, location.search, navigationType]);
 
   return null;

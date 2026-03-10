@@ -189,60 +189,11 @@ const ProductDetail = () => {
                     initial={false}
                     ref={el => {
                       galleryRefs.current.set(imageKey, el);
-
-                      if (idx === 0 && el) {
-                        const imgEl = el.querySelector('img');
-                        const rect = el.getBoundingClientRect();
-                        const imgRect = imgEl ? imgEl.getBoundingClientRect() : null;
-
-                        console.log('[PDP SHARED] ref set', {
+                      if (el) {
+                        console.log('[PDP] gallery wrapper ref set', {
                           imageKey,
                           layoutId: layoutIdValue,
-                          scrollY: window.scrollY,
-                          viewport: {
-                            wrapperTop: rect?.top ?? null,
-                            wrapperLeft: rect?.left ?? null,
-                            wrapperWidth: rect?.width ?? null,
-                            wrapperHeight: rect?.height ?? null,
-                            imgTop: imgRect?.top ?? null,
-                            imgLeft: imgRect?.left ?? null,
-                            imgWidth: imgRect?.width ?? null,
-                            imgHeight: imgRect?.height ?? null
-                          },
-                          document: {
-                            wrapperTop: rect ? rect.top + window.scrollY : null,
-                            wrapperLeft: rect ? rect.left + window.scrollX : null,
-                            imgTop: imgRect ? imgRect.top + window.scrollY : null,
-                            imgLeft: imgRect ? imgRect.left + window.scrollX : null
-                          }
-                        });
-
-                        requestAnimationFrame(() => {
-                          const rect2 = el.getBoundingClientRect();
-                          const imgEl2 = el.querySelector('img');
-                          const imgRect2 = imgEl2 ? imgEl2.getBoundingClientRect() : null;
-
-                          console.log('[PDP SHARED] ref set rAF', {
-                            imageKey,
-                            layoutId: layoutIdValue,
-                            scrollY: window.scrollY,
-                            viewport: {
-                              wrapperTop: rect2?.top ?? null,
-                              wrapperLeft: rect2?.left ?? null,
-                              wrapperWidth: rect2?.width ?? null,
-                              wrapperHeight: rect2?.height ?? null,
-                              imgTop: imgRect2?.top ?? null,
-                              imgLeft: imgRect2?.left ?? null,
-                              imgWidth: imgRect2?.width ?? null,
-                              imgHeight: imgRect2?.height ?? null
-                            },
-                            document: {
-                              wrapperTop: rect2 ? rect2.top + window.scrollY : null,
-                              wrapperLeft: rect2 ? rect2.left + window.scrollX : null,
-                              imgTop: imgRect2 ? imgRect2.top + window.scrollY : null,
-                              imgLeft: imgRect2 ? imgRect2.left + window.scrollX : null
-                            }
-                          });
+                          rect: el.getBoundingClientRect()
                         });
                       }
                     }}
@@ -252,64 +203,24 @@ const ProductDetail = () => {
                     transition={{ duration: 0.5 }}
                     onLayoutAnimationStart={() => {
                       const el = galleryRefs.current.get(imageKey);
-                      const imgEl = el?.querySelector('img');
-                      const rect = el ? el.getBoundingClientRect() : null;
-                      const imgRect = imgEl ? imgEl.getBoundingClientRect() : null;
-
-                      console.log('[PDP SHARED] layout animation start', {
+                      console.log('[PDP] gallery layout animation start', {
                         imageKey,
                         layoutId: layoutIdValue,
-                        scrollY: window.scrollY,
-                        viewport: {
-                          wrapperTop: rect?.top ?? null,
-                          wrapperLeft: rect?.left ?? null,
-                          wrapperWidth: rect?.width ?? null,
-                          wrapperHeight: rect?.height ?? null,
-                          imgTop: imgRect?.top ?? null,
-                          imgLeft: imgRect?.left ?? null,
-                          imgWidth: imgRect?.width ?? null,
-                          imgHeight: imgRect?.height ?? null
-                        },
-                        document: {
-                          wrapperTop: rect ? rect.top + window.scrollY : null,
-                          wrapperLeft: rect ? rect.left + window.scrollX : null,
-                          imgTop: imgRect ? imgRect.top + window.scrollY : null,
-                          imgLeft: imgRect ? imgRect.left + window.scrollX : null
-                        }
+                        hasElement: !!el,
+                        rect: el ? el.getBoundingClientRect() : null
                       });
-
                       if (layoutIdValue && el) {
                         el.style.zIndex = '10000';
                       }
                     }}
                     onLayoutAnimationComplete={() => {
                       const el = galleryRefs.current.get(imageKey);
-                      const imgEl = el?.querySelector('img');
-                      const rect = el ? el.getBoundingClientRect() : null;
-                      const imgRect = imgEl ? imgEl.getBoundingClientRect() : null;
-
-                      console.log('[PDP SHARED] layout animation complete', {
+                      console.log('[PDP] gallery layout animation complete', {
                         imageKey,
                         layoutId: layoutIdValue,
-                        scrollY: window.scrollY,
-                        viewport: {
-                          wrapperTop: rect?.top ?? null,
-                          wrapperLeft: rect?.left ?? null,
-                          wrapperWidth: rect?.width ?? null,
-                          wrapperHeight: rect?.height ?? null,
-                          imgTop: imgRect?.top ?? null,
-                          imgLeft: imgRect?.left ?? null,
-                          imgWidth: imgRect?.width ?? null,
-                          imgHeight: imgRect?.height ?? null
-                        },
-                        document: {
-                          wrapperTop: rect ? rect.top + window.scrollY : null,
-                          wrapperLeft: rect ? rect.left + window.scrollX : null,
-                          imgTop: imgRect ? imgRect.top + window.scrollY : null,
-                          imgLeft: imgRect ? imgRect.left + window.scrollX : null
-                        }
+                        hasElement: !!el,
+                        rect: el ? el.getBoundingClientRect() : null
                       });
-
                       if (layoutIdValue && el) {
                         el.style.zIndex = '';
                       }
