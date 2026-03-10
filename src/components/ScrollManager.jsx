@@ -40,14 +40,7 @@ export default function ScrollManager() {
     if (navigationType === 'POP') {
       const savedY = scrollPositions.get(key) ?? 0;
       lenis.scrollTo(savedY, { immediate: true });
-      return;
     }
-
-    const timeout = setTimeout(() => {
-      lenis.scrollTo(0, { immediate: true });
-    }, 450);
-
-    return () => clearTimeout(timeout);
   }, [lenis, location.key, location.pathname, location.search, navigationType]);
 
   return null;
