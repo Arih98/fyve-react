@@ -35,8 +35,7 @@
   box-sizing: border-box;
     max-width: 78%;
     max-height: 78%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
 }
 
 .product-info {
