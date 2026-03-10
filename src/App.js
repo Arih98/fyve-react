@@ -66,19 +66,8 @@ const Layout = () => {
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={location.pathname}
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
-          >
-            <StableOutlet />
-          </motion.div>
-        </AnimatePresence>
-      </LayoutGroup>
+  <StableOutlet />
+</LayoutGroup>
     </div>
   );
 };
