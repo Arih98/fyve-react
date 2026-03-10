@@ -24,9 +24,6 @@
   aspect-ratio: 3 / 4.7;
   background: #f7f7f7;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .product-image {
