@@ -71,13 +71,15 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
       gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
       gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
       gsap.to(topLine, {
-        scaleX: 1,
-        duration: 0.3,
-        ease: 'power2.inOut',
-        delay: 1.1,
-        onComplete: () => setIsAnimating(false),
-      });
-    }
+  scaleX: 1,
+  duration: 0.3,
+  ease: 'power2.inOut',
+  delay: 1.1,
+  onComplete: () => {
+    gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
+    setIsAnimating(false);
+  },
+});
     prevMenuStateRef.current = menuState;
   }, [menuState]);
 
@@ -168,27 +170,28 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
   ];
 
   const BurgerIcon = (
-    <div
-      className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
-      ref={burgerRef}
-      onClick={toggleMenu}
-    >
-<div className="c-open">
-  <span className="hamburger-line top">
-    <span className="hamburger-line-inner"></span>
-  </span>
-  <span className="hamburger-line middle">
-    <span className="hamburger-line-inner"></span>
-  </span>
-  <span className="hamburger-line bottom">
-    <span className="hamburger-line-inner"></span>
-  </span>
-  <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-    <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-    <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-  </svg>
-</div>
-  );
+  <div
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+    ref={burgerRef}
+    onClick={toggleMenu}
+  >
+    <div className="c-open">
+      <span className="hamburger-line top">
+        <span className="hamburger-line-inner"></span>
+      </span>
+      <span className="hamburger-line middle">
+        <span className="hamburger-line-inner"></span>
+      </span>
+      <span className="hamburger-line bottom">
+        <span className="hamburger-line-inner"></span>
+      </span>
+      <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
+        <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+        <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+      </svg>
+    </div>
+  </div>
+);
 
   return (
     <>
