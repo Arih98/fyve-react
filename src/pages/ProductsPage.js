@@ -1,7 +1,6 @@
 import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
-import { LenisContext } from '../App';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import './ProductsPage.css';
@@ -15,7 +14,6 @@ const ProductsPage = () => {
   });
   const navigate = useNavigate();
   const { isMenuOpen } = useContext(MenuContext);
-  const lenis = useContext(LenisContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
@@ -36,55 +34,42 @@ const ProductsPage = () => {
   }));
 
   const handleProductClick = (item, e) => {
-    const wrapperElement = imageRefs.current.get(item.displayId);
-    const imgElement = wrapperElement?.querySelector('img');
-
-    const rect = wrapperElement ? wrapperElement.getBoundingClientRect() : null;
-    const imgRect = imgElement ? imgElement.getBoundingClientRect() : null;
-
-    console.log('[PLP CLICK] before navigate', {
+    console.log('[Products] Product click:', {
       displayId: item.displayId,
       parentId: item.parentId,
       title: item.title,
       selectedColor: item.selectedColor,
-      scrollY: window.scrollY,
-      viewport: {
-        wrapperTop: rect?.top ?? null,
-        wrapperLeft: rect?.left ?? null,
-        wrapperWidth: rect?.width ?? null,
-        wrapperHeight: rect?.height ?? null,
-        imgTop: imgRect?.top ?? null,
-        imgLeft: imgRect?.left ?? null,
-        imgWidth: imgRect?.width ?? null,
-        imgHeight: imgRect?.height ?? null
-      },
-      document: {
-        wrapperTop: rect ? rect.top + window.scrollY : null,
-        wrapperLeft: rect ? rect.left + window.scrollX : null,
-        imgTop: imgRect ? imgRect.top + window.scrollY : null,
-        imgLeft: imgRect ? imgRect.left + window.scrollX : null
-      },
-      viewportMeta: {
-        innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight
-      }
+      galleryLength: item.gallery?.length || 0,
+      isMenuOpen,
     });
+
+    const wrapperElement = document.getElementById(`img-${item.displayId}`);
+    if (wrapperElement) {
+      console.log('[Products] Source wrapper details on click:', {
+        clientWidth: wrapperElement.clientWidth,
+        clientHeight: wrapperElement.clientHeight,
+        boundingRect: wrapperElement.getBoundingClientRect(),
+      });
+    } else {
+      console.warn('[Products] Source wrapper element not found for', item.displayId);
+    }
 
     const targetProduct = products.find((p) => p.id === item.parentId);
     if (!targetProduct) {
-      console.error('[PLP CLICK] target product not found', { parentId: item.parentId });
+      console.error('[Products] Target product not found for parentId:', item.parentId);
       return;
     }
+
+    console.log('[Products] Navigating with product:', {
+      id: targetProduct.id,
+      title: targetProduct.name,
+      initialColor: item.selectedColor,
+      transitionKey: item.displayId
+    });
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
       : '';
-
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo(0, 0);
-    }
 
     navigate(`/product/${item.parentId}${colorQuery}`, {
       state: {

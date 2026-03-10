@@ -40,7 +40,10 @@ export default function ScrollManager() {
     if (navigationType === 'POP') {
       const savedY = scrollPositions.get(key) ?? 0;
       lenis.scrollTo(savedY, { immediate: true });
+      return;
     }
+
+    lenis.scrollTo(0, { immediate: true });
   }, [lenis, location.key, location.pathname, location.search, navigationType]);
 
   return null;
