@@ -14,7 +14,7 @@ const ProductGrid = ({
           key={`${item.displayId}-${idx}`}
           item={item}
           index={idx}
-          onProductClick={onProductClick}
+          onClick={onProductClick}
           imageRefs={imageRefs}
           placeholderImage={placeholderImage}
         />

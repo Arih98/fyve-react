@@ -8,7 +8,7 @@ import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
-import Account from './Account';
+import Account from './Account'; // Add this import
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
@@ -19,19 +19,17 @@ import Lenis from '@studio-freight/lenis';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { gsap } from 'gsap';
 import ScrollManager from './components/ScrollManager';
-import { SharedTransitionProvider } from './shared/SharedTransitionContext';
-import SharedTransitionLayer from './shared/SharedTransitionLayer';
 
 export const LenisContext = createContext(null);
 
 const ProductDetailWrapper = () => {
   const location = useLocation();
   return <ProductDetail key={location.key} />;
-};
+}
 
 const AnimatedOutlet = () => {
   return useOutlet();
-};
+}
 
 const StableOutlet = () => {
   const o = useOutlet();
@@ -81,7 +79,6 @@ const Layout = () => {
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
-      <SharedTransitionLayer />
     </div>
   );
 };
@@ -139,23 +136,21 @@ function AppContent() {
   requestAnimationFrame(raf);
 
   return (
-    <LenisContext.Provider value={lenis}>
-      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-        <CartProvider>
-          <SharedTransitionProvider>
-            <ScrollManager />
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/product/:id" element={<ProductDetailWrapper />} />
-                <Route path="/product-category/:slug" element={<CategoryProducts />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/account" element={<Account />} />
-              </Route>
-            </Routes>
-          </SharedTransitionProvider>
+  <LenisContext.Provider value={lenis}>
+    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+      <CartProvider>
+        <ScrollManager />
+        <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/product/:id" element={<ProductDetailWrapper />} />
+              <Route path="/product-category/:slug" element={<CategoryProducts />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/account" element={<Account />} /> {/* Add this route */}
+            </Route>
+          </Routes>
         </CartProvider>
       </MenuContext.Provider>
     </LenisContext.Provider>
