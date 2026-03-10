@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.transitionKey;
+  const shouldAnimateDetailsIn = !searchParams.get('color');
 
   const {
     selectedAttributes,
@@ -82,7 +82,6 @@ const ProductDetail = () => {
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
-  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
   const gallery = Array.isArray(current?.gallery)
     ? current.gallery
@@ -113,7 +112,6 @@ const ProductDetail = () => {
       productTitle: product?.title,
       currentSku: current?.sku,
       currentDisplayId,
-      transitionKey,
       shouldAnimateDetailsIn,
       galleryLength: gallery.length,
       mainImage,
@@ -124,7 +122,6 @@ const ProductDetail = () => {
     product?.title,
     current?.sku,
     currentDisplayId,
-    transitionKey,
     shouldAnimateDetailsIn,
     gallery.length,
     mainImage,
@@ -182,49 +179,15 @@ const ProductDetail = () => {
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
                 const imageKey = `${current?.sku || product.id}-${idx}`;
-                const layoutIdValue = idx === 0 ? transitionKey : undefined;
 
                 return (
-                  <motion.div
-                    initial={false}
+                  <div
                     ref={el => {
                       galleryRefs.current.set(imageKey, el);
-                      if (el) {
-                        console.log('[PDP] gallery wrapper ref set', {
-                          imageKey,
-                          layoutId: layoutIdValue,
-                          rect: el.getBoundingClientRect()
-                        });
-                      }
                     }}
                     key={imageKey}
-                    layoutId={layoutIdValue}
+                    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
                     className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-                    transition={{ duration: 0.5 }}
-                    onLayoutAnimationStart={() => {
-                      const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation start', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        hasElement: !!el,
-                        rect: el ? el.getBoundingClientRect() : null
-                      });
-                      if (layoutIdValue && el) {
-                        el.style.zIndex = '10000';
-                      }
-                    }}
-                    onLayoutAnimationComplete={() => {
-                      const el = galleryRefs.current.get(imageKey);
-                      console.log('[PDP] gallery layout animation complete', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        hasElement: !!el,
-                        rect: el ? el.getBoundingClientRect() : null
-                      });
-                      if (layoutIdValue && el) {
-                        el.style.zIndex = '';
-                      }
-                    }}
                   >
                     <img
                       src={img}
@@ -233,7 +196,6 @@ const ProductDetail = () => {
                       onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                       onLoad={e => console.log('[PDP] gallery image loaded', {
                         imageKey,
-                        layoutId: layoutIdValue,
                         src: e.target.currentSrc || e.target.src,
                         naturalWidth: e.target.naturalWidth,
                         naturalHeight: e.target.naturalHeight,
@@ -241,40 +203,16 @@ const ProductDetail = () => {
                         complete: e.target.complete
                       })}
                     />
-                  </motion.div>
+                  </div>
                 );
               })
             ) : (
-              <motion.div
-                initial={false}
+              <div
                 ref={el => {
                   mainImageRef.current = el;
-                  if (el) {
-                    console.log('[PDP] main wrapper ref set', {
-                      layoutId: transitionKey,
-                      rect: el.getBoundingClientRect()
-                    });
-                  }
                 }}
-                layoutId={transitionKey}
+                data-pdp-primary-image="true"
                 className="product-main-image-wrapper"
-                transition={{ duration: 0.5 }}
-                onLayoutAnimationStart={() => {
-                  console.log('[PDP] main layout animation start', {
-                    layoutId: transitionKey,
-                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
-                  });
-                  if (mainImageRef.current) {
-                    mainImageRef.current.style.zIndex = '10000';
-                  }
-                }}
-                onLayoutAnimationComplete={() => {
-                  console.log('[PDP] main layout animation complete', {
-                    layoutId: transitionKey,
-                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
-                  });
-                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
-                }}
               >
                 <img
                   src={mainImage}
@@ -282,7 +220,6 @@ const ProductDetail = () => {
                   className="product-main-image"
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                   onLoad={e => console.log('[PDP] main image loaded', {
-                    layoutId: transitionKey,
                     src: e.target.currentSrc || e.target.src,
                     naturalWidth: e.target.naturalWidth,
                     naturalHeight: e.target.naturalHeight,
@@ -290,7 +227,7 @@ const ProductDetail = () => {
                     complete: e.target.complete
                   })}
                 />
-              </motion.div>
+              </div>
             )}
           </div>
         </div>

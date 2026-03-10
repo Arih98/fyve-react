@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
+import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -33,51 +34,38 @@ const ProductsPage = () => {
     price: product.price
   }));
 
-  const handleProductClick = (item, e) => {
-    console.log('[Products] Product click:', {
-      displayId: item.displayId,
-      parentId: item.parentId,
-      title: item.title,
-      selectedColor: item.selectedColor,
-      galleryLength: item.gallery?.length || 0,
-      isMenuOpen,
-    });
-
-    const wrapperElement = document.getElementById(`img-${item.displayId}`);
-    if (wrapperElement) {
-      console.log('[Products] Source wrapper details on click:', {
-        clientWidth: wrapperElement.clientWidth,
-        clientHeight: wrapperElement.clientHeight,
-        boundingRect: wrapperElement.getBoundingClientRect(),
-      });
-    } else {
-      console.warn('[Products] Source wrapper element not found for', item.displayId);
-    }
+  const handleProductClick = async (item) => {
+    const sourceEl = imageRefs.current.get(item.displayId);
+    const sourceSrc =
+      item.gallery && item.gallery.length > 0
+        ? item.gallery[0]
+        : placeholderImage;
 
     const targetProduct = products.find((p) => p.id === item.parentId);
-    if (!targetProduct) {
-      console.error('[Products] Target product not found for parentId:', item.parentId);
-      return;
-    }
-
-    console.log('[Products] Navigating with product:', {
-      id: targetProduct.id,
-      title: targetProduct.name,
-      initialColor: item.selectedColor,
-      transitionKey: item.displayId
-    });
+    if (!targetProduct) return;
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
       : '';
 
-    navigate(`/product/${item.parentId}${colorQuery}`, {
+    const targetPath = `/product/${item.parentId}${colorQuery}`;
+
+    navigate(targetPath, {
       state: {
         product: targetProduct,
         initialColor: item.selectedColor,
-        transitionKey: `product-image-${item.displayId}`
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc
       }
     });
+
+    if (sourceEl) {
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]')
+      });
+    }
   };
 
   const idxLast = currentPage * productsPerPage;
@@ -87,8 +75,6 @@ const ProductsPage = () => {
 
   if (loading) return <div className="products-loading">Loading...</div>;
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
-
-  console.log('[Products] Rendering', currentProducts.length, 'of', display.length);
 
   return (
     <div className="products-container">
