@@ -186,45 +186,111 @@ const ProductDetail = () => {
 
                 return (
                   <motion.div
-  initial={false}
-  ref={el => {
-    galleryRefs.current.set(imageKey, el);
-  }}
-  key={imageKey}
-  layoutId={layoutIdValue}
-  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-  transition={{ duration: 0.5 }}
->
-  <div className="product-gallery-image-inner">
-    <img
-      src={img}
-      alt={`${displayTitle} ${idx + 1}`}
-      className="product-gallery-image"
-      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-    />
-  </div>
-</motion.div>
+                    initial={false}
+                    ref={el => {
+                      galleryRefs.current.set(imageKey, el);
+                      if (el) {
+                        console.log('[PDP] gallery wrapper ref set', {
+                          imageKey,
+                          layoutId: layoutIdValue,
+                          rect: el.getBoundingClientRect()
+                        });
+                      }
+                    }}
+                    key={imageKey}
+                    layoutId={layoutIdValue}
+                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+                    transition={{ duration: 0.5 }}
+                    onLayoutAnimationStart={() => {
+                      const el = galleryRefs.current.get(imageKey);
+                      console.log('[PDP] gallery layout animation start', {
+                        imageKey,
+                        layoutId: layoutIdValue,
+                        hasElement: !!el,
+                        rect: el ? el.getBoundingClientRect() : null
+                      });
+                      if (layoutIdValue && el) {
+                        el.style.zIndex = '10000';
+                      }
+                    }}
+                    onLayoutAnimationComplete={() => {
+                      const el = galleryRefs.current.get(imageKey);
+                      console.log('[PDP] gallery layout animation complete', {
+                        imageKey,
+                        layoutId: layoutIdValue,
+                        hasElement: !!el,
+                        rect: el ? el.getBoundingClientRect() : null
+                      });
+                      if (layoutIdValue && el) {
+                        el.style.zIndex = '';
+                      }
+                    }}
+                  >
+                    <img
+                      src={img}
+                      alt={`${displayTitle} ${idx + 1}`}
+                      className="product-gallery-image"
+                      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                      onLoad={e => console.log('[PDP] gallery image loaded', {
+                        imageKey,
+                        layoutId: layoutIdValue,
+                        src: e.target.currentSrc || e.target.src,
+                        naturalWidth: e.target.naturalWidth,
+                        naturalHeight: e.target.naturalHeight,
+                        rect: e.target.getBoundingClientRect(),
+                        complete: e.target.complete
+                      })}
+                    />
+                  </motion.div>
                 );
               })
             ) : (
               <motion.div
-  initial={false}
-  ref={el => {
-    mainImageRef.current = el;
-  }}
-  layoutId={transitionKey}
-  className="product-main-image-wrapper"
-  transition={{ duration: 0.5 }}
->
-  <div className="product-main-image-inner">
-    <img
-      src={mainImage}
-      alt={displayTitle}
-      className="product-main-image"
-      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-    />
-  </div>
-</motion.div>
+                initial={false}
+                ref={el => {
+                  mainImageRef.current = el;
+                  if (el) {
+                    console.log('[PDP] main wrapper ref set', {
+                      layoutId: transitionKey,
+                      rect: el.getBoundingClientRect()
+                    });
+                  }
+                }}
+                layoutId={transitionKey}
+                className="product-main-image-wrapper"
+                transition={{ duration: 0.5 }}
+                onLayoutAnimationStart={() => {
+                  console.log('[PDP] main layout animation start', {
+                    layoutId: transitionKey,
+                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+                  });
+                  if (mainImageRef.current) {
+                    mainImageRef.current.style.zIndex = '10000';
+                  }
+                }}
+                onLayoutAnimationComplete={() => {
+                  console.log('[PDP] main layout animation complete', {
+                    layoutId: transitionKey,
+                    rect: mainImageRef.current ? mainImageRef.current.getBoundingClientRect() : null
+                  });
+                  if (mainImageRef.current) mainImageRef.current.style.zIndex = '';
+                }}
+              >
+                <img
+                  src={mainImage}
+                  alt={displayTitle}
+                  className="product-main-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  onLoad={e => console.log('[PDP] main image loaded', {
+                    layoutId: transitionKey,
+                    src: e.target.currentSrc || e.target.src,
+                    naturalWidth: e.target.naturalWidth,
+                    naturalHeight: e.target.naturalHeight,
+                    rect: e.target.getBoundingClientRect(),
+                    complete: e.target.complete
+                  })}
+                />
+              </motion.div>
             )}
           </div>
         </div>
