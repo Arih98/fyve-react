@@ -24,7 +24,7 @@ export const LenisContext = createContext(null);
 
 const ProductDetailWrapper = () => {
   const location = useLocation();
-  return <ProductDetail key={location.key} />;
+  return <ProductDetail />;
 }
 
 const AnimatedOutlet = () => {
