@@ -1,4 +1,3 @@
-// Modified Header.jsx
 import { MenuContext } from './MenuContext';
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
@@ -28,7 +27,7 @@ const Header = () => {
       }, 750);
       return () => clearTimeout(timeout);
     }
-  }, [isMenuOpen]);
+  }, [isMenuOpen, menuState]);
 
   useEffect(() => {
     if (!burgerRef.current) return;
@@ -41,18 +40,21 @@ const Header = () => {
 
   useEffect(() => {
     if (!burgerRef.current) return;
+
     const cOpen = burgerRef.current.querySelector('.c-open');
     const topLine = cOpen.querySelector('.hamburger-line.top .hamburger-line-inner');
-const middleLine = cOpen.querySelector('.hamburger-line.middle .hamburger-line-inner');
-const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-inner');
+    const middleLine = cOpen.querySelector('.hamburger-line.middle .hamburger-line-inner');
+    const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-inner');
     const xSvg = cOpen.querySelector('.x-svg');
     const xLineLeft = xSvg.querySelector('.x-line.left');
     const xLineRight = xSvg.querySelector('.x-line.right');
 
     if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
       setIsAnimating(true);
+      gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
       gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
       gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
+
       gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
       gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
       gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
@@ -64,57 +66,36 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
         delay: 1.3,
         onComplete: () => setIsAnimating(false),
       });
-    useEffect(() => {
-  if (!burgerRef.current) return;
-  const cOpen = burgerRef.current.querySelector('.c-open');
-  const topLine = cOpen.querySelector('.hamburger-line.top .hamburger-line-inner');
-  const middleLine = cOpen.querySelector('.hamburger-line.middle .hamburger-line-inner');
-  const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-inner');
-  const xSvg = cOpen.querySelector('.x-svg');
-  const xLineLeft = xSvg.querySelector('.x-line.left');
-  const xLineRight = xSvg.querySelector('.x-line.right');
+    } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
+      setIsAnimating(true);
 
-  if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
-    setIsAnimating(true);
-    gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
-    gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-    gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-    gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-    gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-    gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
-    gsap.to(xLineRight, {
-      strokeDashoffset: 0,
-      duration: 0.3,
-      ease: 'power2.inOut',
-      delay: 1.3,
-      onComplete: () => setIsAnimating(false),
-    });
-  } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
-    setIsAnimating(true);
-    gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-    gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-    gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-    gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-    gsap.to(topLine, {
-      scaleX: 1,
-      duration: 0.3,
-      ease: 'power2.inOut',
-      delay: 1.1,
-      onComplete: () => {
-        gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
-        setIsAnimating(false);
-      },
-    });
-  }
+      gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
+      gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+      gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+      gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+      gsap.to(topLine, {
+        scaleX: 1,
+        duration: 0.3,
+        ease: 'power2.inOut',
+        delay: 1.1,
+        onComplete: () => {
+          gsap.set([topLine, middleLine, bottomLine], { clearProps: 'transform' });
+          setIsAnimating(false);
+        },
+      });
+    }
 
-  prevMenuStateRef.current = menuState;
-}, [menuState]);
+    prevMenuStateRef.current = menuState;
+  }, [menuState]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+
       if (isMenuOpen) return;
+
       if (currentScrollY <= 0) {
         setHideHeader(false);
       } else if (currentScrollY > lastScrollY) {
@@ -122,8 +103,10 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
       } else if (currentScrollY < lastScrollY) {
         setHideHeader(false);
       }
+
       lastScrollY = currentScrollY;
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isMenuOpen]);
@@ -147,27 +130,35 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     setSearchQuery(e.target.value);
   };
 
-  const handleMenuImageChange = (newId) => {
+  const handleMenuImageChange = newId => {
     if (isImageAnimating || newId === activeMenuImage) return;
+
     const prevId = activeMenuImage;
     const prevElem = document.querySelector(`.menu-image[data-menu-item="${prevId}"]`);
     const newElem = document.querySelector(`.menu-image[data-menu-item="${newId}"]`);
+
     if (!newElem) return;
+
     setIsImageAnimating(true);
+
     if (prevElem) {
       prevElem.style.opacity = '1';
       prevElem.style.zIndex = '1';
     }
+
     newElem.style.opacity = '1';
     newElem.style.zIndex = '2';
+
     const newImg = newElem.querySelector('img');
     gsap.set(newImg, { yPercent: -100 });
     gsap.to(newImg, { yPercent: 0, duration: 0.6, ease: 'power2.inOut' });
+
     const prevImg = prevElem ? prevElem.querySelector('img') : null;
+
     if (prevImg) {
       gsap.to(prevImg, {
         yPercent: 100,
@@ -179,11 +170,12 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
             prevElem.style.zIndex = '1';
           }
           setIsImageAnimating(false);
-        }
+        },
       });
     } else {
       setIsImageAnimating(false);
     }
+
     setActiveMenuImage(newId);
   };
 
@@ -197,44 +189,47 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
   ];
 
   const BurgerIcon = (
-  <div
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
-    ref={burgerRef}
-    onClick={toggleMenu}
-  >
-    <div className="c-open">
-      <span className="hamburger-line top">
-        <span className="hamburger-line-inner"></span>
-      </span>
-      <span className="hamburger-line middle">
-        <span className="hamburger-line-inner"></span>
-      </span>
-      <span className="hamburger-line bottom">
-        <span className="hamburger-line-inner"></span>
-      </span>
-      <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-        <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-        <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-      </svg>
+    <div
+      className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+      ref={burgerRef}
+      onClick={toggleMenu}
+    >
+      <div className="c-open">
+        <span className="hamburger-line top">
+          <span className="hamburger-line-inner"></span>
+        </span>
+        <span className="hamburger-line middle">
+          <span className="hamburger-line-inner"></span>
+        </span>
+        <span className="hamburger-line bottom">
+          <span className="hamburger-line-inner"></span>
+        </span>
+        <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
+          <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+          <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+        </svg>
+      </div>
     </div>
-  </div>
-);
+  );
 
   return (
     <>
       {BurgerIcon}
+
       <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
-      <div className="header-logo">
-  <img 
-    src="/assets/FYVE-Dark-Logo.png" 
-    alt="FYVE White Logo" 
-    onClick={() => navigate('/')} 
-  />
-</div>
+        <div className="header-logo">
+          <img
+            src="/assets/FYVE-Dark-Logo.png"
+            alt="FYVE White Logo"
+            onClick={() => navigate('/')}
+          />
+        </div>
+
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
           </button>
+
           <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
             <div className="custom-search-inner">
               <input
@@ -252,19 +247,26 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
           </div>
         </div>
       </div>
+
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
+
         <div className="menu-content">
           <div className="menu-columns">
             <div className="menu-image-column">
               {menuItems.map(item => (
-                <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
+                <div
+                  key={item.id}
+                  className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`}
+                  data-menu-item={item.id}
+                >
                   <div className="menu-image-reveal">
                     <img src={item.image} alt={`${item.name} Image`} />
                   </div>
                 </div>
               ))}
             </div>
+
             <div className="menu-items-wrapper">
               <ul className="menu-items">
                 {menuItems.map(item => (
@@ -279,10 +281,13 @@ const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-i
                       document.body.classList.remove('locked');
                     }}
                   >
-                    <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
+                    <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>
+                      {item.name}
+                    </NavLink>
                   </li>
                 ))}
               </ul>
+
               <div className="login-section">
                 <div className="fyve-login-container">
                   <a href="/my-account" className="fyve-account-link">My Account</a>
