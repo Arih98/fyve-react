@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !searchParams.get('color');
+  const shouldAnimateDetailsIn = !!location.state?.product || !searchParams.get('color');
 
   const {
     selectedAttributes,
