@@ -101,7 +101,7 @@ body.locked {
   transform-origin: right;
 }
 
-.c-open .hamburger-line:last-child {
+.c-open .hamburger-line.bottom {
   margin-bottom: 0;
 }
 
