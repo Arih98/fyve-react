@@ -45,21 +45,36 @@ const Layout = () => {
   const lenis = useContext(LenisContext);
 
   useEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        const contentHeight = containerRef.current.querySelector('motion.div')?.scrollHeight || 0;
-        containerRef.current.style.height = `${contentHeight}px`;
-        lenis?.resize();
-      }
-    };
+  const updateHeight = () => {
+    if (!containerRef.current) return;
+
+    // Target the currently visible page (more reliable during AnimatePresence)
+    const activePage = containerRef.current.querySelector('motion.div[style*="absolute"]') ||
+                       containerRef.current.querySelector('.products-container') ||
+                       containerRef.current.querySelector('.product-detail-container');
+
+    const contentHeight = activePage?.scrollHeight || 0;
+    containerRef.current.style.height = `${contentHeight}px`;
+    lenis?.resize();
+  };
+
+  // Run once after the new page has painted
+  const raf = requestAnimationFrame(() => {
     updateHeight();
-    window.addEventListener('resize', updateHeight);
-    const interval = setInterval(updateHeight, 100);
-    return () => {
-      window.removeEventListener('resize', updateHeight);
-      clearInterval(interval);
-    };
-  }, [lenis]);
+  });
+
+  window.addEventListener('resize', updateHeight);
+
+  // Also force a resize when route actually changes
+  const handleRouteChange = () => updateHeight();
+  window.addEventListener('popstate', handleRouteChange);
+
+  return () => {
+    window.removeEventListener('resize', updateHeight);
+    window.removeEventListener('popstate', handleRouteChange);
+    cancelAnimationFrame(raf);
+  };
+}, [lenis, location.pathname]); // ← important: re-run on route change
 
   return (
     <div className="App" ref={containerRef} style={{ position: 'relative' }}>
