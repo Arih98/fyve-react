@@ -20,13 +20,13 @@ const ProductCard = ({
       className="product-card"
     >
       <div
+        ref={el => {
+          imageRefs.current.set(item.displayId, el);
+        }}
         id={`img-${item.displayId}`}
         className="product-image-wrapper"
       >
         <img
-          ref={el => {
-            imageRefs.current.set(item.displayId, el);
-          }}
           src={imageSrc}
           alt={item.title}
           className="product-image"

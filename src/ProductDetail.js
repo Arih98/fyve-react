@@ -186,14 +186,13 @@ const ProductDetail = () => {
                       galleryRefs.current.set(imageKey, el);
                     }}
                     key={imageKey}
+                    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
                     className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
                   >
                     <img
-                      ref={idx === 0 ? mainImageRef : null}
                       src={img}
                       alt={`${displayTitle} ${idx + 1}`}
                       className="product-gallery-image"
-                      data-pdp-primary-image={idx === 0 ? 'true' : undefined}
                       onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                       onLoad={e => console.log('[PDP] gallery image loaded', {
                         imageKey,
@@ -208,13 +207,17 @@ const ProductDetail = () => {
                 );
               })
             ) : (
-              <div className="product-main-image-wrapper">
+              <div
+                ref={el => {
+                  mainImageRef.current = el;
+                }}
+                data-pdp-primary-image="true"
+                className="product-main-image-wrapper"
+              >
                 <img
-                  ref={mainImageRef}
                   src={mainImage}
                   alt={displayTitle}
                   className="product-main-image"
-                  data-pdp-primary-image="true"
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
                   onLoad={e => console.log('[PDP] main image loaded', {
                     src: e.target.currentSrc || e.target.src,
