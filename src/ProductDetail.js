@@ -82,8 +82,7 @@ const ProductDetail = () => {
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
-  const transitionKeyRef = useRef(location.state?.transitionKey || `product-image-${currentDisplayId}`);
-const transitionKey = transitionKeyRef.current;
+  const transitionKey = location.state?.transitionKey || `product-image-${currentDisplayId}`;
 
   const gallery = Array.isArray(current?.gallery)
     ? current.gallery
@@ -182,7 +181,7 @@ const transitionKey = transitionKeyRef.current;
           <div className="product-image-gallery">
             {gallery.length > 0 ? (
               gallery.map((img, idx) => {
-                const imageKey = `${product?.id || 'unknown'}-${idx}`;
+                const imageKey = `${current?.sku || product.id}-${idx}`;
                 const layoutIdValue = idx === 0 ? transitionKey : undefined;
 
                 return (
