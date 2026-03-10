@@ -42,6 +42,12 @@ export default function ScrollManager() {
       lenis.scrollTo(savedY, { immediate: true });
       return;
     }
+
+    const timeout = setTimeout(() => {
+      lenis.scrollTo(0, { immediate: true });
+    }, 450);
+
+    return () => clearTimeout(timeout);
   }, [lenis, location.key, location.pathname, location.search, navigationType]);
 
   return null;
