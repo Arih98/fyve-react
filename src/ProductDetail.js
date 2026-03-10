@@ -103,19 +103,19 @@ const ProductDetail = () => {
   const hidePrimaryImage = !!transition && transition.targetPath === currentPath;
 
   useLayoutEffect(() => {
-    if (!transition) return;
-    if (transition.targetPath !== currentPath) return;
-    if (!primaryImageWrapperRef.current) return;
+  if (!transition) return;
+  if (transition.targetPath !== currentPath) return;
+  if (!primaryImageWrapperRef.current) return;
 
-    const rect = primaryImageWrapperRef.current.getBoundingClientRect();
+  const rect = primaryImageWrapperRef.current.getBoundingClientRect();
 
-    registerDestination(transition.id, {
-      left: rect.left,
-      top: rect.top,
-      width: rect.width,
-      height: rect.height
-    });
-  }, [transition, currentPath, registerDestination, gallery.length, mainImage, current?.sku]);
+  registerDestination(transition.id, {
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height
+  });
+}, [transition?.id, transition?.targetPath, currentPath, registerDestination]);
 
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;

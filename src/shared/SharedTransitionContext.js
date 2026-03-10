@@ -2,6 +2,16 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 
 const SharedTransitionContext = createContext(null);
 
+const sameRect = (a, b) => {
+  if (!a || !b) return false;
+  return (
+    a.left === b.left &&
+    a.top === b.top &&
+    a.width === b.width &&
+    a.height === b.height
+  );
+};
+
 export const SharedTransitionProvider = ({ children }) => {
   const [transition, setTransition] = useState(null);
 
@@ -18,6 +28,8 @@ export const SharedTransitionProvider = ({ children }) => {
   const registerDestination = useCallback((id, destinationRect) => {
     setTransition((current) => {
       if (!current || current.id !== id) return current;
+      if (sameRect(current.destinationRect, destinationRect)) return current;
+
       return {
         ...current,
         destinationRect
