@@ -70,20 +70,23 @@ const ProductCard = ({
           }
         }}
       >
-        <img
-          src={imageSrc}
-          alt={item.title}
-          className="product-image"
-          onError={e => { e.target.src = placeholderImage; }}
-          onLoad={e => console.log('[PLP] image loaded', {
-            displayId: item.displayId,
-            layoutId,
-            src: e.target.currentSrc || e.target.src,
-            naturalWidth: e.target.naturalWidth,
-            naturalHeight: e.target.naturalHeight,
-            rect: e.target.getBoundingClientRect()
-          })}
-        />
+              >
+        <div className="product-image-inner">
+          <img
+            src={imageSrc}
+            alt={item.title}
+            className="product-image"
+            onError={e => { e.target.src = placeholderImage; }}
+            onLoad={e => console.log('[PLP] image loaded', {
+              displayId: item.displayId,
+              layoutId,
+              src: e.target.currentSrc || e.target.src,
+              naturalWidth: e.target.naturalWidth,
+              naturalHeight: e.target.naturalHeight,
+              rect: e.target.getBoundingClientRect()
+            })}
+          />
+        </div>
       </motion.div>
 
       <div className="product-info">

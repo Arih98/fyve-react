@@ -225,23 +225,27 @@ const ProductDetail = () => {
                         el.style.zIndex = '';
                       }
                     }}
-                  >
-                    <img
-                      src={img}
-                      alt={`${displayTitle} ${idx + 1}`}
-                      className="product-gallery-image"
-                      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      onLoad={e => console.log('[PDP] gallery image loaded', {
-                        imageKey,
-                        layoutId: layoutIdValue,
-                        src: e.target.currentSrc || e.target.src,
-                        naturalWidth: e.target.naturalWidth,
-                        naturalHeight: e.target.naturalHeight,
-                        rect: e.target.getBoundingClientRect(),
-                        complete: e.target.complete
-                      })}
-                    />
-                  </motion.div>
+                                >
+                <div className="product-main-image-inner">
+                  <img
+                    src={mainImage}
+                    alt={displayTitle}
+                    className="product-main-image"
+                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                    onLoad={e => console.log('[PDP] main image loaded', {
+                      layoutId: transitionKey,
+                      pathname: window.location.pathname,
+                      search: window.location.search,
+                      scrollY: window.scrollY,
+                      src: e.target.currentSrc || e.target.src,
+                      naturalWidth: e.target.naturalWidth,
+                      naturalHeight: e.target.naturalHeight,
+                      rect: e.target.getBoundingClientRect(),
+                      complete: e.target.complete
+                    })}
+                  />
+                </div>
+              </motion.div>
                 );
               })
             ) : (
