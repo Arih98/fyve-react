@@ -35,9 +35,7 @@ const ProductCard = ({
       </div>
 
       <div className="product-info">
-        <h3 className="product-title">
-          {item.title}
-        </h3>
+        <h3 className="product-title">{item.title}</h3>
         <ProductPrice price={item.price} />
       </div>
     </div>
