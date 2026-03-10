@@ -42,9 +42,9 @@ const Header = () => {
   useEffect(() => {
     if (!burgerRef.current) return;
     const cOpen = burgerRef.current.querySelector('.c-open');
-    const topLine = cOpen.querySelector('.hamburger-line.top');
-    const middleLine = cOpen.querySelector('.hamburger-line.middle');
-    const bottomLine = cOpen.querySelector('.hamburger-line.bottom');
+    const topLine = cOpen.querySelector('.hamburger-line.top .hamburger-line-inner');
+const middleLine = cOpen.querySelector('.hamburger-line.middle .hamburger-line-inner');
+const bottomLine = cOpen.querySelector('.hamburger-line.bottom .hamburger-line-inner');
     const xSvg = cOpen.querySelector('.x-svg');
     const xLineLeft = xSvg.querySelector('.x-line.left');
     const xLineRight = xSvg.querySelector('.x-line.right');
@@ -173,16 +173,21 @@ const Header = () => {
       ref={burgerRef}
       onClick={toggleMenu}
     >
-      <div className="c-open">
-        <span className="hamburger-line top"></span>
-        <span className="hamburger-line middle"></span>
-        <span className="hamburger-line bottom"></span>
-        <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-          <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-          <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-        </svg>
-      </div>
-    </div>
+<div className="c-open">
+  <span className="hamburger-line top">
+    <span className="hamburger-line-inner"></span>
+  </span>
+  <span className="hamburger-line middle">
+    <span className="hamburger-line-inner"></span>
+  </span>
+  <span className="hamburger-line bottom">
+    <span className="hamburger-line-inner"></span>
+  </span>
+  <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
+    <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+    <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+  </svg>
+</div>
   );
 
   return (

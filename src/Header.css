@@ -83,22 +83,38 @@ body.locked {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #4A494A;
   z-index: 2;
+  overflow: hidden;
+}
+
+.c-open .hamburger-line-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #4A494A;
 }
 
 .c-open .hamburger-line.top {
   top: 0;
-  transform-origin: left center;
 }
 
 .c-open .hamburger-line.middle {
   top: 8px;
-  transform-origin: right center;
 }
 
 .c-open .hamburger-line.bottom {
   top: 16px;
+}
+
+.c-open .hamburger-line.top .hamburger-line-inner {
+  transform-origin: left center;
+}
+
+.c-open .hamburger-line.middle .hamburger-line-inner {
+  transform-origin: right center;
+}
+
+.c-open .hamburger-line.bottom .hamburger-line-inner {
   transform-origin: left center;
 }
 
