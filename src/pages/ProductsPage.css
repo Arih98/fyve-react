@@ -101,7 +101,7 @@
 }
 
 .skeleton-image {
-  background: #eee;
+  background: #ececec;
   position: relative;
   overflow: hidden;
 }
@@ -109,7 +109,7 @@
 .skeleton-text {
   height: 14px;
   border-radius: 4px;
-  background: #eee;
+  background: #ececec;
   margin-top: 10px;
   position: relative;
   overflow: hidden;
@@ -129,18 +129,13 @@
 
 .skeleton-image::after,
 .skeleton-text::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -150%;
-  height: 100%;
   width: 150%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.6),
-    transparent
-  );
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
   animation: skeleton-shimmer 1.2s infinite;
 }
 
@@ -148,6 +143,26 @@
   100% {
     left: 150%;
   }
+}
+
+.real-product-card {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.real-product-card.card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.real-product-image {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.real-product-image.image-loaded {
+  opacity: 1;
 }
 
 @media (max-width: 1024px) {

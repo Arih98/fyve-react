@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductPrice from './ProductPrice';
 
 const ProductCard = ({
@@ -8,16 +8,26 @@ const ProductCard = ({
   imageRefs,
   placeholderImage
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const imageSrc =
     item.gallery && item.gallery.length > 0
       ? item.gallery[0]
       : placeholderImage;
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsVisible(true);
+    }, index * 35);
+
+    return () => clearTimeout(timeout);
+  }, [index]);
+
   return (
     <div
-      key={`${item.displayId}-${index}`}
       onClick={(e) => onProductClick(item, e)}
-      className="product-card"
+      className={`product-card real-product-card ${isVisible ? 'card-visible' : ''}`}
     >
       <div
         ref={el => {
@@ -29,8 +39,12 @@ const ProductCard = ({
         <img
           src={imageSrc}
           alt={item.title}
-          className="product-image"
-          onError={e => { e.target.src = placeholderImage; }}
+          className={`product-image real-product-image ${imageLoaded ? 'image-loaded' : ''}`}
+          onLoad={() => setImageLoaded(true)}
+          onError={e => {
+            e.target.src = placeholderImage;
+            setImageLoaded(true);
+          }}
         />
       </div>
 
