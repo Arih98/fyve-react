@@ -60,13 +60,18 @@ state: {
 }
     });
 
-    if (sourceEl) {
-      startProductImageTransition({
-        src: sourceSrc,
-        fromElement: sourceEl,
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]')
-      });
-    }
+if (sourceEl) {
+  const isMobileViewport = window.innerWidth <= 768;
+
+  startProductImageTransition({
+    src: sourceSrc,
+    fromElement: sourceEl,
+    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+    duration: isMobileViewport ? 650 : 750,
+    minTargetTop: isMobileViewport ? 88 : 0,
+    zIndex: isMobileViewport ? 80 : 999999
+  });
+}
   };
 
   const idxLast = currentPage * productsPerPage;

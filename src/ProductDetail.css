@@ -378,10 +378,12 @@
     width: 100%;
   }
 
-  .images-container {
-    width: 100%;
-    max-width: 100%;
-  }
+.images-container {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+}
 
 .product-image-gallery {
   gap: 10px;
