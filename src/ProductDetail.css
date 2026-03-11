@@ -608,3 +608,8 @@
     font-size: 13px;
   }
 }
+@media (max-width: 768px) {
+  .products-container {
+    padding-top: 80px;
+  }
+}
