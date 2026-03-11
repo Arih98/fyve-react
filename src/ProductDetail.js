@@ -18,9 +18,11 @@ const ProductDetail = () => {
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
+  const mobileGalleryRef = useRef(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
 
@@ -104,7 +106,20 @@ const ProductDetail = () => {
   const displayDescription = product?.product_type === 'variable'
     ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
     : (product?.description || product?.shortDescription || '');
-
+useEffect(() => {
+  setActiveImageIndex(0);
+  if (mobileGalleryRef.current) {
+    mobileGalleryRef.current.scrollLeft = 0;
+  }
+}, [current?.sku, product?.id, gallery.length]);
+const handleMobileGalleryScroll = () => {
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+  const slideWidth = el.clientWidth;
+  if (!slideWidth) return;
+  const nextIndex = Math.round(el.scrollLeft / slideWidth);
+  setActiveImageIndex(nextIndex);
+};
   useEffect(() => {
     console.log('[PDP] route state', {
       productId,
@@ -182,47 +197,77 @@ const ProductDetail = () => {
     <>
       <motion.div className="product-detail-container">
         <div className="images-container">
-          <div className="product-image-gallery">
-            {gallery.length > 0 ? (
-              gallery.map((img, idx) => {
-                const imageKey = `${current?.sku || product.id}-${idx}`;
+  <div className="product-image-gallery">
+    <div
+      ref={mobileGalleryRef}
+      className="product-image-gallery-track"
+      onScroll={handleMobileGalleryScroll}
+    >
+      {gallery.length > 0 ? (
+        gallery.map((img, idx) => {
+          const imageKey = `${current?.sku || product.id}-${idx}`;
 
-                return (
-                  <div
-                    ref={el => {
-                      galleryRefs.current.set(imageKey, el);
-                    }}
-                    key={imageKey}
-                    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-                  >
-                    <img
-                      src={img}
-                      alt={`${displayTitle} ${idx + 1}`}
-                      className="product-gallery-image"
-                      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                    />
-                  </div>
-                );
-              })
-            ) : (
-              <div
-                ref={el => {
-                  mainImageRef.current = el;
-                }}
-                data-pdp-primary-image="true"
-                className="product-main-image-wrapper"
-              >
-                <img
-                  src={mainImage}
-                  alt={displayTitle}
-                  className="product-main-image"
-                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                />
-              </div>
-            )}
-          </div>
+          return (
+            <div
+              ref={el => {
+                galleryRefs.current.set(imageKey, el);
+              }}
+              key={imageKey}
+              data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+              className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+            >
+              <img
+                src={img}
+                alt={`${displayTitle} ${idx + 1}`}
+                className="product-gallery-image"
+                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                onLoad={e => console.log('[PDP] gallery image loaded', {
+                  imageKey,
+                  src: e.target.currentSrc || e.target.src,
+                  naturalWidth: e.target.naturalWidth,
+                  naturalHeight: e.target.naturalHeight,
+                  rect: e.target.getBoundingClientRect(),
+                  complete: e.target.complete
+                })}
+              />
+            </div>
+          );
+        })
+      ) : (
+        <div
+          ref={el => {
+            mainImageRef.current = el;
+          }}
+          data-pdp-primary-image="true"
+          className="product-main-image-wrapper"
+        >
+          <img
+            src={mainImage}
+            alt={displayTitle}
+            className="product-main-image"
+            onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+            onLoad={e => console.log('[PDP] main image loaded', {
+              src: e.target.currentSrc || e.target.src,
+              naturalWidth: e.target.naturalWidth,
+              naturalHeight: e.target.naturalHeight,
+              rect: e.target.getBoundingClientRect(),
+              complete: e.target.complete
+            })}
+          />
         </div>
+      )}
+    </div>
+
+    {gallery.length > 1 && (
+      <div className="product-gallery-progress">
+        <div
+          className="product-gallery-progress-bar"
+          style={{ width: `${((activeImageIndex + 1) / gallery.length) * 100}%` }}
+        />
+      </div>
+    )}
+  </div>
+</div>
 
         <motion.div
           className="details-container"
