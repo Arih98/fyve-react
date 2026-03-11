@@ -18,10 +18,17 @@ const ProductDetail = () => {
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
@@ -93,13 +100,7 @@ const ProductDetail = () => {
   const displayTitle = product?.product_type === 'variable' && (effectiveVariation?.title || effectiveVariation?.name)
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
-const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-useEffect(() => {
-  const handleResize = () => setIsMobile(window.innerWidth <= 768);
-  window.addEventListener('resize', handleResize);
-  return () => window.removeEventListener('resize', handleResize);
-}, []);
   const displayDescription = product?.product_type === 'variable'
     ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
     : (product?.description || product?.shortDescription || '');
@@ -200,14 +201,6 @@ useEffect(() => {
                       alt={`${displayTitle} ${idx + 1}`}
                       className="product-gallery-image"
                       onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      onLoad={e => console.log('[PDP] gallery image loaded', {
-                        imageKey,
-                        src: e.target.currentSrc || e.target.src,
-                        naturalWidth: e.target.naturalWidth,
-                        naturalHeight: e.target.naturalHeight,
-                        rect: e.target.getBoundingClientRect(),
-                        complete: e.target.complete
-                      })}
                     />
                   </div>
                 );
@@ -225,13 +218,6 @@ useEffect(() => {
                   alt={displayTitle}
                   className="product-main-image"
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                  onLoad={e => console.log('[PDP] main image loaded', {
-                    src: e.target.currentSrc || e.target.src,
-                    naturalWidth: e.target.naturalWidth,
-                    naturalHeight: e.target.naturalHeight,
-                    rect: e.target.getBoundingClientRect(),
-                    complete: e.target.complete
-                  })}
                 />
               </div>
             )}
@@ -254,7 +240,7 @@ useEffect(() => {
 
             <p
               className="product-description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || product.shortDescription || "") }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || product.shortDescription || '') }}
             />
 
             {product.product_type === 'variable' && (
