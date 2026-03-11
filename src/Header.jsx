@@ -272,14 +272,6 @@ useEffect(() => {
                   </li>
                 ))}
               </ul>
-              <div className="login-section">
-                <div className="fyve-login-container">
-                  <a href="/my-account" className="fyve-account-link">My Account</a>
-                </div>
-                <div className="fyve-login-container">
-                  <a href="/my-account" className="fyve-login-link">Sign in</a>
-                </div>
-              </div>
             </div>
           </div>
         </div>
