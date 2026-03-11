@@ -177,7 +177,7 @@ setActiveImageIndex(nextIndex);
       name: current.title || product.title,
       price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
       quantity,
-      image: current.gallery?.[0] || product.gallery?.[0] || '/api/Uploads/fallback-image.png',
+      image: displayImages[0] || '/api/Uploads/fallback-image.png',
       size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
       color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
     };
