@@ -69,7 +69,6 @@ const Layout = () => {
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
-<motion.div
   key={location.pathname}
   initial={false}
   animate={{ opacity: 1, y: 0 }}
