@@ -458,7 +458,8 @@ body.locked {
   bottom: 0;
   top: auto;
   width: 100%;
-  padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-safe-padding) var(--nav-side-padding) !important;
+  padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
+  padding-bottom: var(--nav-bottom-safe-padding) !important;
   box-sizing: border-box;
   display: grid !important;
   grid-template-columns: 40px minmax(0, 1fr);
