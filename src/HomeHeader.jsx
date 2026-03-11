@@ -271,7 +271,7 @@ const toggleSearch = () => {
               <div className="custom-search-results"></div>
             </div>
           </div>
-      </div>
+        </div>
       <div
         className={`mobile-header second-header ${showSecondHeader ? 'active' : ''}`}
         style={{ zIndex: 1999 }}
@@ -319,7 +319,7 @@ const toggleSearch = () => {
               <div className="custom-search-results"></div>
             </div>
           </div>
-        </div>
+      </div>
       <div
         className={`mobile-header third-header ${showThirdHeader ? 'active' : ''}`}
         style={{ zIndex: 1998 }}
@@ -367,7 +367,7 @@ const toggleSearch = () => {
               <div className="custom-search-results"></div>
             </div>
           </div>
-        </div>
+      </div>
       <motion.div
   className={`mobile-menu ${menuState === 'open' ? 'active' : menuState === 'closing' ? 'closing' : ''}`}
   initial={{ y: '-100%' }}
