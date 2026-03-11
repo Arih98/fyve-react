@@ -373,7 +373,7 @@
   .product-detail-container {
     flex-direction: column;
     margin-top: 76px;
-    padding: 12px;
+    padding: 0;
     padding-bottom: 80px;
     width: 100%;
   }
@@ -387,6 +387,7 @@
 
 .product-image-gallery {
   gap: 10px;
+  position: relative;
 }
 
 .product-image-gallery-track {
@@ -415,12 +416,15 @@
 }
 
 .product-gallery-progress {
-  display: block;
-  width: 100%;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
   height: 3px;
   background: #d9d9d9;
   border-radius: 999px;
   overflow: hidden;
+  z-index: 5;
 }
 
 .product-gallery-progress-bar {
@@ -439,6 +443,7 @@
   .product-details {
     position: static;
     top: auto;
+    padding: 20px;
   }
 
   .product-details.scroll-up {
