@@ -114,7 +114,7 @@ body.locked {
 
 .a-burger .x-svg {
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.5s;
   position: absolute;
   inset: 0;
   width: 19px;
