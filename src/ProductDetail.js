@@ -11,6 +11,7 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
+import { setProductTransitionState } from './utils/productTransitionState';
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
@@ -29,7 +30,7 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !!location.state?.product || !searchParams.get('color');
+  const shouldAnimateDetailsIn = !searchParams.get('color') || !!location.state?.initialColor;
 
   const {
     selectedAttributes,
@@ -81,7 +82,8 @@ const ProductDetail = () => {
 
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
-  const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
+  const normalizedDisplayColor = String(currentColor).trim().toLowerCase();
+  const currentDisplayId = `${product?.id || 'unknown'}-${normalizedDisplayColor}`;
 
   const gallery = Array.isArray(current?.gallery)
     ? current.gallery
@@ -99,34 +101,14 @@ const ProductDetail = () => {
     : (product?.description || product?.shortDescription || '');
 
   useEffect(() => {
-    console.log('[PDP] route state', {
-      productId,
-      locationState: location.state,
-      search: location.search
-    });
-  }, [productId, location.state, location.search]);
+    if (!product?.id || !mainImage) return;
 
-  useEffect(() => {
-    console.log('[PDP] render state', {
-      productId: product?.id,
-      productTitle: product?.title,
-      currentSku: current?.sku,
-      currentDisplayId,
-      shouldAnimateDetailsIn,
-      galleryLength: gallery.length,
-      mainImage,
-      currentVariationId: currentVariation?.id
+    setProductTransitionState({
+      displayId: currentDisplayId,
+      parentId: product.id,
+      src: mainImage
     });
-  }, [
-    product?.id,
-    product?.title,
-    current?.sku,
-    currentDisplayId,
-    shouldAnimateDetailsIn,
-    gallery.length,
-    mainImage,
-    currentVariation?.id
-  ]);
+  }, [product?.id, currentDisplayId, mainImage]);
 
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
@@ -194,14 +176,6 @@ const ProductDetail = () => {
                       alt={`${displayTitle} ${idx + 1}`}
                       className="product-gallery-image"
                       onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      onLoad={e => console.log('[PDP] gallery image loaded', {
-                        imageKey,
-                        src: e.target.currentSrc || e.target.src,
-                        naturalWidth: e.target.naturalWidth,
-                        naturalHeight: e.target.naturalHeight,
-                        rect: e.target.getBoundingClientRect(),
-                        complete: e.target.complete
-                      })}
                     />
                   </div>
                 );
@@ -219,13 +193,6 @@ const ProductDetail = () => {
                   alt={displayTitle}
                   className="product-main-image"
                   onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                  onLoad={e => console.log('[PDP] main image loaded', {
-                    src: e.target.currentSrc || e.target.src,
-                    naturalWidth: e.target.naturalWidth,
-                    naturalHeight: e.target.naturalHeight,
-                    rect: e.target.getBoundingClientRect(),
-                    complete: e.target.complete
-                  })}
                 />
               </div>
             )}
@@ -327,8 +294,7 @@ const ProductDetail = () => {
           <div className="related-products-grid">
             {relatedProducts.map(relItem => (
               <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-                <motion.img
-                  initial={false}
+                <img
                   src={getDisplayImage(relItem)}
                   alt={relItem.displayTitle}
                   className="related-product-image"
