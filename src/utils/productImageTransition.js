@@ -1,7 +1,7 @@
 let activeClone = null;
 let activeAnimation = null;
 
-const waitForElement = (getEl, { maxFrames = 180 } = {}) =>
+const waitForElement = (getEl, { maxFrames = 90 } = {}) =>
   new Promise((resolve) => {
     let frame = 0;
 
@@ -25,78 +25,20 @@ const waitForElement = (getEl, { maxFrames = 180 } = {}) =>
     check();
   });
 
-const waitForStableRect = (
-  el,
-  {
-    maxFrames = 180,
-    stableFrames = 6,
-    minWidth = 20,
-    minHeight = 20
-  } = {}
-) =>
+const waitForNextFrame = () =>
   new Promise((resolve) => {
-    let frame = 0;
-    let stableCount = 0;
-    let prevRect = null;
-
-    const check = () => {
-      if (!el || !el.isConnected) {
-        frame += 1;
-        if (frame >= maxFrames) {
-          resolve(null);
-          return;
-        }
-        requestAnimationFrame(check);
-        return;
-      }
-
-      const rect = el.getBoundingClientRect();
-
-      if (rect.width < minWidth || rect.height < minHeight) {
-        prevRect = null;
-        stableCount = 0;
-        frame += 1;
-        if (frame >= maxFrames) {
-          resolve(null);
-          return;
-        }
-        requestAnimationFrame(check);
-        return;
-      }
-
-      const currentRect = {
-        left: rect.left,
-        top: rect.top,
-        width: rect.width,
-        height: rect.height
-      };
-
-      const isStable =
-        prevRect &&
-        Math.abs(currentRect.left - prevRect.left) < 0.5 &&
-        Math.abs(currentRect.top - prevRect.top) < 0.5 &&
-        Math.abs(currentRect.width - prevRect.width) < 0.5 &&
-        Math.abs(currentRect.height - prevRect.height) < 0.5;
-
-      stableCount = isStable ? stableCount + 1 : 1;
-      prevRect = currentRect;
-
-      if (stableCount >= stableFrames) {
-        resolve(currentRect);
-        return;
-      }
-
-      frame += 1;
-      if (frame >= maxFrames) {
-        resolve(currentRect);
-        return;
-      }
-
-      requestAnimationFrame(check);
-    };
-
-    check();
+    requestAnimationFrame(() => resolve());
   });
+
+const getRect = (el) => {
+  const rect = el.getBoundingClientRect();
+  return {
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height
+  };
+};
 
 const createClone = ({ src, fromRect, borderRadius, zIndex }) => {
   const clone = document.createElement('img');
@@ -115,6 +57,7 @@ const createClone = ({ src, fromRect, borderRadius, zIndex }) => {
   clone.style.borderRadius = borderRadius || '0px';
   clone.style.transformOrigin = 'top left';
   clone.style.willChange = 'left, top, width, height, opacity';
+  clone.style.opacity = '0';
   document.body.appendChild(clone);
   return clone;
 };
@@ -175,9 +118,19 @@ export const startProductImageTransition = async ({
 
   toElement.style.opacity = '0';
 
-  const stableRect = await waitForStableRect(toElement);
+  await waitForNextFrame();
+  await waitForNextFrame();
 
-  if (!stableRect) {
+  if (!toElement.isConnected) {
+    fromElement.style.opacity = '';
+    clone.remove();
+    if (activeClone === clone) activeClone = null;
+    return;
+  }
+
+  const toRectRaw = getRect(toElement);
+
+  if (!toRectRaw.width || !toRectRaw.height) {
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
     clone.remove();
@@ -187,14 +140,14 @@ export const startProductImageTransition = async ({
 
   const toStyle = window.getComputedStyle(toElement);
 
-  const finalTop = Math.max(stableRect.top, minTargetTop);
-
   const toRect = {
-    left: stableRect.left,
-    top: finalTop,
-    width: stableRect.width,
-    height: stableRect.height
+    left: toRectRaw.left,
+    top: Math.max(toRectRaw.top, minTargetTop),
+    width: toRectRaw.width,
+    height: toRectRaw.height
   };
+
+  clone.style.opacity = '1';
 
   const animation = clone.animate(
     [
