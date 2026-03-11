@@ -585,7 +585,7 @@ body.locked {
   pointer-events: none;
 }
 
-.mobile-header .a-burger.menu-open .burger-glyph::before {
+.mobile-header .a-burger.circle-open .burger-glyph::before {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
