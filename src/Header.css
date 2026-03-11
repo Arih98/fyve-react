@@ -564,7 +564,7 @@ body.locked {
   background: #e0cbc2;
   transform: translate(-50%, -50%) scale(0.8);
   opacity: 0;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.10s ease, transform 0.10s ease;
   z-index: 1;
   pointer-events: none;
 }
