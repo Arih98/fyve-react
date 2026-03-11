@@ -538,11 +538,13 @@ body.locked {
 
   .mobile-header .c-open {
     width: 26px;
-    height: 22px;
+    height: 26px;
+    position: relative;
+    top: 1px;
   }
 
   .mobile-header .c-open .hamburger-line {
-    height: 3px;
+    height: 2.5px;
     margin-bottom: 6px;
   }
 
