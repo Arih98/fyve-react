@@ -185,13 +185,15 @@ useEffect(() => {
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
   >
-    <span className="hamburger-line top"></span>
-    <span className="hamburger-line middle"></span>
-    <span className="hamburger-line bottom"></span>
-    <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
-  <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="#4A494A" strokeWidth="2.15" />
-  <line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="#4A494A" strokeWidth="2.15" />
-</svg>
+    <span className="burger-glyph">
+      <span className="hamburger-line top"></span>
+      <span className="hamburger-line middle"></span>
+      <span className="hamburger-line bottom"></span>
+      <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
+        <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="#4A494A" strokeWidth="2.15" />
+        <line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="#4A494A" strokeWidth="2.15" />
+      </svg>
+    </span>
   </button>
 );
 

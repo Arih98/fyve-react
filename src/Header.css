@@ -60,10 +60,8 @@ body.locked {
   transform: translateY(0);
   transition: transform 0.3s cubic-bezier(.4,0,.2,1);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
   padding: 0;
   border: none;
   background: none;
@@ -85,10 +83,20 @@ body.locked {
   z-index: 1002;
 }
 
+.a-burger .burger-glyph {
+  position: relative;
+  width: 19px;
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
 .a-burger .hamburger-line {
   display: block;
-  width: 26px;
-  height: 3px;
+  width: 19px;
+  height: 2.15px;
   background-color: #4A494A;
   transform: scaleX(1);
   -webkit-backface-visibility: hidden;
@@ -108,11 +116,9 @@ body.locked {
   opacity: 0;
   transition: opacity 0.3s;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
   width: 19px;
   height: 19px;
-  transform: translate(-50%, -50%);
   z-index: 2;
   pointer-events: none;
 }
@@ -535,10 +541,14 @@ body.locked {
   left: auto !important;
   top: auto !important;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+}
+
+.mobile-header .a-burger .burger-glyph {
+  width: 19px;
+  height: 20px;
+  gap: 6px;
 }
 
 .mobile-header .a-burger .hamburger-line {
@@ -547,11 +557,10 @@ body.locked {
 }
 
 .mobile-header .a-burger .x-svg {
-  top: 50%;
-  left: 50%;
+  inset: 0;
   width: 19px;
   height: 19px;
-  transform: translate(-50%, -50%);
+  transform: none;
 }
 
   .mobile-header .mobile-nav-icons {
