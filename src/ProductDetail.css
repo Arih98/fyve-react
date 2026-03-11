@@ -418,9 +418,10 @@
 .product-gallery-progress {
   display: block;
   position: absolute;
-  left: 12px;
-  right: 12px;
   bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
   height: 3px;
   background: #d9d9d9;
   border-radius: 999px;
