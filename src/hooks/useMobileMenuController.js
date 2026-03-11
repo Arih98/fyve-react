@@ -16,22 +16,32 @@ useEffect(() => {
     bodyLocked: document.body.classList.contains('locked')
   });
 
-  if (isMenuOpen) {
+  if (isMenuOpen && menuState !== 'open') {
     console.log('[MMC] setting menuState -> open');
     setMenuState('open');
-  } else if (menuState === 'open') {
+  }
+
+  if (!isMenuOpen && menuState === 'open') {
     console.log('[MMC] setting menuState -> closing');
     setMenuState('closing');
-    const timeout = setTimeout(() => {
-      console.log('[MMC] timeout finished, setting menuState -> closed');
-      setMenuState('closed');
-    }, 750);
-    return () => {
-      console.log('[MMC] clearing closing timeout');
-      clearTimeout(timeout);
-    };
   }
 }, [isMenuOpen, menuState]);
+
+useEffect(() => {
+  if (menuState !== 'closing') return;
+
+  console.log('[MMC] closing timer started');
+
+  const timeout = setTimeout(() => {
+    console.log('[MMC] timeout finished, setting menuState -> closed');
+    setMenuState('closed');
+  }, 750);
+
+  return () => {
+    console.log('[MMC] clearing closing timeout');
+    clearTimeout(timeout);
+  };
+}, [menuState]);
 
 
   useEffect(() => {
