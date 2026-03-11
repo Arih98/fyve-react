@@ -96,6 +96,60 @@
   color: #dc2626;
 }
 
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-image {
+  background: #eee;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-text {
+  height: 14px;
+  border-radius: 4px;
+  background: #eee;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-title {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skeleton-price {
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skeleton-image::after,
+.skeleton-text::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  height: 100%;
+  width: 150%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.6),
+    transparent
+  );
+  animation: skeleton-shimmer 1.2s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    left: 150%;
+  }
+}
+
 @media (max-width: 1024px) {
   .products-grid {
     grid-template-columns: repeat(3, 1fr);

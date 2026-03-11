@@ -79,7 +79,25 @@ if (sourceEl) {
   const currentProducts = display.slice(idxFirst, idxLast);
   const totalPages = Math.ceil(display.length / productsPerPage);
 
-  if (loading) return <div className="products-loading">Loading...</div>;
+  if (loading) {
+  return (
+    <div className="products-container">
+      <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+        <div className="products-grid">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="product-card skeleton-card">
+              <div className="product-image-wrapper skeleton-image"></div>
+              <div className="product-info">
+                <div className="skeleton-text skeleton-title"></div>
+                <div className="skeleton-text skeleton-price"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
 
   return (
