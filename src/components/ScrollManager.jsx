@@ -33,22 +33,30 @@ export default function ScrollManager() {
   }, [lenis, location.key, location.pathname, location.search]);
 
     useEffect(() => {
-    if (!lenis) return;
+  if (!lenis) return;
 
-    const key = location.key || `${location.pathname}${location.search}`;
+  const key = location.key || `${location.pathname}${location.search}`;
 
-    if (location.state?.preserveScroll) {
-      return;
-    }
+  if (location.state?.preserveScroll) {
+    return;
+  }
 
+  const restoreScroll = () => {
     if (navigationType === 'POP') {
       const savedY = scrollPositions.get(key) ?? 0;
       lenis.scrollTo(savedY, { immediate: true });
-      return;
+    } else {
+      lenis.scrollTo(0, { immediate: true });
     }
+  };
 
-    lenis.scrollTo(0, { immediate: true });
-  }, [lenis, location.key, location.pathname, location.search, navigationType, location.state]);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      restoreScroll();
+    });
+  });
+
+}, [lenis, location.key, location.pathname, location.search, navigationType, location.state]);
 
   return null;
 }
