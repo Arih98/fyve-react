@@ -448,13 +448,13 @@ body.locked {
   left: 0;
   width: 100%;
   min-height: 88px;
-  padding: 20px 35px calc(20px + env(safe-area-inset-bottom)) 22px !important;
+  padding: 20px 30px calc(20px + env(safe-area-inset-bottom)) 22px !important;
   background-image: none;
   background-color: #F1DBD1;
   box-sizing: border-box;
   transform: translateY(0) !important;
   display: grid !important;
-  grid-template-columns: 40px 40px 40px 40px;
+  grid-template-columns: repeat(4, 40px);
   justify-content: space-between;
   align-items: center;
 }
