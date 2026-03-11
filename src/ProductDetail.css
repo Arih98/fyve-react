@@ -395,7 +395,6 @@
 @media (max-width: 768px) {
   .product-detail-container {
     flex-direction: column;
-    margin-top: 76px;
     padding: 0;
     padding-bottom: 80px;
     width: 100%;
