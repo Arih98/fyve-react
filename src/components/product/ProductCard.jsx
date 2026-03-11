@@ -16,14 +16,13 @@ const ProductCard = ({
   return (
     <div
       key={`${item.displayId}-${index}`}
-      onClick={() => onProductClick(item)}
+      onClick={(e) => onProductClick(item, e)}
       className="product-card"
     >
       <div
         ref={el => {
           imageRefs.current.set(item.displayId, el);
         }}
-        data-product-card-image={item.displayId}
         id={`img-${item.displayId}`}
         className="product-image-wrapper"
       >

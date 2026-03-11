@@ -4,7 +4,6 @@ import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
-import { setProductTransitionState } from '../utils/productTransitionState';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -35,7 +34,7 @@ const ProductsPage = () => {
     price: product.price
   }));
 
-  const handleProductClick = (item) => {
+  const handleProductClick = async (item) => {
     const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
@@ -49,26 +48,22 @@ const ProductsPage = () => {
       ? `?color=${encodeURIComponent(item.selectedColor)}`
       : '';
 
-    setProductTransitionState({
-      displayId: item.displayId,
-      parentId: item.parentId,
-      src: sourceSrc
-    });
+    const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-    navigate(`/product/${item.parentId}${colorQuery}`, {
+    navigate(targetPath, {
       state: {
         product: targetProduct,
-        initialColor: item.selectedColor
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc
       }
     });
 
     if (sourceEl) {
-      requestAnimationFrame(() => {
-        startProductImageTransition({
-          src: sourceSrc,
-          fromElement: sourceEl,
-          toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]')
-        });
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]')
       });
     }
   };
