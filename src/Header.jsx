@@ -179,7 +179,7 @@ useEffect(() => {
   const BurgerIcon = (
   <button
     type="button"
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+    className={`a-burger${menuState === 'open' ? ' menu-open' : ''}${menuState === 'closing' ? ' menu-closing' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
     ref={burgerRef}
     onClick={toggleMenu}
     aria-expanded={isMenuOpen}
