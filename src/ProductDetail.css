@@ -397,6 +397,7 @@
     flex-direction: column;
     margin-top: 0;
     padding-top: 80px;
+    padding: 0;
     width: 100%;
   }
 
