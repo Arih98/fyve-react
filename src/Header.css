@@ -651,10 +651,9 @@ body.locked {
   position: absolute;
   top: 32px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -20px);
   z-index: 5;
   opacity: 0;
-  transform: translate(-50%, -20px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
@@ -662,8 +661,6 @@ body.locked {
   height: 58px;
   width: auto;
   cursor: pointer;
-  opacity: 1;
-  transform: translate(-50%, 0);
 }
 
 .mobile-menu {
@@ -699,6 +696,11 @@ body {
   background: #F1DBD1;
   transform: translateY(-100%);
   transition: transform 0.75s ease;
+}
+
+.mobile-menu.active .mobile-menu-logo {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .mobile-menu.active .menu-content {
