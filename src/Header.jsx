@@ -13,8 +13,8 @@ const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
-const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const location = useLocation();
+const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 
 
   useEffect(() => {
