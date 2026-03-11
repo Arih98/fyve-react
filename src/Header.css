@@ -546,14 +546,33 @@ body.locked {
 }
 
 .mobile-header .a-burger .burger-glyph {
+  position: relative;
   width: 19px;
-  height: 20px;
-  gap: 5px;
+  height: 16px;
+  display: block;
 }
 
 .mobile-header .a-burger .hamburger-line {
+  position: absolute;
+  left: 0;
   width: 19px;
-  height: 2.15px;
+  height: 2px;
+  background-color: #4A494A;
+  transform: scaleX(1);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.mobile-header .a-burger .hamburger-line.top {
+  top: 0;
+}
+
+.mobile-header .a-burger .hamburger-line.middle {
+  top: 7px;
+}
+
+.mobile-header .a-burger .hamburger-line.bottom {
+  top: 14px;
 }
 
 .mobile-header .a-burger .x-svg {
