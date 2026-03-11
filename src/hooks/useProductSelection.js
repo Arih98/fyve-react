@@ -154,6 +154,8 @@ export function useProductSelection({
             ...location.state,
             product,
             initialColor: value,
+            preserveScroll: true,
+            fromProductGrid: false,
             transitionKey: null
           }
         });
