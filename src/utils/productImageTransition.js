@@ -1,8 +1,32 @@
 let activeClone = null;
 let activeAnimation = null;
 
-const waitForStableElement = (
-  getEl,
+const waitForElement = (getEl, { maxFrames = 180 } = {}) =>
+  new Promise((resolve) => {
+    let frame = 0;
+
+    const check = () => {
+      const el = getEl?.();
+
+      if (el && el.isConnected) {
+        resolve(el);
+        return;
+      }
+
+      frame += 1;
+      if (frame >= maxFrames) {
+        resolve(null);
+        return;
+      }
+
+      requestAnimationFrame(check);
+    };
+
+    check();
+  });
+
+const waitForStableRect = (
+  el,
   {
     maxFrames = 180,
     stableFrames = 6,
@@ -16,8 +40,6 @@ const waitForStableElement = (
     let prevRect = null;
 
     const check = () => {
-      const el = getEl?.();
-
       if (!el || !el.isConnected) {
         frame += 1;
         if (frame >= maxFrames) {
@@ -60,13 +82,13 @@ const waitForStableElement = (
       prevRect = currentRect;
 
       if (stableCount >= stableFrames) {
-        resolve({ el, rect: currentRect });
+        resolve(currentRect);
         return;
       }
 
       frame += 1;
       if (frame >= maxFrames) {
-        resolve({ el, rect: currentRect });
+        resolve(currentRect);
         return;
       }
 
@@ -142,28 +164,37 @@ export const startProductImageTransition = async ({
   activeClone = clone;
   fromElement.style.opacity = '0';
 
-  const targetData = await waitForStableElement(toElementGetter);
+  const toElement = await waitForElement(toElementGetter);
 
-  if (!targetData) {
+  if (!toElement) {
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
   }
 
-  const toElement = targetData.el;
+  toElement.style.opacity = '0';
+
+  const stableRect = await waitForStableRect(toElement);
+
+  if (!stableRect) {
+    toElement.style.opacity = '';
+    fromElement.style.opacity = '';
+    clone.remove();
+    if (activeClone === clone) activeClone = null;
+    return;
+  }
+
   const toStyle = window.getComputedStyle(toElement);
 
-  const finalTop = Math.max(targetData.rect.top, minTargetTop);
+  const finalTop = Math.max(stableRect.top, minTargetTop);
 
   const toRect = {
-    left: targetData.rect.left,
+    left: stableRect.left,
     top: finalTop,
-    width: targetData.rect.width,
-    height: targetData.rect.height
+    width: stableRect.width,
+    height: stableRect.height
   };
-
-  toElement.style.opacity = '0';
 
   const animation = clone.animate(
     [
