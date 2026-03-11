@@ -492,16 +492,16 @@ body.locked {
 
 .pdp-mobile-add-to-bag {
   grid-column: 2 / 5;
-  justify-self: center;
-  width: 180px;
-  height: 42px;
+  justify-self: start;
+  width: calc(100% - var(--nav-icon-gap));
+  height: 44px;
   border: none;
   border-radius: 999px;
   background: #4A494A;
   color: #ffffff;
   font-family: 'Quasimoda', sans-serif;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 12px;
   text-transform: none;
   display: flex;
   align-items: center;
