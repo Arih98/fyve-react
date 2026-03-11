@@ -93,7 +93,7 @@
   border-radius: 50px;
   border: none;
   background: #4A494A;
-  color: white;
+  color: #fff;
   font-family: 'Quasimoda', sans-serif;
   font-size: 13px;
   text-transform: uppercase;
@@ -184,9 +184,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
   }
-}
-
-@media (max-width: 768px) {
+  
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
@@ -195,9 +193,15 @@
   .product-image {
     padding: 16px;
   }
-}
-@media (max-width: 768px) {
+  .show-more-button {
+    display: none;
+  }
   .products-container {
     padding-top: 80px;
   }
+
+  .products-container .page-wrapper {
+    padding-bottom: 100px;
+  }
 }
+
