@@ -653,12 +653,17 @@ body.locked {
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
+  opacity: 0;
+  transform: translate(-50%, -20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .mobile-menu-logo img {
   height: 58px;
   width: auto;
   cursor: pointer;
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .mobile-menu {
