@@ -498,14 +498,15 @@ body.locked {
     bottom: 0;
     left: 0;
     width: 100%;
+    min-height: 88px;
     padding: 20px 30px calc(20px + env(safe-area-inset-bottom)) 22px !important;
     box-sizing: border-box;
     transform: translateY(0) !important;
+
     display: grid !important;
     grid-template-columns: 40px 40px 40px 40px;
     justify-content: space-between;
     align-items: center;
-    column-gap: 0;
   }
 
   .mobile-header.first-header.hide-header {
@@ -517,40 +518,36 @@ body.locked {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
-    flex: 0 0 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
     overflow: hidden !important;
   }
 
-.mobile-header .a-burger {
-  position: static !important;
-  top: auto !important;
-  left: auto !important;
-  bottom: auto !important;
-  transform: none !important;
-  width: 28px;
-  height: 28px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: auto !important;
-}
-
-.mobile-header .c-open {
-  width: 28px;
-  height: 16px;
-}
-
-.mobile-header .c-open .hamburger-line {
-  height: 2px;
-  margin-bottom: 5px;
-}
-
-  .mobile-header .a-burger.hide-header {
+  .mobile-header .a-burger {
+    position: static !important;
     transform: none !important;
-    pointer-events: auto !important;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+    z-index: auto !important;
+  }
+
+  .mobile-header .c-open {
+    width: 26px;
+    height: 20px;
+  }
+
+  .mobile-header .c-open .hamburger-line {
+    height: 3px;
+    margin-bottom: 6px;
+  }
+
+  .mobile-header .c-open .hamburger-line:last-child {
+    margin-bottom: 0;
   }
 
   .mobile-header .mobile-nav-icons {
@@ -561,14 +558,13 @@ body.locked {
   .mobile-header .mobile-nav-icon {
     width: 40px;
     height: 40px;
+
     background: none;
     border: none;
-    padding: 0;
-    margin: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
   }
 
   .mobile-header .mobile-nav-icon img {
@@ -595,7 +591,6 @@ body.locked {
   .menu-background {
     top: 0;
     height: 100%;
-    min-height: 0;
   }
 
   .menu-content {
@@ -620,7 +615,6 @@ body.locked {
     padding-top: 90px;
     padding-right: 43px;
     padding-left: 43px;
-    justify-content: flex-start;
   }
 
   .menu-items li a {
@@ -638,4 +632,5 @@ body.locked {
   .fyve-account-link::after {
     content: none;
   }
+
 }
