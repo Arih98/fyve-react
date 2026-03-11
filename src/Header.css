@@ -578,8 +578,8 @@ body.locked {
   position: absolute;
   left: 0;
   top: 50%;
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
   transform: translateY(-50%);
   z-index: 3;
   pointer-events: none;
