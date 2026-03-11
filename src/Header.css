@@ -557,8 +557,8 @@ body.locked {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 37px;
-  height: 37px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   background: #d8c4bb;
   transform: translate(-50%, -50%) scale(0.8);
