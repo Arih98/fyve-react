@@ -92,33 +92,42 @@ const ProductDetail = () => {
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
 
-  const gallery = Array.isArray(current?.gallery)
-    ? current.gallery
-    : Array.isArray(product?.gallery)
-      ? product.gallery
-      : [];
+const gallery = Array.isArray(current?.gallery)
+  ? current.gallery
+  : Array.isArray(product?.gallery)
+    ? product.gallery
+    : [];
 
-  const mainImage = gallery[0] || product?.thumbnail || '/api/Uploads/fallback-image.png';
+const mainImage = gallery[0] || product?.thumbnail || '/api/Uploads/fallback-image.png';
+const displayImages = gallery.length > 0 ? gallery : [mainImage];
+
   const displayTitle = product?.product_type === 'variable' && (effectiveVariation?.title || effectiveVariation?.name)
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
 
   const displayDescription = product?.product_type === 'variable'
-    ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
-    : (product?.description || product?.shortDescription || '');
+  ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
+  : (product?.description || product?.shortDescription || '');
+
 useEffect(() => {
   setActiveImageIndex(0);
   if (mobileGalleryRef.current) {
     mobileGalleryRef.current.scrollLeft = 0;
   }
 }, [current?.sku, product?.id, gallery.length]);
+
 const handleMobileGalleryScroll = () => {
   const el = mobileGalleryRef.current;
   if (!el) return;
+
   const slideWidth = el.clientWidth;
   if (!slideWidth) return;
-  const nextIndex = Math.round(el.scrollLeft / slideWidth);
-  setActiveImageIndex(nextIndex);
+
+const nextIndex = Math.min(
+  displayImages.length - 1,
+  Math.max(0, Math.round(el.scrollLeft / slideWidth))
+);
+setActiveImageIndex(nextIndex);
 };
   useEffect(() => {
     console.log('[PDP] route state', {
@@ -203,66 +212,45 @@ const handleMobileGalleryScroll = () => {
       className="product-image-gallery-track"
       onScroll={handleMobileGalleryScroll}
     >
-      {gallery.length > 0 ? (
-        gallery.map((img, idx) => {
-          const imageKey = `${current?.sku || product.id}-${idx}`;
+      {displayImages.map((img, idx) => {
+        const imageKey = `${current?.sku || product.id}-${idx}`;
 
-          return (
-            <div
-              ref={el => {
-                galleryRefs.current.set(imageKey, el);
-              }}
-              key={imageKey}
-              data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-              className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-            >
-              <img
-                src={img}
-                alt={`${displayTitle} ${idx + 1}`}
-                className="product-gallery-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                onLoad={e => console.log('[PDP] gallery image loaded', {
-                  imageKey,
-                  src: e.target.currentSrc || e.target.src,
-                  naturalWidth: e.target.naturalWidth,
-                  naturalHeight: e.target.naturalHeight,
-                  rect: e.target.getBoundingClientRect(),
-                  complete: e.target.complete
-                })}
-              />
-            </div>
-          );
-        })
-      ) : (
-        <div
-          ref={el => {
-            mainImageRef.current = el;
-          }}
-          data-pdp-primary-image="true"
-          className="product-main-image-wrapper"
-        >
-          <img
-            src={mainImage}
-            alt={displayTitle}
-            className="product-main-image"
-            onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-            onLoad={e => console.log('[PDP] main image loaded', {
-              src: e.target.currentSrc || e.target.src,
-              naturalWidth: e.target.naturalWidth,
-              naturalHeight: e.target.naturalHeight,
-              rect: e.target.getBoundingClientRect(),
-              complete: e.target.complete
-            })}
-          />
-        </div>
-      )}
+        return (
+          <div
+            ref={el => {
+              galleryRefs.current.set(imageKey, el);
+              if (displayImages.length === 1) {
+                mainImageRef.current = el;
+              }
+            }}
+            key={imageKey}
+            data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+            className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+          >
+            <img
+              src={img}
+              alt={`${displayTitle} ${idx + 1}`}
+              className="product-gallery-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+              onLoad={e => console.log('[PDP] gallery image loaded', {
+                imageKey,
+                src: e.target.currentSrc || e.target.src,
+                naturalWidth: e.target.naturalWidth,
+                naturalHeight: e.target.naturalHeight,
+                rect: e.target.getBoundingClientRect(),
+                complete: e.target.complete
+              })}
+            />
+          </div>
+        );
+      })}
     </div>
 
-    {gallery.length > 1 && (
+    {displayImages.length > 1 && (
       <div className="product-gallery-progress">
         <div
           className="product-gallery-progress-bar"
-          style={{ width: `${((activeImageIndex + 1) / gallery.length) * 100}%` }}
+          style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
         />
       </div>
     )}

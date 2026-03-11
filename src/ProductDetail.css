@@ -396,6 +396,8 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  scroll-behavior: smooth;
+  touch-action: pan-x;
 }
 
 .product-image-gallery-track::-webkit-scrollbar {
