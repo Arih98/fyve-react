@@ -497,7 +497,6 @@ body.locked {
     bottom: 0;
     left: 0;
     width: 100%;
-    min-height: 88px;
     padding: 20px 22px calc(20px + env(safe-area-inset-bottom)) 22px !important;
     box-sizing: border-box;
     transform: translateY(0) !important;
