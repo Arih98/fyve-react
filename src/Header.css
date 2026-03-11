@@ -561,7 +561,7 @@ body.locked {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background: #d8c4bb;
+  background: #e0cbc2;
   transform: translate(-50%, -50%) scale(0.8);
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
