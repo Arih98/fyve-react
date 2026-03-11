@@ -648,7 +648,7 @@ body.locked {
   right: 0;
   bottom: 0;
   height: auto;
-  background: #F1DBD1;
+  background: transparent;
 }
 
 body {
