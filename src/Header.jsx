@@ -188,10 +188,10 @@ useEffect(() => {
     <span className="hamburger-line top"></span>
     <span className="hamburger-line middle"></span>
     <span className="hamburger-line bottom"></span>
-    <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-      <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-      <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-    </svg>
+    <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
+  <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="#4A494A" strokeWidth="2.15" />
+  <line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="#4A494A" strokeWidth="2.15" />
+</svg>
   </button>
 );
 
