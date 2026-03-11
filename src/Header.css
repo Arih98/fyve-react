@@ -67,6 +67,11 @@ body.locked {
   padding: 0;
   border: none;
   background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  outline: none;
+  line-height: 0;
 }
 
 .a-burger.hide-header {
@@ -519,7 +524,7 @@ body.locked {
     overflow: hidden !important;
   }
 
-  .mobile-header .a-burger {
+.mobile-header .a-burger {
   position: static !important;
   transform: none !important;
   width: 40px;
@@ -528,6 +533,10 @@ body.locked {
   z-index: auto !important;
   left: auto !important;
   top: auto !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
 }
 
