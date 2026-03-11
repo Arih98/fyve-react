@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
@@ -7,16 +7,18 @@ import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
   const { data: products, loading, error } = useProducts({
     page: 1,
     perPage: 200
   });
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+
+  const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
   const display = products.map((product) => ({
     ...product,
@@ -51,27 +53,27 @@ const ProductsPage = () => {
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
     navigate(targetPath, {
-state: {
-  product: targetProduct,
-  initialColor: item.selectedColor,
-  transitionSourceDisplayId: item.displayId,
-  transitionSourceSrc: sourceSrc,
-  fromProductGrid: true
-}
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc,
+        fromProductGrid: true
+      }
     });
 
-if (sourceEl) {
-  const isMobileViewport = window.innerWidth <= 768;
+    if (sourceEl) {
+      const isMobileViewport = window.innerWidth <= 768;
 
-  startProductImageTransition({
-    src: sourceSrc,
-    fromElement: sourceEl,
-    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-    duration: isMobileViewport ? 520 : 620,
-    minTargetTop: isMobileViewport ? 88 : 0,
-    zIndex: isMobileViewport ? 80 : 999999
-  });
-}
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: isMobileViewport ? 520 : 620,
+        minTargetTop: isMobileViewport ? 88 : 0,
+        zIndex: isMobileViewport ? 80 : 999999
+      });
+    }
   };
 
   const idxLast = currentPage * productsPerPage;
@@ -79,25 +81,30 @@ if (sourceEl) {
   const currentProducts = display.slice(idxFirst, idxLast);
   const totalPages = Math.ceil(display.length / productsPerPage);
 
+  const handlePageChange = (page) => {
+    setSearchParams({ page: String(page) });
+  };
+
   if (loading) {
-  return (
-    <div className="products-container">
-      <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-        <div className="products-grid">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="product-card skeleton-card">
-              <div className="product-image-wrapper skeleton-image"></div>
-              <div className="product-info">
-                <div className="skeleton-text skeleton-title"></div>
-                <div className="skeleton-text skeleton-price"></div>
+    return (
+      <div className="products-container">
+        <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+          <div className="products-grid">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="product-card skeleton-card">
+                <div className="product-image-wrapper skeleton-image"></div>
+                <div className="product-info">
+                  <div className="skeleton-text skeleton-title"></div>
+                  <div className="skeleton-text skeleton-price"></div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
 
   return (
@@ -111,15 +118,19 @@ if (sourceEl) {
         />
 
         <div className="pagination">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`pagination-button ${currentPage === i + 1 ? 'pagination-button-active' : 'pagination-button-inactive'}`}
-            >
-              {i + 1}
-            </button>
-          ))}
+          {Array.from({ length: totalPages }, (_, i) => {
+            const page = i + 1;
+
+            return (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`pagination-button ${currentPage === page ? 'pagination-button-active' : 'pagination-button-inactive'}`}
+              >
+                {page}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

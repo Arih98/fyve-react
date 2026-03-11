@@ -18,10 +18,10 @@ export default function ScrollManager() {
   useEffect(() => {
     if (!lenis) return;
 
-    const key = location.key || `${location.pathname}${location.search}`;
+    const pageKey = `${location.pathname}${location.search}`;
 
     const saveScroll = () => {
-      scrollPositions.set(key, lenis.scroll);
+      scrollPositions.set(pageKey, lenis.scroll || window.scrollY || 0);
     };
 
     lenis.on('scroll', saveScroll);
@@ -30,33 +30,33 @@ export default function ScrollManager() {
       saveScroll();
       lenis.off('scroll', saveScroll);
     };
-  }, [lenis, location.key, location.pathname, location.search]);
+  }, [lenis, location.pathname, location.search]);
 
-    useEffect(() => {
-  if (!lenis) return;
+  useEffect(() => {
+    if (!lenis) return;
 
-  const key = location.key || `${location.pathname}${location.search}`;
+    const pageKey = `${location.pathname}${location.search}`;
 
-  if (location.state?.preserveScroll) {
-    return;
-  }
-
-  const restoreScroll = () => {
-    if (navigationType === 'POP') {
-      const savedY = scrollPositions.get(key) ?? 0;
-      lenis.scrollTo(savedY, { immediate: true });
-    } else {
-      lenis.scrollTo(0, { immediate: true });
+    if (location.state?.preserveScroll) {
+      return;
     }
-  };
 
-  requestAnimationFrame(() => {
+    const restoreScroll = () => {
+      if (navigationType === 'POP') {
+        const savedY = scrollPositions.get(pageKey) ?? 0;
+        lenis.scrollTo(savedY, { immediate: true });
+        return;
+      }
+
+      lenis.scrollTo(0, { immediate: true });
+    };
+
     requestAnimationFrame(() => {
-      restoreScroll();
+      requestAnimationFrame(() => {
+        restoreScroll();
+      });
     });
-  });
-
-}, [lenis, location.key, location.pathname, location.search, navigationType, location.state]);
+  }, [lenis, location.pathname, location.search, navigationType, location.state]);
 
   return null;
 }
