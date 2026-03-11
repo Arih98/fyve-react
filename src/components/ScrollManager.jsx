@@ -32,10 +32,14 @@ export default function ScrollManager() {
     };
   }, [lenis, location.key, location.pathname, location.search]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (!lenis) return;
 
     const key = location.key || `${location.pathname}${location.search}`;
+
+    if (location.state?.preserveScroll) {
+      return;
+    }
 
     if (navigationType === 'POP') {
       const savedY = scrollPositions.get(key) ?? 0;
@@ -44,7 +48,7 @@ export default function ScrollManager() {
     }
 
     lenis.scrollTo(0, { immediate: true });
-  }, [lenis, location.key, location.pathname, location.search, navigationType]);
+  }, [lenis, location.key, location.pathname, location.search, navigationType, location.state]);
 
   return null;
 }
