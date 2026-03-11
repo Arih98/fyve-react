@@ -4,7 +4,6 @@ import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetail from './ProductDetail';
 import Header from './Header';
-import MobileTopHeader from './MobileTopHeader';
 import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
@@ -41,7 +40,6 @@ const StableOutlet = () => {
 const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
-  const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
   const containerRef = useRef(null);
   const lenis = useContext(LenisContext);
@@ -64,10 +62,9 @@ const Layout = () => {
   }, [lenis]);
 
   return (
-<div className="App" ref={containerRef} style={{ position: 'relative' }}>
-  {showMobileTopHeader && <MobileTopHeader />}
-  {showHeader && <Header />}
-  {showCart && <Cart />}
+    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
+      {showHeader && <Header />}
+      {showCart && <Cart />}
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div

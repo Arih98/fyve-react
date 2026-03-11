@@ -181,9 +181,3 @@ html, body {
   font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight: 400; /* Explicitly set to force the regular variant */
 }
-
-@media (max-width: 768px) {
-  .App {
-    padding-top: 80px;
-  }
-}
