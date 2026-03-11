@@ -9,40 +9,27 @@ export function useMobileMenuController() {
   const burgerRef = useRef(null);
   const prevMenuStateRef = useRef('closed');
 
-useEffect(() => {
-  console.log('[MMC] sync effect start', {
-    isMenuOpen,
-    menuState,
-    bodyLocked: document.body.classList.contains('locked')
-  });
+  useEffect(() => {
+    if (isMenuOpen && menuState !== 'open') {
+      setMenuState('open');
+    }
 
-  if (isMenuOpen && menuState !== 'open') {
-    console.log('[MMC] setting menuState -> open');
-    setMenuState('open');
-  }
+    if (!isMenuOpen && menuState === 'open') {
+      setMenuState('closing');
+    }
+  }, [isMenuOpen, menuState]);
 
-  if (!isMenuOpen && menuState === 'open') {
-    console.log('[MMC] setting menuState -> closing');
-    setMenuState('closing');
-  }
-}, [isMenuOpen, menuState]);
+  useEffect(() => {
+    if (menuState !== 'closing') return;
 
-useEffect(() => {
-  if (menuState !== 'closing') return;
+    const timeout = setTimeout(() => {
+      setMenuState('closed');
+    }, 750);
 
-  console.log('[MMC] closing timer started');
-
-  const timeout = setTimeout(() => {
-    console.log('[MMC] timeout finished, setting menuState -> closed');
-    setMenuState('closed');
-  }, 750);
-
-  return () => {
-    console.log('[MMC] clearing closing timeout');
-    clearTimeout(timeout);
-  };
-}, [menuState]);
-
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [menuState]);
 
   useEffect(() => {
     if (!burgerRef.current) return;
@@ -102,46 +89,18 @@ useEffect(() => {
     prevMenuStateRef.current = menuState;
   }, [menuState]);
 
-useEffect(() => {
-  if (isMenuOpen) {
-    document.body.classList.add('locked');
-  } else {
-    document.body.classList.remove('locked');
-  }
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add('locked');
+    } else {
+      document.body.classList.remove('locked');
+    }
+  }, [isMenuOpen]);
 
-  console.log('[MMC] body lock effect', {
-    isMenuOpen,
-    menuState,
-    bodyClass: document.body.className,
-    bodyLocked: document.body.classList.contains('locked')
-  });
-}, [isMenuOpen, menuState]);
-
-const toggleMenu = () => {
-  console.log('[MMC] toggleMenu called', {
-    isAnimating,
-    menuState,
-    isMenuOpenBefore: isMenuOpen,
-    bodyLocked: document.body.classList.contains('locked')
-  });
-
-  if (isAnimating || menuState === 'closing') {
-    console.log('[MMC] toggleMenu blocked', {
-      isAnimating,
-      menuState
-    });
-    return;
-  }
-
-  setIsMenuOpen(v => {
-    const next = !v;
-    console.log('[MMC] setIsMenuOpen updater', {
-      previous: v,
-      next
-    });
-    return next;
-  });
-};
+  const toggleMenu = () => {
+    if (isAnimating || menuState === 'closing') return;
+    setIsMenuOpen(v => !v);
+  };
 
   return {
     isMenuOpen,
