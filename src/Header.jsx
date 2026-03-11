@@ -203,10 +203,27 @@ const Header = () => {
       <div className="header-logo mobile-hide-logo">
   <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
 </div>
-        <div className="search-wrapper">
-          <button className="custom-search-trigger" onClick={toggleSearch}>
-            <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
-          </button>
+        <div className="mobile-nav-icons">
+
+  <button className="mobile-nav-icon" onClick={toggleSearch}>
+    <img src="/assets/SearchIcon.svg" alt="Search" />
+  </button>
+
+  <button
+    className="mobile-nav-icon"
+    onClick={() => navigate('/my-account')}
+  >
+    <img src="/assets/AccountIcon.svg" alt="Account" />
+  </button>
+
+  <button
+    className="mobile-nav-icon"
+    onClick={() => navigate('/cart')}
+  >
+    <img src="/assets/BagIcon.svg" alt="Bag" />
+  </button>
+
+</div>
           <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
             <div className="custom-search-inner">
               <input

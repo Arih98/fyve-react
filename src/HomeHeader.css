@@ -433,6 +433,26 @@ body.locked {
 
 @media (max-width: 768px) {
 
+  .mobile-nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-left: auto;
+}
+
+.mobile-nav-icon {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.mobile-nav-icon img {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
 .home-page .mobile-header.first-header,
 .home-page .mobile-header.second-header,
 .home-page .mobile-header.third-header {
