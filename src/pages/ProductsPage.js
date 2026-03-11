@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
@@ -17,6 +17,12 @@ const ProductsPage = () => {
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+  const [visibleCount, setVisibleCount] = useState(productsPerPage);
+
+useEffect(() => {
+  setVisibleCount(productsPerPage);
+}, [products]);
+
 
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
@@ -76,9 +82,12 @@ const ProductsPage = () => {
     }
   };
 
-  const idxLast = currentPage * productsPerPage;
-  const idxFirst = idxLast - productsPerPage;
-  const currentProducts = display.slice(idxFirst, idxLast);
+const isMobile = window.innerWidth <= 768;
+
+const currentProducts = isMobile
+  ? display.slice(0, visibleCount)
+  : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+
   const totalPages = Math.ceil(display.length / productsPerPage);
 
   const handlePageChange = (page) => {
@@ -116,22 +125,32 @@ const ProductsPage = () => {
           imageRefs={imageRefs}
           placeholderImage={placeholderImage}
         />
+{isMobile && visibleCount < display.length && (
+  <button
+    className="show-more-button"
+    onClick={() => setVisibleCount(v => v + productsPerPage)}
+  >
+    Show more
+  </button>
+)}
 
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, i) => {
-            const page = i + 1;
+        {!isMobile && (
+  <div className="pagination">
+    {Array.from({ length: totalPages }, (_, i) => {
+      const page = i + 1;
+      return (
+        <button
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`pagination-button ${currentPage === page ? 'pagination-button-active' : 'pagination-button-inactive'}`}
+        >
+          {page}
+        </button>
+      );
+    })}
+  </div>
+)}
 
-            return (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`pagination-button ${currentPage === page ? 'pagination-button-active' : 'pagination-button-inactive'}`}
-              >
-                {page}
-              </button>
-            );
-          })}
-        </div>
       </div>
     </div>
   );
