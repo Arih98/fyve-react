@@ -39,7 +39,10 @@ const ProductDetail = () => {
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
   const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
-  const detailsInitialAnimation = shouldAnimateDetailsIn
+const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
+const hideGalleryProgress = !showGalleryProgress;
+
+const detailsInitialAnimation = shouldAnimateDetailsIn
   ? isMobile
     ? { y: 30, opacity: 0 }
     : { x: '100%' }
@@ -131,6 +134,20 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
   ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
   : (product?.description || product?.shortDescription || '');
 
+  useEffect(() => {
+  if (!location.state?.fromProductGrid) {
+    setShowGalleryProgress(true);
+    return;
+  }
+
+  setShowGalleryProgress(false);
+
+  const timeout = setTimeout(() => {
+    setShowGalleryProgress(true);
+  }, isMobile ? 520 : 620);
+
+  return () => clearTimeout(timeout);
+}, [location.state?.fromProductGrid, isMobile]);
 useEffect(() => {
   setActiveImageIndex(0);
   if (mobileGalleryRef.current) {
@@ -268,14 +285,14 @@ setActiveImageIndex(nextIndex);
       })}
     </div>
 
-    {displayImages.length > 1 && (
-      <div className="product-gallery-progress">
-        <div
-          className="product-gallery-progress-bar"
-          style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
-        />
-      </div>
-    )}
+{displayImages.length > 1 && (
+  <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
+    <div
+      className="product-gallery-progress-bar"
+      style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
+    />
+  </div>
+)}
   </div>
 </div>
 
