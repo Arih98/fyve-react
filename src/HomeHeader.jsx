@@ -240,7 +240,7 @@ const toggleSearch = () => {
           </div>
         </div>
         <div className="header-logo mobile-hide-logo">
-  <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
+  <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
 </div>
         <div className="mobile-nav-icons">
   <button className="mobile-nav-icon" onClick={toggleSearch}>
@@ -288,7 +288,7 @@ const toggleSearch = () => {
           </div>
         </div>
         <div className="header-logo mobile-hide-logo">
-  <img src="/api/Uploads/FYVEDarkLogoMark.svg" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
+  <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
 </div>
         <div className="mobile-nav-icons">
   <button className="mobile-nav-icon" onClick={toggleSearch}>
@@ -336,7 +336,7 @@ const toggleSearch = () => {
           </div>
         </div>
         <div className="header-logo mobile-hide-logo">
-  <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
+  <img src="/api/Uploads/FYVEDarkLogoMark.svg" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
 </div>
         <div className="mobile-nav-icons">
   <button className="mobile-nav-icon" onClick={toggleSearch}>
