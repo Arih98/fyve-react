@@ -30,24 +30,22 @@ const Header = () => {
     }
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    if (!burgerRef.current) return;
-    const cOpen = burgerRef.current.querySelector('.c-open');
-    const xSvg = cOpen.querySelector('.x-svg');
-    const xLineLeft = xSvg.querySelector('.x-line.left');
-    const xLineRight = xSvg.querySelector('.x-line.right');
-    gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-  }, []);
+useEffect(() => {
+  if (!burgerRef.current) return;
+  const xSvg = burgerRef.current.querySelector('.x-svg');
+  const xLineLeft = xSvg.querySelector('.x-line.left');
+  const xLineRight = xSvg.querySelector('.x-line.right');
+  gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
+}, []);
 
   useEffect(() => {
-    if (!burgerRef.current) return;
-    const cOpen = burgerRef.current.querySelector('.c-open');
-    const topLine = cOpen.querySelector('.hamburger-line.top');
-    const middleLine = cOpen.querySelector('.hamburger-line.middle');
-    const bottomLine = cOpen.querySelector('.hamburger-line.bottom');
-    const xSvg = cOpen.querySelector('.x-svg');
-    const xLineLeft = xSvg.querySelector('.x-line.left');
-    const xLineRight = xSvg.querySelector('.x-line.right');
+  if (!burgerRef.current) return;
+  const topLine = burgerRef.current.querySelector('.hamburger-line.top');
+  const middleLine = burgerRef.current.querySelector('.hamburger-line.middle');
+  const bottomLine = burgerRef.current.querySelector('.hamburger-line.bottom');
+  const xSvg = burgerRef.current.querySelector('.x-svg');
+  const xLineLeft = xSvg.querySelector('.x-line.left');
+  const xLineRight = xSvg.querySelector('.x-line.right');
 
     if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
       setIsAnimating(true);
@@ -179,22 +177,23 @@ const Header = () => {
   ];
 
   const BurgerIcon = (
-    <div
-      className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
-      ref={burgerRef}
-      onClick={toggleMenu}
-    >
-      <div className="c-open">
-        <span className="hamburger-line top"></span>
-        <span className="hamburger-line middle"></span>
-        <span className="hamburger-line bottom"></span>
-        <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
-          <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-          <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
-        </svg>
-      </div>
-    </div>
-  );
+  <button
+    type="button"
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+    ref={burgerRef}
+    onClick={toggleMenu}
+    aria-expanded={isMenuOpen}
+    aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+  >
+    <span className="hamburger-line top"></span>
+    <span className="hamburger-line middle"></span>
+    <span className="hamburger-line bottom"></span>
+    <svg className="x-svg" width="40" height="18" viewBox="0 0 40 18">
+      <line className="x-line left" x1="10" y1="18" x2="30" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+      <line className="x-line right" x1="30" y1="18" x2="10" y2="0" stroke="#4A494A" strokeWidth="1.4" />
+    </svg>
+  </button>
+);
 
   return (
   <>
@@ -235,42 +234,6 @@ const Header = () => {
         </div>
       </div>
     </div>
-
-    <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
-        <div className="header-logo mobile-hide-logo">
-          <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
-        </div>
-
-        <div className="mobile-nav-icons">
-          <button className="mobile-nav-icon" onClick={toggleSearch}>
-            <img src="/assets/SearchIcon.svg" alt="Search" />
-          </button>
-
-          <button className="mobile-nav-icon" onClick={() => navigate('/my-account')}>
-            <img src="/assets/AccountIcon.svg" alt="Account" />
-          </button>
-
-          <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-            <img src="/assets/BagIcon.svg" alt="Bag" />
-          </button>
-        </div>
-
-        <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
-          <div className="custom-search-inner">
-            <input
-              type="text"
-              className="custom-search-input"
-              placeholder="Little Trendsetters: Uncover Your Child's Style"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-            <button className="custom-search-close" onClick={toggleSearch}>
-              <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
-            </button>
-            <div className="custom-search-results"></div>
-          </div>
-        </div>
-      </div>
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">
