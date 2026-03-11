@@ -494,7 +494,7 @@ body.locked {
   grid-column: 2 / 5;
   justify-self: stretch;
   width: auto;
-  margin-right: var(--nav-icon-gap);
+  margin-right: calc(var(--nav-icon-gap) - var(--nav-side-padding));
   box-sizing: border-box;
   height: 44px;
   border: none;
