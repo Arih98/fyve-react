@@ -673,6 +673,12 @@ body {
   padding-bottom: calc(var(--nav-icon-size) + var(--nav-top-padding) + var(--nav-bottom-safe-padding));
   box-sizing: border-box;
   background: #F1DBD1;
+  transform: translateY(-100%);
+  transition: transform 0.75s ease;
+}
+
+.mobile-menu.active .menu-content {
+  transform: translateY(0);
 }
 
 .menu-columns {
