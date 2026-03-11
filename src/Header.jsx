@@ -199,45 +199,38 @@ const Header = () => {
   return (
     <>
       {BurgerIcon}
-      <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
-      <div className="header-logo mobile-hide-logo">
-  <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
-</div>
+            <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
+        <div className="header-logo mobile-hide-logo">
+          <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
+        </div>
+
         <div className="mobile-nav-icons">
+          <button className="mobile-nav-icon" onClick={toggleSearch}>
+            <img src="/assets/SearchIcon.svg" alt="Search" />
+          </button>
 
-  <button className="mobile-nav-icon" onClick={toggleSearch}>
-    <img src="/assets/SearchIcon.svg" alt="Search" />
-  </button>
+          <button className="mobile-nav-icon" onClick={() => navigate('/my-account')}>
+            <img src="/assets/AccountIcon.svg" alt="Account" />
+          </button>
 
-  <button
-    className="mobile-nav-icon"
-    onClick={() => navigate('/my-account')}
-  >
-    <img src="/assets/AccountIcon.svg" alt="Account" />
-  </button>
+          <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+            <img src="/assets/BagIcon.svg" alt="Bag" />
+          </button>
+        </div>
 
-  <button
-    className="mobile-nav-icon"
-    onClick={() => navigate('/cart')}
-  >
-    <img src="/assets/BagIcon.svg" alt="Bag" />
-  </button>
-
-</div>
-          <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
-            <div className="custom-search-inner">
-              <input
-                type="text"
-                className="custom-search-input"
-                placeholder="Little Trendsetters: Uncover Your Child's Style"
-                value={searchQuery}
-                onChange={handleSearch}
-              />
-              <button className="custom-search-close" onClick={toggleSearch}>
-                <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
-              </button>
-              <div className="custom-search-results"></div>
-            </div>
+        <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
+          <div className="custom-search-inner">
+            <input
+              type="text"
+              className="custom-search-input"
+              placeholder="Little Trendsetters: Uncover Your Child's Style"
+              value={searchQuery}
+              onChange={handleSearch}
+            />
+            <button className="custom-search-close" onClick={toggleSearch}>
+              <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
+            </button>
+            <div className="custom-search-results"></div>
           </div>
         </div>
       </div>
