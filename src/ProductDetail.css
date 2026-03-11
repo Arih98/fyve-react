@@ -209,6 +209,10 @@
   gap: 5px;
 }
 
+.size-option {
+  flex: 0 0 auto;
+}
+
 .color-button {
   display: inline-flex;
   align-items: center;
@@ -497,11 +501,28 @@
     font-size: 0.95em;
   }
 
-  .color-options,
-  .size-options {
-    gap: 12px;
-    margin-top: 10px;
-  }
+.color-options {
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.size-options {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  margin-top: 10px;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  width: 100%;
+}
+
+.size-options::-webkit-scrollbar {
+  display: none;
+}
 
   .color-button,
   .size-button {
