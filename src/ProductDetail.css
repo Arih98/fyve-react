@@ -259,6 +259,26 @@
   background: #ebe8de;
 }
 
+.color-button.mauve {
+  background: #8d686b;
+}
+
+.color-button.olive {
+  background: #655e39;
+}
+
+.color-button.lavender {
+  background: #e6e6fa;
+}
+
+.color-button.blue {
+  background: #afbbd8;
+}
+
+.color-button.oat {
+  background: #e2d3c6;
+}
+
 .color-label,
 .size-label {
   font-family: 'Quasimoda', sans-serif;

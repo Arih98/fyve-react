@@ -96,6 +96,19 @@ const detailsAnimateAnimation = isMobile
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
+  const getColorClassName = (term) => {
+  const value = String(term || '').trim().toLowerCase();
+
+  if (value === 'sand') return 'sand';
+  if (value === 'ivory') return 'ivory';
+  if (value === 'mauve') return 'mauve';
+  if (value === 'olive') return 'olive';
+  if (value === 'lavender') return 'lavender';
+  if (value === 'blue') return 'blue';
+  if (value === 'oat') return 'oat';
+
+  return '';
+};
 
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
@@ -307,7 +320,7 @@ setActiveImageIndex(nextIndex);
                                   handleAttributeChange(attrName, term);
                                   setCartError(null);
                                 }}
-                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${term === 'Sand' ? 'sand' : term === 'Ivory' ? 'ivory' : ''}`}
+                                className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
                               />
                               <span className="color-label">{term}</span>
                             </div>
