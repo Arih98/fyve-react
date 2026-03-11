@@ -239,7 +239,12 @@ useEffect(() => {
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">
-          <div className="menu-columns">
+
+  <div className="mobile-menu-logo">
+    <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
+  </div>
+
+  <div className="menu-columns">
             <div className="menu-image-column">
               {menuItems.map(item => (
                 <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
