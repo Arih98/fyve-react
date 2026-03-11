@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMobileMenuController } from './hooks/useMobileMenuController';
 
 const ProductDetailMobileHeader = ({
+  isMenuOpen,
+  menuState,
+  burgerRef,
+  onToggleMenu,
   onAddToBag,
   addToBagDisabled,
   addToBagLabel
 }) => {
   const navigate = useNavigate();
-  const { isMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const handleToggleMenu = () => {
-    toggleMenu();
-    if (isSearchOpen) setIsSearchOpen(false);
-  };
 
   const toggleSearch = () => {
     setIsSearchOpen(v => !v);
@@ -27,7 +24,7 @@ const ProductDetailMobileHeader = ({
           type="button"
           className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}`}
           ref={burgerRef}
-          onClick={handleToggleMenu}
+          onClick={onToggleMenu}
           aria-expanded={isMenuOpen}
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
         >
@@ -56,6 +53,11 @@ const ProductDetailMobileHeader = ({
             <button className="mobile-nav-icon" onClick={toggleSearch}>
               <img src="/assets/SearchIcon.svg" alt="Search" />
             </button>
+
+            <button className="mobile-nav-icon" onClick={() => navigate('/my-account')}>
+              <img src="/assets/AccountIcon.svg" alt="Account" />
+            </button>
+
             <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
               <img src="/assets/BagIcon.svg" alt="Bag" />
             </button>

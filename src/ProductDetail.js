@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
@@ -11,7 +11,6 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
-import ProductDetailMobileHeader from './ProductDetailMobileHeader';
 
 
 const ProductDetail = () => {
@@ -27,6 +26,7 @@ const ProductDetail = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -205,53 +205,67 @@ setActiveImageIndex(nextIndex);
   if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
 
-  const handleAddToCart = () => {
-    const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
+  const handleAddToCart = useCallback(() => {
+  const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
 
-    if (freshStock < quantity) {
-      setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
-      return;
+  if (freshStock < quantity) {
+    setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
+    return;
+  }
+
+  const newItem = {
+    id: current.id || product.id,
+    name: current.title || product.title,
+    price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
+    quantity,
+    image: displayImages[0] || '/api/Uploads/fallback-image.png',
+    size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
+    color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
+  };
+
+  setCartItems(prev => {
+    const variationKey = `${newItem.size}-${newItem.color}`;
+    const existingIndex = prev.findIndex(
+      i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey
+    );
+
+    if (existingIndex !== -1) {
+      const newPrev = [...prev];
+      newPrev[existingIndex].quantity += quantity;
+      return newPrev;
     }
 
-    const newItem = {
-      id: current.id || product.id,
-      name: current.title || product.title,
-      price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
-      quantity,
-      image: displayImages[0] || '/api/Uploads/fallback-image.png',
-      size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
-      color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
-    };
+    return [...prev, newItem];
+  });
 
-    setCartItems(prev => {
-      const variationKey = `${newItem.size}-${newItem.color}`;
-      const existingIndex = prev.findIndex(
-        i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey
-      );
+  setCartError(null);
+}, [
+  current,
+  product,
+  quantity,
+  displayImages,
+  selectedAttributes,
+  isSizeAttribute,
+  isColorAttribute,
+  setCartItems
+]);
 
-      if (existingIndex !== -1) {
-        const newPrev = [...prev];
-        newPrev[existingIndex].quantity += quantity;
-        return newPrev;
-      }
-
-      return [...prev, newItem];
-    });
-
-    setCartError(null);
+  useEffect(() => {
+  const handleExternalAddToCart = () => {
+    handleAddToCart();
   };
+
+  window.addEventListener('pdp:add-to-cart', handleExternalAddToCart);
+
+  return () => {
+    window.removeEventListener('pdp:add-to-cart', handleExternalAddToCart);
+  };
+}, [handleAddToCart]);
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
   return (
     <>
-          {isMobile && (
-      <ProductDetailMobileHeader
-        onAddToBag={handleAddToCart}
-        addToBagDisabled={isAddDisabled}
-        addToBagLabel={`Add to Bag $${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}`}
-      />
-    )}
 
       <motion.div className="product-detail-container">
         <div className="images-container">

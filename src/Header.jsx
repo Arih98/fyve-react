@@ -128,11 +128,12 @@ const handleToggleMenu = () => {
 
   return (
   <>
-    {!isProductDetailPage && (
-  <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
+    
+    <div className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
+  {BurgerIcon}
 
-      {BurgerIcon}
-
+  {!isProductDetailPage && (
+    <>
       <div className="header-logo mobile-hide-logo">
         <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
       </div>
@@ -142,7 +143,7 @@ const handleToggleMenu = () => {
           <img src="/assets/SearchIcon.svg" alt="Search" />
         </button>
 
-        <button className="mobile-nav-icon" onClick={() => navigate('/my-account')}>
+        <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
           <img src="/assets/AccountIcon.svg" alt="Account" />
         </button>
 
@@ -150,24 +151,54 @@ const handleToggleMenu = () => {
           <img src="/assets/BagIcon.svg" alt="Bag" />
         </button>
       </div>
+    </>
+  )}
 
-      <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
-        <div className="custom-search-inner">
-          <input
-            type="text"
-            className="custom-search-input"
-            placeholder="Little Trendsetters: Uncover Your Child's Style"
-            value={searchQuery}
-            onChange={handleSearch}
-          />
-          <button className="custom-search-close" onClick={toggleSearch}>
-            <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
-          </button>
-          <div className="custom-search-results"></div>
-        </div>
-      </div>
+  {isProductDetailPage && !isMenuOpen && (
+    <button
+      type="button"
+      className="pdp-mobile-add-to-bag"
+      onClick={() => {
+        window.dispatchEvent(new CustomEvent('pdp:add-to-cart'));
+      }}
+    >
+      Add to Bag
+    </button>
+  )}
+
+  {isProductDetailPage && isMenuOpen && (
+    <div className="mobile-nav-icons pdp-open-icons">
+      <button className="mobile-nav-icon" onClick={toggleSearch}>
+        <img src="/assets/SearchIcon.svg" alt="Search" />
+      </button>
+
+      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <img src="/assets/AccountIcon.svg" alt="Account" />
+      </button>
+
+      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+        <img src="/assets/BagIcon.svg" alt="Bag" />
+      </button>
     </div>
-    )}
+  )}
+
+  <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
+    <div className="custom-search-inner">
+      <input
+        type="text"
+        className="custom-search-input"
+        placeholder="Little Trendsetters: Uncover Your Child's Style"
+        value={searchQuery}
+        onChange={handleSearch}
+      />
+      <button className="custom-search-close" onClick={toggleSearch}>
+        <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
+      </button>
+      <div className="custom-search-results"></div>
+    </div>
+  </div>
+</div>
+
 
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
