@@ -108,10 +108,11 @@ body.locked {
   opacity: 0;
   transition: opacity 0.3s;
   position: absolute;
-  top: 11px;
-  left: 2px;
-  width: 36px;
+  top: 50%;
+  left: 50%;
+  width: 26px;
   height: 18px;
+  transform: translate(-50%, -50%);
   z-index: 2;
   pointer-events: none;
 }
@@ -542,14 +543,15 @@ body.locked {
 
 .mobile-header .a-burger .hamburger-line {
   width: 19px;
-  height: 2.1px;
+  height: 2.15px;
 }
 
 .mobile-header .a-burger .x-svg {
-  top: 11px;
-  left: 2px;
-  width: 36px;
+  top: 50%;
+  left: 50%;
+  width: 26px;
   height: 18px;
+  transform: translate(-50%, -50%);
 }
 
   .mobile-header .mobile-nav-icons {
