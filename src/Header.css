@@ -552,13 +552,6 @@ body.locked {
   display: block;
 }
 
-.mobile-header .a-burger .burger-glyph {
-  position: relative;
-  width: 19px;
-  height: 20px;
-  gap: 5px;
-}
-
 .mobile-header .a-burger .burger-glyph::before {
   content: '';
   position: absolute;
@@ -581,12 +574,14 @@ body.locked {
 }
 
 .mobile-header .a-burger .x-svg {
-  inset: 0;
+  position: absolute;
+  left: 0;
+  top: 50%;
   width: 19px;
   height: 19px;
-  transform: none;
-  position: absolute;
+  transform: translateY(-50%);
   z-index: 3;
+  pointer-events: none;
 }
 
 .mobile-header .a-burger.menu-open .burger-glyph::before {
@@ -615,13 +610,6 @@ body.locked {
 
 .mobile-header .a-burger .hamburger-line.bottom {
   top: 14px;
-}
-
-.mobile-header .a-burger .x-svg {
-  inset: 0;
-  width: 19px;
-  height: 19px;
-  transform: none;
 }
 
   .mobile-header .mobile-nav-icons {
