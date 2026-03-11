@@ -47,9 +47,106 @@ const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 }, [isMenuOpen]);
 
 const handleToggleMenu = () => {
+  console.log('[Header] handleToggleMenu click', {
+    isMenuOpen,
+    menuState,
+    isSearchOpen,
+    pathname: location.pathname
+  });
+
   toggleMenu();
-  if (isSearchOpen) setIsSearchOpen(false);
+
+  if (isSearchOpen) {
+    console.log('[Header] closing search because menu toggle was clicked');
+    setIsSearchOpen(false);
+  }
 };
+
+useEffect(() => {
+  const mobileMenuEl = document.querySelector('.mobile-menu');
+  const mobileHeaderEl = document.querySelector('.mobile-header.first-header');
+
+  console.log('[Header] render state', {
+    pathname: location.pathname,
+    isProductDetailPage,
+    isMenuOpen,
+    menuState,
+    isSearchOpen,
+    bodyLocked: document.body.classList.contains('locked'),
+    mobileMenuClass: mobileMenuEl?.className,
+    mobileHeaderClass: mobileHeaderEl?.className
+  });
+}, [location.pathname, isProductDetailPage, isMenuOpen, menuState, isSearchOpen]);
+
+useEffect(() => {
+  if (isMenuOpen || menuState !== 'closed') return;
+
+  const timeout = setTimeout(() => {
+    const mobileMenuEl = document.querySelector('.mobile-menu');
+    const menuContentEl = document.querySelector('.menu-content');
+    const menuBgEl = document.querySelector('.menu-background');
+
+    console.log('[Header] post-close DOM check', {
+      bodyLocked: document.body.classList.contains('locked'),
+      mobileMenuClass: mobileMenuEl?.className,
+      mobileMenuPointerEvents: mobileMenuEl ? window.getComputedStyle(mobileMenuEl).pointerEvents : null,
+      mobileMenuOpacity: mobileMenuEl ? window.getComputedStyle(mobileMenuEl).opacity : null,
+      menuContentTransform: menuContentEl ? window.getComputedStyle(menuContentEl).transform : null,
+      menuContentPointerEvents: menuContentEl ? window.getComputedStyle(menuContentEl).pointerEvents : null,
+      menuBgTransform: menuBgEl ? window.getComputedStyle(menuBgEl).transform : null
+    });
+  }, 900);
+
+  return () => clearTimeout(timeout);
+}, [isMenuOpen, menuState]);
+
+useEffect(() => {
+  const handleDocumentClickCapture = e => {
+    const target = e.target;
+    const mobileMenuEl = document.querySelector('.mobile-menu');
+    const menuContentEl = document.querySelector('.menu-content');
+
+    console.log('[Header] document click capture', {
+      targetTag: target?.tagName,
+      targetClass: target?.className,
+      targetId: target?.id,
+      isMenuOpen,
+      menuState,
+      bodyLocked: document.body.classList.contains('locked'),
+      mobileMenuContainsTarget: mobileMenuEl ? mobileMenuEl.contains(target) : false,
+      menuContentContainsTarget: menuContentEl ? menuContentEl.contains(target) : false
+    });
+  };
+
+  document.addEventListener('click', handleDocumentClickCapture, true);
+
+  return () => {
+    document.removeEventListener('click', handleDocumentClickCapture, true);
+  };
+}, [isMenuOpen, menuState]);
+
+useEffect(() => {
+  const probe = () => {
+    const x = Math.round(window.innerWidth / 2);
+    const y = Math.round(window.innerHeight / 2);
+    const el = document.elementFromPoint(x, y);
+
+    console.log('[Header] center-point probe', {
+      x,
+      y,
+      elementTag: el?.tagName,
+      elementClass: el?.className,
+      elementId: el?.id,
+      isMenuOpen,
+      menuState,
+      bodyLocked: document.body.classList.contains('locked')
+    });
+  };
+
+  const timeout = setTimeout(probe, 950);
+
+  return () => clearTimeout(timeout);
+}, [isMenuOpen, menuState, location.pathname]);
 
   const toggleSearch = () => {
     setIsSearchOpen(v => !v);
@@ -227,10 +324,28 @@ const handleToggleMenu = () => {
                     className={activeMenuImage === item.id ? 'active' : ''}
                     onFocus={() => handleMenuImageChange(item.id)}
                     onTouchStart={() => handleMenuImageChange(item.id)}
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      document.body.classList.remove('locked');
-                    }}
+onClick={() => {
+  console.log('[Header] menu item clicked, closing menu', {
+    itemId: item.id,
+    isMenuOpenBefore: isMenuOpen,
+    menuStateBefore: menuState,
+    bodyLockedBefore: document.body.classList.contains('locked')
+  });
+
+  setIsMenuOpen(false);
+  document.body.classList.remove('locked');
+
+  setTimeout(() => {
+    const mobileMenuEl = document.querySelector('.mobile-menu');
+
+    console.log('[Header] menu item close post-timeout', {
+      isMenuOpenAfter: isMenuOpen,
+      bodyLockedAfter: document.body.classList.contains('locked'),
+      mobileMenuClass: mobileMenuEl?.className,
+      mobileMenuPointerEvents: mobileMenuEl ? window.getComputedStyle(mobileMenuEl).pointerEvents : null
+    });
+  }, 900);
+}}
                   >
                     <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
                   </li>
