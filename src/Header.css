@@ -483,8 +483,8 @@ body.locked {
 }
 
 .pdp-mobile-add-to-bag {
-  width: 100%;
-  min-width: 0;
+  width: auto;
+  min-width: 140px;
   height: 48px;
   border: none;
   border-radius: 999px;
@@ -493,11 +493,11 @@ body.locked {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 500;
   font-size: 12px;
-  text-transform: uppercase;
+  text-transform: capitalize;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 18px;
+  padding: 0 22px;
   cursor: pointer;
 }
 
