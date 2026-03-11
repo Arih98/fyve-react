@@ -499,8 +499,8 @@ body.locked {
     --nav-icon-size: 40px;
     --nav-icon-gap: 40px;
     --nav-side-padding: 22px;
-    --nav-top-padding: 12px;
-    --nav-bottom-padding: 12px;
+    --nav-top-padding: 15px;
+    --nav-bottom-padding: 15px;
     --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
 
     position: fixed;
@@ -564,8 +564,8 @@ body.locked {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 34px;
-  height: 34px;
+  width: 37px;
+  height: 37px;
   border-radius: 50%;
   background: #F7F7F7;
   transform: translate(-50%, -50%) scale(0.8);
