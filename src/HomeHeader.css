@@ -456,7 +456,7 @@ body.locked {
   display: grid !important;
   grid-template-columns: repeat(4, 40px);
   justify-content: center;
-  column-gap: 28px;
+  column-gap: 35px;
   align-items: center;
 }
 
@@ -494,7 +494,7 @@ body.locked {
 
   .home-page .mobile-header .c-open {
     width: 26px;
-    height: 26px;
+    height: 22px;
   }
 
   .home-page .mobile-header .c-open .hamburger-line {
