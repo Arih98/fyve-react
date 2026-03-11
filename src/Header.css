@@ -96,7 +96,7 @@ body.locked {
 .a-burger .hamburger-line {
   display: block;
   width: 19px;
-  height: 2.15px;
+  height: 2.2px;
   background-color: #4A494A;
   transform: scaleX(1);
   -webkit-backface-visibility: hidden;
@@ -556,7 +556,7 @@ body.locked {
   position: absolute;
   left: 0;
   width: 19px;
-  height: 2px;
+  height: 2.2px;
   background-color: #4A494A;
   transform: scaleX(1);
   -webkit-backface-visibility: hidden;
