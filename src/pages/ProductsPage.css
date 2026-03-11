@@ -177,4 +177,11 @@
   .product-image {
     padding: 16px;
   }
+
+  @media (max-width: 768px) {
+  .products-container {
+    padding-top: 80px;
+  }
+}
+
 }
