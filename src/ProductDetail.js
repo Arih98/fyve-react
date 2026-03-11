@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
+  const shouldAnimateDetailsIn = !!location.state?.fromProductGrid && !isMobile;
 
   const {
     selectedAttributes,
@@ -93,7 +93,13 @@ const ProductDetail = () => {
   const displayTitle = product?.product_type === 'variable' && (effectiveVariation?.title || effectiveVariation?.name)
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
+const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth <= 768);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
   const displayDescription = product?.product_type === 'variable'
     ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
     : (product?.description || product?.shortDescription || '');
