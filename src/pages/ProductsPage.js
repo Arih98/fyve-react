@@ -53,27 +53,31 @@ const ProductsPage = () => {
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
     navigate(targetPath, {
-      state: {
-        product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionSourceDisplayId: item.displayId,
-        transitionSourceSrc: sourceSrc,
-        fromProductGrid: true
-      }
-    });
+  state: {
+    product: targetProduct,
+    initialColor: item.selectedColor,
+    transitionSourceDisplayId: item.displayId,
+    transitionSourceSrc: sourceSrc,
+    fromProductGrid: true
+  }
+});
 
-    if (sourceEl) {
-      const isMobileViewport = window.innerWidth <= 768;
+if (sourceEl) {
+  const isMobileViewport = window.innerWidth <= 768;
 
+  requestAnimationFrame(() => {
+    setTimeout(() => {
       startProductImageTransition({
         src: sourceSrc,
         fromElement: sourceEl,
         toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: isMobileViewport ? 520 : 620,
+        duration: isMobileViewport ? 460 : 540,
         minTargetTop: isMobileViewport ? 88 : 0,
         zIndex: isMobileViewport ? 80 : 999999
       });
-    }
+    }, 70);
+  });
+}
   };
 
   const idxLast = currentPage * productsPerPage;

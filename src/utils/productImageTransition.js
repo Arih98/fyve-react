@@ -170,7 +170,7 @@ const animation = clone.animate(
     ],
     {
       duration,
-      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
       fill: 'forwards'
     }
   );
