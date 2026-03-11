@@ -19,11 +19,22 @@ export function useProductSelection({
       return [];
     }
 
-    return [
-      ...new Set(
-        product.variations.flatMap((v) => v.attributes.map((a) => a.attribute_name))
-      )
-    ].sort((a, b) => (a === 'Color' ? 1 : -1));
+return [
+  ...new Set(
+    product.variations.flatMap((v) => v.attributes.map((a) => a.attribute_name))
+  )
+].sort((a, b) => {
+  const aName = String(a || '').trim().toLowerCase();
+  const bName = String(b || '').trim().toLowerCase();
+
+  if (aName === bName) return 0;
+  if (aName === 'size') return -1;
+  if (bName === 'size') return 1;
+  if (aName === 'color') return 1;
+  if (bName === 'color') return -1;
+
+  return aName.localeCompare(bName);
+});
   }, [product]);
 
   useEffect(() => {
