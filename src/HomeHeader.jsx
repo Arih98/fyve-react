@@ -241,7 +241,7 @@ const HomeHeader = () => {
         <div className="header-logo mobile-hide-logo">
   <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
 </div>
-        <div className="mobile-nav-icons">
+        <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
 
   <button className="mobile-nav-icon" onClick={toggleSearch}>
     <img src="/assets/SearchIcon.svg" alt="Search" />
@@ -262,9 +262,6 @@ const HomeHeader = () => {
   </button>
 
 </div>
-          <button className="custom-search-trigger" onClick={toggleSearch}>
-            <img src="/api/Uploads/FYVEWhiteSearchIcon.svg" alt="Search Icon" />
-          </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
               <input
@@ -301,7 +298,7 @@ const HomeHeader = () => {
         <div className="header-logo mobile-hide-logo">
   <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
 </div>
-        <div className="mobile-nav-icons">
+        <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
 
   <button className="mobile-nav-icon" onClick={toggleSearch}>
     <img src="/assets/SearchIcon.svg" alt="Search" />
@@ -322,9 +319,6 @@ const HomeHeader = () => {
   </button>
 
 </div>
-          <button className="custom-search-trigger" onClick={toggleSearch}>
-            <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
-          </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
               <input
@@ -361,7 +355,7 @@ const HomeHeader = () => {
         <div className="header-logo mobile-hide-logo">
   <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
 </div>
-        <div className="mobile-nav-icons">
+        <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
 
   <button className="mobile-nav-icon" onClick={toggleSearch}>
     <img src="/assets/SearchIcon.svg" alt="Search" />
@@ -382,9 +376,6 @@ const HomeHeader = () => {
   </button>
 
 </div>
-          <button className="custom-search-trigger" onClick={toggleSearch}>
-            <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
-          </button>
           <div className={`custom-search-container ${searchOpen ? 'active' : ''}`}>
             <div className="custom-search-inner">
               <input
