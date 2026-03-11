@@ -507,12 +507,15 @@ body.locked {
   cursor: not-allowed;
 }
 
-.mobile-header.first-header.pdp-mobile-header .pdp-open-icons {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 20px;
-  width: 100%;
+.mobile-header.first-header.pdp-mobile-header.menu-open {
+  grid-template-columns: repeat(4, var(--nav-icon-size));
+  column-gap: var(--nav-icon-gap);
+  justify-content: center;
+}
+
+.mobile-header.first-header.pdp-mobile-header.menu-open .pdp-open-icons {
+  display: contents;
+  margin: 0 !important;
 }
 
 .mobile-header.first-header.pdp-mobile-header .mobile-nav-icon {
