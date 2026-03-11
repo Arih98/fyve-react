@@ -542,10 +542,11 @@ body.locked {
 
 .mobile-header .c-open {
   width: 26px;
-  height: 22px;
+  height: 23px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transform: translateY(1px);
 }
 
   .mobile-header .c-open .hamburger-line {
