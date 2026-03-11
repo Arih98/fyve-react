@@ -493,7 +493,7 @@ body.locked {
 .pdp-mobile-add-to-bag {
   grid-column: 2 / 5;
   justify-self: stretch;
-  height: 44px;
+  height: 42px;
   border: none;
   border-radius: 999px;
   background: #4A494A;
