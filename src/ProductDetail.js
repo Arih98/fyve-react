@@ -38,7 +38,16 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const shouldAnimateDetailsIn = !!location.state?.fromProductGrid && !isMobile;
+  const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
+  const detailsInitialAnimation = shouldAnimateDetailsIn
+  ? isMobile
+    ? { y: 30, opacity: 0 }
+    : { x: '100%' }
+  : false;
+
+const detailsAnimateAnimation = isMobile
+  ? { y: 0, opacity: 1 }
+  : { x: 0 };
 
   const {
     selectedAttributes,
@@ -258,11 +267,11 @@ setActiveImageIndex(nextIndex);
 </div>
 
         <motion.div
-          className="details-container"
-          initial={shouldAnimateDetailsIn ? { x: '100%' } : false}
-          animate={{ x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+  className="details-container"
+  initial={detailsInitialAnimation}
+  animate={detailsAnimateAnimation}
+  transition={{ duration: isMobile ? 0.45 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+>
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>
 
