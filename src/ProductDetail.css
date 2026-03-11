@@ -381,8 +381,7 @@
 }
 
 .qty-symbol {
-  display: inline-block;
-  transform: translateY(-2px);
+  line-height: 1;
 }
 
 .qty-value {
