@@ -245,6 +245,19 @@ name: current?.title || product?.title,
   setCartItems
 ]);
 
+const currentTotalPrice = (Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2);
+const pdpMobileButtonLabel = `Add to Bag • $${currentTotalPrice}`;
+
+useEffect(() => {
+  window.dispatchEvent(
+    new CustomEvent('pdp:update-add-to-bag-label', {
+      detail: {
+        label: pdpMobileButtonLabel
+      }
+    })
+  );
+}, [pdpMobileButtonLabel]);
+
   useEffect(() => {
   const handleExternalAddToCart = () => {
     handleAddToCart();

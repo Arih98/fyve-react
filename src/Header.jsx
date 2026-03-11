@@ -12,9 +12,16 @@ const Header = () => {
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');
   const [hideHeader, setHideHeader] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
+  const [pdpAddToBagLabel, setPdpAddToBagLabel] = useState('Add to Bag');
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+
+useEffect(() => {
+  if (!isProductDetailPage) {
+    setPdpAddToBagLabel('Add to Bag');
+  }
+}, [isProductDetailPage]);
 
 
   useEffect(() => {
@@ -45,6 +52,19 @@ const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
   window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
 }, [isMenuOpen]);
+
+useEffect(() => {
+  const handlePdpButtonLabel = e => {
+    setPdpAddToBagLabel(e.detail?.label || 'Add to Bag');
+  };
+
+  window.addEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
+
+  return () => {
+    window.removeEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
+  };
+}, []);
+
 
 const handleToggleMenu = () => {
   toggleMenu();
@@ -154,17 +174,18 @@ const handleToggleMenu = () => {
     </>
   )}
 
-  {isProductDetailPage && !isMenuOpen && (
-    <button
-      type="button"
-      className="pdp-mobile-add-to-bag"
-      onClick={() => {
-        window.dispatchEvent(new CustomEvent('pdp:add-to-cart'));
-      }}
-    >
-      Add to Bag
-    </button>
-  )}
+{isProductDetailPage && !isMenuOpen && (
+  <button
+    type="button"
+    className="pdp-mobile-add-to-bag"
+    onClick={() => {
+      window.dispatchEvent(new CustomEvent('pdp:add-to-cart'));
+    }}
+  >
+    {pdpAddToBagLabel}
+  </button>
+)}
+
 
   {isProductDetailPage && isMenuOpen && (
     <div className="mobile-nav-icons pdp-open-icons">
