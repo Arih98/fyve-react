@@ -39,7 +39,6 @@ const StableOutlet = () => {
 
 const Layout = () => {
   const location = useLocation();
-  const isSharedTransition = location.state?.fromProductGrid;
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
   const containerRef = useRef(null);
@@ -69,13 +68,13 @@ const Layout = () => {
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
-  key={location.pathname}
-  initial={false}
-  animate={{ opacity: 1, y: 0 }}
-  exit={isSharedTransition ? { opacity: 1 } : { opacity: 0 }}
-  transition={{ duration: 0.18 }}
-  style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
->
+            key={location.pathname}
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+          >
             <StableOutlet />
           </motion.div>
         </AnimatePresence>
