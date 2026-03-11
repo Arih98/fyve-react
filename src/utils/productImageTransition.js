@@ -104,10 +104,9 @@ export const startProductImageTransition = async ({
     zIndex
   });
 
-  activeClone = clone;
-  fromElement.style.opacity = '0';
+activeClone = clone;
 
-  const toElement = await waitForElement(toElementGetter);
+const toElement = await waitForElement(toElementGetter);
 
   if (!toElement) {
     fromElement.style.opacity = '';
@@ -140,16 +139,17 @@ export const startProductImageTransition = async ({
 
   const toStyle = window.getComputedStyle(toElement);
 
-  const toRect = {
-    left: toRectRaw.left,
-    top: Math.max(toRectRaw.top, minTargetTop),
-    width: toRectRaw.width,
-    height: toRectRaw.height
-  };
+const toRect = {
+  left: toRectRaw.left,
+  top: Math.max(toRectRaw.top, minTargetTop),
+  width: toRectRaw.width,
+  height: toRectRaw.height
+};
 
-  clone.style.opacity = '1';
+fromElement.style.opacity = '0';
+clone.style.opacity = '1';
 
-  const animation = clone.animate(
+const animation = clone.animate(
     [
       {
         left: `${fromRect.left}px`,
