@@ -268,9 +268,13 @@ setActiveImageIndex(nextIndex);
 
 <motion.div
   className="details-container"
-  initial={shouldAnimateDetailsIn ? { y: '100%' } : false}
-  animate={{ y: 0 }}
-  transition={{ duration: 0.5, delay: 0.18 }}
+  initial={detailsInitialAnimation}
+  animate={detailsAnimateAnimation}
+  transition={{
+    duration: isMobile ? 0.5 : 0.5,
+    delay: isMobile ? 0.18 : 0,
+    ease: [0.16, 1, 0.3, 1]
+  }}
 >
           <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
             <h1 className="product-title">{displayTitle}</h1>

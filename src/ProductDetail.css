@@ -373,7 +373,7 @@
   .product-detail-container {
     flex-direction: column;
     margin-top: 76px;
-    padding: 0;
+    padding: 12px;
     padding-bottom: 80px;
     width: 100%;
   }
@@ -439,7 +439,6 @@
   .product-details {
     position: static;
     top: auto;
-    padding: 20px;
   }
 
   .product-details.scroll-up {
