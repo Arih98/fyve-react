@@ -612,4 +612,7 @@
   .related-product-price {
     font-size: 13px;
   }
+  .add-to-cart-button {
+  display: none;
+}
 }
