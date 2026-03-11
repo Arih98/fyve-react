@@ -11,6 +11,8 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
+import ProductDetailMobileHeader from './ProductDetailMobileHeader';
+
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
@@ -243,6 +245,14 @@ setActiveImageIndex(nextIndex);
 
   return (
     <>
+          {isMobile && (
+      <ProductDetailMobileHeader
+        onAddToBag={handleAddToCart}
+        addToBagDisabled={isAddDisabled}
+        addToBagLabel={`Add to Bag $${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}`}
+      />
+    )}
+
       <motion.div className="product-detail-container">
         <div className="images-container">
   <div className="product-image-gallery">

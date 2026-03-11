@@ -446,6 +446,100 @@ body.locked {
   transform: scaleX(1);
 }
 
+.mobile-header.first-header.pdp-mobile-header {
+  --nav-icon-size: 40px;
+  --nav-side-padding: 22px;
+  --nav-top-padding: 15px;
+  --nav-bottom-padding: 15px;
+  --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: auto;
+  width: 100%;
+  padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-safe-padding) var(--nav-side-padding) !important;
+  box-sizing: border-box;
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+  justify-content: stretch;
+  z-index: 10004;
+}
+
+.mobile-header.first-header.pdp-mobile-header .a-burger {
+  position: static !important;
+  transform: none !important;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  z-index: auto !important;
+  left: auto !important;
+  top: auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdp-mobile-add-to-bag {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  border: none;
+  border-radius: 999px;
+  background: #4A494A;
+  color: #ffffff;
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  cursor: pointer;
+}
+
+.pdp-mobile-add-to-bag.disabled,
+.pdp-mobile-add-to-bag:disabled {
+  background: #cfcfcf;
+  cursor: not-allowed;
+}
+
+.mobile-header.first-header.pdp-mobile-header .pdp-open-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  width: 100%;
+}
+
+.mobile-header.first-header.pdp-mobile-header .mobile-nav-icon {
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.mobile-header.first-header.pdp-mobile-header .mobile-nav-icon img {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+
+.custom-search-container.pdp-search-container {
+  top: auto;
+  bottom: 88px;
+  left: 0;
+  right: 0;
+  z-index: 10005;
+}
+
 @media (max-width: 768px) {
 
   .mobile-header.first-header {

@@ -1,83 +1,21 @@
-// Modified Header.jsx
-import { MenuContext } from './MenuContext';
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useMobileMenuController } from './hooks/useMobileMenuController';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 
+
 const Header = () => {
   const navigate = useNavigate();
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');
   const [hideHeader, setHideHeader] = useState(false);
-  const [menuState, setMenuState] = useState('closed');
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
-  const burgerRef = useRef(null);
-  const prevMenuStateRef = useRef(menuState);
+  const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
+const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+const location = useLocation();
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      setMenuState('open');
-    } else if (menuState === 'open') {
-      setMenuState('closing');
-      const timeout = setTimeout(() => {
-        setMenuState('closed');
-      }, 750);
-      return () => clearTimeout(timeout);
-    }
-  }, [isMenuOpen]);
-
-useEffect(() => {
-  if (!burgerRef.current) return;
-  const xSvg = burgerRef.current.querySelector('.x-svg');
-  const xLineLeft = xSvg.querySelector('.x-line.left');
-  const xLineRight = xSvg.querySelector('.x-line.right');
-  gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-}, []);
-
-  useEffect(() => {
-  if (!burgerRef.current) return;
-  const topLine = burgerRef.current.querySelector('.hamburger-line.top');
-  const middleLine = burgerRef.current.querySelector('.hamburger-line.middle');
-  const bottomLine = burgerRef.current.querySelector('.hamburger-line.bottom');
-  const xSvg = burgerRef.current.querySelector('.x-svg');
-  const xLineLeft = xSvg.querySelector('.x-line.left');
-  const xLineRight = xSvg.querySelector('.x-line.right');
-
-    if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
-      setIsAnimating(true);
-      gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
-      gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-      gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-      gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-      gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-      gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
-      gsap.to(xLineRight, {
-        strokeDashoffset: 0,
-        duration: 0.3,
-        ease: 'power2.inOut',
-        delay: 1.3,
-        onComplete: () => setIsAnimating(false),
-      });
-    } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
-      setIsAnimating(true);
-      gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-      gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-      gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-      gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-      gsap.to(topLine, {
-        scaleX: 1,
-        duration: 0.3,
-        ease: 'power2.inOut',
-        delay: 1.1,
-        onComplete: () => setIsAnimating(false),
-      });
-    }
-    prevMenuStateRef.current = menuState;
-  }, [menuState]);
 
   useEffect(() => {
   const isMobile = window.innerWidth <= 768;
@@ -108,19 +46,10 @@ useEffect(() => {
   return () => window.removeEventListener('scroll', handleScroll);
 }, [isMenuOpen]);
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.classList.add('locked');
-    } else {
-      document.body.classList.remove('locked');
-    }
-  }, [isMenuOpen]);
-
-  const toggleMenu = () => {
-    if (isAnimating || menuState === 'closing') return;
-    setIsMenuOpen(v => !v);
-    if (isSearchOpen) setIsSearchOpen(false);
-  };
+const handleToggleMenu = () => {
+  toggleMenu();
+  if (isSearchOpen) setIsSearchOpen(false);
+};
 
   const toggleSearch = () => {
     setIsSearchOpen(v => !v);
@@ -181,7 +110,7 @@ useEffect(() => {
     type="button"
     className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
     ref={burgerRef}
-    onClick={toggleMenu}
+    onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
   >
@@ -199,7 +128,9 @@ useEffect(() => {
 
   return (
   <>
-    <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
+    {!isProductDetailPage && (
+  <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
+
       {BurgerIcon}
 
       <div className="header-logo mobile-hide-logo">
@@ -236,6 +167,8 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    )}
+
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">
