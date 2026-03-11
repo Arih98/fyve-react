@@ -208,13 +208,9 @@ const HomeHeader = () => {
             </svg>
           </div>
         </div>
-        <div className="header-logo">
-          <img
-            src="/assets/FYVE-White-Logo.png"
-            alt="FYVE Coloured Logo"
-            onClick={() => navigate('/')}
-          />
-        </div>
+        <div className="header-logo mobile-hide-logo">
+  <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
+</div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEWhiteSearchIcon.svg" alt="Search Icon" />
@@ -252,13 +248,9 @@ const HomeHeader = () => {
             </svg>
           </div>
         </div>
-        <div className="header-logo">
-          <img
-            src="/assets/FYVE-Dark-Logo.png"
-            alt="FYVE Coloured Logo"
-            onClick={() => navigate('/')}
-          />
-        </div>
+        <div className="header-logo mobile-hide-logo">
+  <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
+</div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />
@@ -296,13 +288,9 @@ const HomeHeader = () => {
             </svg>
           </div>
         </div>
-        <div className="header-logo">
-          <img
-            src="/api/Uploads/FYVEDarkLogoMark.svg"
-            alt="FYVE Coloured Logo"
-            onClick={() => navigate('/')}
-          />
-        </div>
+        <div className="header-logo mobile-hide-logo">
+  <img src="/assets/FYVE-White-Logo.png" alt="FYVE Coloured Logo" onClick={() => navigate('/')} />
+</div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
             <img src="/api/Uploads/FYVEDarkSearchIcon.svg" alt="Search Icon" />

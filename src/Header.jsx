@@ -189,12 +189,8 @@ const Header = () => {
     <>
       {BurgerIcon}
       <div className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
-      <div className="header-logo">
-  <img 
-    src="/assets/FYVE-Dark-Logo.png" 
-    alt="FYVE White Logo" 
-    onClick={() => navigate('/')} 
-  />
+      <div className="header-logo mobile-hide-logo">
+  <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
 </div>
         <div className="search-wrapper">
           <button className="custom-search-trigger" onClick={toggleSearch}>
