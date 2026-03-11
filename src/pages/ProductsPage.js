@@ -71,7 +71,7 @@ if (sourceEl) {
         src: sourceSrc,
         fromElement: sourceEl,
         toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: isMobileViewport ? 460 : 540,
+        duration: isMobileViewport ? 760 : 540,
         minTargetTop: isMobileViewport ? 88 : 0,
         zIndex: isMobileViewport ? 80 : 999999
       });
