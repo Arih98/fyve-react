@@ -89,18 +89,29 @@
 }
 
 .show-more-button {
+  align-items: center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 2.5rem;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  height: 3rem;
+  justify-content: center;
+  line-height: 1.25;
+  max-width: 100%;
+  padding: 0 1.5rem;
   width: 100%;
   margin-top: 30px;
-  padding: 14px 20px;
-  border-radius: 50px;
   border: none;
   background: #4A494A;
   color: #fff;
-  font-family: 'Quasimoda', sans-serif;
-  font-size: 13px;
   text-transform: uppercase;
-  cursor: pointer;
 }
+
 
 @media (min-width: 769px) {
   .show-more-button {
