@@ -2,8 +2,10 @@
   background-color: #fff;
 }
 
-.products-container {
+@media (min-width: 769px) {
+  .products-container {
     padding-top: 155px;
+  }
 }
 
 .products-grid {
@@ -201,7 +203,7 @@
   .product-image {
     padding: 16px;
   }
-  
+
   .products-container {
     padding-top: 80px;
   }
