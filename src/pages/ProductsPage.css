@@ -91,25 +91,26 @@
 .show-more-button {
   align-items: center;
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   border-radius: 2.5rem;
   cursor: pointer;
   display: inline-flex;
+  justify-content: center;
   font-family: 'Quasimoda', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   height: 3rem;
-  justify-content: center;
   line-height: 1.25;
-  max-width: 100%;
   padding: 0 1.5rem;
-  width: 100%;
-  margin-top: 30px;
+
   border: none;
   background: #4A494A;
   color: #fff;
-  text-transform: uppercase;
+}
+
+.show-more-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 

@@ -126,13 +126,16 @@ const currentProducts = isMobile
           placeholderImage={placeholderImage}
         />
 {isMobile && visibleCount < display.length && (
-  <button
-    className="show-more-button"
-    onClick={() => setVisibleCount(v => v + productsPerPage)}
-  >
-    Show more
-  </button>
+  <div className="show-more-wrapper">
+    <button
+      className="show-more-button"
+      onClick={() => setVisibleCount(v => v + productsPerPage)}
+    >
+      Show more
+    </button>
+  </div>
 )}
+
 
         {!isMobile && (
   <div className="pagination">
