@@ -504,7 +504,7 @@ body.locked {
     transform: translateY(0) !important;
     display: grid !important;
     grid-template-columns: repeat(4, 40px);
-    column-gap: 18px;
+    column-gap: 28px;
     justify-content: center;
     align-items: center;
   }

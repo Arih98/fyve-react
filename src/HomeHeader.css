@@ -456,7 +456,7 @@ body.locked {
   display: grid !important;
   grid-template-columns: repeat(4, 40px);
   justify-content: center;
-  column-gap: 18px;
+  column-gap: 28px;
   align-items: center;
 }
 
