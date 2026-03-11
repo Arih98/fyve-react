@@ -494,7 +494,7 @@ body.locked {
 
   .mobile-header.first-header {
     --nav-icon-size: 40px;
-    --nav-icon-gap: 14px;
+    --nav-icon-gap: 22px;
     --nav-side-padding: 22px;
     --nav-top-padding: 12px;
     --nav-bottom-padding: 12px;
@@ -541,8 +541,8 @@ body.locked {
   }
 
   .mobile-header .c-open {
-    width: 26px;
-    height: 20px;
+    width: 23px;
+    height: 24px;
   }
 
   .mobile-header .c-open .hamburger-line {
