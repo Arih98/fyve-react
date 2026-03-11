@@ -494,7 +494,7 @@ body.locked {
 
   .mobile-header.first-header {
     --nav-icon-size: 40px;
-    --nav-icon-gap: 22px;
+    --nav-icon-gap: 35px;
     --nav-side-padding: 22px;
     --nav-top-padding: 12px;
     --nav-bottom-padding: 12px;
@@ -570,7 +570,7 @@ body.locked {
   }
 
   .mobile-header .mobile-nav-icon img {
-    height: 21px;
+    height: 20px;
     width: auto;
     display: block;
   }
