@@ -200,11 +200,6 @@ setActiveImageIndex(nextIndex);
     currentVariation?.id
   ]);
 
-  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
-  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
-  if (!product) return <div className="product-not-found">Product not found</div>;
-  if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
-
   const handleAddToCart = useCallback(() => {
   const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
 
@@ -214,8 +209,8 @@ setActiveImageIndex(nextIndex);
   }
 
   const newItem = {
-    id: current.id || product.id,
-    name: current.title || product.title,
+    id: current?.id || product?.id,
+name: current?.title || product?.title,
     price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
     quantity,
     image: displayImages[0] || '/api/Uploads/fallback-image.png',
@@ -261,6 +256,11 @@ setActiveImageIndex(nextIndex);
     window.removeEventListener('pdp:add-to-cart', handleExternalAddToCart);
   };
 }, [handleAddToCart]);
+
+  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
+  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+  if (!product) return <div className="product-not-found">Product not found</div>;
+  if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
