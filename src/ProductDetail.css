@@ -520,6 +520,11 @@
   width: 100%;
 }
 
+.size-option {
+  flex: 0 0 auto;
+  min-width: 44px;
+}
+
 .size-options::-webkit-scrollbar {
   display: none;
 }
