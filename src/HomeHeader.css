@@ -432,6 +432,25 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+
+  .mobile-header .a-burger,
+.home-page .mobile-header .a-burger {
+  width: 28px;
+  height: 28px;
+}
+
+.mobile-header .c-open,
+.home-page .mobile-header .c-open {
+  width: 28px;
+  height: 16px;
+}
+
+.mobile-header .c-open .hamburger-line,
+.home-page .c-open .hamburger-line {
+  height: 2px;
+  margin-bottom: 4px;
+}
+
   .home-page .mobile-header.first-header,
   .home-page .mobile-header.second-header,
   .home-page .mobile-header.third-header {
