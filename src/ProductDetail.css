@@ -396,7 +396,7 @@
   .product-detail-container {
     flex-direction: column;
     margin-top: 0;
-    padding: 0;
+    padding: 80px;
     width: 100%;
   }
 
@@ -606,10 +606,5 @@
 
   .related-product-price {
     font-size: 13px;
-  }
-}
-@media (max-width: 768px) {
-  .products-container {
-    padding-top: 80px;
   }
 }
