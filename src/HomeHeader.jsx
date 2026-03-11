@@ -43,41 +43,71 @@ const HomeHeader = () => {
   }, [menuActive]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const st = window.pageYOffset || document.documentElement.scrollTop;
-      setScrollTop(st);
-      if (st > lastScroll.current + 1) {
-        setScrollDirection('down');
-      } else if (st < lastScroll.current - 1) {
-        setScrollDirection('up');
-      }
-      lastScroll.current = st <= 0 ? 0 : st;
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  const isMobile = window.innerWidth <= 768;
+
+  if (isMobile) {
+    setScrollTop(0);
+    setScrollDirection('none');
+    setShowFirstHeader(true);
+    setShowSecondHeader(false);
+    setShowThirdHeader(false);
+    return;
+  }
+
+  const handleScroll = () => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    setScrollTop(st);
+
+    if (st > lastScroll.current + 1) {
+      setScrollDirection('down');
+    } else if (st < lastScroll.current - 1) {
+      setScrollDirection('up');
+    }
+
+    lastScroll.current = st <= 0 ? 0 : st;
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, []);
 
   useEffect(() => {
+  const isMobile = window.innerWidth <= 768;
+
+  if (isMobile) {
     if (menuActive) {
-      setShowFirstHeader(false);
-      setShowSecondHeader(openedFromSecond);
-      setShowThirdHeader(!openedFromSecond);
-    } else if (scrollTop === 0) {
-      setShowFirstHeader(true);
-      setShowSecondHeader(false);
-      setShowThirdHeader(false);
-    } else if (scrollDirection === 'up' && scrollTop > 0) {
       setShowFirstHeader(false);
       setShowSecondHeader(true);
       setShowThirdHeader(false);
     } else {
-      setShowFirstHeader(false);
+      setShowFirstHeader(true);
       setShowSecondHeader(false);
       setShowThirdHeader(false);
     }
-  }, [scrollTop, scrollDirection, menuActive, openedFromSecond]);
+    return;
+  }
+
+  if (menuActive) {
+    setShowFirstHeader(false);
+    setShowSecondHeader(openedFromSecond);
+    setShowThirdHeader(!openedFromSecond);
+  } else if (scrollTop === 0) {
+    setShowFirstHeader(true);
+    setShowSecondHeader(false);
+    setShowThirdHeader(false);
+  } else if (scrollDirection === 'up' && scrollTop > 0) {
+    setShowFirstHeader(false);
+    setShowSecondHeader(true);
+    setShowThirdHeader(false);
+  } else {
+    setShowFirstHeader(false);
+    setShowSecondHeader(false);
+    setShowThirdHeader(false);
+  }
+}, [scrollTop, scrollDirection, menuActive, openedFromSecond]);
 
   useEffect(() => {
     const updateMenuHeight = () => {

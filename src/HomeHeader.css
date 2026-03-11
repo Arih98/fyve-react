@@ -446,6 +446,7 @@ body.locked {
   display: flex !important;
   align-items: center;
   justify-content: space-between;
+  transform: translateY(0) !important;
 }
 
 .home-page .mobile-header.first-header {
@@ -461,7 +462,7 @@ body.locked {
 }
 
 .home-page .mobile-header.first-header.hide-header {
-  display: none !important;
+  display: flex !important;
 }
 
 .home-page .mobile-header .mobile-hide-logo {
@@ -476,7 +477,7 @@ body.locked {
   position: absolute;
   top: 50%;
   left: 22px;
-  transform: translateY(-50%);
+  transform: translateY(-50%) !important;
 }
 
 .home-page .mobile-header .custom-search-trigger img {

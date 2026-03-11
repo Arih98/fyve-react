@@ -502,11 +502,12 @@ body.locked {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transform: translateY(0);
+  transform: translateY(0) !important;
 }
 
 .mobile-header.first-header.hide-header {
-  transform: translateY(100%);
+  transform: translateY(0) !important;
+  pointer-events: auto;
 }
 
 .mobile-header .mobile-hide-logo {
@@ -522,11 +523,12 @@ body.locked {
   top: auto;
   bottom: calc(20px + env(safe-area-inset-bottom) + 20px);
   left: 22px;
-  transform: none;
+  transform: none !important;
 }
 
 .a-burger.hide-header {
-  transform: translateY(120%);
+  transform: none !important;
+  pointer-events: auto;
 }
 
 .custom-search-trigger img {

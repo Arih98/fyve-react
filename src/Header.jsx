@@ -82,22 +82,33 @@ const Header = () => {
   }, [menuState]);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (isMenuOpen) return;
-      if (currentScrollY <= 0) {
-        setHideHeader(false);
-      } else if (currentScrollY > lastScrollY) {
-        setHideHeader(true);
-      } else if (currentScrollY < lastScrollY) {
-        setHideHeader(false);
-      }
-      lastScrollY = currentScrollY;
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMenuOpen]);
+  const isMobile = window.innerWidth <= 768;
+
+  if (isMobile) {
+    setHideHeader(false);
+    return;
+  }
+
+  let lastScrollY = window.scrollY;
+
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    if (isMenuOpen) return;
+
+    if (currentScrollY <= 0) {
+      setHideHeader(false);
+    } else if (currentScrollY > lastScrollY) {
+      setHideHeader(true);
+    } else if (currentScrollY < lastScrollY) {
+      setHideHeader(false);
+    }
+
+    lastScrollY = currentScrollY;
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, [isMenuOpen]);
 
   useEffect(() => {
     if (isMenuOpen) {
