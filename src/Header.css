@@ -510,7 +510,8 @@ body.locked {
   justify-content: center;
   padding: 0 22px;
   cursor: pointer;
-  transform: scaleY(1.2);
+  transform: scaleY(1.1);
+  transform-origin: center;
 }
 
 .pdp-mobile-add-to-bag.disabled,
