@@ -31,8 +31,8 @@ body.locked {
   justify-content: space-between;
   padding-top: 30px !important;
   padding-bottom: 30px !important;
-  padding-right: 22px !important;
-  padding-left: 22px !important;
+  padding-right: 35px !important;
+  padding-left: 35px !important;
   background-color: #F1DBD1;
   z-index: 10002;
   box-sizing: border-box;
