@@ -448,26 +448,33 @@ body.locked {
 
 .mobile-header.first-header.pdp-mobile-header {
   --nav-icon-size: 40px;
+  --nav-icon-gap: 40px;
   --nav-side-padding: 22px;
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
   --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
+
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   top: auto;
   width: 100%;
+
   padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
   padding-bottom: var(--nav-bottom-safe-padding) !important;
+
   box-sizing: border-box;
+
   display: grid !important;
-  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-columns: repeat(4, var(--nav-icon-size));
+  column-gap: var(--nav-icon-gap);
+  justify-content: center;
   align-items: center;
-  column-gap: 16px;
-  justify-content: stretch;
+
   z-index: 10004;
 }
+
 
 .mobile-header.first-header.pdp-mobile-header .a-burger {
   position: static !important;
@@ -484,9 +491,9 @@ body.locked {
 }
 
 .pdp-mobile-add-to-bag {
-  width: auto;
-  min-width: 140px;
-  height: 48px;
+  grid-column: 2 / 5;
+  justify-self: stretch;
+  height: 44px;
   border: none;
   border-radius: 999px;
   background: #4A494A;
@@ -498,8 +505,6 @@ body.locked {
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: center;
-  justify-self: center;
   padding: 0 22px;
   cursor: pointer;
 }
