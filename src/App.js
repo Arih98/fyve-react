@@ -111,9 +111,9 @@ function AppContent() {
     const lenis = new Lenis({
   smoothWheel: true,
   syncTouch: isMobile,
-  syncTouchLerp: isMobile ? 0.025 : 0.075,
-  touchInertiaMultiplier: isMobile ? 8 : 35,
-  touchMultiplier: isMobile ? 0.35 : 1,
+  syncTouchLerp: isMobile ? 0.045 : 0.075,
+  touchInertiaMultiplier: isMobile ? 12 : 35,
+  touchMultiplier: isMobile ? 0.65 : 1,
   wheelMultiplier: 1,
   infinite: false
 });
