@@ -132,17 +132,22 @@ const Header = () => {
       };
 
       if (debugOverlayRef.current) {
-        debugOverlayRef.current.textContent =
-          'source: ' + source + '\n' +
-          'scrollY: ' + Math.round(metrics.scrollY) + '\n' +
-          'innerHeight: ' + metrics.innerHeight + '\n' +
-          'vvHeight: ' + (vv ? Math.round(vv.height) : 'n/a') + '\n' +
-          'vvOffsetTop: ' + (vv ? Math.round(vv.offsetTop) : 'n/a') + '\n' +
-          'headerTop: ' + Math.round(rect.top) + '\n' +
-          'headerBottom: ' + Math.round(rect.bottom) + '\n' +
-          'headerHeight: ' + Math.round(rect.height) + '\n' +
-          'gapBelowViewport: ' + Math.round(gapBelowViewport);
-      }
+  const styles = window.getComputedStyle(el);
+
+  debugOverlayRef.current.textContent =
+    'source: ' + source + '\n' +
+    'scrollY: ' + Math.round(metrics.scrollY) + '\n' +
+    'innerHeight: ' + metrics.innerHeight + '\n' +
+    'vvHeight: ' + (vv ? Math.round(vv.height) : 'n/a') + '\n' +
+    'vvOffsetTop: ' + (vv ? Math.round(vv.offsetTop) : 'n/a') + '\n' +
+    'headerTop: ' + Math.round(rect.top) + '\n' +
+    'headerBottom: ' + Math.round(rect.bottom) + '\n' +
+    'headerHeight: ' + Math.round(rect.height) + '\n' +
+    'gapBelowViewport: ' + Math.round(gapBelowViewport) + '\n' +
+    'bottom: ' + styles.bottom + '\n' +
+    'transform: ' + styles.transform + '\n' +
+    'bg: ' + styles.backgroundColor;
+}
 
       const prev = lastHeaderMetricsRef.current;
 

@@ -500,6 +500,8 @@ body.locked {
   align-items: center;
 
   z-index: 10004;
+    background: red !important;
+  box-shadow: 0 0 0 2px blue inset !important;
 }
 
 .mobile-header.first-header.pdp-mobile-header .a-burger {
