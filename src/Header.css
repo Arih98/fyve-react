@@ -1,4 +1,24 @@
-/* Modified Header.css */
+.pdp-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 22px;
+  box-sizing: border-box;
+}
+
+.pdp-mobile-header .header-logo {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.pdp-mobile-header .header-logo img {
+  max-height: 50px;
+}
+
+
 .page-wrapper {
   transition: transform 0.7s cubic-bezier(.4,0,.2,1);
   will-change: transform;
