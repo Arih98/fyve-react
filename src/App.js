@@ -113,7 +113,7 @@ function AppContent() {
   syncTouch: isMobile,
   syncTouchLerp: isMobile ? 0.065 : 0.075,
   touchInertiaMultiplier: isMobile ? 18 : 35,
-  touchMultiplier: isMobile ? 0.8 : 1,
+  touchMultiplier: isMobile ? 0.9 : 1,
   wheelMultiplier: 1,
   infinite: false
 });
