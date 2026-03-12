@@ -89,10 +89,11 @@ const Layout = () => {
 };
 
 function AppContent() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [lenisInstance, setLenisInstance] = useState(null);
-  const lenisRef = useRef(null);
-  const rafRef = useRef(null);
+const [isMenuOpen, setIsMenuOpen] = useState(false);
+const [lenisInstance, setLenisInstance] = useState(null);
+const lenisRef = useRef(null);
+const rafRef = useRef(null);
+const location = useLocation();
 
   useEffect(() => {
     const handlePopState = () => {
@@ -117,12 +118,28 @@ const lenis = new Lenis({
   infinite: false
 });
 
+console.log('[APP] lenis created', {
+  syncTouch: true,
+  smoothWheel: true,
+  touchMultiplier: 1,
+  wheelMultiplier: 1,
+  infinite: false,
+  initialLenisScroll: lenis.scroll,
+  initialWindowScrollY: window.scrollY
+});
+
     lenisRef.current = lenis;
     setLenisInstance(lenis);
 
-    const onScroll = () => {
-      ScrollTrigger.update();
-    };
+const onScroll = () => {
+  ScrollTrigger.update();
+  console.log('[APP] lenis scroll event', {
+    lenisScroll: lenis.scroll,
+    windowScrollY: window.scrollY,
+    documentScrollTop: document.documentElement.scrollTop,
+    bodyScrollTop: document.body.scrollTop
+  });
+};
 
     lenis.on('scroll', onScroll);
 
@@ -152,14 +169,47 @@ const lenis = new Lenis({
     rafRef.current = requestAnimationFrame(raf);
     gsap.ticker.lagSmoothing(0);
 
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      lenis.off('scroll', onScroll);
-      lenis.destroy();
-      lenisRef.current = null;
-      setLenisInstance(null);
-    };
+return () => {
+  if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  lenis.off('scroll', onScroll);
+  console.log('[APP] lenis cleanup', {
+    finalLenisScroll: lenis.scroll,
+    finalWindowScrollY: window.scrollY
+  });
+  lenis.destroy();
+  lenisRef.current = null;
+  setLenisInstance(null);
+};
   }, []);
+
+  useEffect(() => {
+  console.log('[APP] route changed', {
+    pathname: location.pathname,
+    search: location.search,
+    key: location.key,
+    state: location.state,
+    windowScrollY: window.scrollY,
+    lenisScroll: lenisRef.current?.scroll ?? null,
+    docHeight: document.documentElement.scrollHeight,
+    viewportHeight: window.innerHeight
+  });
+}, [location]);
+
+useEffect(() => {
+  const onWindowScroll = () => {
+    console.log('[APP] window scroll event', {
+      windowScrollY: window.scrollY,
+      documentScrollTop: document.documentElement.scrollTop,
+      bodyScrollTop: document.body.scrollTop,
+      lenisScroll: lenisRef.current?.scroll ?? null,
+      docHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight
+    });
+  };
+
+  window.addEventListener('scroll', onWindowScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onWindowScroll);
+}, []);
 
   return (
     <LenisContext.Provider value={lenisInstance}>

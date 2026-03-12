@@ -260,6 +260,40 @@ useEffect(() => {
   );
 }, [pdpMobileButtonLabel]);
 
+useEffect(() => {
+  console.log('[PDP] mount', {
+    productId,
+    locationState: location.state,
+    windowScrollY: window.scrollY,
+    docHeight: document.documentElement.scrollHeight,
+    viewportHeight: window.innerHeight
+  });
+
+  return () => {
+    console.log('[PDP] unmount', {
+      productId,
+      locationState: location.state,
+      windowScrollY: window.scrollY,
+      docHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight
+    });
+  };
+}, []);
+
+useEffect(() => {
+  const onScroll = () => {
+    console.log('[PDP] window scroll', {
+      productId,
+      windowScrollY: window.scrollY,
+      docHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight
+    });
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onScroll);
+}, [productId]);
+
   useEffect(() => {
   if (!debugPdp || !isMobile) return;
 

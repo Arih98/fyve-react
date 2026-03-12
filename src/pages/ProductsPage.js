@@ -44,6 +44,55 @@ useEffect(() => {
   }
 }, [isMobile, pageKey, productsPerPage]);
 
+useEffect(() => {
+  console.log('[PLP] mount', {
+    pageKey,
+    isMobile,
+    visibleCount,
+    productsLength: (products || []).length,
+    windowScrollY: window.scrollY,
+    docHeight: document.documentElement.scrollHeight,
+    viewportHeight: window.innerHeight
+  });
+
+  return () => {
+    console.log('[PLP] unmount', {
+      pageKey,
+      isMobile: window.innerWidth <= 768,
+      visibleCount,
+      productsLength: (products || []).length,
+      windowScrollY: window.scrollY,
+      docHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight
+    });
+  };
+}, []);
+
+useEffect(() => {
+  console.log('[PLP] visibleCount changed', {
+    pageKey,
+    visibleCount,
+    isMobile,
+    productsLength: (products || []).length,
+    windowScrollY: window.scrollY,
+    docHeight: document.documentElement.scrollHeight,
+    viewportHeight: window.innerHeight
+  });
+}, [pageKey, visibleCount, isMobile, products]);
+
+useEffect(() => {
+  const onScroll = () => {
+    console.log('[PLP] window scroll', {
+      pageKey,
+      windowScrollY: window.scrollY,
+      docHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight
+    });
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onScroll);
+}, [pageKey]);
 
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
@@ -81,7 +130,20 @@ useEffect(() => {
 if (isMobile) {
   mobileProductsState.set(pageKey, visibleCount);
 }
-    navigate(targetPath, {
+
+console.log('[PLP] product click before navigate', {
+  pageKey,
+  isMobile,
+  visibleCount,
+  clickedDisplayId: item.displayId,
+  clickedParentId: item.parentId,
+  targetPath,
+  windowScrollY: window.scrollY,
+  docHeight: document.documentElement.scrollHeight,
+  viewportHeight: window.innerHeight
+});
+
+navigate(targetPath, {
       state: {
         product: targetProduct,
         initialColor: item.selectedColor,
