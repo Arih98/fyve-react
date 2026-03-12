@@ -465,8 +465,14 @@ body.locked {
   transform: scaleX(1);
 }
 
-@media (max-width: 768px) {
+.mobile-menu-logo {
+  display: none;
+}
 
+@media (max-width: 768px) {
+  .mobile-menu-logo {
+  display: block;
+}
 .mobile-header.first-header.pdp-mobile-header {
   --nav-icon-size: 40px;
   --nav-icon-gap: 40px;
