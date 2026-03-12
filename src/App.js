@@ -109,14 +109,14 @@ function AppContent() {
     const isMobile = window.innerWidth < 768;
 
     const lenis = new Lenis({
-      smoothWheel: true,
-      syncTouch: isMobile,
-      syncTouchLerp: isMobile ? 0.02 : 0.075,
-      touchInertiaMultiplier: isMobile ? 6 : 35,
-      touchMultiplier: isMobile ? 0.25 : 1,
-      wheelMultiplier: 1,
-      infinite: false
-    });
+  smoothWheel: true,
+  syncTouch: isMobile,
+  syncTouchLerp: isMobile ? 0.025 : 0.075,
+  touchInertiaMultiplier: isMobile ? 8 : 35,
+  touchMultiplier: isMobile ? 0.35 : 1,
+  wheelMultiplier: 1,
+  infinite: false
+});
 
     lenisRef.current = lenis;
     setLenisInstance(lenis);
