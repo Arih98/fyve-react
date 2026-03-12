@@ -47,23 +47,22 @@ const Layout = () => {
   const lenis = useContext(LenisContext);
 
   useEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        const contentHeight = containerRef.current.firstElementChild?.scrollHeight || 0;
-        containerRef.current.style.height = `${contentHeight}px`;
-        lenis?.resize();
-      }
-    };
+  const updateHeight = () => {
+  if (containerRef.current) {
+    const content = containerRef.current.querySelector('[data-page-content]');
+    const contentHeight = content?.scrollHeight || 0;
+    containerRef.current.style.height = `${contentHeight}px`;
+    lenis?.resize();
+  }
+};
 
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    const interval = setInterval(updateHeight, 100);
+  updateHeight();
+  window.addEventListener('resize', updateHeight);
 
-    return () => {
-      window.removeEventListener('resize', updateHeight);
-      clearInterval(interval);
-    };
-  }, [lenis]);
+  return () => {
+    window.removeEventListener('resize', updateHeight);
+  };
+}, [lenis, location.pathname]);
 
   return (
     <div className="App" ref={containerRef} style={{ position: 'relative' }}>
@@ -73,13 +72,14 @@ const Layout = () => {
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
-            key={location.pathname}
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
-          >
+  data-page-content
+  key={location.pathname}
+  initial={false}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: 0 }}
+  transition={{ duration: 0.3 }}
+  style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+>
             <StableOutlet />
           </motion.div>
         </AnimatePresence>
