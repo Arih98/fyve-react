@@ -37,34 +37,51 @@ const ScrollManager = () => {
     });
 
     const saveScroll = source => {
-      if (isRestoringRef.current) {
-        console.log('[SM] save skipped during restore', {
-          source,
-          pageKey,
-          restoreTarget: restoreTargetRef.current,
-          lenisScroll: lenis.scroll,
-          windowScrollY: window.scrollY
-        });
-        return;
-      }
+  if (isRestoringRef.current) {
+    console.log('[SM] save skipped during restore', {
+      source,
+      pageKey,
+      restoreTarget: restoreTargetRef.current,
+      lenisScroll: lenis.scroll,
+      windowScrollY: window.scrollY
+    });
+    return;
+  }
 
-      const y = Math.max(
-        lenis.scroll ?? 0,
-        window.scrollY ?? 0,
-        document.documentElement.scrollTop ?? 0,
-        document.body.scrollTop ?? 0
-      );
+  const y = Math.max(
+    lenis.scroll ?? 0,
+    window.scrollY ?? 0,
+    document.documentElement.scrollTop ?? 0,
+    document.body.scrollTop ?? 0
+  );
 
-      scrollPositions.set(pageKey, y);
+  const prev = scrollPositions.get(pageKey);
 
-      console.log('[SM] saveScroll', {
-        source,
-        pageKey,
-        savedY: y,
-        lenisScroll: lenis.scroll,
-        windowScrollY: window.scrollY
-      });
-    };
+  if (
+    navigationType === 'POP' &&
+    source === 'mount' &&
+    prev != null &&
+    y < 5 &&
+    prev > 5
+  ) {
+    console.log('[SM] prevented POP mount overwrite', {
+      pageKey,
+      attemptedY: y,
+      previousY: prev
+    });
+    return;
+  }
+
+  scrollPositions.set(pageKey, y);
+
+  console.log('[SM] saveScroll', {
+    source,
+    pageKey,
+    savedY: y,
+    lenisScroll: lenis.scroll,
+    windowScrollY: window.scrollY
+  });
+};
 
     const onLenisScroll = () => saveScroll('lenis-scroll');
     const onWindowScroll = () => saveScroll('window-scroll');
@@ -72,7 +89,16 @@ const ScrollManager = () => {
     lenis.on('scroll', onLenisScroll);
     window.addEventListener('scroll', onWindowScroll, { passive: true });
 
-    saveScroll('mount');
+    const existingSavedY = scrollPositions.get(pageKey);
+
+if (!(navigationType === 'POP' && existingSavedY != null)) {
+  saveScroll('mount');
+} else {
+  console.log('[SM] mount save skipped on POP because existing value exists', {
+    pageKey,
+    existingSavedY
+  });
+}
 
     return () => {
       saveScroll('cleanup');
