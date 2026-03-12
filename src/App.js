@@ -32,12 +32,6 @@ const AnimatedOutlet = () => {
   return useOutlet();
 };
 
-const StableOutlet = () => {
-  const o = useOutlet();
-  const [outlet] = useState(o);
-  return outlet;
-};
-
 const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
@@ -73,14 +67,14 @@ const Layout = () => {
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
-            key={location.pathname}
+            key={`${location.pathname}${location.search}`}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
-            <StableOutlet />
+            {useOutlet()}
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
