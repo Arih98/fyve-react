@@ -110,7 +110,8 @@ function AppContent() {
 
 const lenis = new Lenis({
   smoothWheel: true,
-  syncTouch: false,
+  syncTouch: true,
+  syncTouchLerp: 0.075,
   touchMultiplier: 1,
   wheelMultiplier: 1,
   infinite: false

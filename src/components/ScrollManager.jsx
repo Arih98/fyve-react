@@ -20,9 +20,10 @@ export default function ScrollManager() {
 
     const pageKey = `${location.pathname}${location.search}`;
 
-    const saveScroll = () => {
-      scrollPositions.set(pageKey, lenis.scroll || window.scrollY || 0);
-    };
+const saveScroll = () => {
+  const y = window.scrollY || lenis.scroll || 0;
+  scrollPositions.set(pageKey, y);
+};
 
     lenis.on('scroll', saveScroll);
 
@@ -42,6 +43,8 @@ export default function ScrollManager() {
   }
 
   let frameId;
+  let attempts = 0;
+  const maxAttempts = 120;
 
   const restoreScroll = () => {
     if (navigationType !== 'POP') {
@@ -54,11 +57,12 @@ export default function ScrollManager() {
     const viewportHeight = window.innerHeight;
     const maxScrollableY = Math.max(0, docHeight - viewportHeight);
 
-    if (maxScrollableY >= savedY || savedY === 0) {
-      lenis.scrollTo(savedY, { immediate: true });
+    if (maxScrollableY >= savedY || savedY === 0 || attempts >= maxAttempts) {
+      lenis.scrollTo(Math.min(savedY, maxScrollableY), { immediate: true });
       return;
     }
 
+    attempts += 1;
     frameId = requestAnimationFrame(restoreScroll);
   };
 
