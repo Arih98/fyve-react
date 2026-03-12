@@ -56,7 +56,6 @@ body.locked {
   cursor: pointer;
   z-index: 10003 !important;
   left: 22px;
-  top: 48px;
   transform: translateY(0);
   transition: transform 0.3s cubic-bezier(.4,0,.2,1);
   display: flex;
