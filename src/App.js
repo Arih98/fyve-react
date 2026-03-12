@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, useRef, useMemo } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
@@ -9,7 +9,7 @@ import Admin from './Admin';
 import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
-import Account from './Account';
+import Account from './Account'; // Add this import
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
@@ -26,11 +26,11 @@ export const LenisContext = createContext(null);
 const ProductDetailWrapper = () => {
   const location = useLocation();
   return <ProductDetail key={location.key} />;
-};
+}
 
 const AnimatedOutlet = () => {
   return useOutlet();
-};
+}
 
 const StableOutlet = () => {
   const o = useOutlet();
@@ -54,11 +54,9 @@ const Layout = () => {
         lenis?.resize();
       }
     };
-
     updateHeight();
     window.addEventListener('resize', updateHeight);
     const interval = setInterval(updateHeight, 100);
-
     return () => {
       window.removeEventListener('resize', updateHeight);
       clearInterval(interval);
@@ -66,10 +64,10 @@ const Layout = () => {
   }, [lenis]);
 
   return (
-    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
-      {showMobileTopHeader && <MobileTopHeader />}
-      {showHeader && <Header />}
-      {showCart && <Cart />}
+<div className="App" ref={containerRef} style={{ position: 'relative' }}>
+  {showMobileTopHeader && <MobileTopHeader />}
+  {showHeader && <Header />}
+  {showCart && <Cart />}
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
@@ -88,97 +86,64 @@ const Layout = () => {
   );
 };
 
-function AppInner() {
+function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     const handlePopState = () => {
       console.log('Browser history popstate event triggered (back or forward)');
     };
-
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const disableLenisForDebug =
-    /^\/product\/[^/]+$/.test(location.pathname) && window.innerWidth <= 768;
+  const lenis = new Lenis({
+    duration: 1.5,
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 3,
+    smoothTouch: true,
+    touchMultiplier: 2,
+    infinite: false,
+    easing: (t) => 1 - Math.pow(1 - t, 6)
+  });
 
-  const lenisRef = useRef(null);
-  const rafRef = useRef(null);
+  lenis.on('scroll', (data) => {
+    console.log(data);
+  });
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-  }, []);
+  gsap.registerPlugin(ScrollTrigger);
 
-  useEffect(() => {
-    if (disableLenisForDebug) {
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
-        lenisRef.current = null;
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(ScrollTrigger.update);
+  gsap.ticker.lagSmoothing(0);
+
+  ScrollTrigger.scrollerProxy('body', {
+    scrollTop(value) {
+      if (arguments.length) {
+        lenis.scrollTo(value, { immediate: true });
       }
-      return;
-    }
+      return lenis.scroll;
+    },
+    getBoundingClientRect() {
+      return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+    },
+    pinType: 'transform'
+  });
 
-    const lenis = new Lenis({
-      duration: 1.5,
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 3,
-      smoothTouch: true,
-      touchMultiplier: 2,
-      infinite: false,
-      easing: (t) => 1 - Math.pow(1 - t, 6)
-    });
-
-    lenisRef.current = lenis;
-
-    lenis.on('scroll', ScrollTrigger.update);
-
-    ScrollTrigger.scrollerProxy('body', {
-      scrollTop(value) {
-        if (arguments.length) {
-          lenis.scrollTo(value, { immediate: true });
-        }
-        return lenis.scroll;
-      },
-      getBoundingClientRect() {
-        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-      },
-      pinType: 'transform'
-    });
-
-    const updateScrollTrigger = () => ScrollTrigger.update();
-
-    gsap.ticker.add(updateScrollTrigger);
-    gsap.ticker.lagSmoothing(0);
-
-    const raf = (time) => {
-      lenis.raf(time);
-      rafRef.current = requestAnimationFrame(raf);
-    };
-
-    rafRef.current = requestAnimationFrame(raf);
-
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      gsap.ticker.remove(updateScrollTrigger);
-      lenis.destroy();
-      lenisRef.current = null;
-    };
-  }, [disableLenisForDebug]);
-
-  const lenisValue = useMemo(() => lenisRef.current, [disableLenisForDebug]);
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
 
   return (
-    <LenisContext.Provider value={lenisValue}>
-      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-        <CartProvider>
-          <ScrollManager />
-          <Routes>
+  <LenisContext.Provider value={lenis}>
+    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+      <CartProvider>
+        <ScrollManager />
+        <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
@@ -186,7 +151,7 @@ function AppInner() {
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/account" element={<Account />} /> {/* Add this route */}
             </Route>
           </Routes>
         </CartProvider>
@@ -196,7 +161,7 @@ function AppInner() {
 }
 
 const App = () => {
-  return <AppInner />;
+  return <AppContent />;
 };
 
 export default App;

@@ -500,26 +500,6 @@ body.locked {
   align-items: center;
 
   z-index: 10004;
-    background: red !important;
-  box-shadow: 0 0 0 2px blue inset !important;
-
-  transform: translate3d(0, 0, 0);
--webkit-transform: translate3d(0, 0, 0);
-backface-visibility: hidden;
--webkit-backface-visibility: hidden;
-will-change: transform;
-contain: paint;
-}
-
-.mobile-header.first-header.pdp-mobile-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 24px;
-  background: #F1DBD1;
-  pointer-events: none;
 }
 
 .mobile-header.first-header.pdp-mobile-header .a-burger {

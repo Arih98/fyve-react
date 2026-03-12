@@ -26,9 +26,7 @@ const ProductDetail = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
-const pdpDebugRef = useRef(null);
-const lastPdpMetricsRef = useRef(null);
-const debugPdp = true;
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -261,78 +259,6 @@ useEffect(() => {
 }, [pdpMobileButtonLabel]);
 
   useEffect(() => {
-  if (!debugPdp || !isMobile) return;
-
-  const logPdpMetrics = (source) => {
-    const root = pdpDebugRef.current;
-    const header = document.querySelector('.mobile-header.first-header.pdp-mobile-header');
-    if (!root || !header) return;
-
-    const rootRect = root.getBoundingClientRect();
-    const headerRect = header.getBoundingClientRect();
-    const vv = window.visualViewport;
-
-    const metrics = {
-      source,
-      time: Date.now(),
-      scrollY: window.scrollY,
-      innerHeight: window.innerHeight,
-      clientHeight: document.documentElement.clientHeight,
-      visualViewportHeight: vv ? vv.height : null,
-      visualViewportOffsetTop: vv ? vv.offsetTop : null,
-      rootTop: rootRect.top,
-      rootBottom: rootRect.bottom,
-      rootHeight: rootRect.height,
-      headerTop: headerRect.top,
-      headerBottom: headerRect.bottom,
-      headerHeight: headerRect.height,
-      gapBelowHeader: window.innerHeight - headerRect.bottom
-    };
-
-    const prev = lastPdpMetricsRef.current;
-
-    if (
-      !prev ||
-      prev.headerTop !== metrics.headerTop ||
-      prev.headerBottom !== metrics.headerBottom ||
-      prev.gapBelowHeader !== metrics.gapBelowHeader ||
-      prev.innerHeight !== metrics.innerHeight ||
-      prev.visualViewportHeight !== metrics.visualViewportHeight ||
-      prev.scrollY !== metrics.scrollY
-    ) {
-      console.log('[PDP PAGE DEBUG]', metrics);
-      lastPdpMetricsRef.current = metrics;
-    }
-  };
-
-  const onScroll = () => logPdpMetrics('scroll');
-  const onResize = () => logPdpMetrics('resize');
-  const onOrientationChange = () => logPdpMetrics('orientationchange');
-
-  logPdpMetrics('mount');
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onResize);
-  window.addEventListener('orientationchange', onOrientationChange);
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', onResize);
-    window.visualViewport.addEventListener('scroll', onScroll);
-  }
-
-  return () => {
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-    window.removeEventListener('orientationchange', onOrientationChange);
-
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', onResize);
-      window.visualViewport.removeEventListener('scroll', onScroll);
-    }
-  };
-}, [debugPdp, isMobile]);
-
-useEffect(() => {
   const handleExternalAddToCart = () => {
     handleAddToCart();
   };
@@ -351,9 +277,9 @@ useEffect(() => {
 
   const isAddDisabled = availableStock !== null && availableStock < quantity;
 
-return (
-  <>
-    <div ref={pdpDebugRef} data-pdp-debug-root="true">
+  return (
+    <>
+
       <motion.div className="product-detail-container">
         <div className="images-container">
   <div className="product-image-gallery">
@@ -522,9 +448,8 @@ return (
           </div>
         </div>
       )}
-    </div>
-  </>
-);
+    </>
+  );
 };
 
 export default ProductDetail;
