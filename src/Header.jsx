@@ -87,21 +87,21 @@ useEffect(() => {
     const rect = el.getBoundingClientRect();
     const vv = window.visualViewport;
 
-    const metrics = {
-      source,
-      time: Date.now(),
-      scrollY: window.scrollY,
-      innerHeight: window.innerHeight,
-      clientHeight: document.documentElement.clientHeight,
-      visualViewportHeight: vv ? vv.height : null,
-      visualViewportOffsetTop: vv ? vv.offsetTop : null,
-      visualViewportOffsetLeft: vv ? vv.offsetLeft : null,
-      headerTop: rect.top,
-      headerBottom: rect.bottom,
-      headerHeight: rect.height,
-      gapBelowViewport: window.innerHeight - rect.bottom
-      headerClassName: el.className
-    };
+const metrics = {
+  source,
+  time: Date.now(),
+  scrollY: window.scrollY,
+  innerHeight: window.innerHeight,
+  clientHeight: document.documentElement.clientHeight,
+  visualViewportHeight: vv ? vv.height : null,
+  visualViewportOffsetTop: vv ? vv.offsetTop : null,
+  visualViewportOffsetLeft: vv ? vv.offsetLeft : null,
+  headerTop: rect.top,
+  headerBottom: rect.bottom,
+  headerHeight: rect.height,
+  gapBelowViewport: window.innerHeight - rect.bottom,
+  headerClassName: el.className
+};
 
     const prev = lastHeaderMetricsRef.current;
 
