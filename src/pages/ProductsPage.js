@@ -70,7 +70,7 @@ useEffect(() => {
         ? item.gallery[0]
         : placeholderImage;
 
-    const targetProduct = products.find((p) => p.id === item.parentId);
+    const targetProduct = (products || []).find((p) => p.id === item.parentId);
     if (!targetProduct) return;
 
     const colorQuery = item.selectedColor
@@ -78,7 +78,7 @@ useEffect(() => {
       : '';
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
-if (window.innerWidth <= 768) {
+if (isMobile) {
   mobileProductsState.set(pageKey, visibleCount);
 }
     navigate(targetPath, {
