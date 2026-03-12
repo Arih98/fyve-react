@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef, useMemo } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
@@ -44,20 +44,22 @@ const Layout = () => {
 
   useEffect(() => {
     const updateHeight = () => {
-      if (containerRef.current) {
-        const contentHeight = containerRef.current.scrollHeight || 0;
-        containerRef.current.style.height = `${contentHeight}px`;
-        lenis?.resize();
-      }
+      if (!containerRef.current) return;
+      const motionEl = containerRef.current.querySelector('[data-route-shell="true"]');
+      const contentHeight = motionEl?.scrollHeight || 0;
+      containerRef.current.style.height = `${contentHeight}px`;
+      if (lenis?.resize) lenis.resize();
     };
 
     updateHeight();
     window.addEventListener('resize', updateHeight);
+    const interval = setInterval(updateHeight, 100);
 
     return () => {
       window.removeEventListener('resize', updateHeight);
+      clearInterval(interval);
     };
-  }, [lenis, location.pathname]);
+  }, [lenis]);
 
   return (
     <div className="App" ref={containerRef} style={{ position: 'relative' }}>
@@ -68,6 +70,7 @@ const Layout = () => {
         <AnimatePresence initial={false}>
           <motion.div
             key={location.pathname}
+            data-route-shell="true"
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
@@ -84,30 +87,75 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth > 768);
   const lenisRef = useRef(null);
+  const rafRef = useRef(null);
+  const scrollTriggerUpdateRef = useRef(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      console.log('Browser history popstate event triggered (back or forward)');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+
+      if (scrollTriggerUpdateRef.current) {
+        gsap.ticker.remove(scrollTriggerUpdateRef.current);
+        scrollTriggerUpdateRef.current = null;
+      }
+
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+      }
+
+      ScrollTrigger.defaults({ scroller: window });
+      ScrollTrigger.refresh();
+
+      return;
+    }
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.5,
       direction: 'vertical',
       gestureDirection: 'vertical',
       smooth: true,
-      smoothTouch: true,
-      touchMultiplier: 1.5,
-      mouseMultiplier: 1,
+      mouseMultiplier: 3,
+      smoothTouch: false,
+      touchMultiplier: 1,
       infinite: false,
-      easing: (t) => 1 - Math.pow(1 - t, 6)
+      easing: t => 1 - Math.pow(1 - t, 6)
     });
 
     lenisRef.current = lenis;
 
-    const onScroll = () => {
+    const onLenisScroll = () => {
       ScrollTrigger.update();
     };
 
-    lenis.on('scroll', onScroll);
+    lenis.on('scroll', onLenisScroll);
 
     ScrollTrigger.scrollerProxy(document.body, {
       scrollTop(value) {
@@ -124,29 +172,51 @@ function AppContent() {
           height: window.innerHeight
         };
       },
-      pinType: document.body.style.transform ? 'transform' : 'fixed'
+      pinType: 'transform'
     });
 
-    let rafId;
+    ScrollTrigger.defaults({ scroller: document.body });
 
-    const raf = (time) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+    const updateScrollTrigger = () => {
+      ScrollTrigger.update();
     };
 
-    rafId = requestAnimationFrame(raf);
+    scrollTriggerUpdateRef.current = updateScrollTrigger;
+    gsap.ticker.add(updateScrollTrigger);
+    gsap.ticker.lagSmoothing(0);
+
+    const raf = time => {
+      lenis.raf(time);
+      rafRef.current = requestAnimationFrame(raf);
+    };
+
+    rafRef.current = requestAnimationFrame(raf);
+    ScrollTrigger.refresh();
 
     return () => {
-      cancelAnimationFrame(rafId);
-      lenis.off('scroll', onScroll);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+
+      if (scrollTriggerUpdateRef.current) {
+        gsap.ticker.remove(scrollTriggerUpdateRef.current);
+        scrollTriggerUpdateRef.current = null;
+      }
+
+      lenis.off('scroll', onLenisScroll);
       lenis.destroy();
       lenisRef.current = null;
-      ScrollTrigger.killAll();
+
+      ScrollTrigger.defaults({ scroller: window });
+      ScrollTrigger.refresh();
     };
-  }, []);
+  }, [isDesktop]);
+
+  const lenisValue = useMemo(() => lenisRef.current, [isDesktop]);
 
   return (
-    <LenisContext.Provider value={lenisRef.current}>
+    <LenisContext.Provider value={lenisValue}>
       <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
         <CartProvider>
           <ScrollManager />
