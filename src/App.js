@@ -74,7 +74,7 @@ const Layout = () => {
             transition={{ duration: 0.3 }}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
-            {useOutlet()}
+            <AnimatedOutlet />
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>
