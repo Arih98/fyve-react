@@ -33,30 +33,41 @@ export default function ScrollManager() {
   }, [lenis, location.pathname, location.search]);
 
   useEffect(() => {
-    if (!lenis) return;
+  if (!lenis) return;
 
-    const pageKey = `${location.pathname}${location.search}`;
+  const pageKey = `${location.pathname}${location.search}`;
 
-    if (location.state?.preserveScroll) {
+  if (location.state?.preserveScroll) {
+    return;
+  }
+
+  let frameId;
+
+  const restoreScroll = () => {
+    if (navigationType !== 'POP') {
+      lenis.scrollTo(0, { immediate: true });
       return;
     }
 
-    const restoreScroll = () => {
-      if (navigationType === 'POP') {
-        const savedY = scrollPositions.get(pageKey) ?? 0;
-        lenis.scrollTo(savedY, { immediate: true });
-        return;
-      }
+    const savedY = scrollPositions.get(pageKey) ?? 0;
+    const docHeight = document.documentElement.scrollHeight;
+    const viewportHeight = window.innerHeight;
+    const maxScrollableY = Math.max(0, docHeight - viewportHeight);
 
-      lenis.scrollTo(0, { immediate: true });
-    };
+    if (maxScrollableY >= savedY || savedY === 0) {
+      lenis.scrollTo(savedY, { immediate: true });
+      return;
+    }
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        restoreScroll();
-      });
-    });
-  }, [lenis, location.pathname, location.search, navigationType, location.state]);
+    frameId = requestAnimationFrame(restoreScroll);
+  };
+
+  frameId = requestAnimationFrame(restoreScroll);
+
+  return () => {
+    if (frameId) cancelAnimationFrame(frameId);
+  };
+}, [lenis, location.pathname, location.search, navigationType, location.state]);
 
   return null;
 }

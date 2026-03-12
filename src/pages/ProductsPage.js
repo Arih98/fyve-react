@@ -1,11 +1,13 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
+
+const mobileProductsState = new Map();
 const ProductsPage = () => {
   const productsPerPage = 12;
   const { data: products, loading, error } = useProducts({
@@ -13,15 +15,29 @@ const ProductsPage = () => {
     perPage: 200
   });
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-  const [visibleCount, setVisibleCount] = useState(productsPerPage);
+  const pageKey = `${location.pathname}${location.search}`;
+const [visibleCount, setVisibleCount] = useState(() => {
+  return mobileProductsState.get(pageKey) || productsPerPage;
+});
 
 useEffect(() => {
-  setVisibleCount(productsPerPage);
-}, [products]);
+  if (window.innerWidth <= 768) {
+    mobileProductsState.set(pageKey, visibleCount);
+  }
+}, [pageKey, visibleCount]);
+
+useEffect(() => {
+  if (window.innerWidth > 768) return;
+  const savedCount = mobileProductsState.get(pageKey);
+  if (savedCount) {
+    setVisibleCount(savedCount);
+  }
+}, [pageKey]);
 
 
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
@@ -57,7 +73,9 @@ useEffect(() => {
       : '';
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
-
+if (window.innerWidth <= 768) {
+  mobileProductsState.set(pageKey, visibleCount);
+}
     navigate(targetPath, {
       state: {
         product: targetProduct,
