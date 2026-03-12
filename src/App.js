@@ -108,12 +108,10 @@ function AppContent() {
 
     const isMobile = window.innerWidth < 768;
 
-    const lenis = new Lenis({
+const lenis = new Lenis({
   smoothWheel: true,
-  syncTouch: isMobile,
-  syncTouchLerp: isMobile ? 0.075 : 0.075,
-  touchInertiaMultiplier: isMobile ? 18 : 35,
-  touchMultiplier: isMobile ? 0.95 : 1,
+  syncTouch: false,
+  touchMultiplier: 1,
   wheelMultiplier: 1,
   infinite: false
 });
