@@ -43,22 +43,42 @@ const Layout = () => {
   const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
+  const containerRef = useRef(null);
+  const lenis = useContext(LenisContext);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        const contentHeight = containerRef.current.firstElementChild?.scrollHeight || 0;
+        containerRef.current.style.height = `${contentHeight}px`;
+        lenis?.resize();
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    const interval = setInterval(updateHeight, 100);
+
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      clearInterval(interval);
+    };
+  }, [lenis]);
 
   return (
-    <div className="App" style={{ position: 'relative' }}>
+    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
         <AnimatePresence initial={false}>
           <motion.div
-            data-page-content
             key={location.pathname}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
-            style={{ width: '100%' }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
             <StableOutlet />
           </motion.div>
