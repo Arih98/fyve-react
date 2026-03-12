@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
@@ -11,6 +11,7 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
+
 
 const ProductDetail = () => {
   const { setCartItems } = useContext(CartContext);
@@ -200,17 +201,6 @@ setActiveImageIndex(nextIndex);
     mainImage,
     currentVariation?.id
   ]);
-
-useLayoutEffect(() => {
-  const isMobileViewport = window.innerWidth <= 768;
-  const cameFromProductGrid = !!location.state?.fromProductGrid;
-
-  if (!isMobileViewport || !cameFromProductGrid) return;
-
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-  window.scrollTo(0, 0);
-}, [location.key, location.state]);
 
   const handleAddToCart = useCallback(() => {
   const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
