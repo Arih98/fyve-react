@@ -480,7 +480,10 @@ body.locked {
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
   --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
-
+backface-visibility: hidden;
+-webkit-backface-visibility: hidden;
+transform: translateZ(0);
+will-change: transform;
   position: fixed;
   left: 0;
   right: 0;
