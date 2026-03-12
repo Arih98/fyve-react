@@ -1,102 +1,32 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
-const mobileProductsState = new Map();
 const ProductsPage = () => {
   const productsPerPage = 12;
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { data: products, loading, error } = useProducts({
     page: 1,
     perPage: 200
   });
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-  const pageKey = `${location.pathname}${location.search}`;
-const [visibleCount, setVisibleCount] = useState(() => {
-  return mobileProductsState.get(pageKey) || productsPerPage;
-});
+  const [visibleCount, setVisibleCount] = useState(productsPerPage);
 
 useEffect(() => {
-  const handleResize = () => setIsMobile(window.innerWidth <= 768);
-  window.addEventListener('resize', handleResize);
-  return () => window.removeEventListener('resize', handleResize);
-}, []);
+  setVisibleCount(productsPerPage);
+}, [products]);
 
-useEffect(() => {
-  if (!isMobile) return;
-  mobileProductsState.set(pageKey, Math.max(productsPerPage, visibleCount));
-}, [isMobile, pageKey, visibleCount, productsPerPage]);
-
-useEffect(() => {
-  if (!isMobile) return;
-  const savedCount = mobileProductsState.get(pageKey);
-  if (savedCount) {
-    setVisibleCount(Math.max(productsPerPage, savedCount));
-  }
-}, [isMobile, pageKey, productsPerPage]);
-
-useEffect(() => {
-  console.log('[PLP] mount', {
-    pageKey,
-    isMobile,
-    visibleCount,
-    productsLength: (products || []).length,
-    windowScrollY: window.scrollY,
-    docHeight: document.documentElement.scrollHeight,
-    viewportHeight: window.innerHeight
-  });
-
-  return () => {
-    console.log('[PLP] unmount', {
-      pageKey,
-      isMobile: window.innerWidth <= 768,
-      visibleCount,
-      productsLength: (products || []).length,
-      windowScrollY: window.scrollY,
-      docHeight: document.documentElement.scrollHeight,
-      viewportHeight: window.innerHeight
-    });
-  };
-}, []);
-
-useEffect(() => {
-  console.log('[PLP] visibleCount changed', {
-    pageKey,
-    visibleCount,
-    isMobile,
-    productsLength: (products || []).length,
-    windowScrollY: window.scrollY,
-    docHeight: document.documentElement.scrollHeight,
-    viewportHeight: window.innerHeight
-  });
-}, [pageKey, visibleCount, isMobile, products]);
-
-useEffect(() => {
-  const onScroll = () => {
-    console.log('[PLP] window scroll', {
-      pageKey,
-      windowScrollY: window.scrollY,
-      docHeight: document.documentElement.scrollHeight,
-      viewportHeight: window.innerHeight
-    });
-  };
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  return () => window.removeEventListener('scroll', onScroll);
-}, [pageKey]);
 
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
-  const display = (products || []).map((product) => ({
+  const display = products.map((product) => ({
     ...product,
     displayId: product.displayId || product.id,
     parentId: product.parentId || product.id,
@@ -119,7 +49,7 @@ useEffect(() => {
         ? item.gallery[0]
         : placeholderImage;
 
-    const targetProduct = (products || []).find((p) => p.id === item.parentId);
+    const targetProduct = products.find((p) => p.id === item.parentId);
     if (!targetProduct) return;
 
     const colorQuery = item.selectedColor
@@ -127,23 +57,8 @@ useEffect(() => {
       : '';
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
-if (isMobile) {
-  mobileProductsState.set(pageKey, visibleCount);
-}
 
-console.log('[PLP] product click before navigate', {
-  pageKey,
-  isMobile,
-  visibleCount,
-  clickedDisplayId: item.displayId,
-  clickedParentId: item.parentId,
-  targetPath,
-  windowScrollY: window.scrollY,
-  docHeight: document.documentElement.scrollHeight,
-  viewportHeight: window.innerHeight
-});
-
-navigate(targetPath, {
+    navigate(targetPath, {
       state: {
         product: targetProduct,
         initialColor: item.selectedColor,
@@ -167,6 +82,7 @@ navigate(targetPath, {
     }
   };
 
+const isMobile = window.innerWidth <= 768;
 
 const currentProducts = isMobile
   ? display.slice(0, visibleCount)

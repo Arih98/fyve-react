@@ -106,16 +106,20 @@ function AppContent() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.matchMedia('(pointer: coarse)').matches;
 
-const lenis = new Lenis({
-  smoothWheel: true,
-  syncTouch: true,
-  syncTouchLerp: 0.075,
-  touchMultiplier: 1,
-  wheelMultiplier: 1,
-  infinite: false
-});
+    if (isMobile) {
+      lenisRef.current = null;
+      setLenisInstance(null);
+      return;
+    }
+
+    const lenis = new Lenis({
+      smoothWheel: true,
+      syncTouch: false,
+      wheelMultiplier: 1,
+      infinite: false
+    });
 
     lenisRef.current = lenis;
     setLenisInstance(lenis);
