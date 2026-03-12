@@ -470,6 +470,10 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+
+  body {
+  background-color: #F1DBD1;
+}
   .mobile-menu-logo {
   display: block;
 }
