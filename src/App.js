@@ -104,13 +104,13 @@ function AppContent() {
     const isMobile = window.innerWidth < 768;
 
     const lenis = new Lenis({
-      duration: isMobile ? 2.4 : 1.5,
+      duration: isMobile ? 3.2 : 1.5,
       direction: 'vertical',
       gestureDirection: 'vertical',
       smooth: true,
       mouseMultiplier: 3,
       smoothTouch: true,
-      touchMultiplier: isMobile ? 0.7 : 2,
+      touchMultiplier: isMobile ? 0.4 : 2,
       infinite: false,
       easing: (t) => 1 - Math.pow(1 - t, 6)
     });
