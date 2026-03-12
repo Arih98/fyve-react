@@ -96,7 +96,7 @@ body.locked {
   visibility: visible;
 }
 
-.a-burger {
+.home-page .a-burger {
   position: fixed;
   width: 40px;
   cursor: pointer;
