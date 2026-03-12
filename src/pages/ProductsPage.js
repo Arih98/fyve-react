@@ -6,10 +6,10 @@ import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
-
 const mobileProductsState = new Map();
 const ProductsPage = () => {
   const productsPerPage = 12;
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { data: products, loading, error } = useProducts({
     page: 1,
     perPage: 200
@@ -26,23 +26,28 @@ const [visibleCount, setVisibleCount] = useState(() => {
 });
 
 useEffect(() => {
-  if (window.innerWidth <= 768) {
-    mobileProductsState.set(pageKey, visibleCount);
-  }
-}, [pageKey, visibleCount]);
+  const handleResize = () => setIsMobile(window.innerWidth <= 768);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
 useEffect(() => {
-  if (window.innerWidth > 768) return;
+  if (!isMobile) return;
+  mobileProductsState.set(pageKey, Math.max(productsPerPage, visibleCount));
+}, [isMobile, pageKey, visibleCount, productsPerPage]);
+
+useEffect(() => {
+  if (!isMobile) return;
   const savedCount = mobileProductsState.get(pageKey);
   if (savedCount) {
-    setVisibleCount(savedCount);
+    setVisibleCount(Math.max(productsPerPage, savedCount));
   }
-}, [pageKey]);
+}, [isMobile, pageKey, productsPerPage]);
 
 
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
-  const display = products.map((product) => ({
+  const display = (products || []).map((product) => ({
     ...product,
     displayId: product.displayId || product.id,
     parentId: product.parentId || product.id,
@@ -100,7 +105,6 @@ if (window.innerWidth <= 768) {
     }
   };
 
-const isMobile = window.innerWidth <= 768;
 
 const currentProducts = isMobile
   ? display.slice(0, visibleCount)
