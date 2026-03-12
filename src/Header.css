@@ -446,6 +446,8 @@ body.locked {
   transform: scaleX(1);
 }
 
+@media (max-width: 768px) {
+
 .mobile-header.first-header.pdp-mobile-header {
   --nav-icon-size: 40px;
   --nav-icon-gap: 40px;
@@ -474,7 +476,6 @@ body.locked {
 
   z-index: 10004;
 }
-
 
 .mobile-header.first-header.pdp-mobile-header .a-burger {
   position: static !important;
@@ -543,8 +544,6 @@ body.locked {
   right: 0;
   z-index: 10005;
 }
-
-@media (max-width: 768px) {
 
   .mobile-header.first-header.pdp-mobile-header.menu-open {
   grid-template-columns: repeat(4, var(--nav-icon-size));
