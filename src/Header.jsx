@@ -13,6 +13,7 @@ const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
   const [pdpAddToBagLabel, setPdpAddToBagLabel] = useState('Add to Bag');
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -65,6 +66,14 @@ useEffect(() => {
   };
 }, []);
 
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
 const handleToggleMenu = () => {
   toggleMenu();
@@ -174,7 +183,7 @@ const handleToggleMenu = () => {
     </>
   )}
 
-{isProductDetailPage && !isMenuOpen && (
+{isMobile && isProductDetailPage && !isMenuOpen && (
   <button
     type="button"
     className="pdp-mobile-add-to-bag"
