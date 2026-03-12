@@ -99,6 +99,7 @@ useEffect(() => {
       headerTop: rect.top,
       headerBottom: rect.bottom,
       headerHeight: rect.height,
+      gapBelowViewport: window.innerHeight - rect.bottom
       headerClassName: el.className
     };
 
