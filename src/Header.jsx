@@ -4,6 +4,7 @@ import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 
+
 const Header = () => {
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -14,192 +15,140 @@ const Header = () => {
   const [pdpAddToBagLabel, setPdpAddToBagLabel] = useState('Add to Bag');
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
-  const location = useLocation();
-  const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-  const debugPdpHeader = true;
-  const headerRef = useRef(null);
-  const lastHeaderMetricsRef = useRef(null);
-  const debugOverlayRef = useRef(null);
+const location = useLocation();
+const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+const debugPdpHeader = true;
+const headerRef = useRef(null);
+const lastHeaderMetricsRef = useRef(null);
 
-  useEffect(() => {
-    if (!isProductDetailPage) {
-      setPdpAddToBagLabel('Add to Bag');
-    }
-  }, [isProductDetailPage]);
+useEffect(() => {
+  if (!isProductDetailPage) {
+    setPdpAddToBagLabel('Add to Bag');
+  }
+}, [isProductDetailPage]);
 
-  useEffect(() => {
-    if (isMobile) {
+
+useEffect(() => {
+  if (isMobile) {
+    setHideHeader(false);
+    return;
+  }
+
+  let lastScrollY = window.scrollY;
+
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    if (isMenuOpen) return;
+
+    if (currentScrollY <= 0) {
       setHideHeader(false);
-      return;
+    } else if (currentScrollY > lastScrollY) {
+      setHideHeader(true);
+    } else if (currentScrollY < lastScrollY) {
+      setHideHeader(false);
     }
 
-    let lastScrollY = window.scrollY;
+    lastScrollY = currentScrollY;
+  };
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (isMenuOpen) return;
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, [isMobile, isMenuOpen]);
 
-      if (currentScrollY <= 0) {
-        setHideHeader(false);
-      } else if (currentScrollY > lastScrollY) {
-        setHideHeader(true);
-      } else if (currentScrollY < lastScrollY) {
-        setHideHeader(false);
-      }
+useEffect(() => {
+  const handlePdpButtonLabel = e => {
+    setPdpAddToBagLabel(e.detail?.label || 'Add to Bag');
+  };
 
-      lastScrollY = currentScrollY;
-    };
+  window.addEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile, isMenuOpen]);
+  return () => {
+    window.removeEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
+  };
+}, []);
 
-  useEffect(() => {
-    const handlePdpButtonLabel = e => {
-      setPdpAddToBagLabel(e.detail?.label || 'Add to Bag');
-    };
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
 
-    window.addEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
-    return () => {
-      window.removeEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
-    };
-  }, []);
+useEffect(() => {
+  if (!debugPdpHeader) return;
+  if (!isMobile || !isProductDetailPage) return;
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+  const logMetrics = (source) => {
+    const el = headerRef.current;
+    if (!el) return;
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    const rect = el.getBoundingClientRect();
+    const vv = window.visualViewport;
 
-  useEffect(() => {
-    if (!debugPdpHeader) return;
-    if (!isMobile || !isProductDetailPage) return;
+const metrics = {
+  source,
+  time: Date.now(),
+  scrollY: window.scrollY,
+  innerHeight: window.innerHeight,
+  clientHeight: document.documentElement.clientHeight,
+  visualViewportHeight: vv ? vv.height : null,
+  visualViewportOffsetTop: vv ? vv.offsetTop : null,
+  visualViewportOffsetLeft: vv ? vv.offsetLeft : null,
+  headerTop: rect.top,
+  headerBottom: rect.bottom,
+  headerHeight: rect.height,
+  gapBelowViewport: window.innerHeight - rect.bottom,
+  headerClassName: el.className
+};
 
-    const el = document.createElement('div');
-    el.style.position = 'fixed';
-    el.style.left = '10px';
-    el.style.bottom = '140px';
-    el.style.zIndex = '999999';
-    el.style.background = 'rgba(0,0,0,0.8)';
-    el.style.color = '#fff';
-    el.style.fontSize = '11px';
-    el.style.lineHeight = '1.4';
-    el.style.padding = '8px';
-    el.style.borderRadius = '6px';
-    el.style.pointerEvents = 'none';
-    el.style.maxWidth = '220px';
-    el.style.whiteSpace = 'pre-line';
+    const prev = lastHeaderMetricsRef.current;
 
-    document.body.appendChild(el);
-    debugOverlayRef.current = el;
+    if (
+      !prev ||
+      prev.headerTop !== metrics.headerTop ||
+      prev.headerBottom !== metrics.headerBottom ||
+      prev.innerHeight !== metrics.innerHeight ||
+      prev.visualViewportHeight !== metrics.visualViewportHeight ||
+      prev.scrollY !== metrics.scrollY
+    ) {
+      console.log('[PDP HEADER DEBUG]', metrics);
+      lastHeaderMetricsRef.current = metrics;
+    }
+  };
 
-    return () => {
-      el.remove();
-      debugOverlayRef.current = null;
-    };
-  }, [debugPdpHeader, isMobile, isProductDetailPage]);
+  const onScroll = () => logMetrics('scroll');
+  const onResize = () => logMetrics('resize');
+  const onOrientationChange = () => logMetrics('orientationchange');
 
-  useEffect(() => {
-    if (!debugPdpHeader) return;
-    if (!isMobile || !isProductDetailPage) return;
+  logMetrics('mount');
 
-    const logMetrics = (source) => {
-      const el = headerRef.current;
-      if (!el) return;
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onOrientationChange);
 
-      const rect = el.getBoundingClientRect();
-      const vv = window.visualViewport;
-      const gapBelowViewport = window.innerHeight - rect.bottom;
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', onResize);
+    window.visualViewport.addEventListener('scroll', onScroll);
+  }
 
-      const metrics = {
-        source,
-        time: Date.now(),
-        scrollY: window.scrollY,
-        innerHeight: window.innerHeight,
-        clientHeight: document.documentElement.clientHeight,
-        visualViewportHeight: vv ? vv.height : null,
-        visualViewportOffsetTop: vv ? vv.offsetTop : null,
-        visualViewportOffsetLeft: vv ? vv.offsetLeft : null,
-        headerTop: rect.top,
-        headerBottom: rect.bottom,
-        headerHeight: rect.height,
-        gapBelowViewport,
-        headerClassName: el.className
-      };
-
-      if (debugOverlayRef.current) {
-        debugOverlayRef.current.textContent =
-          'source: ' + source + '\n' +
-          'scrollY: ' + Math.round(metrics.scrollY) + '\n' +
-          'innerHeight: ' + metrics.innerHeight + '\n' +
-          'vvHeight: ' + (vv ? Math.round(vv.height) : 'n/a') + '\n' +
-          'vvOffsetTop: ' + (vv ? Math.round(vv.offsetTop) : 'n/a') + '\n' +
-          'headerTop: ' + Math.round(rect.top) + '\n' +
-          'headerBottom: ' + Math.round(rect.bottom) + '\n' +
-          'headerHeight: ' + Math.round(rect.height) + '\n' +
-          'gapBelowViewport: ' + Math.round(gapBelowViewport);
-      }
-
-      const prev = lastHeaderMetricsRef.current;
-
-      if (
-        !prev ||
-        prev.gapBelowViewport !== metrics.gapBelowViewport ||
-        prev.innerHeight !== metrics.innerHeight ||
-        prev.visualViewportHeight !== metrics.visualViewportHeight ||
-        prev.visualViewportOffsetTop !== metrics.visualViewportOffsetTop
-      ) {
-        console.log(
-          '[PDP HEADER DEBUG]',
-          'source=', metrics.source,
-          'scrollY=', Math.round(metrics.scrollY * 100) / 100,
-          'innerHeight=', metrics.innerHeight,
-          'vvHeight=', metrics.visualViewportHeight ? Math.round(metrics.visualViewportHeight * 100) / 100 : null,
-          'vvOffsetTop=', metrics.visualViewportOffsetTop ? Math.round(metrics.visualViewportOffsetTop * 100) / 100 : null,
-          'headerTop=', Math.round(metrics.headerTop * 100) / 100,
-          'headerBottom=', Math.round(metrics.headerBottom * 100) / 100,
-          'headerHeight=', Math.round(metrics.headerHeight * 100) / 100,
-          'gapBelowViewport=', Math.round(metrics.gapBelowViewport * 100) / 100
-        );
-        lastHeaderMetricsRef.current = metrics;
-      }
-    };
-
-    const onScroll = () => logMetrics('scroll');
-    const onResize = () => logMetrics('resize');
-    const onOrientationChange = () => logMetrics('orientationchange');
-
-    logMetrics('mount');
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-    window.addEventListener('orientationchange', onOrientationChange);
+  return () => {
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('orientationchange', onOrientationChange);
 
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', onResize);
-      window.visualViewport.addEventListener('scroll', onScroll);
+      window.visualViewport.removeEventListener('resize', onResize);
+      window.visualViewport.removeEventListener('scroll', onScroll);
     }
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('orientationchange', onOrientationChange);
-
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', onResize);
-        window.visualViewport.removeEventListener('scroll', onScroll);
-      }
-    };
-  }, [debugPdpHeader, isMobile, isProductDetailPage]);
-
-  const handleToggleMenu = () => {
-    toggleMenu();
-    if (isSearchOpen) setIsSearchOpen(false);
   };
+}, [debugPdpHeader, isMobile, isProductDetailPage]);
+
+const handleToggleMenu = () => {
+  toggleMenu();
+  if (isSearchOpen) setIsSearchOpen(false);
+};
 
   const toggleSearch = () => {
     setIsSearchOpen(v => !v);
@@ -252,113 +201,117 @@ const Header = () => {
     { id: 'girls', name: 'GIRLS', path: '/products?category=girls', image: '/api/Uploads/LOOK-9_1416.webp' },
     { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
     { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
-    { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' }
+    { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
   ];
 
   const BurgerIcon = (
-    <button
-      type="button"
-      className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
-      ref={burgerRef}
-      onClick={handleToggleMenu}
-      aria-expanded={isMenuOpen}
-      aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-    >
-      <span className="burger-glyph">
-        <span className="hamburger-line top"></span>
-        <span className="hamburger-line middle"></span>
-        <span className="hamburger-line bottom"></span>
-        <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
-          <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="#4A494A" strokeWidth="2.2" />
-          <line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="#4A494A" strokeWidth="2.2" />
-        </svg>
-      </span>
-    </button>
-  );
+  <button
+    type="button"
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+    ref={burgerRef}
+    onClick={handleToggleMenu}
+    aria-expanded={isMenuOpen}
+    aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+  >
+    <span className="burger-glyph">
+      <span className="hamburger-line top"></span>
+      <span className="hamburger-line middle"></span>
+      <span className="hamburger-line bottom"></span>
+      <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
+        <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="#4A494A" strokeWidth="2.2" />
+<line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="#4A494A" strokeWidth="2.2" />
+      </svg>
+    </span>
+  </button>
+);
 
   return (
-    <>
-      <div
-        ref={headerRef}
-        className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}
-      >
-        {BurgerIcon}
+  <>
+    
+    <div
+  ref={headerRef}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}
+>
+  {BurgerIcon}
 
-        {(!isProductDetailPage || !isMobile) && (
-          <>
-            <div className="header-logo mobile-hide-logo">
-              <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
-            </div>
+  {(!isProductDetailPage || !isMobile) && (
+  <>
+    <div className="header-logo mobile-hide-logo">
+      <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
+    </div>
 
-            <div className="mobile-nav-icons">
-              <button className="mobile-nav-icon" onClick={toggleSearch}>
-                <img src="/assets/SearchIcon.svg" alt="Search" />
-              </button>
+    <div className="mobile-nav-icons">
+      <button className="mobile-nav-icon" onClick={toggleSearch}>
+        <img src="/assets/SearchIcon.svg" alt="Search" />
+      </button>
 
-              <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-                <img src="/assets/AccountIcon.svg" alt="Account" />
-              </button>
+      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <img src="/assets/AccountIcon.svg" alt="Account" />
+      </button>
 
-              <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-                <img src="/assets/BagIcon.svg" alt="Bag" />
-              </button>
-            </div>
-          </>
-        )}
+      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+        <img src="/assets/BagIcon.svg" alt="Bag" />
+      </button>
+    </div>
+  </>
+)}
 
-        {isMobile && isProductDetailPage && !isMenuOpen && (
-          <button
-            type="button"
-            className="pdp-mobile-add-to-bag"
-            onClick={() => {
-              window.dispatchEvent(new CustomEvent('pdp:add-to-cart'));
-            }}
-          >
-            {pdpAddToBagLabel}
-          </button>
-        )}
+{isMobile && isProductDetailPage && !isMenuOpen && (
+  <button
+    type="button"
+    className="pdp-mobile-add-to-bag"
+    onClick={() => {
+      window.dispatchEvent(new CustomEvent('pdp:add-to-cart'));
+    }}
+  >
+    {pdpAddToBagLabel}
+  </button>
+)}
 
-        {isProductDetailPage && isMenuOpen && (
-          <div className="mobile-nav-icons pdp-open-icons">
-            <button className="mobile-nav-icon" onClick={toggleSearch}>
-              <img src="/assets/SearchIcon.svg" alt="Search" />
-            </button>
 
-            <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-              <img src="/assets/AccountIcon.svg" alt="Account" />
-            </button>
+  {isProductDetailPage && isMenuOpen && (
+    <div className="mobile-nav-icons pdp-open-icons">
+      <button className="mobile-nav-icon" onClick={toggleSearch}>
+        <img src="/assets/SearchIcon.svg" alt="Search" />
+      </button>
 
-            <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-              <img src="/assets/BagIcon.svg" alt="Bag" />
-            </button>
-          </div>
-        )}
+      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <img src="/assets/AccountIcon.svg" alt="Account" />
+      </button>
 
-        <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
-          <div className="custom-search-inner">
-            <input
-              type="text"
-              className="custom-search-input"
-              placeholder="Little Trendsetters: Uncover Your Child's Style"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-            <button className="custom-search-close" onClick={toggleSearch}>
-              <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
-            </button>
-            <div className="custom-search-results"></div>
-          </div>
-        </div>
-      </div>
+      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+        <img src="/assets/BagIcon.svg" alt="Bag" />
+      </button>
+    </div>
+  )}
+
+  <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
+    <div className="custom-search-inner">
+      <input
+        type="text"
+        className="custom-search-input"
+        placeholder="Little Trendsetters: Uncover Your Child's Style"
+        value={searchQuery}
+        onChange={handleSearch}
+      />
+      <button className="custom-search-close" onClick={toggleSearch}>
+        <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
+      </button>
+      <div className="custom-search-results"></div>
+    </div>
+  </div>
+</div>
+
 
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">
-          <div className="mobile-menu-logo">
-            <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
-          </div>
 
-          <div className="menu-columns">
+  <div className="mobile-menu-logo">
+    <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
+  </div>
+
+  <div className="menu-columns">
             <div className="menu-image-column">
               {menuItems.map(item => (
                 <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
@@ -377,9 +330,9 @@ const Header = () => {
                     className={activeMenuImage === item.id ? 'active' : ''}
                     onFocus={() => handleMenuImageChange(item.id)}
                     onTouchStart={() => handleMenuImageChange(item.id)}
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                    }}
+onClick={() => {
+  setIsMenuOpen(false);
+}}
                   >
                     <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
                   </li>
