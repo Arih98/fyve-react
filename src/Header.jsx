@@ -1,5 +1,5 @@
 import { useMobileMenuController } from './hooks/useMobileMenuController';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
@@ -17,6 +17,9 @@ const Header = () => {
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+const debugPdpHeader = true;
+const headerRef = useRef(null);
+const lastHeaderMetricsRef = useRef(null);
 
 useEffect(() => {
   if (!isProductDetailPage) {
@@ -25,9 +28,7 @@ useEffect(() => {
 }, [isProductDetailPage]);
 
 
-  useEffect(() => {
-  const isMobile = window.innerWidth <= 768;
-
+useEffect(() => {
   if (isMobile) {
     setHideHeader(false);
     return;
@@ -52,7 +53,7 @@ useEffect(() => {
 
   window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMenuOpen]);
+}, [isMobile, isMenuOpen]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
@@ -74,6 +75,74 @@ useEffect(() => {
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
 }, []);
+
+useEffect(() => {
+  if (!debugPdpHeader) return;
+  if (!isMobile || !isProductDetailPage) return;
+
+  const logMetrics = (source) => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const vv = window.visualViewport;
+
+    const metrics = {
+      source,
+      time: Date.now(),
+      scrollY: window.scrollY,
+      innerHeight: window.innerHeight,
+      clientHeight: document.documentElement.clientHeight,
+      visualViewportHeight: vv ? vv.height : null,
+      visualViewportOffsetTop: vv ? vv.offsetTop : null,
+      visualViewportOffsetLeft: vv ? vv.offsetLeft : null,
+      headerTop: rect.top,
+      headerBottom: rect.bottom,
+      headerHeight: rect.height,
+      headerClassName: el.className
+    };
+
+    const prev = lastHeaderMetricsRef.current;
+
+    if (
+      !prev ||
+      prev.headerTop !== metrics.headerTop ||
+      prev.headerBottom !== metrics.headerBottom ||
+      prev.innerHeight !== metrics.innerHeight ||
+      prev.visualViewportHeight !== metrics.visualViewportHeight ||
+      prev.scrollY !== metrics.scrollY
+    ) {
+      console.log('[PDP HEADER DEBUG]', metrics);
+      lastHeaderMetricsRef.current = metrics;
+    }
+  };
+
+  const onScroll = () => logMetrics('scroll');
+  const onResize = () => logMetrics('resize');
+  const onOrientationChange = () => logMetrics('orientationchange');
+
+  logMetrics('mount');
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onOrientationChange);
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', onResize);
+    window.visualViewport.addEventListener('scroll', onScroll);
+  }
+
+  return () => {
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('orientationchange', onOrientationChange);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', onResize);
+      window.visualViewport.removeEventListener('scroll', onScroll);
+    }
+  };
+}, [debugPdpHeader, isMobile, isProductDetailPage]);
 
 const handleToggleMenu = () => {
   toggleMenu();
@@ -158,7 +227,10 @@ const handleToggleMenu = () => {
   return (
   <>
     
-    <div className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
+    <div
+  ref={headerRef}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}
+>
   {BurgerIcon}
 
   {(!isProductDetailPage || !isMobile) && (
