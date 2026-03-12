@@ -88,6 +88,7 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const lenisRef = useRef(null);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -97,53 +98,65 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const lenis = new Lenis({
-    duration: 1.5,
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    mouseMultiplier: 3,
-    smoothTouch: true,
-    touchMultiplier: 2,
-    infinite: false,
-    easing: (t) => 1 - Math.pow(1 - t, 6)
-  });
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
 
-  lenis.on('scroll', (data) => {
-    console.log(data);
-  });
+    const isMobile = window.innerWidth < 768;
 
-  gsap.registerPlugin(ScrollTrigger);
+    const lenis = new Lenis({
+      duration: isMobile ? 2.4 : 1.5,
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 3,
+      smoothTouch: true,
+      touchMultiplier: isMobile ? 0.7 : 2,
+      infinite: false,
+      easing: (t) => 1 - Math.pow(1 - t, 6)
+    });
 
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add(ScrollTrigger.update);
-  gsap.ticker.lagSmoothing(0);
+    lenisRef.current = lenis;
 
-  ScrollTrigger.scrollerProxy('body', {
-    scrollTop(value) {
-      if (arguments.length) {
-        lenis.scrollTo(value, { immediate: true });
-      }
-      return lenis.scroll;
-    },
-    getBoundingClientRect() {
-      return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-    },
-    pinType: 'transform'
-  });
+    const onScroll = () => {
+      ScrollTrigger.update();
+    };
 
-  function raf(time) {
-    lenis.raf(time);
+    lenis.on('scroll', onScroll);
+
+    ScrollTrigger.scrollerProxy('body', {
+      scrollTop(value) {
+        if (arguments.length) {
+          lenis.scrollTo(value, { immediate: true });
+        }
+        return lenis.scroll;
+      },
+      getBoundingClientRect() {
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+      },
+      pinType: 'transform'
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
     requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.off('scroll', onScroll);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
 
   return (
-  <LenisContext.Provider value={lenis}>
-    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-      <CartProvider>
-        <ScrollManager />
-        <Routes>
+    <LenisContext.Provider value={lenisRef.current}>
+      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+        <CartProvider>
+          <ScrollManager />
+          <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
@@ -151,7 +164,7 @@ function AppContent() {
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} /> {/* Add this route */}
+              <Route path="/account" element={<Account />} />
             </Route>
           </Routes>
         </CartProvider>
