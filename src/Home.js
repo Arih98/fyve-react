@@ -5,7 +5,7 @@ import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
-import HomeHeader from './HomeHeader';
+import Header from './Header';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
@@ -275,7 +275,7 @@ const Home = () => {
     })
   }}
 />
-    <HomeHeader />
+    <Header />
       <div className="fyve-wrapper">
         <div className="fyve-mask">
           <div className="fyve-text">
