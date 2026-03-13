@@ -24,6 +24,35 @@ const ProductsPage = () => {
   });
 
   useEffect(() => {
+  if (!isMobile) return;
+
+  const saveScroll = () => {
+    sessionStorage.setItem('productsPageScrollY', String(window.scrollY || 0));
+  };
+
+  window.addEventListener('scroll', saveScroll, { passive: true });
+
+  return () => {
+    saveScroll();
+    window.removeEventListener('scroll', saveScroll);
+  };
+}, [isMobile]);
+
+useEffect(() => {
+  if (!isMobile) return;
+  if (loading) return;
+  if (!products.length) return;
+
+  const savedY = Number(sessionStorage.getItem('productsPageScrollY') || 0);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo(0, savedY);
+    });
+  });
+}, [isMobile, loading, products.length, visibleCount]);
+
+  useEffect(() => {
     sessionStorage.setItem('productsVisibleCount', String(visibleCount));
   }, [visibleCount]);
 
