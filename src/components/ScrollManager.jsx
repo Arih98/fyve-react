@@ -49,7 +49,7 @@ if (navigationType === 'POP') {
     }
 
     window.scrollTo(0, 0);
-  }, [location.pathname, location.search, navigationType, location.state]);
+  }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 
   return null;
 }
