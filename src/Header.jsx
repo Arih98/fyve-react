@@ -16,10 +16,32 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
+const isHomePage = location.pathname === '/';
+const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
+const useTransparentHomeHeader =
+  isHomePage &&
+  !isScrolled &&
+  !isMenuOpen &&
+  !isSearchOpen;
+const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
+const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
+const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
+const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+
+useEffect(() => {
+  const handleHeaderThemeScroll = () => {
+    setIsScrolled(window.scrollY > 10);
+  };
+
+  handleHeaderThemeScroll();
+  window.addEventListener('scroll', handleHeaderThemeScroll, { passive: true });
+
+  return () => window.removeEventListener('scroll', handleHeaderThemeScroll);
+}, [location.pathname]);
 
 useEffect(() => {
   if (!isProductDetailPage) {
@@ -207,7 +229,7 @@ const handleToggleMenu = () => {
   const BurgerIcon = (
   <button
     type="button"
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}`}
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}
     ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
@@ -218,8 +240,8 @@ const handleToggleMenu = () => {
       <span className="hamburger-line middle"></span>
       <span className="hamburger-line bottom"></span>
       <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
-        <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="#4A494A" strokeWidth="2.2" />
-<line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="#4A494A" strokeWidth="2.2" />
+        <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
+<line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
       </svg>
     </span>
   </button>
@@ -230,27 +252,27 @@ const handleToggleMenu = () => {
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
   {(!isProductDetailPage || !isMobile) && (
   <>
     <div className="header-logo mobile-hide-logo">
-      <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE White Logo" onClick={() => navigate('/')} />
+      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
     </div>
 
     <div className="mobile-nav-icons">
       <button className="mobile-nav-icon" onClick={toggleSearch}>
-        <img src="/assets/SearchIcon.svg" alt="Search" />
+        <img src={searchIconSrc} alt="Search" />
       </button>
 
       <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-        <img src="/assets/AccountIcon.svg" alt="Account" />
+        <img src={accountIconSrc} alt="Account" />
       </button>
 
       <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-        <img src="/assets/BagIcon.svg" alt="Bag" />
+        <img src={bagIconSrc} alt="Bag" />
       </button>
     </div>
   </>
@@ -272,15 +294,15 @@ const handleToggleMenu = () => {
   {isProductDetailPage && isMenuOpen && (
     <div className="mobile-nav-icons pdp-open-icons">
       <button className="mobile-nav-icon" onClick={toggleSearch}>
-        <img src="/assets/SearchIcon.svg" alt="Search" />
+        <img src={searchIconSrc} alt="Search" />
       </button>
 
       <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-        <img src="/assets/AccountIcon.svg" alt="Account" />
+        <img src={accountIconSrc} alt="Account" />
       </button>
 
       <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-        <img src="/assets/BagIcon.svg" alt="Bag" />
+        <img src={bagIconSrc} alt="Bag" />
       </button>
     </div>
   )}
