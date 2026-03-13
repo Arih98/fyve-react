@@ -68,19 +68,28 @@ useEffect(() => {
       }
     });
 
-    if (sourceEl) {
-      const isMobileViewport = window.innerWidth <= 768;
+if (sourceEl) {
+  const isMobileViewport = window.innerWidth <= 768;
 
-      startProductImageTransition({
-        src: sourceSrc,
-        fromElement: sourceEl,
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: isMobileViewport ? 520 : 620,
-        minTargetTop: isMobileViewport ? 80 : 0,
-        zIndex: isMobileViewport ? 80 : 999999
-      });
-    }
-  };
+  startProductImageTransition({
+    src: sourceSrc,
+    fromElement: sourceEl,
+    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+    duration: isMobileViewport ? 520 : 620,
+    minTargetTop: isMobileViewport ? 80 : 0,
+    zIndex: isMobileViewport ? 80 : 999999
+  });
+}
+
+navigate(targetPath, {
+  state: {
+    product: targetProduct,
+    initialColor: item.selectedColor,
+    transitionSourceDisplayId: item.displayId,
+    transitionSourceSrc: sourceSrc,
+    fromProductGrid: true
+  }
+});
 
 const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
 
