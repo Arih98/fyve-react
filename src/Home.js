@@ -275,6 +275,9 @@ const Home = () => {
   }}
 />
       <div className="fyve-wrapper">
+          <div className="home-mobile-top-logo">
+    <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
+  </div>
         <div className="fyve-mask">
           <div className="fyve-text">
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
