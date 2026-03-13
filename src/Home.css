@@ -200,10 +200,6 @@
   letter-spacing: -0.4px;
 }
 
-.home-mobile-hero-overlay {
-  display: contents;
-}
-
 .section1-new-text {
   position: absolute;
   top: 33%;
@@ -580,13 +576,6 @@
 }
 
 @media (max-width: 768px) {
-  .home-mobile-hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    display: block;
-    pointer-events: none;
-  }
 
   .home-mobile-top-logo {
     position: absolute;
