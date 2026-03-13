@@ -23,21 +23,6 @@ const ProductsPage = () => {
     return saved ? Number(saved) : productsPerPage;
   });
 
-  useEffect(() => {
-  if (!isMobile) return;
-
-  const saveScroll = () => {
-    sessionStorage.setItem('productsPageScrollY', String(window.scrollY || 0));
-  };
-
-  window.addEventListener('scroll', saveScroll, { passive: true });
-
-  return () => {
-    saveScroll();
-    window.removeEventListener('scroll', saveScroll);
-  };
-}, [isMobile]);
-
 useEffect(() => {
   if (!isMobile) return;
   if (loading) return;
@@ -102,44 +87,49 @@ useEffect(() => {
   }));
 
   const handleProductClick = (item) => {
-    const sourceEl = imageRefs.current.get(item.displayId);
-    const sourceSrc =
-      item.gallery && item.gallery.length > 0
-        ? item.gallery[0]
-        : placeholderImage;
+  const sourceEl = imageRefs.current.get(item.displayId);
+  const sourceSrc =
+    item.gallery && item.gallery.length > 0
+      ? item.gallery[0]
+      : placeholderImage;
 
-    const targetProduct = products.find((p) => p.id === item.parentId);
-    if (!targetProduct) return;
+  const targetProduct = products.find((p) => p.id === item.parentId);
+  if (!targetProduct) return;
 
-    const colorQuery = item.selectedColor
-      ? `?color=${encodeURIComponent(item.selectedColor)}`
-      : '';
+  const colorQuery = item.selectedColor
+    ? `?color=${encodeURIComponent(item.selectedColor)}`
+    : '';
 
-    const targetPath = `/product/${item.parentId}${colorQuery}`;
+  const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-    if (sourceEl) {
-      const isMobileViewport = window.innerWidth <= 768;
+  if (sourceEl) {
+    const isMobileViewport = window.innerWidth <= 768;
 
-      startProductImageTransition({
-        src: sourceSrc,
-        fromElement: sourceEl,
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: isMobileViewport ? 520 : 620,
-        minTargetTop: isMobileViewport ? 80 : 0,
-        zIndex: isMobileViewport ? 80 : 999999
-      });
-    }
-
-    navigate(targetPath, {
-      state: {
-        product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionSourceDisplayId: item.displayId,
-        transitionSourceSrc: sourceSrc,
-        fromProductGrid: true
-      }
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 80 : 999999
     });
-  };
+  }
+
+  if (isMobile) {
+    sessionStorage.setItem('productsPageScrollY', String(window.scrollY || 0));
+    sessionStorage.setItem('productsVisibleCount', String(visibleCount));
+  }
+
+  navigate(targetPath, {
+    state: {
+      product: targetProduct,
+      initialColor: item.selectedColor,
+      transitionSourceDisplayId: item.displayId,
+      transitionSourceSrc: sourceSrc,
+      fromProductGrid: true
+    }
+  });
+};
 
   const currentProducts = isMobile
     ? display.slice(0, visibleCount)
