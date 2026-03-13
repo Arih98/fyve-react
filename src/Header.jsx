@@ -27,9 +27,9 @@ const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
-  !isScrolled &&
   !isMenuOpen &&
-  !isSearchOpen;
+  !isSearchOpen &&
+  (!isScrolled || hideHeader);
 
 const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
@@ -65,7 +65,6 @@ useEffect(() => {
   }
 
   let lastScrollY = window.scrollY;
-  const homeHideStart = 140;
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
@@ -73,17 +72,7 @@ useEffect(() => {
 
     if (currentScrollY <= 0) {
       setHideHeader(false);
-      lastScrollY = currentScrollY;
-      return;
-    }
-
-    if (isHomePage && currentScrollY < homeHideStart) {
-      setHideHeader(false);
-      lastScrollY = currentScrollY;
-      return;
-    }
-
-    if (currentScrollY > lastScrollY) {
+    } else if (currentScrollY > lastScrollY) {
       setHideHeader(true);
     } else if (currentScrollY < lastScrollY) {
       setHideHeader(false);
@@ -92,9 +81,9 @@ useEffect(() => {
     lastScrollY = currentScrollY;
   };
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen, isHomePage]);
+}, [isMobile, isMenuOpen]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
