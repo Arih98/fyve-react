@@ -18,7 +18,7 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [visibleCount, setVisibleCount] = useState(productsPerPage);
-const pageWrapperRef = useRef(null);
+
 useEffect(() => {
   setVisibleCount(productsPerPage);
 }, [products]);
@@ -43,31 +43,21 @@ useEffect(() => {
   }));
 
   const handleProductClick = async (item) => {
-  const sourceEl = imageRefs.current.get(item.displayId);
-  const sourceSrc =
-    item.gallery && item.gallery.length > 0
-      ? item.gallery[0]
-      : placeholderImage;
+    const sourceEl = imageRefs.current.get(item.displayId);
+    const sourceSrc =
+      item.gallery && item.gallery.length > 0
+        ? item.gallery[0]
+        : placeholderImage;
 
-  const targetProduct = products.find((p) => p.id === item.parentId);
-  if (!targetProduct) return;
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) return;
 
-  const colorQuery = item.selectedColor
-    ? `?color=${encodeURIComponent(item.selectedColor)}`
-    : '';
+    const colorQuery = item.selectedColor
+      ? `?color=${encodeURIComponent(item.selectedColor)}`
+      : '';
 
-  const targetPath = `/product/${item.parentId}${colorQuery}`;
+    const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-  if (window.innerWidth <= 768 && pageWrapperRef.current) {
-    pageWrapperRef.current.style.height = `${pageWrapperRef.current.offsetHeight}px`;
-    pageWrapperRef.current.style.overflow = 'hidden';
-  }
-
-  if (sourceEl) {
-    sourceEl.style.opacity = '0';
-  }
-
-  requestAnimationFrame(() => {
     navigate(targetPath, {
       state: {
         product: targetProduct,
@@ -90,8 +80,7 @@ useEffect(() => {
         zIndex: isMobileViewport ? 80 : 999999
       });
     }
-  });
-};
+  };
 
 const isMobile = window.innerWidth <= 768;
 
@@ -108,10 +97,7 @@ const currentProducts = isMobile
   if (loading) {
     return (
       <div className="products-container">
-        <div
-  ref={pageWrapperRef}
-  className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}
->
+        <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
           <div className="products-grid">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="product-card skeleton-card">
@@ -132,10 +118,7 @@ const currentProducts = isMobile
 
   return (
     <div className="products-container">
-      <div
-  ref={pageWrapperRef}
-  className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}
->
+      <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
         <ProductGrid
           products={currentProducts}
           onProductClick={handleProductClick}
