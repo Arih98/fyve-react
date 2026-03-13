@@ -167,7 +167,6 @@ gsap.to('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', {
         },
         onComplete: () => {
   introDone.current = true;
-  gsap.set('.home-mobile-intro-gradient', { opacity: 1 });
   console.log('Lottie container animation completed');
 }
       });
@@ -281,7 +280,6 @@ gsap.to('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', {
   }}
 />
 <div className="fyve-wrapper">
-  <div className="home-mobile-top-gradient home-mobile-intro-gradient"></div>
   <div className="home-mobile-top-logo">
     <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
   </div>
@@ -295,8 +293,6 @@ gsap.to('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', {
     <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
     <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
   </picture>
-
-  <div className="hero-bottom-gradient home-mobile-intro-gradient"></div>
 
   <div className="mask-left"></div>
   <div className="mask-right"></div>
