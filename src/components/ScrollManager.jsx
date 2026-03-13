@@ -31,23 +31,17 @@ export default function ScrollManager() {
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
-    const restoreScroll = () => {
-      if (navigationType === 'POP') {
-        const savedY = scrollPositions.get(pageKey) ?? 0;
-        window.scrollTo(0, savedY);
-        return;
-      }
+    if (navigationType === 'POP') {
+      const savedY = scrollPositions.get(pageKey) ?? 0;
+      window.scrollTo(0, savedY);
+      return;
+    }
 
-      if (location.state?.fromProductGrid) {
-        return;
-      }
+    if (location.state?.fromProductGrid) {
+      return;
+    }
 
-      window.scrollTo(0, 0);
-    };
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(restoreScroll);
-    });
+    window.scrollTo(0, 0);
   }, [location.pathname, location.search, navigationType, location.state]);
 
   return null;

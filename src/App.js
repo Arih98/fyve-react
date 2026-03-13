@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
 import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetail from './ProductDetail';
@@ -22,53 +22,27 @@ const ProductDetailWrapper = () => {
   return <ProductDetail key={location.key} />;
 };
 
-const StableOutlet = () => {
-  const o = useOutlet();
-  const [outlet] = useState(o);
-  return outlet;
-};
-
 const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        const contentHeight = containerRef.current.firstElementChild?.scrollHeight || 0;
-        containerRef.current.style.height = `${contentHeight}px`;
-      }
-    };
-
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    const interval = setInterval(updateHeight, 100);
-
-    return () => {
-      window.removeEventListener('resize', updateHeight);
-      clearInterval(interval);
-    };
-  }, []);
 
   return (
-    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
+    <div className="App">
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
-            key={location.pathname}
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 0 }}
+            key={location.pathname + location.search}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
-            <StableOutlet />
+            <Outlet />
           </motion.div>
         </AnimatePresence>
       </LayoutGroup>

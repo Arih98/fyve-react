@@ -42,7 +42,7 @@ useEffect(() => {
     price: product.price
   }));
 
-  const handleProductClick = async (item) => {
+  const handleProductClick = (item) => {
     const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
@@ -82,7 +82,13 @@ useEffect(() => {
     }
   };
 
-const isMobile = window.innerWidth <= 768;
+const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth <= 768);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
 const currentProducts = isMobile
   ? display.slice(0, visibleCount)
