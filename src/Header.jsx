@@ -122,7 +122,7 @@ useEffect(() => {
 
     const timeout = setTimeout(() => {
       setDelayTransparentHeader(false);
-    }, 450);
+    }, 500);
 
     prevMenuStateRef.current = menuState;
     return () => clearTimeout(timeout);
