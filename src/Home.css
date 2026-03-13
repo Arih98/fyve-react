@@ -702,7 +702,7 @@
     justify-content: flex-start;
     left: 50%;
     position: absolute;
-    transform: translate(-50%, -60px);
+    transform: translate(-50%, 0px);
     width: 60%;
     padding: 0;
     z-index: 2;
