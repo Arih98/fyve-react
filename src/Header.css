@@ -104,31 +104,32 @@ body.locked {
 
 .a-burger .burger-glyph {
   position: relative;
-  width: 19px;
-  height: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
+  width: 45px;
+  height: 21px;
+  display: block;
 }
 
 .a-burger .hamburger-line {
-  display: block;
-  width: 19px;
-  height: 2.2px;
+  position: absolute;
+  left: 0;
+  width: 45px;
+  height: 3px;
   background-color: #4A494A;
-  transform: scaleX(1);
+  transform: none;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 
-.a-burger .hamburger-line.top,
-.a-burger .hamburger-line.bottom {
-  transform-origin: left;
+.a-burger .hamburger-line.top {
+  top: 0;
 }
 
 .a-burger .hamburger-line.middle {
-  transform-origin: right;
+  top: 9px;
+}
+
+.a-burger .hamburger-line.bottom {
+  top: 18px;
 }
 
 .a-burger .x-svg {
