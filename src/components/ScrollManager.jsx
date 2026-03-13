@@ -30,20 +30,26 @@ export default function ScrollManager() {
 
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
+    const skipReset = !!location.state?.fromProductGrid;
 
     const restoreScroll = () => {
       if (navigationType === 'POP') {
         const savedY = scrollPositions.get(pageKey) ?? 0;
         window.scrollTo(0, savedY);
-      } else {
-        window.scrollTo(0, 0);
+        return;
       }
+
+      if (skipReset) {
+        return;
+      }
+
+      window.scrollTo(0, 0);
     };
 
     requestAnimationFrame(() => {
       requestAnimationFrame(restoreScroll);
     });
-  }, [location.pathname, location.search, navigationType]);
+  }, [location.pathname, location.search, navigationType, location.state]);
 
   return null;
 }
