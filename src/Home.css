@@ -525,23 +525,6 @@
 }
 
 @media (min-width: 769px) {
-
-.home-mobile-top-logo {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: block;
-  pointer-events: none;
-}
-
-.home-mobile-top-logo img {
-  display: block;
-  height: 50px;
-  width: auto;
-}
-
   .horizontal-scroll-section {
     padding-top: 170px;
     padding-bottom: 120px;
@@ -607,6 +590,22 @@
 }
 
 @media (max-width: 768px) {
+
+  .home-mobile-top-logo {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: block;
+  pointer-events: none;
+}
+
+.home-mobile-top-logo img {
+  display: block;
+  height: 50px;
+  width: auto;
+}
     
      .horizontal-scroll-section {
     padding-top: 100px;
