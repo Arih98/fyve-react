@@ -18,11 +18,17 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [visibleCount, setVisibleCount] = useState(productsPerPage);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
 
-useEffect(() => {
-  setVisibleCount(productsPerPage);
-}, [products]);
+  useEffect(() => {
+    setVisibleCount(productsPerPage);
+  }, [products]);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
@@ -59,39 +65,32 @@ useEffect(() => {
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
     if (sourceEl) {
-  const isMobileViewport = window.innerWidth <= 768;
+      const isMobileViewport = window.innerWidth <= 768;
 
-  startProductImageTransition({
-    src: sourceSrc,
-    fromElement: sourceEl,
-    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-    duration: isMobileViewport ? 520 : 620,
-    minTargetTop: isMobileViewport ? 80 : 0,
-    zIndex: isMobileViewport ? 80 : 999999
-  });
-}
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: isMobileViewport ? 520 : 620,
+        minTargetTop: isMobileViewport ? 80 : 0,
+        zIndex: isMobileViewport ? 80 : 999999
+      });
+    }
 
-navigate(targetPath, {
-  state: {
-    product: targetProduct,
-    initialColor: item.selectedColor,
-    transitionSourceDisplayId: item.displayId,
-    transitionSourceSrc: sourceSrc,
-    fromProductGrid: true
-  }
-});
+    navigate(targetPath, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc,
+        fromProductGrid: true
+      }
+    });
+  };
 
-const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
-
-useEffect(() => {
-  const handleResize = () => setIsMobile(window.innerWidth <= 768);
-  window.addEventListener('resize', handleResize);
-  return () => window.removeEventListener('resize', handleResize);
-}, []);
-
-const currentProducts = isMobile
-  ? display.slice(0, visibleCount)
-  : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+  const currentProducts = isMobile
+    ? display.slice(0, visibleCount)
+    : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
   const totalPages = Math.ceil(display.length / productsPerPage);
 
@@ -130,35 +129,34 @@ const currentProducts = isMobile
           imageRefs={imageRefs}
           placeholderImage={placeholderImage}
         />
-{isMobile && visibleCount < display.length && (
-  <div className="show-more-wrapper">
-    <button
-      className="show-more-button"
-      onClick={() => setVisibleCount(v => v + productsPerPage)}
-    >
-      Show more
-    </button>
-  </div>
-)}
 
+        {isMobile && visibleCount < display.length && (
+          <div className="show-more-wrapper">
+            <button
+              className="show-more-button"
+              onClick={() => setVisibleCount(v => v + productsPerPage)}
+            >
+              Show more
+            </button>
+          </div>
+        )}
 
         {!isMobile && (
-  <div className="pagination">
-    {Array.from({ length: totalPages }, (_, i) => {
-      const page = i + 1;
-      return (
-        <button
-          key={page}
-          onClick={() => handlePageChange(page)}
-          className={`pagination-button ${currentPage === page ? 'pagination-button-active' : 'pagination-button-inactive'}`}
-        >
-          {page}
-        </button>
-      );
-    })}
-  </div>
-)}
-
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => {
+              const page = i + 1;
+              return (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`pagination-button ${currentPage === page ? 'pagination-button-active' : 'pagination-button-inactive'}`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
