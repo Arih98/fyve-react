@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
@@ -13,6 +13,7 @@ const ProductsPage = () => {
     perPage: 200
   });
   const navigate = useNavigate();
+  const navigationType = useNavigationType();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
@@ -25,6 +26,7 @@ const ProductsPage = () => {
 
 useEffect(() => {
   if (!isMobile) return;
+  if (navigationType !== 'POP') return;
   if (loading) return;
   if (!products.length) return;
 
@@ -56,7 +58,7 @@ useEffect(() => {
   return () => {
     cancelled = true;
   };
-}, [isMobile, loading, products.length, visibleCount]);
+}, [isMobile, navigationType, loading, products.length, visibleCount]);
 
   useEffect(() => {
     sessionStorage.setItem('productsVisibleCount', String(visibleCount));
