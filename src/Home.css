@@ -736,7 +736,7 @@
   
   .lottie-container {
       align-items: center;
-      bottom: 0;
+      bottom: 30px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
