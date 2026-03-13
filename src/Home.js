@@ -112,7 +112,7 @@ const Home = () => {
       gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
       gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
       gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
-      gsap.set('.mobile-header, .home-mobile-top-logo', { opacity: 1 });
+      gsap.set('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', { opacity: 1 });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
       gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
@@ -139,8 +139,13 @@ const Home = () => {
       gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-      gsap.set('.mobile-header, .home-mobile-top-logo', { opacity: 0 });
-gsap.to('.mobile-header, .home-mobile-top-logo', { opacity: 1, duration: 0.5, ease: 'expo.inOut', delay: 2.8 });
+      gsap.set('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', { opacity: 0 });
+gsap.to('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', {
+  opacity: 1,
+  duration: 0.5,
+  ease: 'expo.inOut',
+  delay: 2.8
+});
       gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
       gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
       gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
@@ -274,11 +279,13 @@ gsap.to('.mobile-header, .home-mobile-top-logo', { opacity: 1, duration: 0.5, ea
     })
   }}
 />
-      <div className="fyve-wrapper">
-          <div className="home-mobile-top-logo">
+<div className="fyve-wrapper">
+  <div className="home-mobile-top-gradient"></div>
+  <div className="home-mobile-top-logo">
     <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
   </div>
-        <div className="fyve-mask">
+
+  <div className="fyve-mask">
           <div className="fyve-text">
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>

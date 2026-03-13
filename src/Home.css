@@ -7,6 +7,11 @@
   font-display: swap;
 }
 
+.home-mobile-top-gradient,
+.home-mobile-top-logo {
+  display: none;
+}
+
 .home-mobile-top-logo {
   display: none;
 }
@@ -590,6 +595,36 @@
 }
 
 @media (max-width: 768px) {
+
+  .home-mobile-top-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  display: block;
+  z-index: 19;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0;
+}
+
+.home-mobile-top-logo {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.home-mobile-top-logo img {
+  display: block;
+  height: 50px;
+  width: auto;
+}
 
   .home-mobile-top-logo {
   position: absolute;
