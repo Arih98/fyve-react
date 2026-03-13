@@ -71,8 +71,8 @@ body.locked {
 
 .a-burger {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   cursor: pointer;
   z-index: 10003 !important;
   transform: translateY(0);
@@ -83,11 +83,6 @@ body.locked {
   padding: 0;
   border: none;
   background: none;
-  appearance: none;
-  -webkit-appearance: none;
-  border-radius: 0;
-  outline: none;
-  line-height: 0;
 }
 
 .a-burger.hide-header {
@@ -135,8 +130,8 @@ body.locked {
   transition: opacity 0.5s;
   position: absolute;
   inset: 0;
-  width: 19px;
-  height: 19px;
+  width: 24px;
+  height: 24px;
   z-index: 2;
   pointer-events: none;
 }
@@ -146,8 +141,7 @@ body.locked {
 }
 
 .a-burger .x-svg .x-line {
-  stroke-dasharray: 44;
-  stroke-dashoffset: 44;
+  stroke-width: 3;
 }
 
 .header-logo {
