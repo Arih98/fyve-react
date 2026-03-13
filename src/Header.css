@@ -98,10 +98,10 @@ body.locked {
 .a-burger .burger-glyph {
   position: relative;
   width: 45px;
-  height: 24px;
+  height: 21px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
 }
 
@@ -142,6 +142,13 @@ body.locked {
 
 .a-burger .x-svg .x-line {
   stroke-width: 3;
+  stroke-dasharray: 44;
+  stroke-dashoffset: 44;
+  transition: stroke-dashoffset 0.45s ease;
+}
+
+.a-burger.menu-open .x-svg .x-line {
+  stroke-dashoffset: 0;
 }
 
 .header-logo {
