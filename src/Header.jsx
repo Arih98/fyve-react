@@ -27,6 +27,16 @@ const useTransparentHomeHeader =
   !isScrolled &&
   !isMenuOpen &&
   !isSearchOpen;
+
+useEffect(() => {
+  setHideHeader(false);
+  setIsSearchOpen(false);
+}, [location.pathname]);
+
+useEffect(() => {
+  setIsScrolled(window.scrollY > 10);
+}, [location.pathname]);  
+
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
