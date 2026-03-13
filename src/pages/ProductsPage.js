@@ -58,17 +58,7 @@ useEffect(() => {
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-    navigate(targetPath, {
-      state: {
-        product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionSourceDisplayId: item.displayId,
-        transitionSourceSrc: sourceSrc,
-        fromProductGrid: true
-      }
-    });
-
-if (sourceEl) {
+    if (sourceEl) {
   const isMobileViewport = window.innerWidth <= 768;
 
   startProductImageTransition({
