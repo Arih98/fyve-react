@@ -46,9 +46,9 @@ body.locked {
   top: 0;
   left: 0;
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   padding-top: 30px !important;
   padding-bottom: 30px !important;
   padding-right: 22px !important;
@@ -75,7 +75,6 @@ body.locked {
   height: 40px;
   cursor: pointer;
   z-index: 10003 !important;
-  left: 22px;
   transform: translateY(0);
   transition: transform 0.3s cubic-bezier(.4,0,.2,1);
   display: flex;
@@ -98,7 +97,6 @@ body.locked {
 }
 
 .a-burger.menu-active {
-  left: 22px;
   z-index: 1002;
 }
 
@@ -157,12 +155,38 @@ body.locked {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
+  justify-self: center;
 }
 
 .header-logo img {
   max-height: 50px;
   cursor: pointer;
+}
+
+.mobile-nav-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  justify-self: end;
+}
+
+.mobile-nav-icon {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mobile-nav-icon img {
+  width: auto;
+  height: 20px;
+  display: block;
 }
 
 .custom-search-trigger {
