@@ -17,12 +17,15 @@ const ProductsPage = () => {
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-  const [visibleCount, setVisibleCount] = useState(productsPerPage);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  const [visibleCount, setVisibleCount] = useState(() => {
+    const saved = sessionStorage.getItem('productsVisibleCount');
+    return saved ? Number(saved) : productsPerPage;
+  });
 
   useEffect(() => {
-    setVisibleCount(productsPerPage);
-  }, [products]);
+    sessionStorage.setItem('productsVisibleCount', String(visibleCount));
+  }, [visibleCount]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
