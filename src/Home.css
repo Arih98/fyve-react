@@ -139,20 +139,6 @@
   display: inline-block;
 }
 
-.lottie-container {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 75%;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 30px;
-}
-
 .london-below {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 600 !important;
@@ -613,57 +599,10 @@
   top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
-  display: block;
-  pointer-events: none;
-  opacity: 0;
-}
-
-.home-mobile-top-logo img {
-  display: block;
-  height: 50px;
-  width: auto;
-}
-
-.lottie-container {
-  position: absolute;
-  top: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  z-index: 1;
-  padding: 0;
-}
-
-.home-mobile-top-logo {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 20;
   display: block;
   pointer-events: none;
   opacity: 0;
-}
-
-.home-mobile-top-logo img {
-  display: block;
-  height: 50px;
-  width: auto;
-}
-
-  .home-mobile-top-logo {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: block;
-  pointer-events: none;
 }
 
 .home-mobile-top-logo img {
@@ -680,11 +619,8 @@
     height: 550px;
   }
   
-  @media (max-width: 768px) {
   .horizontal-scroll-content::after {
     width: 35px;
-  }
-}
   
   .custom-img.img4 {
     height: 280px!important;
