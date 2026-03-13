@@ -15,7 +15,6 @@ import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import './App.css';
 import './Header.css';
-import './HomeHeader.css';
 import ScrollManager from './components/ScrollManager';
 
 const ProductDetailWrapper = () => {
@@ -31,7 +30,7 @@ const StableOutlet = () => {
 
 const Layout = () => {
   const location = useLocation();
-  const showHeader = location.pathname !== '/' && location.pathname !== '/admin';
+  const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
   const containerRef = useRef(null);
