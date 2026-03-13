@@ -671,9 +671,7 @@
     height: 280px!important;
     align-self: flex-end;
   }
-}
 
-@media (max-width: 768px) {
   .fyve-image-container {
     height: 50vw;
   }
