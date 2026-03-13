@@ -65,6 +65,7 @@ useEffect(() => {
   }
 
   let lastScrollY = window.scrollY;
+  const homeHideStart = 140;
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
@@ -72,7 +73,17 @@ useEffect(() => {
 
     if (currentScrollY <= 0) {
       setHideHeader(false);
-    } else if (currentScrollY > lastScrollY) {
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    if (isHomePage && currentScrollY < homeHideStart) {
+      setHideHeader(false);
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    if (currentScrollY > lastScrollY) {
       setHideHeader(true);
     } else if (currentScrollY < lastScrollY) {
       setHideHeader(false);
@@ -81,9 +92,9 @@ useEffect(() => {
     lastScrollY = currentScrollY;
   };
 
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen]);
+}, [isMobile, isMenuOpen, isHomePage]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
