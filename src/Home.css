@@ -219,6 +219,10 @@
   letter-spacing: -0.4px;
 }
 
+.home-mobile-hero-overlay {
+  display: contents;
+}
+
 .section1-new-text {
   position: absolute;
   top: 33%;
@@ -595,6 +599,45 @@
 }
 
 @media (max-width: 768px) {
+
+  .home-mobile-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: block;
+  pointer-events: none;
+}
+
+.home-mobile-top-logo {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.home-mobile-top-logo img {
+  display: block;
+  height: 50px;
+  width: auto;
+}
+
+.lottie-container {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 1;
+  padding: 0;
+}
 
 .home-mobile-top-logo {
   position: absolute;
