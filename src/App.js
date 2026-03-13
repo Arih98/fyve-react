@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation, useOutlet } from 'react-router-dom';
 import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
@@ -33,21 +33,40 @@ const Layout = () => {
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        const contentHeight = containerRef.current.firstElementChild?.scrollHeight || 0;
+        containerRef.current.style.height = `${contentHeight}px`;
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    const interval = setInterval(updateHeight, 100);
+
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
-    <div className="App">
+    <div className="App" ref={containerRef} style={{ position: 'relative' }}>
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
       {showCart && <Cart />}
       <LayoutGroup>
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false}>
           <motion.div
-            key={location.key}
+            key={location.pathname}
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.3 }}
-            style={{ width: '100%' }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
           >
             <StableOutlet />
           </motion.div>

@@ -30,7 +30,6 @@ export default function ScrollManager() {
 
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
-    const skipReset = !!location.state?.fromProductGrid;
 
     const restoreScroll = () => {
       if (navigationType === 'POP') {
@@ -39,7 +38,7 @@ export default function ScrollManager() {
         return;
       }
 
-      if (skipReset) {
+      if (location.state?.fromProductGrid) {
         return;
       }
 
