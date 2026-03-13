@@ -290,13 +290,16 @@ gsap.to('.mobile-header, .home-mobile-top-logo, .home-mobile-top-gradient', {
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
           <div className="fyve-image-container">
-            <picture>
-              <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-              <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-            </picture>
-            <div className="mask-left"></div>
-            <div className="mask-right"></div>
-          </div>
+  <picture>
+    <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+    <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+  </picture>
+
+  <div className="hero-bottom-gradient"></div>
+
+  <div className="mask-left"></div>
+  <div className="mask-right"></div>
+</div>
           <div className="fyve-text">
             {'VE'.split('').map((l, i) => <span key={i+2} className="fyve-letter">{l}</span>)}
           </div>
