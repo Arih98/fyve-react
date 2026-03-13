@@ -22,11 +22,15 @@ const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
-const useTransparentHomeHeader =
+const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
+const shouldBeTransparentHomeHeader =
   isHomePage &&
   !isScrolled &&
   !isMenuOpen &&
   !isSearchOpen;
+
+const useTransparentHomeHeader =
+  shouldBeTransparentHomeHeader && !delayTransparentHeader;
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
@@ -97,6 +101,27 @@ useEffect(() => {
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
 }, []);
+
+useEffect(() => {
+  if (
+    isHomePage &&
+    !isScrolled &&
+    !isSearchOpen &&
+    menuState === 'closing'
+  ) {
+    setDelayTransparentHeader(true);
+
+    const timeout = setTimeout(() => {
+      setDelayTransparentHeader(false);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }
+
+  if (!shouldBeTransparentHomeHeader) {
+    setDelayTransparentHeader(false);
+  }
+}, [isHomePage, isScrolled, isSearchOpen, menuState, shouldBeTransparentHomeHeader]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
