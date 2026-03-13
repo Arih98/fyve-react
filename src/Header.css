@@ -135,8 +135,8 @@ body.locked {
   transition: opacity 0.5s;
   position: absolute;
   inset: 0;
-  width: 19px;
-  height: 19px;
+  width: 30px;
+  height: 30px;
   z-index: 2;
   pointer-events: none;
 }
