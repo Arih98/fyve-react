@@ -762,7 +762,7 @@
   justify-content: flex-start;
   left: 50%;
   position: absolute;
-  transform: translate(-50%, -30px);
+  transform: translate(-50%, -40px);
   width: 100%;
   padding: 0;
   z-index: 2;
@@ -772,5 +772,6 @@
     color: #fff;
     font-family: Quasimoda, sans-serif;
     font-size: 3.6vw;
+    margin-top: -50px;
   }
 }
