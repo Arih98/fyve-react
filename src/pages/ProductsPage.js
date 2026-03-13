@@ -44,12 +44,33 @@ useEffect(() => {
   if (!products.length) return;
 
   const savedY = Number(sessionStorage.getItem('productsPageScrollY') || 0);
+  if (savedY <= 0) return;
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
+  let frame = 0;
+  let cancelled = false;
+  const maxFrames = 60;
+
+  const tryRestore = () => {
+    if (cancelled) return;
+
+    const pageHeight = document.documentElement.scrollHeight;
+    const viewportHeight = window.innerHeight;
+    const canRestore = pageHeight >= savedY + viewportHeight;
+
+    if (canRestore || frame >= maxFrames) {
       window.scrollTo(0, savedY);
-    });
-  });
+      return;
+    }
+
+    frame += 1;
+    requestAnimationFrame(tryRestore);
+  };
+
+  requestAnimationFrame(tryRestore);
+
+  return () => {
+    cancelled = true;
+  };
 }, [isMobile, loading, products.length, visibleCount]);
 
   useEffect(() => {
