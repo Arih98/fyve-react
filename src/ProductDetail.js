@@ -141,11 +141,11 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
   useEffect(() => {
   if (!location.state?.fromProductGrid) return;
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo(0, 0);
-    });
-  });
+  const timeout = setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, window.innerWidth <= 768 ? 520 : 620);
+
+  return () => clearTimeout(timeout);
 }, [location.state]);
 
   useEffect(() => {
