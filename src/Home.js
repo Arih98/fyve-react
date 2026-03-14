@@ -62,16 +62,42 @@ const Home = () => {
   const intermediateWidth = isMobile ? '30vw' : '18vw';
 
   const ctx = gsap.context(() => {
-gsap.to(".section1-img-overlay-wrap", {
-  y: -60,
-  ease: "none",
-  scrollTrigger: {
-    trigger: ".section-1",
-    start: "top bottom",
-    end: "bottom top",
-    scrub: true
-  }
-});
+const overlayWrap = document.querySelector('.section1-img-overlay-wrap');
+const sectionOne = document.querySelector('.section-1');
+
+console.log('overlayWrap found:', overlayWrap);
+console.log('sectionOne found:', sectionOne);
+
+if (overlayWrap && sectionOne) {
+  gsap.set(overlayWrap, { outline: '2px solid red' });
+
+  const st = gsap.to(overlayWrap, {
+    y: -120,
+    ease: "none",
+    scrollTrigger: {
+      trigger: sectionOne,
+      start: "top bottom",
+      end: "bottom top",
+      scrub: true,
+      markers: true,
+      onEnter: () => console.log('ScrollTrigger entered'),
+      onLeave: () => console.log('ScrollTrigger left'),
+      onEnterBack: () => console.log('ScrollTrigger entered back'),
+      onLeaveBack: () => console.log('ScrollTrigger left back'),
+      onUpdate: self => {
+        console.log('Scroll progress:', self.progress);
+        console.log('Current y:', gsap.getProperty(overlayWrap, 'y'));
+      }
+    },
+    onStart: () => console.log('Overlay tween started'),
+    onUpdate: () => console.log('Tween updating'),
+    onComplete: () => console.log('Overlay tween completed')
+  });
+
+  console.log('Overlay tween created:', st);
+} else {
+  console.error('Overlay wrapper or section-1 not found');
+}
     gsap.set('.london-mask', { visibility: 'visible' });
     const londonMask = document.querySelector('.london-mask');
     let londonHeight = 0;
