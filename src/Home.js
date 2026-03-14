@@ -321,10 +321,6 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
         </div>
       </div>
       <div className="section-1">
-  <div className="image-wrapper">
-    <div className="section1-image-container"></div>
-  </div>
-
   <div className="section1-overlay-text">
     Comfortably<br/>Modern,<br/>Distinctly<br/>British.
   </div>
@@ -334,7 +330,6 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
     <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
   </a>
 </div>
-
       <div className="section-2">
         <div className="section2-overlay-text">SS25</div>
         <div className="section2-subtext">
