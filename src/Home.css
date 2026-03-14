@@ -407,11 +407,11 @@
   margin-top: 24px;
   font-size: 4.2vw;
   padding: 4vw 7vw;
-  gap: 2vw;
+  gap: 3vw;
   align-self: flex-start;
 }
 
 .section1-shop-button img {
-  width: 5vw;
+  width: 5.2vw;
 }
 }
