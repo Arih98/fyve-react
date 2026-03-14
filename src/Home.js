@@ -70,16 +70,22 @@ setTimeout(() => {
   const intermediateWidth = isMobile ? '30vw' : '18vw';
 
   const ctx = gsap.context(() => {
-gsap.to(".section1-img-overlay-wrap", {
+console.log("About to create section 1 ScrollTrigger");
+
+const overlayTween = gsap.to(".section1-img-overlay-wrap", {
   y: -300,
   ease: "none",
   scrollTrigger: {
     trigger: ".section-1",
     start: "top bottom",
     end: "bottom top",
-    scrub: true
+    scrub: true,
+    onRefresh: () => console.log("section 1 ScrollTrigger refreshed, scrollY:", window.scrollY),
+    onUpdate: () => console.log("section 1 ScrollTrigger updating, scrollY:", window.scrollY)
   }
 });
+
+console.log("Section 1 ScrollTrigger created:", overlayTween);
     gsap.set('.london-mask', { visibility: 'visible' });
     const londonMask = document.querySelector('.london-mask');
     let londonHeight = 0;
