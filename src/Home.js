@@ -39,8 +39,6 @@ const Home = () => {
   }, [inView]);
 
   useEffect(() => {
-  window.history.scrollRestoration = 'manual';
-  window.scrollTo(0, 0);
 
   hasAnimated.current = false;
   introDone.current = false;
