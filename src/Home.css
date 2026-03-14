@@ -233,14 +233,18 @@
   object-fit: cover;
 }
 
-.section1-img-overlay {
+.section1-img-overlay-wrap {
   position: absolute;
   width: 50%;
-  height: auto;
-  display: block;
   left: -20%;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.section1-img-overlay {
+  width: 100%;
+  height: auto;
+  display: block;
   object-fit: cover;
 }
 

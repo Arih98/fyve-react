@@ -62,7 +62,7 @@ const Home = () => {
   const intermediateWidth = isMobile ? '30vw' : '18vw';
 
   const ctx = gsap.context(() => {
-    gsap.to(".section1-img-overlay", {
+gsap.to(".section1-img-overlay-wrap", {
   y: -60,
   ease: "none",
   scrollTrigger: {
