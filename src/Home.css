@@ -398,7 +398,8 @@
 
 .section1-body-text {
   max-width: 100%;
-  font-size: 4.2vw;
+  font-size: 4.8vw;
+  font-weight: 500;
   line-height: 1.5;
   margin-top: -15px;
 }
