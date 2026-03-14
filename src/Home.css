@@ -699,7 +699,7 @@
 
   .lottie-container {
     align-items: center;
-    top: -105px;
+    top: -110px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -715,6 +715,6 @@
     color: #fff;
     font-family: Quasimoda, sans-serif;
     font-size: 4vw;
-    margin-top: -130px;
+    margin-top: -135px;
   }
 }
