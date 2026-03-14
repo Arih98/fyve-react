@@ -364,7 +364,7 @@
 .section1-image-stack {
   position: relative;
   width: 100%;
-  min-height: 80vw;
+  min-height: 92vw;
 }
 
 .section1-img-main {
@@ -377,7 +377,7 @@
 
 .section1-img-overlay-wrap {
   position: absolute;
-  right: 8%;
+  left: 0;
   top: 70%;
   width: 42%;
   transform: translateY(-50%);
