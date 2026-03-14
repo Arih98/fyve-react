@@ -6,8 +6,8 @@ import { useInView } from 'react-intersection-observer';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
 import { Observer } from "gsap/Observer";
-
-gsap.registerPlugin(Observer);
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(Observer, ScrollTrigger);
 
 const Home = () => {
   const lottieRef = useRef();
@@ -62,6 +62,16 @@ const Home = () => {
   const intermediateWidth = isMobile ? '30vw' : '18vw';
 
   const ctx = gsap.context(() => {
+    gsap.to(".section1-img-overlay", {
+  y: -80,
+  ease: "none",
+  scrollTrigger: {
+    trigger: ".section-1",
+    start: "top bottom",
+    end: "bottom top",
+    scrub: true
+  }
+});
     gsap.set('.london-mask', { visibility: 'visible' });
     const londonMask = document.querySelector('.london-mask');
     let londonHeight = 0;
