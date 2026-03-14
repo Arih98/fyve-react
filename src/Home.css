@@ -484,8 +484,8 @@
 }
 
 .section2-title {
-  top: -4vw;
-  font-size: 18vw;
+  top: -26vw;
+  font-size: 38vw;
 }
 
 .section2-text {
@@ -504,5 +504,8 @@
   left: 50%;
   top: calc(50% + 18vw);
   transform: translateX(-50%);
+  width: max-content;
+  white-space: nowrap;
+  align-self: auto;
 }
 }
