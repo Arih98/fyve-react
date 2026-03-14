@@ -263,6 +263,23 @@ gsap.to(".section1-img-overlay-wrap", {
           </div>
         </div>
       </div>
+            <div className="section-2">
+        <div className="section2-inner">
+          <div className="section2-title">SS26</div>
+
+          <div className="section2-right">
+            <div className="section2-text">
+              Timeless Elegance,<br />
+              Playfully Refined.
+            </div>
+
+            <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+              Shop Collection
+              <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
