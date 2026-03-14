@@ -293,12 +293,12 @@
 
 .section2-title {
   position: absolute;
-  top: -15.2vw;
+  top: clamp(-260px, -15.2vw, -120px);
   left: 50%;
   transform: translateX(-50%);
   font-family: Quasimoda, sans-serif;
   font-weight: 200;
-  font-size: 41vw;
+  font-size: clamp(240px, 41vw, 720px);
   line-height: 0.85;
   color: #fff;
   text-align: center;
