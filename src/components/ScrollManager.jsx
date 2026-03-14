@@ -15,10 +15,7 @@ export default function ScrollManager() {
 
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
-console.log("SCROLL MANAGER triggered");
-console.log("pathname:", location.pathname);
-console.log("navigationType:", navigationType);
-console.log("scroll before manager:", window.scrollY);
+
     const saveScroll = () => {
       scrollPositions.set(pageKey, window.scrollY || 0);
     };
@@ -34,43 +31,33 @@ console.log("scroll before manager:", window.scrollY);
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
-if (location.pathname === '/') {
-  console.log("Homepage detected, forcing scroll to top");
-  console.log("scroll before homepage top force:", window.scrollY);
-
-  window.scrollTo(0, 0);
-
-  requestAnimationFrame(() => {
-    console.log("Homepage rAF 1 before force:", window.scrollY);
-    window.scrollTo(0, 0);
-
-    requestAnimationFrame(() => {
-      console.log("Homepage rAF 2 before force:", window.scrollY);
+    if (location.pathname === '/') {
       window.scrollTo(0, 0);
 
-      setTimeout(() => {
-        console.log("Homepage timeout 300ms before force:", window.scrollY);
+      requestAnimationFrame(() => {
         window.scrollTo(0, 0);
-        console.log("Homepage timeout 300ms after force:", window.scrollY);
-      }, 300);
-    });
-  });
 
-  console.log("scroll after homepage top force:", window.scrollY);
-  return;
-}
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 300);
+        });
+      });
+
+      return;
+    }
 
     if (navigationType === 'POP') {
       const isMobileProductsPage =
         location.pathname === '/products' && window.innerWidth <= 768;
-console.log("POP navigation detected");
-console.log("saved scroll:", scrollPositions.get(pageKey));
+
       if (isMobileProductsPage) {
         return;
       }
 
       const savedY = scrollPositions.get(pageKey) ?? 0;
-      console.log("Restoring scroll to:", savedY);
       window.scrollTo(0, savedY);
       return;
     }
@@ -78,7 +65,7 @@ console.log("saved scroll:", scrollPositions.get(pageKey));
     if (location.state?.fromProductGrid) {
       return;
     }
-console.log("Scrolling to top because new navigation");
+
     window.scrollTo(0, 0);
   }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 

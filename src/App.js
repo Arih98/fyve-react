@@ -52,87 +52,75 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-useEffect(() => {
-  const originalScrollTo = window.scrollTo;
-  const originalScroll = window.scroll;
-  const originalScrollIntoView = Element.prototype.scrollIntoView;
-  const originalFocus = HTMLElement.prototype.focus;
 
-  window.scrollTo = function (...args) {
-    console.log("DEBUG window.scrollTo called with:", args);
-    console.trace("window.scrollTo stack");
-    return originalScrollTo.apply(window, args);
-  };
-
-  window.scroll = function (...args) {
-    console.log("DEBUG window.scroll called with:", args);
-    console.trace("window.scroll stack");
-    return originalScroll.apply(window, args);
-  };
-
-  Element.prototype.scrollIntoView = function (...args) {
-    console.log("DEBUG scrollIntoView called on:", this);
-    console.log("DEBUG scrollIntoView args:", args);
-    console.trace("scrollIntoView stack");
-    return originalScrollIntoView.apply(this, args);
-  };
-
-  HTMLElement.prototype.focus = function (...args) {
-    console.log("DEBUG focus called on:", this);
-    console.log("DEBUG focus args:", args);
-    console.trace("focus stack");
-    return originalFocus.apply(this, args);
-  };
-
-  return () => {
-    window.scrollTo = originalScrollTo;
-    window.scroll = originalScroll;
-    Element.prototype.scrollIntoView = originalScrollIntoView;
-    HTMLElement.prototype.focus = originalFocus;
-  };
-}, []);
   useEffect(() => {
-    const handlePopState = () => {
-      console.log('Browser history popstate event triggered (back or forward)');
+    const originalScrollTo = window.scrollTo;
+    const originalScroll = window.scroll;
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    const originalFocus = HTMLElement.prototype.focus;
+
+    window.scrollTo = function (...args) {
+      return originalScrollTo.apply(window, args);
     };
+
+    window.scroll = function (...args) {
+      return originalScroll.apply(window, args);
+    };
+
+    Element.prototype.scrollIntoView = function (...args) {
+      return originalScrollIntoView.apply(this, args);
+    };
+
+    HTMLElement.prototype.focus = function (...args) {
+      return originalFocus.apply(this, args);
+    };
+
+    return () => {
+      window.scrollTo = originalScrollTo;
+      window.scroll = originalScroll;
+      Element.prototype.scrollIntoView = originalScrollIntoView;
+      HTMLElement.prototype.focus = originalFocus;
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {};
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-useEffect(() => {
-  const debugScroll = () => {
-    console.log("GLOBAL scroll position:", window.scrollY);
-  };
 
-  window.addEventListener("scroll", debugScroll);
+  useEffect(() => {
+    const debugScroll = () => {};
 
-  return () => window.removeEventListener("scroll", debugScroll);
-}, []);
+    window.addEventListener("scroll", debugScroll);
 
-useEffect(() => {
-  const logNow = (label) => {
-    console.log(label, window.scrollY);
-  };
+    return () => window.removeEventListener("scroll", debugScroll);
+  }, []);
 
-  logNow("APP immediate scrollY:");
+  useEffect(() => {
+    const logNow = () => {};
 
-  requestAnimationFrame(() => {
-    logNow("APP rAF 1 scrollY:");
-  });
+    logNow();
 
-  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      logNow("APP rAF 2 scrollY:");
+      logNow();
     });
-  });
 
-  window.addEventListener("load", () => logNow("WINDOW load scrollY:"));
-  window.addEventListener("pageshow", () => logNow("WINDOW pageshow scrollY:"));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        logNow();
+      });
+    });
 
-  setTimeout(() => logNow("APP 100ms scrollY:"), 100);
-  setTimeout(() => logNow("APP 500ms scrollY:"), 500);
-  setTimeout(() => logNow("APP 1000ms scrollY:"), 1000);
-}, []);
+    window.addEventListener("load", () => logNow());
+    window.addEventListener("pageshow", () => logNow());
+
+    setTimeout(() => logNow(), 100);
+    setTimeout(() => logNow(), 500);
+    setTimeout(() => logNow(), 1000);
+  }, []);
+
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
