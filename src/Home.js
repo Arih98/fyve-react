@@ -238,6 +238,7 @@ const Home = () => {
   Shop Collection
   <img src="/assets/FYVE-Arrow-Icon-White.svg" alt="" />
 </a>
+</div>
 
           <div className="section1-right">
             <div className="section1-image-stack">
