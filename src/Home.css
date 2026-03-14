@@ -350,8 +350,10 @@
 
 .section1-overlay-text {
   order: 1;
-  font-size: 7vw;
+  font-size: 9vw;
   line-height: 0.95;
+  width: 92%;
+  margin-left: auto;
 }
 
 .section1-right {
