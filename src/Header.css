@@ -52,8 +52,8 @@ body.locked {
   align-items: center;
   padding-top: 30px !important;
   padding-bottom: 30px !important;
-  padding-right: 35px !important;
-  padding-left: 35px !important;
+  padding-right: 50px !important;
+  padding-left: 50px !important;
   background-color: #F1DBD1;
   background-image: none;
   z-index: 10002;
