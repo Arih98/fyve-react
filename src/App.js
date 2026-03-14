@@ -52,7 +52,45 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+useEffect(() => {
+  const originalScrollTo = window.scrollTo;
+  const originalScroll = window.scroll;
+  const originalScrollIntoView = Element.prototype.scrollIntoView;
+  const originalFocus = HTMLElement.prototype.focus;
 
+  window.scrollTo = function (...args) {
+    console.log("DEBUG window.scrollTo called with:", args);
+    console.trace("window.scrollTo stack");
+    return originalScrollTo.apply(window, args);
+  };
+
+  window.scroll = function (...args) {
+    console.log("DEBUG window.scroll called with:", args);
+    console.trace("window.scroll stack");
+    return originalScroll.apply(window, args);
+  };
+
+  Element.prototype.scrollIntoView = function (...args) {
+    console.log("DEBUG scrollIntoView called on:", this);
+    console.log("DEBUG scrollIntoView args:", args);
+    console.trace("scrollIntoView stack");
+    return originalScrollIntoView.apply(this, args);
+  };
+
+  HTMLElement.prototype.focus = function (...args) {
+    console.log("DEBUG focus called on:", this);
+    console.log("DEBUG focus args:", args);
+    console.trace("focus stack");
+    return originalFocus.apply(this, args);
+  };
+
+  return () => {
+    window.scrollTo = originalScrollTo;
+    window.scroll = originalScroll;
+    Element.prototype.scrollIntoView = originalScrollIntoView;
+    HTMLElement.prototype.focus = originalFocus;
+  };
+}, []);
   useEffect(() => {
     const handlePopState = () => {
       console.log('Browser history popstate event triggered (back or forward)');
