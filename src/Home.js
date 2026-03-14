@@ -237,7 +237,7 @@ const Home = () => {
 
     <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
       Shop Collection
-      <img src="/assets/FYVE-Arrow-Icon-White.svg" alt="" />
+      <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
     </a>
   </div>
 </div>
