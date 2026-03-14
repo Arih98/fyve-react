@@ -39,6 +39,11 @@ if (navigationType === 'POP') {
     return;
   }
 
+  if (location.pathname === '/') {
+    window.scrollTo(0, 0);
+    return;
+  }
+
   const savedY = scrollPositions.get(pageKey) ?? 0;
   window.scrollTo(0, savedY);
   return;
