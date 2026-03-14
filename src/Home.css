@@ -356,20 +356,24 @@
 
 .section1-right {
   order: 2;
-  display: flex;
-  justify-content: center;
+  width: 100%;
+}
+
+.section1-img-main {
+  width: 72%;
+  margin-left: auto;
+  display: block;
 }
 
 .section1-image-stack {
   position: relative;
-  width: 70vw;
-  margin: 0 auto;
-  transform: translateX(3.2vw);
+  width: 100%;
 }
 
 .section1-img-overlay-wrap {
-  width: 45%;
-  left: -8%;
+  position: absolute;
+  width: 42%;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
 }
