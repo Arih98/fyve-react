@@ -290,11 +290,12 @@
 
 .section2-title {
   position: absolute;
-  top: -2.2vw;
+  top: -15.2vw;
   left: 50%;
   transform: translateX(-50%);
-  font-family: "ArizonaFlare", sans-serif;
-  font-size: 7vw;
+  font-family: Quasimoda, sans-serif;
+  font-weight: 400;
+  font-size: 41vw;
   line-height: 0.85;
   color: #fff;
   text-align: center;
