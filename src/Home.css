@@ -699,7 +699,7 @@
 
   .lottie-container {
     align-items: center;
-    top: -75px;
+    top: -85px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -714,7 +714,7 @@
   .london-below {
     color: #fff;
     font-family: Quasimoda, sans-serif;
-    font-size: 3.8vw;
+    font-size: 4vw;
     margin-top: -110px;
   }
 }
