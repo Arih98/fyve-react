@@ -261,18 +261,20 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
 
     <div className="section1-right">
       <div className="section1-image-stack">
-<img
-  src="/assets/home/fyve-girls-british-dress.webp"
-  alt="Modern British children's fashion by Fyve London"
-  className="section1-img-main"
-/>
+  <img
+    src="/assets/home/fyve-girls-british-dress.webp"
+    alt="Modern British children's fashion by Fyve London"
+    className="section1-img-main"
+  />
 
-<img
-  src="/assets/home/fyve-detail-british-childrens-fashion.webp"
-  alt="Detail of premium children's clothing by Fyve London"
-  className="section1-img-overlay"
-/>
-      </div>
+  <div className="section1-img-overlay-wrap">
+    <img
+      src="/assets/home/fyve-detail-british-childrens-fashion.webp"
+      alt="Detail of premium children's clothing by Fyve London"
+      className="section1-img-overlay"
+    />
+  </div>
+</div>
     </div>
   </div>
 </div>
