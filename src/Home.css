@@ -175,8 +175,19 @@
   padding: 140px 9% 120px;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+}
+
+.section1-content {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 6vw;
+}
+
+.section1-left {
+  max-width: 36vw;
 }
 
 .section1-overlay-text {
@@ -189,19 +200,46 @@
 
 .section1-shop-button {
   margin-top: 28px;
-  font-family: "quasimoda", Sans-serif;
+  font-family: "Quasimoda", sans-serif;
   font-size: 1.2vw;
   font-weight: 700;
   text-transform: uppercase;
   color: #4A494A;
   text-decoration: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
 }
 
 .section1-shop-button img {
   margin-left: 0.5vw;
   width: 1.5vw;
+}
+
+.section1-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.section1-image-stack {
+  position: relative;
+  width: 34vw;
+}
+
+.section1-img-main {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.section1-img-overlay {
+  position: absolute;
+  width: 50%;
+  height: auto;
+  display: block;
+  right: -8%;
+  bottom: -10%;
+  object-fit: cover;
 }
 
 @media (max-width: 768px) {

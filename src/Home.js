@@ -237,6 +237,8 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
     </div>
 
     <div className="section-1">
+  <div className="section1-content">
+    <div className="section1-left">
       <div className="section1-overlay-text">
         Comfortably<br/>Modern,<br/>Distinctly<br/>British.
       </div>
@@ -246,7 +248,23 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
         <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
       </a>
     </div>
+
+    <div className="section1-right">
+      <div className="section1-image-stack">
+        <img
+          src="/assets/home/fyve-london-british-childrens-fashion-dress.webp"
+          alt="Modern British children's fashion by Fyve London"
+          className="section1-img-main"
+        />
+        <img
+          src="/assets/home/fyve-london-childrens-fashion-detail.webp"
+          alt="Detail of premium children's clothing by Fyve London"
+          className="section1-img-overlay"
+        />
+      </div>
+    </div>
   </div>
+</div>
 );
 };
 
