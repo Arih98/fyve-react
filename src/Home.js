@@ -39,6 +39,16 @@ const Home = () => {
   }, [inView]);
 
   useEffect(() => {
+console.log("HOME mounted");
+console.log("HOME initial scrollY:", window.scrollY);
+
+setTimeout(() => {
+  console.log("HOME scrollY after 100ms:", window.scrollY);
+}, 100);
+
+setTimeout(() => {
+  console.log("HOME scrollY after 500ms:", window.scrollY);
+}, 500);
 
   hasAnimated.current = false;
   introDone.current = false;

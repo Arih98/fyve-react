@@ -61,7 +61,15 @@ function AppContent() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+useEffect(() => {
+  const debugScroll = () => {
+    console.log("GLOBAL scroll position:", window.scrollY);
+  };
 
+  window.addEventListener("scroll", debugScroll);
+
+  return () => window.removeEventListener("scroll", debugScroll);
+}, []);
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>

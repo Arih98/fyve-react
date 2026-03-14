@@ -15,7 +15,10 @@ export default function ScrollManager() {
 
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
-
+console.log("SCROLL MANAGER triggered");
+console.log("pathname:", location.pathname);
+console.log("navigationType:", navigationType);
+console.log("scroll before manager:", window.scrollY);
     const saveScroll = () => {
       scrollPositions.set(pageKey, window.scrollY || 0);
     };
@@ -31,20 +34,25 @@ export default function ScrollManager() {
   useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
-    if (location.pathname === '/') {
-      window.scrollTo(0, 0);
-      return;
-    }
+if (location.pathname === '/') {
+  console.log("Homepage detected, forcing scroll to top");
+  console.log("scroll before homepage top force:", window.scrollY);
+  window.scrollTo(0, 0);
+  console.log("scroll after homepage top force:", window.scrollY);
+  return;
+}
 
     if (navigationType === 'POP') {
       const isMobileProductsPage =
         location.pathname === '/products' && window.innerWidth <= 768;
-
+console.log("POP navigation detected");
+console.log("saved scroll:", scrollPositions.get(pageKey));
       if (isMobileProductsPage) {
         return;
       }
 
       const savedY = scrollPositions.get(pageKey) ?? 0;
+      console.log("Restoring scroll to:", savedY);
       window.scrollTo(0, savedY);
       return;
     }
@@ -52,7 +60,7 @@ export default function ScrollManager() {
     if (location.state?.fromProductGrid) {
       return;
     }
-
+console.log("Scrolling to top because new navigation");
     window.scrollTo(0, 0);
   }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 
