@@ -210,20 +210,23 @@
 }
 
 .section1-shop-button {
-  margin-top: 28px;
+  margin-top: 32px;
   font-family: "Quasimoda", sans-serif;
-  font-size: 1.2vw;
+  font-size: 0.9vw;
   font-weight: 700;
-  text-transform: uppercase;
-  color: #4A494A;
   text-decoration: none;
+  color: #fff;
+  background: #4A494A;
+  padding: 0.9vw 1.6vw;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
+  gap: 0.6vw;
 }
 
 .section1-shop-button img {
-  margin-left: 0.5vw;
-  width: 1.5vw;
+  width: 0.9vw;
+  height: auto;
 }
 
 .section1-right {
@@ -352,13 +355,13 @@
 }
 
 .section1-shop-button {
-  margin-top: 24px;
-  font-size: 4vw;
+  font-size: 3.8vw;
+  padding: 3vw 6vw;
+  gap: 2vw;
 }
 
 .section1-shop-button img {
-  width: 5vw;
-  margin-left: 8px;
+  width: 3.5vw;
 }
 
 .section1-right {

@@ -234,11 +234,10 @@ const Home = () => {
     Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
   </p>
 
-  <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
-    SHOP NOW
-    <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
-  </a>
-</div>
+<a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+  Shop Collection
+  <img src="/assets/FYVE-Arrow-Icon-White.svg" alt="" />
+</a>
 
           <div className="section1-right">
             <div className="section1-image-stack">
