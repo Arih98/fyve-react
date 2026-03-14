@@ -37,7 +37,25 @@ console.log("scroll before manager:", window.scrollY);
 if (location.pathname === '/') {
   console.log("Homepage detected, forcing scroll to top");
   console.log("scroll before homepage top force:", window.scrollY);
+
   window.scrollTo(0, 0);
+
+  requestAnimationFrame(() => {
+    console.log("Homepage rAF 1 before force:", window.scrollY);
+    window.scrollTo(0, 0);
+
+    requestAnimationFrame(() => {
+      console.log("Homepage rAF 2 before force:", window.scrollY);
+      window.scrollTo(0, 0);
+
+      setTimeout(() => {
+        console.log("Homepage timeout 300ms before force:", window.scrollY);
+        window.scrollTo(0, 0);
+        console.log("Homepage timeout 300ms after force:", window.scrollY);
+      }, 300);
+    });
+  });
+
   console.log("scroll after homepage top force:", window.scrollY);
   return;
 }

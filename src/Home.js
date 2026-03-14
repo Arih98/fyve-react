@@ -96,19 +96,21 @@ gsap.to(".section1-img-overlay-wrap", {
     let rotation = 0;
     const stamp = document.querySelector('.section1-stamp');
 
-    Observer.create({
-      type: "wheel,touch,scroll",
-      onDown: () => {
-        rotation -= 5;
-        gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-      },
-      onUp: () => {
-        rotation += 5;
-        gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
-      },
-      tolerance: 10,
-      preventDefault: false
-    });
+if (stamp) {
+  Observer.create({
+    type: "wheel,touch,scroll",
+    onDown: () => {
+      rotation -= 5;
+      gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+    },
+    onUp: () => {
+      rotation += 5;
+      gsap.to(stamp, { rotation, duration: 0.1, overwrite: true });
+    },
+    tolerance: 10,
+    preventDefault: false
+  });
+}
 
     const fyveTextY = -1.11;
     const londonX = 1.3;

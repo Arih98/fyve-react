@@ -70,6 +70,31 @@ useEffect(() => {
 
   return () => window.removeEventListener("scroll", debugScroll);
 }, []);
+
+useEffect(() => {
+  const logNow = (label) => {
+    console.log(label, window.scrollY);
+  };
+
+  logNow("APP immediate scrollY:");
+
+  requestAnimationFrame(() => {
+    logNow("APP rAF 1 scrollY:");
+  });
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      logNow("APP rAF 2 scrollY:");
+    });
+  });
+
+  window.addEventListener("load", () => logNow("WINDOW load scrollY:"));
+  window.addEventListener("pageshow", () => logNow("WINDOW pageshow scrollY:"));
+
+  setTimeout(() => logNow("APP 100ms scrollY:"), 100);
+  setTimeout(() => logNow("APP 500ms scrollY:"), 500);
+  setTimeout(() => logNow("APP 1000ms scrollY:"), 1000);
+}, []);
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
