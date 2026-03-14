@@ -359,23 +359,33 @@
   width: 100%;
 }
 
-.section1-img-main {
-  width: 72%;
-  margin-left: auto;
-  display: block;
-}
-
 .section1-image-stack {
   position: relative;
   width: 100%;
+  min-height: 92vw;
+}
+
+.section1-img-main {
+  width: 72%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  object-fit: cover;
 }
 
 .section1-img-overlay-wrap {
   position: absolute;
-  width: 42%;
   left: 0;
   top: 50%;
+  width: 42%;
   transform: translateY(-50%);
+}
+
+.section1-img-overlay {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
 }
 
 .section1-bottom-content {
