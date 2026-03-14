@@ -321,16 +321,14 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
         </div>
       </div>
       <div className="section-1">
-  <div className="section1-inner">
-    <div className="section1-overlay-text">
-      Comfortably<br/>Modern,<br/>Distinctly<br/>British.
-    </div>
-
-    <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
-      SHOP NOW
-      <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
-    </a>
+  <div className="section1-overlay-text">
+    Comfortably<br/>Modern,<br/>Distinctly<br/>British.
   </div>
+
+  <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+    SHOP NOW
+    <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
+  </a>
 </div>
       <div className="section-2">
         <div className="section2-overlay-text">SS25</div>
