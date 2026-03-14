@@ -197,6 +197,7 @@
   font-weight: 700;
   line-height: 0.9em;
   letter-spacing: -0.4px;
+  max-width: 12ch;
 }
 
 .section1-body-text {
@@ -352,7 +353,7 @@
   order: 2;
   font-size: 9vw;
   line-height: 0.95;
-  width: 100%;
+  max-width: 16ch;
 }
 
 .section1-right {
