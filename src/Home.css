@@ -302,13 +302,12 @@
 
 .section2-right {
   position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .section2-text {
@@ -486,13 +485,12 @@
 }
 
 .section2-right {
-  position: absolute;
+  right: 0;
   left: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+  top: auto;
+  bottom: 40px;
+  transform: none;
+  align-items: flex-end;
 }
 
 .section2-text {
