@@ -262,7 +262,6 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
   alt="Detail of premium children's clothing by Fyve London"
   className="section1-img-overlay"
 />
-        />
       </div>
     </div>
   </div>

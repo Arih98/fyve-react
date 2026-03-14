@@ -237,8 +237,9 @@
   width: 50%;
   height: auto;
   display: block;
-  right: -8%;
-  bottom: -10%;
+  left: -25%;
+  top: 50%;
+  transform: translateY(-50%);
   object-fit: cover;
 }
 
