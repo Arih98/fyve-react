@@ -290,14 +290,15 @@
 
 .section2-title {
   position: absolute;
-  top: 0;
+  top: clamp(-28px, -2.4vw, -10px);
   left: 50%;
   transform: translateX(-50%);
   font-family: "ArizonaFlare", sans-serif;
-  font-size: 7vw;
-  line-height: 0.9;
+  font-size: clamp(64px, 7vw, 140px);
+  line-height: 0.85;
   color: #fff;
   text-align: center;
+  white-space: nowrap;
 }
 
 .section2-right {
