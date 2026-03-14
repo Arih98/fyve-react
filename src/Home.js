@@ -265,6 +265,7 @@ gsap.to('.mobile-header, .home-mobile-top-logo', {
     </div>
   </div>
 </div>
+</div>
 );
 };
 
