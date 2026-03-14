@@ -217,7 +217,7 @@
   text-decoration: none;
   color: #fff;
   background: #4A494A;
-  padding: 0.9vw 1.8vw;
+  padding: 1vw 1.8vw;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -225,7 +225,7 @@
 }
 
 .section1-shop-button img {
-  width: 1.1vw;
+  width: 1.3vw;
   height: auto;
 }
 
