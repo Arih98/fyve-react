@@ -172,7 +172,7 @@
   width: 100%;
   height: 100dvh;
   background: #fff;
-  padding: 60px 9%;
+  padding: 60px 7%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -275,7 +275,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 60px 9%;
+  padding: 60px 7%;
   box-sizing: border-box;
   position: relative;
   display: flex;
