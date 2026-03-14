@@ -164,16 +164,19 @@
 
 .lottie-container > * {
   width: 100%;
-  min-height: 100dvh;
-  background: #fff;
-  padding: 140px 9% 120px;
-  box-sizing: border-box;
+  height: 100%;
+  object-fit: contain;
 }
 
 .section-1 {
   width: 100%;
+  min-height: 100dvh;
+  background: #fff;
   padding: 140px 9% 120px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .section1-overlay-text {
