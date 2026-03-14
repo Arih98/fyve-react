@@ -377,7 +377,7 @@
 
 .section1-img-overlay-wrap {
   position: absolute;
-  left: 0;
+  right: 0;
   top: 70%;
   width: 42%;
   transform: translateY(-50%);
