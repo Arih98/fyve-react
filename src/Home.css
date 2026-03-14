@@ -706,7 +706,7 @@
     left: 50%;
     position: absolute;
     transform: translate(-50%, 0px);
-    width: 92%;
+    width: 90%;
     padding: 0;
     z-index: 2;
   }
