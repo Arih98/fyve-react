@@ -349,13 +349,6 @@
   display: contents;
 }
 
-.section1-overlay-text {
-  order: 2;
-  font-size: 9vw;
-  line-height: 0.95;
-  max-width: 16ch;
-}
-
 .section1-right {
   order: 1;
   width: 100%;
@@ -396,11 +389,18 @@
   flex-direction: column;
 }
 
+.section1-overlay-text {
+  order: 2;
+  font-size: 9vw;
+  line-height: 1;
+  max-width: 16ch;
+}
+
 .section1-body-text {
   max-width: 100%;
   font-size: 4.2vw;
   line-height: 1.5;
-  margin-top: 0;
+  margin-top: -20px;
 }
 
 .section1-shop-button {
