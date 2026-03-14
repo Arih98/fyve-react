@@ -349,14 +349,14 @@
 }
 
 .section1-overlay-text {
-  order: 1;
+  order: 2;
   font-size: 9vw;
   line-height: 0.95;
   width: 100%;
 }
 
 .section1-right {
-  order: 2;
+  order: 1;
   width: 100%;
 }
 
