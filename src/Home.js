@@ -230,14 +230,16 @@ const Home = () => {
     Comfortably<br/>Modern,<br/>Distinctly<br/>British.
   </div>
 
-  <p className="section1-body-text">
-    Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
-  </p>
+  <div className="section1-bottom-content">
+    <p className="section1-body-text">
+      Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
+    </p>
 
-<a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
-  Shop Collection
-  <img src="/assets/FYVE-Arrow-Icon-White.svg" alt="" />
-</a>
+    <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+      Shop Collection
+      <img src="/assets/FYVE-Arrow-Icon-White.svg" alt="" />
+    </a>
+  </div>
 </div>
 
           <div className="section1-right">
