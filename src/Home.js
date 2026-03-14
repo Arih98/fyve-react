@@ -42,16 +42,18 @@ const Home = () => {
     const intermediateWidth = isMobile ? '30vw' : '18vw';
 
     const ctx = gsap.context(() => {
-      gsap.to(".section1-img-overlay-wrap", {
-        y: -150,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".section-1",
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true
-        }
-      });
+const isMobile = window.innerWidth <= 768;
+
+gsap.to(".section1-img-overlay-wrap", {
+  y: -150,
+  ease: "none",
+  scrollTrigger: {
+    trigger: ".section-1",
+    start: isMobile ? "top 75%" : "top bottom",
+    end: "bottom top",
+    scrub: true
+  }
+});
 
       gsap.set('.london-mask', { visibility: 'visible' });
       const londonMask = document.querySelector('.london-mask');
