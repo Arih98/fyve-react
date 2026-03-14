@@ -232,15 +232,15 @@
   object-fit: cover;
 }
 
-.section1-img-overlay {
-  position: absolute;
-  width: 50%;
-  height: auto;
-  display: block;
-  left: -25%;
-  top: 50%;
-  transform: translateY(-50%);
-  object-fit: cover;
+.section-1 {
+  width: 100%;
+  height: 100dvh;
+  background: #fff;
+  padding: 60px 9%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
