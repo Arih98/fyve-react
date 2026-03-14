@@ -364,6 +364,7 @@
   position: relative;
   width: 80vw;
   margin: 0 auto;
+  transform: translateX(3.2vw);
 }
 
 .section1-img-overlay-wrap {
