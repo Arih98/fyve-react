@@ -63,7 +63,7 @@ const Home = () => {
 
   const ctx = gsap.context(() => {
 gsap.to(".section1-img-overlay-wrap", {
-  y: -60,
+  y: -120,
   ease: "none",
   scrollTrigger: {
     trigger: ".section-1",
