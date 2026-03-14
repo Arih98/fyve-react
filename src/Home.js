@@ -226,15 +226,19 @@ const Home = () => {
       <div className="section-1">
         <div className="section1-content">
           <div className="section1-left">
-            <div className="section1-overlay-text">
-              Comfortably<br/>Modern,<br/>Distinctly<br/>British.
-            </div>
+  <div className="section1-overlay-text">
+    Comfortably<br/>Modern,<br/>Distinctly<br/>British.
+  </div>
 
-            <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
-              SHOP NOW
-              <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
-            </a>
-          </div>
+  <p className="section1-body-text">
+    Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
+  </p>
+
+  <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+    SHOP NOW
+    <img src="/api/Uploads/FYVE-Arrow-Icon.svg" alt="" />
+  </a>
+</div>
 
           <div className="section1-right">
             <div className="section1-image-stack">
