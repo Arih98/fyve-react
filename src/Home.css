@@ -480,6 +480,7 @@
   max-height: 100dvh;
   padding: 60px 22px;
   background-position: center;
+  background-image: url('/assets/home/FYVE-SS26-WF767233.webp');
 }
 
 .section2-title {
@@ -488,15 +489,20 @@
 }
 
 .section2-text {
-  left: 0;
-  bottom: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   font-size: 10vw;
   line-height: 0.95;
   max-width: 9ch;
+  text-align: center;
 }
 
 .section2-shop-button {
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 18vw);
+  transform: translateX(-50%);
 }
 }
