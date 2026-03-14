@@ -604,7 +604,7 @@
 
   .home-mobile-top-logo img {
     display: block;
-    height: 40px;
+    height: 45px;
     width: auto;
   }
 
@@ -706,7 +706,7 @@
     left: 50%;
     position: absolute;
     transform: translate(-50%, 0px);
-    width: 80%;
+    width: 90%;
     padding: 0;
     z-index: 2;
   }
