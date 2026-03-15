@@ -481,8 +481,8 @@
 }
 
 .section-2 {
-  height: 100dvh;
-  max-height: 100dvh;
+  height: 100vh;
+  max-height: 100vh;
   padding: 60px 22px;
   background-position: center;
   background-image: url('/assets/home/FYVE-SS26-WF767233.webp');
