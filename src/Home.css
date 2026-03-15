@@ -196,7 +196,7 @@
 .section1-overlay-text {
   font-family: "ArizonaFlare", sans-serif;
   font-size: 3.8vw;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 0.9em;
   letter-spacing: -0.4px;
   color: #4A494A;
@@ -548,6 +548,7 @@
   position: static;
   transform: none;
   font-size: 9vw;
+  font-weight: 500;
   line-height: 0.95;
   max-width: 19ch;
   text-align: left;
