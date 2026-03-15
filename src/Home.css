@@ -518,9 +518,16 @@
 }
 
 .section2-title {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  right: 15px;
+  transform: translateY(-8vw);
   font-weight: 200;
-  top: -8vw;
   font-size: 35vw;
+  line-height: 0.85;
+  text-align: center;
+  white-space: nowrap;
   text-shadow: 0 6px 20px rgba(0,0,0,0.35);
 }
 
