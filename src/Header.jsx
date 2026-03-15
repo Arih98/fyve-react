@@ -255,9 +255,8 @@ const handleToggleMenu = () => {
   };
 
   const menuItems = [
-    { id: 'ss25', name: 'SS25', path: '/products?category=ss25', image: '/api/Uploads/LOOK-9_1437_.webp' },
-    { id: 'boys', name: 'BOYS', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
-    { id: 'girls', name: 'GIRLS', path: '/products?category=girls', image: '/api/Uploads/LOOK-9_1416.webp' },
+    { id: 'boy', name: 'BOY', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
+    { id: 'girl', name: 'GIRL', path: '/products?category=girls', image: '/api/Uploads/LOOK-9_1416.webp' },
     { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
     { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
     { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
