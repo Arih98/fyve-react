@@ -489,20 +489,20 @@
 }
 
 .section2-title {
+  font-weight: 300;
   top: -26vw;
   font-size: 38vw;
 }
 
 .section2-mobile-content {
   position: absolute;
-  left: 50%;
-  bottom: 30px;
-  transform: translateX(-50%);
+  left: 22px;
+  right: 22px;
+  bottom: 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  width: calc(100% - 44px);
 }
 
 .section2-text {
