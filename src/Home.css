@@ -305,6 +305,11 @@
   white-space: nowrap;
 }
 
+.section2-mobile-content {
+  width: 100%;
+  height: 100%;
+}
+
 .section2-text {
   position: absolute;
   left: 0;
@@ -488,11 +493,21 @@
   font-size: 38vw;
 }
 
-.section2-text {
+.section2-mobile-content {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.section2-text {
+  position: static;
+  transform: none;
   font-size: 10vw;
   line-height: 0.95;
   max-width: 9ch;
@@ -500,12 +515,11 @@
 }
 
 .section2-shop-button {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + 18vw);
-  transform: translateX(-50%);
+  position: static;
+  transform: none;
+  margin-top: 0;
   width: max-content;
   white-space: nowrap;
-  align-self: auto;
+  align-self: center;
 }
 }
