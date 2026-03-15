@@ -411,7 +411,7 @@
 .section-1 {
   height: auto;
   min-height: 100dvh;
-  padding: 60px 17px;
+  padding: 60px 15px;
 }
 
 .section1-content {
@@ -495,7 +495,7 @@
 .section-2 {
   height: 100vh;
   max-height: 100vh;
-  padding: 60px 17px;
+  padding: 60px 15px;
   background: #fff;
 }
 
