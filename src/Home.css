@@ -496,12 +496,15 @@
   height: 100vh;
   max-height: 100vh;
   padding: 60px 15px;
+  padding-top: 0;
   background: #fff;
 }
 
 .section2-bg-picture {
   position: absolute;
-  inset: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
   display: block;
 }
 
@@ -516,7 +519,7 @@
 
 .section2-title {
   font-weight: 200;
-  top: -22vw;
+  top: -12vw;
   font-size: 35vw;
   text-shadow: 0 6px 20px rgba(0,0,0,0.35);
 }
