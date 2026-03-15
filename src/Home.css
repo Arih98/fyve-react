@@ -518,6 +518,7 @@
   font-weight: 200;
   top: -22vw;
   font-size: 35vw;
+  text-shadow: 0 6px 20px rgba(0,0,0,0.35);
 }
 
 .section2-mobile-content {
@@ -540,6 +541,7 @@
   line-height: 0.95;
   max-width: 19ch;
   text-align: left;
+  text-shadow: 0 4px 14px rgba(0,0,0,0.35);
 }
 
 .section2-shop-button {
