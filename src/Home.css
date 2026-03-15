@@ -496,8 +496,8 @@
 
 .section2-mobile-content {
   position: absolute;
-  left: 22px;
-  right: 22px;
+  left: 0;
+  right: 0;
   bottom: 22px;
   height: auto;
   width: auto;
@@ -512,7 +512,7 @@
   transform: none;
   font-size: 10vw;
   line-height: 0.95;
-  max-width: 9ch;
+  max-width: 19ch;
   text-align: left;
 }
 
@@ -522,6 +522,6 @@
   margin-top: 0;
   width: max-content;
   white-space: nowrap;
-  align-self: center;
+  align-self: flex-start;
 }
 }
