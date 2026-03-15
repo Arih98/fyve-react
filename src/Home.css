@@ -469,7 +469,7 @@
   order: 2;
   font-size: 9vw;
   line-height: 1.1;
-  max-width: 16ch;
+  max-width: 20ch;
 }
 
 .section1-body-text {
@@ -533,8 +533,8 @@
 
 .section2-mobile-content {
   position: absolute;
-  left: 30px;
-  right: 45px;
+  left: 27px;
+  right: 27px;
   bottom: 22px;
   height: auto;
   width: auto;
