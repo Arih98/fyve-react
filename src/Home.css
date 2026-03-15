@@ -273,16 +273,28 @@
   width: 100%;
   height: 100dvh;
   max-height: 100dvh;
-  background-image: url('/assets/home/FYVE-SS26-WF7672.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   padding: 60px 7%;
   box-sizing: border-box;
   position: relative;
   display: flex;
   align-items: stretch;
   z-index: 1;
+  background: #fff;
+  overflow: hidden;
+}
+
+.section2-bg-picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.section2-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .section2-inner {
@@ -484,8 +496,21 @@
   height: 100vh;
   max-height: 100vh;
   padding: 60px 22px;
-  background-position: center;
-  background-image: url('/assets/home/FYVE-SS26-WF767233.webp');
+  background: #fff;
+}
+
+.section2-bg-picture {
+  position: absolute;
+  inset: 22px;
+  display: block;
+}
+
+.section2-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .section2-title {
@@ -505,7 +530,6 @@
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  padding: 0 22px;
 }
 
 .section2-text {

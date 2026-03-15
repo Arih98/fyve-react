@@ -264,6 +264,15 @@ gsap.to(".section1-img-overlay-wrap", {
         </div>
       </div>
 <div className="section-2">
+  <picture className="section2-bg-picture">
+  <source media="(max-width: 768px)" srcSet="/assets/home/FYVE-SS26-WF767233.webp" />
+  <img
+    src="/assets/home/FYVE-SS26-WF7672.webp"
+    alt=""
+    className="section2-bg-image"
+  />
+</picture>
+
   <div className="section2-inner">
     <div className="section2-title">SS26</div>
 
