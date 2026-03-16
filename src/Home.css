@@ -387,26 +387,28 @@
     font-size: 2.5vw;
   }
 
-  .lottie-container {
-    align-items: center;
-    top: -110px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    left: 50%;
-    position: absolute;
-    transform: translate(-50%, 0px);
-    width: 90%;
-    padding: 0;
-    z-index: 2;
-  }
+.lottie-container {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  top: auto;
+  transform: translateX(-50%);
+  width: 90%;
+  padding: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
 
-  .london-below {
-    color: #fff;
-    font-family: Quasimoda, sans-serif;
-    font-size: 4vw;
-    margin-top: -135px;
-  }
+.london-below {
+  color: #fff;
+  font-family: Quasimoda, sans-serif;
+  font-size: 4vw;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
 
 .section-1 {
   height: auto;

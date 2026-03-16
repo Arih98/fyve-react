@@ -630,7 +630,9 @@ body.locked {
   --nav-bottom-padding: 15px;
   --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
   --mobile-header-total-height: calc(var(--nav-icon-size) + var(--nav-bottom-safe-padding));
-
+  --header-icon-color: #4A494A;
+  
+  background-color: #ffffff !important;
   position: fixed;
   top: auto;
   bottom: 0;
