@@ -35,10 +35,12 @@ const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
   !delayTransparentHeader &&
   !(menuState === 'closing' && !isMobile && isHomePage && !isScrolled && !isSearchOpen);
-const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
-const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
-const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
-const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+const useWhiteHeaderIcons = useTransparentHomeHeader && !isMobile;
+
+const logoSrc = useWhiteHeaderIcons ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
+const searchIconSrc = useWhiteHeaderIcons ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
+const accountIconSrc = useWhiteHeaderIcons ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
+const bagIconSrc = useWhiteHeaderIcons ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
 
 useEffect(() => {
   const handleHeaderThemeScroll = () => {
