@@ -11,6 +11,7 @@ gsap.registerPlugin(Observer, ScrollTrigger);
 
 const Home = () => {
   const lottieRef = useRef();
+  const heroRef = useRef(null);
   const hasAnimated = useRef(false);
   const introDone = useRef(false);
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
@@ -65,6 +66,7 @@ const Home = () => {
     const isMobile = window.innerWidth <= 768;
     const finalHeight = isMobile ? '94vh' : '100vh';
     const intermediateWidth = isMobile ? '30vw' : '18vw';
+    const mobileHeaderEl = document.querySelector('.mobile-header');
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
@@ -128,7 +130,8 @@ gsap.to(".section1-img-overlay", {
         gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
         gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
         gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
-        gsap.set('.mobile-header, .home-mobile-top-logo', { opacity: 1 });
+        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
+gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
         gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
@@ -155,13 +158,23 @@ gsap.to(".section1-img-overlay", {
         gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-        gsap.set('.mobile-header, .home-mobile-top-logo', { opacity: 0 });
-        gsap.to('.mobile-header, .home-mobile-top-logo', {
-          opacity: 1,
-          duration: 0.5,
-          ease: 'expo.inOut',
-          delay: 2.8
-        });
+        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
+gsap.set('.home-mobile-top-logo', { opacity: 0 });
+if (mobileHeaderEl) {
+  gsap.to(mobileHeaderEl, {
+    opacity: 1,
+    duration: 0.5,
+    ease: 'expo.inOut',
+    delay: 2.8
+  });
+}
+
+gsap.to('.home-mobile-top-logo', {
+  opacity: 1,
+  duration: 0.5,
+  ease: 'expo.inOut',
+  delay: 2.8
+});
         gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
         gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
@@ -184,7 +197,7 @@ gsap.to(".section1-img-overlay", {
           }
         });
       }
-    });
+    }, heroRef);
 
     requestAnimationFrame(() => {
       ScrollTrigger.refresh();
@@ -214,52 +227,54 @@ gsap.to(".section1-img-overlay", {
         }}
       />
       <div className="fyve-hero-section">
-  <div className="fyve-hero-viewport">
-    <div className="fyve-wrapper">
-  <div className="fyve-overlay-layer">
-    <div className="home-mobile-top-logo">
-      <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
-    </div>
+  <div ref={ref} className="fyve-hero-viewport">
+    <div ref={heroRef} className="fyve-animation-stage">
+      <div className="fyve-brand-layer">
+        <div className="fyve-mask">
+          <div className="fyve-text">
+            {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+          </div>
+          <div className="fyve-image-container">
+            <picture>
+              <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+              <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+            </picture>
 
-    <div ref={ref} className="lottie-container">
-      <Lottie 
-        lottieRef={lottieRef}
-        animationData={FYVEHeroLottie} 
-        loop={false} 
-        autoplay={false} 
-        style={{ width: '100%', height: '100%' }} 
-      />
-      <div className="london-below">LONDON</div>
-    </div>
-  </div>
+            <div className="mask-left"></div>
+            <div className="mask-right"></div>
+          </div>
+          <div className="fyve-text">
+            {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
+          </div>
+        </div>
 
-  <div className="fyve-mask">
-    <div className="fyve-text">
-      {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
-    </div>
-    <div className="fyve-image-container">
-      <picture>
-        <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-        <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-      </picture>
+        <div className="london-mask">
+          <div className="london-text">
+            {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
+          </div>
+          <div className="london-text">
+            {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
+          </div>
+        </div>
+      </div>
 
-      <div className="mask-left"></div>
-      <div className="mask-right"></div>
-    </div>
-    <div className="fyve-text">
-      {'VE'.split('').map((l, i) => <span key={i+2} className="fyve-letter">{l}</span>)}
-    </div>
-  </div>
+      <div className="fyve-ui-layer">
+        <div className="home-mobile-top-logo">
+          <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
+        </div>
 
-  <div className="london-mask">
-    <div className="london-text">
-      {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
+        <div className="lottie-container">
+          <Lottie
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie}
+            loop={false}
+            autoplay={false}
+            style={{ width: '100%', height: '100%' }}
+          />
+          <div className="london-below">LONDON</div>
+        </div>
+      </div>
     </div>
-    <div className="london-text">
-      {'DON'.split('').map((l, i) => <span key={i+3} className="london-letter">{l}</span>)}
-    </div>
-  </div>
-</div>
   </div>
 </div>
 

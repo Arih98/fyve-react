@@ -38,23 +38,37 @@
   overflow: hidden;
 }
 
-.fyve-wrapper {
+.fyve-animation-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+.fyve-brand-layer {
   position: absolute;
   inset: 0;
-  height: 100vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
+  z-index: 1;
 }
 
-.fyve-overlay-layer {
+.fyve-ui-layer {
   position: absolute;
   inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   z-index: 3;
   pointer-events: none;
+  padding-top: 30px;
+  padding-bottom: 0;
 }
 
 .fyve-mask {
@@ -170,17 +184,14 @@
 }
 
 .lottie-container {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
   width: calc(100% - 60px);
   z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 30px 0;
+  margin-top: auto;
 }
 
 .lottie-container > * {
@@ -365,16 +376,6 @@
 
 @media (max-width: 768px) {
 
-.home-mobile-top-logo {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: block;
-  opacity: 0;
-}
-
   .home-mobile-top-logo img {
     display: block;
     height: 45px;
@@ -395,27 +396,6 @@
     object-position: center;
   }
 
-.fyve-hero-section {
-  height: 76vh;
-}
-
-.fyve-hero-viewport {
-  height: 76vh;
-}
-
-.fyve-wrapper {
-  top: 50%;
-  bottom: auto;
-  left: 0;
-  right: 0;
-  height: 94vh;
-  transform: translateY(-50%);
-}
-
-.fyve-overlay-layer {
-  transform: translateY(4vh);
-}
-
   .fyve-text {
     font-size: 25vw;
   }
@@ -424,19 +404,50 @@
     font-size: 2.5vw;
   }
 
-.lottie-container {
+  .fyve-hero-section {
+  height: 76vh;
+}
+
+.fyve-hero-viewport {
+  height: 76vh;
+}
+
+.fyve-animation-stage {
+  height: 94vh;
+}
+
+.fyve-ui-layer {
+  padding-top: 30px;
+  padding-bottom: 24px;
+}
+
+.fyve-animation-stage {
+  height: 94vh;
+  width: 100%;
+}
+
+.home-mobile-top-logo {
   position: absolute;
+  top: 0;
   left: 50%;
-  bottom: 0;
-  top: auto;
   transform: translateX(-50%);
+  z-index: 20;
+  display: block;
+  opacity: 0;
+}
+
+.home-mobile-top-logo img {
+  display: block;
+  height: 45px;
+  width: auto;
+}
+
+.lottie-container {
   width: 90%;
   padding: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .london-below {
