@@ -449,7 +449,7 @@
   left: 0;
   top: 20%;
   width: 42%;
-  transform: translateY(-50%);
+  overflow: visible;
 }
 
 .section1-img-overlay {
@@ -457,6 +457,7 @@
   height: auto;
   display: block;
   object-fit: cover;
+  will-change: transform;
 }
 
 .section1-bottom-content {

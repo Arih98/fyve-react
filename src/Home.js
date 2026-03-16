@@ -17,6 +17,21 @@ const Home = () => {
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
 
+  useEffect(() => {
+    if (lottieRef.current) {
+      if (inView) {
+        if (introDone.current) {
+          lottieRef.current.play();
+          setTimeout(() => {
+            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+          }, londonFadeDelay);
+        }
+      } else {
+        lottieRef.current.goToAndStop(0, true);
+        gsap.set('.london-below', { opacity: 0 });
+      }
+    }
+  }, [inView]);
 
     useEffect(() => {
     const refreshScroll = () => {
@@ -44,22 +59,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (lottieRef.current) {
-      if (inView) {
-        if (introDone.current) {
-          lottieRef.current.play();
-          setTimeout(() => {
-            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-          }, londonFadeDelay);
-        }
-      } else {
-        lottieRef.current.goToAndStop(0, true);
-        gsap.set('.london-below', { opacity: 0 });
-      }
-    }
-  }, [inView]);
-
-  useEffect(() => {
     hasAnimated.current = false;
     introDone.current = false;
 
@@ -70,14 +69,15 @@ const Home = () => {
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
 
-gsap.to(".section1-img-overlay-wrap", {
+gsap.to(".section1-img-overlay", {
   y: -150,
   ease: "none",
   scrollTrigger: {
     trigger: ".section-1",
     start: isMobile ? "top 75%" : "top bottom",
     end: "bottom top",
-    scrub: true
+    scrub: true,
+    invalidateOnRefresh: true
   }
 });
 
@@ -184,10 +184,12 @@ gsap.to(".section1-img-overlay-wrap", {
         });
       }
     });
+
     requestAnimationFrame(() => {
       ScrollTrigger.refresh();
       setTimeout(() => ScrollTrigger.refresh(), 250);
     });
+
     hasAnimated.current = true;
 
     return () => ctx.revert();
