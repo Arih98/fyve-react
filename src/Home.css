@@ -398,7 +398,12 @@
 }
 
 .fyve-wrapper {
+  top: 50%;
+  bottom: auto;
+  left: 0;
+  right: 0;
   height: 94vh;
+  transform: translateY(-50%);
 }
 
   .fyve-text {
@@ -412,7 +417,7 @@
 .lottie-container {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 4vh;
   top: auto;
   transform: translateX(-50%);
   width: 90%;
