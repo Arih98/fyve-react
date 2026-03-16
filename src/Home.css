@@ -375,9 +375,10 @@
     object-position: center;
   }
 
-  .fyve-wrapper {
-    height: 80vh;
-  }
+.fyve-wrapper {
+  min-height: 80vh;
+  height: auto;
+}
 
   .fyve-text {
     font-size: 25vw;
