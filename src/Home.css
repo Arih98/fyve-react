@@ -362,7 +362,7 @@
   }
 
   .fyve-image-container {
-    height: 50vw;
+    height: 30vw;
   }
 
   .fyve-image {
@@ -390,7 +390,7 @@
 .lottie-container {
   position: absolute;
   left: 50%;
-  bottom: 40%;
+  bottom: 0;
   top: auto;
   transform: translateX(-50%);
   width: 90%;
