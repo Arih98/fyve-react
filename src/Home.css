@@ -69,6 +69,8 @@
   pointer-events: none;
   padding-top: 30px;
   padding-bottom: 0;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .fyve-mask {
@@ -184,6 +186,7 @@
 }
 
 .lottie-container {
+  position: relative;
   width: calc(100% - 60px);
   z-index: 2;
   display: flex;
@@ -412,10 +415,6 @@
   height: 76vh;
 }
 
-.fyve-animation-stage {
-  height: 94vh;
-}
-
 .fyve-ui-layer {
   padding-top: 30px;
   padding-bottom: 24px;
@@ -428,7 +427,7 @@
 
 .home-mobile-top-logo {
   position: absolute;
-  top: 0;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -444,7 +443,7 @@
 
 .lottie-container {
   width: 90%;
-  padding: 0;
+  padding: 0 0 18px;
   margin-top: auto;
   margin-left: auto;
   margin-right: auto;
