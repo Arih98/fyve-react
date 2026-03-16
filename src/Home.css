@@ -358,16 +358,16 @@
 
 @media (max-width: 768px) {
 
-  .home-mobile-top-logo {
-    position: absolute;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    display: block;
-    pointer-events: none;
-    opacity: 0;
-  }
+.home-mobile-top-logo {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+}
 
   .home-mobile-top-logo img {
     display: block;
@@ -417,7 +417,7 @@
 .lottie-container {
   position: absolute;
   left: 50%;
-  bottom: 4vh;
+  bottom: 10vh;
   top: auto;
   transform: translateX(-50%);
   width: 90%;
