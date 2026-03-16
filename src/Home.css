@@ -375,10 +375,9 @@
     object-position: center;
   }
 
-.fyve-wrapper {
-  height: 72vh;
-  min-height: 0;
-}
+  .fyve-wrapper {
+    height: 94vh;
+  }
 
   .fyve-text {
     font-size: 25vw;
@@ -391,7 +390,7 @@
 .lottie-container {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 40%;
   top: auto;
   transform: translateX(-50%);
   width: 90%;
