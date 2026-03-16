@@ -10,7 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(Observer, ScrollTrigger);
 
 const Home = () => {
-  const lottieRef = useRef();
+const lottieRef = useRef();
 const heroRef = useRef(null);
 const hasAnimated = useRef(false);
 const introDone = useRef(false);
@@ -21,6 +21,32 @@ const setHeroViewportRef = (node) => {
 };
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
+const animationStageRef = useRef(null);
+const fyveMaskRef = useRef(null);
+const fyveTextLeftRef = useRef(null);
+const fyveTextRightRef = useRef(null);
+const fyveLettersRef = useRef([]);
+const fyveImageContainerRef = useRef(null);
+const fyveImageRef = useRef(null);
+const maskLeftRef = useRef(null);
+const maskRightRef = useRef(null);
+const londonMaskRef = useRef(null);
+const londonTextLeftRef = useRef(null);
+const londonTextRightRef = useRef(null);
+const londonLettersRef = useRef([]);
+const mobileLogoRef = useRef(null);
+const lottieContainerRef = useRef(null);
+const londonBelowRef = useRef(null);
+fyveLettersRef.current = [];
+londonLettersRef.current = [];
+
+const addFyveLetterRef = (el) => {
+  if (el && !fyveLettersRef.current.includes(el)) fyveLettersRef.current.push(el);
+};
+
+const addLondonLetterRef = (el) => {
+  if (el && !londonLettersRef.current.includes(el)) londonLettersRef.current.push(el);
+};
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -28,12 +54,12 @@ const londonFadeDelay = animationDuration * 0.3;
         if (introDone.current) {
           lottieRef.current.play();
           setTimeout(() => {
-            gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+            if (londonBelowRef.current) gsap.to(londonBelowRef.current, { opacity: 1, duration: 0.5 });
           }, londonFadeDelay);
         }
       } else {
         lottieRef.current.goToAndStop(0, true);
-        gsap.set('.london-below', { opacity: 0 });
+        if (londonBelowRef.current) gsap.set(londonBelowRef.current, { opacity: 0 });
       }
     }
   }, [inView]);
@@ -74,6 +100,21 @@ const londonFadeDelay = animationDuration * 0.3;
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
+const fyveMaskEl = fyveMaskRef.current;
+const fyveTextLeftEl = fyveTextLeftRef.current;
+const fyveTextRightEl = fyveTextRightRef.current;
+const fyveLettersEls = fyveLettersRef.current;
+const fyveImageContainerEl = fyveImageContainerRef.current;
+const fyveImageEl = fyveImageRef.current;
+const maskLeftEl = maskLeftRef.current;
+const maskRightEl = maskRightRef.current;
+const londonMaskEl = londonMaskRef.current;
+const londonTextLeftEl = londonTextLeftRef.current;
+const londonTextRightEl = londonTextRightRef.current;
+const londonLettersEls = londonLettersRef.current;
+const mobileLogoEl = mobileLogoRef.current;
+const lottieContainerEl = lottieContainerRef.current;
+const londonBelowEl = londonBelowRef.current;
 
 gsap.to(".section1-img-overlay", {
   y: "-12vh",
@@ -88,8 +129,8 @@ gsap.to(".section1-img-overlay", {
   }
 });
 
-      gsap.set('.london-mask', { visibility: 'visible' });
-      const londonMask = document.querySelector('.london-mask');
+      gsap.set(londonMaskEl, { visibility: 'visible' });
+const londonMask = londonMaskEl;
       let londonHeight = 0;
 
       if (londonMask) {
@@ -126,46 +167,54 @@ gsap.to(".section1-img-overlay", {
       const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
 
       if (hasAnimated.current) {
-        gsap.set('.fyve-mask', { visibility: 'visible' });
-        gsap.set('.fyve-image', { visibility: 'visible' });
-        gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
-        gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
-        gsap.set('.fyve-letter', { y: 0 });
-        gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
-        gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-        gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
-        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
-gsap.set('.home-mobile-top-logo', { opacity: 1 });
-        gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
-        gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
-        gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
-        gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center', visibility: 'hidden' });
-        gsap.set('.lottie-container', { opacity: 1 });
-        gsap.set('.london-below', { opacity: 1 });
+        gsap.set(fyveMaskEl, { visibility: 'visible' });
+gsap.set(fyveImageEl, { visibility: 'visible' });
+gsap.set(maskLeftEl, { x: '-100%', transformOrigin: 'left center' });
+gsap.set(maskRightEl, { x: '100%', transformOrigin: 'right center' });
+gsap.set(fyveLettersEls, { y: 0 });
+gsap.set(fyveTextLeftEl, { x: '-100vw', visibility: 'hidden' });
+gsap.set(fyveTextRightEl, { x: '100vw', visibility: 'hidden' });
+gsap.set(fyveImageContainerEl, { width: '100vw', height: finalHeight });
+if (mobileLogoEl) gsap.set(mobileLogoEl, { opacity: 1 });
+gsap.set([fyveTextLeftEl, fyveTextRightEl], { y: `${fyveTextY}vw` });
+gsap.set(londonMaskEl, { x: `${londonX}vw`, y: `${londonY + londonHeight}vw`, marginTop: `-${londonHeight}vw`, visibility: 'visible' });
+gsap.set(londonTextLeftEl, { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
+gsap.set(londonTextRightEl, { x: '100vw', transformOrigin: 'right center', visibility: 'hidden' });
+if (lottieContainerEl) gsap.set(lottieContainerEl, { opacity: 1 });
+if (londonBelowEl) gsap.set(londonBelowEl, { opacity: 1 });
       } else {
-        gsap.set('.fyve-mask', { visibility: 'visible' });
-        gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
-        gsap.set('.fyve-image', { visibility: 'visible' });
-        gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
-        gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
-        gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
-        gsap.set('.lottie-container', { autoAlpha: 0 });
-        gsap.set('.london-below', { opacity: 0 });
-        gsap.fromTo('.fyve-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
-        gsap.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+        gsap.set(fyveMaskEl, { visibility: 'visible' });
+gsap.set(maskLeftEl, { x: '0%', transformOrigin: 'left center' });
+gsap.set(maskRightEl, { x: '0%', transformOrigin: 'right center' });
+gsap.set(fyveImageEl, { visibility: 'visible' });
+gsap.set([fyveTextLeftEl, fyveTextRightEl], { y: `${fyveTextY}vw` });
+gsap.set(londonMaskEl, { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
+gsap.set(londonTextLeftEl, { x: '0%', transformOrigin: 'left center' });
+gsap.set(londonTextRightEl, { x: '0%', transformOrigin: 'right center' });
+if (lottieContainerEl) gsap.set(lottieContainerEl, { autoAlpha: 0 });
+if (londonBelowEl) gsap.set(londonBelowEl, { opacity: 0 });
+        gsap.fromTo(fyveLettersEls, { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
+gsap.to(fyveTextLeftEl, { x: fyveMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(fyveTextRightEl, { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(fyveTextLeftEl, { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set(fyveTextLeftEl, { visibility: 'hidden' }) });
+gsap.to(fyveTextRightEl, { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set(fyveTextRightEl, { visibility: 'hidden' }) });
+gsap.to(fyveImageContainerEl, { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(maskLeftEl, { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(maskRightEl, { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(fyveImageContainerEl, { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
-gsap.set('.home-mobile-top-logo', { opacity: 0 });
-if (mobileHeaderEl) {
-  gsap.to(mobileHeaderEl, {
+
+        gsap.fromTo(londonLettersEls, { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
+gsap.to(londonTextLeftEl, { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(londonTextRightEl, { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+gsap.to(londonTextLeftEl, { x: '-150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set(londonTextLeftEl, { visibility: 'hidden' }) });
+gsap.to(londonTextRightEl, { x: '150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set(londonTextRightEl, { visibility: 'hidden' }) });
+gsap.to(londonMaskEl, { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+        
+if (mobileLogoEl) gsap.set(mobileLogoEl, { opacity: 0 });
+
+if (mobileLogoEl) {
+  gsap.to(mobileLogoEl, {
     opacity: 1,
     duration: 0.5,
     ease: 'expo.inOut',
@@ -173,35 +222,25 @@ if (mobileHeaderEl) {
   });
 }
 
-gsap.to('.home-mobile-top-logo', {
-  opacity: 1,
-  duration: 0.5,
-  ease: 'expo.inOut',
-  delay: 2.8
-});
-        gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
-        gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.london-mask .london-text:first-child', { x: '-150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
-        gsap.to('.london-mask .london-text:last-child', { x: '150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-        gsap.to('.lottie-container', {
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'expo.inOut',
-          delay: 2.8,
-          onStart: () => {
-            lottieRef.current?.play();
-            setTimeout(() => {
-              gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-            }, londonFadeDelay);
-          },
-          onComplete: () => {
-            introDone.current = true;
-          }
-        });
-      }
-    }, heroRef);
+if (lottieContainerEl) {
+  gsap.to(lottieContainerEl, {
+    autoAlpha: 1,
+    duration: 0.8,
+    ease: 'expo.inOut',
+    delay: 2.8,
+    onStart: () => {
+      lottieRef.current?.play();
+      setTimeout(() => {
+        if (londonBelowEl) gsap.to(londonBelowEl, { opacity: 1, duration: 0.5 });
+      }, londonFadeDelay);
+    },
+    onComplete: () => {
+      introDone.current = true;
+    }
+  });
+}
+}
+}, heroRef);
 
     requestAnimationFrame(() => {
       ScrollTrigger.refresh();
@@ -232,54 +271,68 @@ gsap.to('.home-mobile-top-logo', {
       />
       <div className="fyve-hero-section">
   <div ref={setHeroViewportRef} className="fyve-hero-viewport">
-  <div className="fyve-animation-stage">
+    <div ref={animationStageRef} className="fyve-animation-stage">
       <div className="fyve-brand-layer">
-        <div className="fyve-mask">
-          <div className="fyve-text">
-            {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+        <div ref={fyveMaskRef} className="fyve-mask">
+          <div ref={fyveTextLeftRef} className="fyve-text">
+            {'FY'.split('').map((l, i) => (
+              <span key={i} ref={addFyveLetterRef} className="fyve-letter">{l}</span>
+            ))}
           </div>
-          <div className="fyve-image-container">
+
+          <div ref={fyveImageContainerRef} className="fyve-image-container">
             <picture>
               <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-              <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+              <img
+                ref={fyveImageRef}
+                src="/assets/home/fyve-london-hero.webp"
+                alt="Reveal Image"
+                className="fyve-image"
+              />
             </picture>
-
-            <div className="mask-left"></div>
-            <div className="mask-right"></div>
+            <div ref={maskLeftRef} className="mask-left"></div>
+            <div ref={maskRightRef} className="mask-right"></div>
           </div>
-          <div className="fyve-text">
-            {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
+
+          <div ref={fyveTextRightRef} className="fyve-text">
+            {'VE'.split('').map((l, i) => (
+              <span key={i + 2} ref={addFyveLetterRef} className="fyve-letter">{l}</span>
+            ))}
           </div>
         </div>
 
-        <div className="london-mask">
-          <div className="london-text">
-            {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
+        <div ref={londonMaskRef} className="london-mask">
+          <div ref={londonTextLeftRef} className="london-text">
+            {'LON'.split('').map((l, i) => (
+              <span key={i} ref={addLondonLetterRef} className="london-letter">{l}</span>
+            ))}
           </div>
-          <div className="london-text">
-            {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
+          <div ref={londonTextRightRef} className="london-text">
+            {'DON'.split('').map((l, i) => (
+              <span key={i + 3} ref={addLondonLetterRef} className="london-letter">{l}</span>
+            ))}
           </div>
         </div>
       </div>
     </div>
 
     <div className="fyve-ui-layer">
-      <div className="home-mobile-top-logo">
+      <div ref={mobileLogoRef} className="home-mobile-top-logo">
         <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
       </div>
 
-      <div className="lottie-container">
-  <div className="lottie-animation-wrap">
-    <Lottie
-      lottieRef={lottieRef}
-      animationData={FYVEHeroLottie}
-      loop={false}
-      autoplay={false}
-      style={{ width: '100%', height: '100%' }}
-    />
-  </div>
-  <div className="london-below">LONDON</div>
-</div>
+      <div ref={lottieContainerRef} className="lottie-container">
+        <div className="lottie-animation-wrap">
+          <Lottie
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie}
+            loop={false}
+            autoplay={false}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div>
+        <div ref={londonBelowRef} className="london-below">LONDON</div>
+      </div>
     </div>
   </div>
 </div>
