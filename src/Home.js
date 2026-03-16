@@ -72,6 +72,7 @@ const isMobile = window.innerWidth <= 768;
 gsap.to(".section1-img-overlay", {
   y: -150,
   ease: "none",
+  immediateRender: false,
   scrollTrigger: {
     trigger: ".section-1",
     start: isMobile ? "top 75%" : "top bottom",
