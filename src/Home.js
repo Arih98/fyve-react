@@ -70,7 +70,7 @@ const Home = () => {
 const isMobile = window.innerWidth <= 768;
 
 gsap.to(".section1-img-overlay", {
-  y: -150,
+  y: "-12vh",
   ease: "none",
   immediateRender: false,
   scrollTrigger: {
