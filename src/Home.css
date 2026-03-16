@@ -376,8 +376,8 @@
   }
 
 .fyve-wrapper {
-  min-height: 80vh;
-  height: auto;
+  height: 72vh;
+  min-height: 0;
 }
 
   .fyve-text {
