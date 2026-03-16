@@ -17,6 +17,32 @@ const Home = () => {
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
   const londonFadeDelay = animationDuration * 0.3;
 
+
+    useEffect(() => {
+    const refreshScroll = () => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        setTimeout(() => ScrollTrigger.refresh(), 250);
+      });
+    };
+
+    window.addEventListener('load', refreshScroll);
+
+    const images = Array.from(document.querySelectorAll('img'));
+    images.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener('load', refreshScroll);
+      }
+    });
+
+    return () => {
+      window.removeEventListener('load', refreshScroll);
+      images.forEach((img) => {
+        img.removeEventListener('load', refreshScroll);
+      });
+    };
+  }, []);
+
   useEffect(() => {
     if (lottieRef.current) {
       if (inView) {
@@ -158,7 +184,10 @@ gsap.to(".section1-img-overlay-wrap", {
         });
       }
     });
-
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      setTimeout(() => ScrollTrigger.refresh(), 250);
+    });
     hasAnimated.current = true;
 
     return () => ctx.revert();
