@@ -390,7 +390,7 @@
 .lottie-container {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 3%;
   top: auto;
   transform: translateX(-50%);
   width: 90%;
