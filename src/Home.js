@@ -257,22 +257,22 @@ gsap.to('.home-mobile-top-logo', {
           </div>
         </div>
       </div>
+    </div>
 
-      <div className="fyve-ui-layer">
-        <div className="home-mobile-top-logo">
-          <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
-        </div>
+    <div className="fyve-ui-layer">
+      <div className="home-mobile-top-logo">
+        <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
+      </div>
 
-        <div className="lottie-container">
-          <Lottie
-            lottieRef={lottieRef}
-            animationData={FYVEHeroLottie}
-            loop={false}
-            autoplay={false}
-            style={{ width: '100%', height: '100%' }}
-          />
-          <div className="london-below">LONDON</div>
-        </div>
+      <div className="lottie-container">
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={FYVEHeroLottie}
+          loop={false}
+          autoplay={false}
+          style={{ width: '100%', height: '100%' }}
+        />
+        <div className="london-below">LONDON</div>
       </div>
     </div>
   </div>
