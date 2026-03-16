@@ -50,6 +50,13 @@
   overflow-x: hidden;
 }
 
+.fyve-overlay-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
 .fyve-mask {
   visibility: hidden;
   display: flex;
@@ -360,12 +367,11 @@
 
 .home-mobile-top-logo {
   position: absolute;
-  top: 70px;
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
   display: block;
-  pointer-events: none;
   opacity: 0;
 }
 
@@ -406,6 +412,10 @@
   transform: translateY(-50%);
 }
 
+.fyve-overlay-layer {
+  transform: translateY(4vh);
+}
+
   .fyve-text {
     font-size: 25vw;
   }
@@ -417,7 +427,7 @@
 .lottie-container {
   position: absolute;
   left: 50%;
-  bottom: 10vh;
+  bottom: 0;
   top: auto;
   transform: translateX(-50%);
   width: 90%;
