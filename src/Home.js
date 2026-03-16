@@ -213,7 +213,9 @@ gsap.to(".section1-img-overlay", {
           })
         }}
       />
-      <div className="fyve-wrapper">
+      <div className="fyve-hero-section">
+  <div className="fyve-hero-viewport">
+    <div className="fyve-wrapper">
         <div className="home-mobile-top-logo">
           <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
         </div>
@@ -255,7 +257,9 @@ gsap.to(".section1-img-overlay", {
           />
           <div className="london-below">LONDON</div>
         </div>
-      </div>
+          </div>
+  </div>
+</div>
 
       <div className="section-1">
         <div className="section1-content">

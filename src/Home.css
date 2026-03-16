@@ -25,8 +25,22 @@
   overflow: visible;
 }
 
-.fyve-wrapper {
+.fyve-hero-section {
   position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.fyve-hero-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fyve-wrapper {
+  position: absolute;
+  inset: 0;
   height: 100vh;
   width: 100%;
   display: flex;
@@ -362,7 +376,7 @@
   }
 
   .fyve-image-container {
-    height: 30vw;
+    height: 50vw;
   }
 
   .fyve-image {
@@ -375,9 +389,17 @@
     object-position: center;
   }
 
-  .fyve-wrapper {
-    height: 94vh;
-  }
+.fyve-hero-section {
+  height: 76vh;
+}
+
+.fyve-hero-viewport {
+  height: 76vh;
+}
+
+.fyve-wrapper {
+  height: 94vh;
+}
 
   .fyve-text {
     font-size: 25vw;
