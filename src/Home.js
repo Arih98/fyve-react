@@ -11,12 +11,16 @@ gsap.registerPlugin(Observer, ScrollTrigger);
 
 const Home = () => {
   const lottieRef = useRef();
-  const heroRef = useRef(null);
-  const hasAnimated = useRef(false);
-  const introDone = useRef(false);
-  const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
-  const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
-  const londonFadeDelay = animationDuration * 0.3;
+const heroRef = useRef(null);
+const hasAnimated = useRef(false);
+const introDone = useRef(false);
+const [inViewRef, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
+const setHeroViewportRef = (node) => {
+  heroRef.current = node;
+  inViewRef(node);
+};
+const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
+const londonFadeDelay = animationDuration * 0.3;
 
   useEffect(() => {
     if (lottieRef.current) {
@@ -227,8 +231,8 @@ gsap.to('.home-mobile-top-logo', {
         }}
       />
       <div className="fyve-hero-section">
-  <div ref={ref} className="fyve-hero-viewport">
-    <div ref={heroRef} className="fyve-animation-stage">
+  <div ref={setHeroViewportRef} className="fyve-hero-viewport">
+  <div className="fyve-animation-stage">
       <div className="fyve-brand-layer">
         <div className="fyve-mask">
           <div className="fyve-text">
