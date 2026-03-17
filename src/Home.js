@@ -30,8 +30,12 @@ useEffect(() => {
   };
 
   setLockedViewportHeight();
-  window.addEventListener('resize', setLockedViewportHeight);
-  window.addEventListener('orientationchange', setLockedViewportHeight);
+
+  const handleOrientationChange = () => {
+    setTimeout(setLockedViewportHeight, 150);
+  };
+
+  window.addEventListener('orientationchange', handleOrientationChange);
 
   const refreshScroll = () => {
     requestAnimationFrame(() => {
@@ -50,8 +54,7 @@ useEffect(() => {
   });
 
   return () => {
-    window.removeEventListener('resize', setLockedViewportHeight);
-    window.removeEventListener('orientationchange', setLockedViewportHeight);
+    window.removeEventListener('orientationchange', handleOrientationChange);
     window.removeEventListener('load', refreshScroll);
     images.forEach((img) => {
       img.removeEventListener('load', refreshScroll);
