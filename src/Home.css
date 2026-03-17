@@ -23,7 +23,7 @@
 .fyve-hero-section {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: calc(var(--locked-vh, 1vh) * 100);
 }
 
 .fyve-hero-viewport {
@@ -408,24 +408,24 @@
   }
 
 .fyve-hero-section {
-  height: 100vh;
+  height: calc(var(--locked-vh, 1vh) * 100);
 }
 
 .fyve-hero-viewport {
-  height: 100vh;
-}
-
-.fyve-ui-layer {
-  padding-top: 30px;
-  padding-bottom: 24px;
+  height: calc(var(--locked-vh, 1vh) * 100);
 }
 
 .fyve-animation-stage {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: calc(var(--locked-vh, 1vh) * 100);
   transform: none;
+}
+
+.fyve-ui-layer {
+  padding-top: 30px;
+  padding-bottom: 0;
 }
 
 .home-mobile-top-logo {

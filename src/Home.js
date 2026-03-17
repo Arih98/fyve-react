@@ -23,6 +23,42 @@ const setHeroViewportRef = (node) => {
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
 
+useEffect(() => {
+  const setLockedViewportHeight = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--locked-vh', `${vh}px`);
+  };
+
+  setLockedViewportHeight();
+  window.addEventListener('resize', setLockedViewportHeight);
+  window.addEventListener('orientationchange', setLockedViewportHeight);
+
+  const refreshScroll = () => {
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      setTimeout(() => ScrollTrigger.refresh(), 250);
+    });
+  };
+
+  window.addEventListener('load', refreshScroll);
+
+  const images = Array.from(document.querySelectorAll('img'));
+  images.forEach((img) => {
+    if (!img.complete) {
+      img.addEventListener('load', refreshScroll);
+    }
+  });
+
+  return () => {
+    window.removeEventListener('resize', setLockedViewportHeight);
+    window.removeEventListener('orientationchange', setLockedViewportHeight);
+    window.removeEventListener('load', refreshScroll);
+    images.forEach((img) => {
+      img.removeEventListener('load', refreshScroll);
+    });
+  };
+}, []);
+
   useEffect(() => {
     if (lottieRef.current) {
       if (inView) {
@@ -69,7 +105,7 @@ const londonFadeDelay = animationDuration * 0.3;
     introDone.current = false;
 
     const isMobile = window.innerWidth <= 768;
-    const finalHeight = '100vh';
+    const finalHeight = 'calc(var(--locked-vh, 1vh) * 100)';
     const intermediateWidth = isMobile ? '30vw' : '18vw';
 
     const ctx = gsap.context(() => {
