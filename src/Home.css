@@ -383,9 +383,8 @@
 
 @media (max-width: 768px) {
 .fyve-image-container {
-  height: 70vh;
+  height: 100%;
 }
-
 .fyve-image {
   position: absolute;
   top: 0;
@@ -427,15 +426,12 @@
   width: auto;
 }
 
-  .fyve-hero-section,
-  .fyve-hero-viewport,
-  .fyve-animation-stage {
-    height: 100vh;
-  }
-
-  .fyve-image-shell {
-    height: 100vh;
-  }
+.fyve-hero-section,
+.fyve-hero-viewport,
+.fyve-animation-stage,
+.fyve-image-shell {
+  height: 82vh;
+}
 
 .lottie-container {
   width: 90%;
