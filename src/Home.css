@@ -414,10 +414,10 @@
     height: 72dvh;
   }
 
-  .fyve-hero-fixed-layer {
-    height: 100dvh;
-    z-index: 1;
-  }
+.fyve-hero-fixed-layer {
+  height: 100dvh;
+  z-index: 10;
+}
 
   .fyve-animation-stage {
     top: 0;
@@ -502,9 +502,8 @@
 .section-1,
 .section-2 {
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
-
   .section-1 {
     height: auto;
     min-height: 100dvh;
