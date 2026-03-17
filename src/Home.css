@@ -623,4 +623,10 @@
   white-space: nowrap;
   align-self: flex-start;
 }
+
+.fyve-hero-section,
+.fyve-hero-viewport,
+.fyve-animation-stage {
+  height: 75vh;
+}
 }
