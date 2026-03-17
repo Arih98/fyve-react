@@ -68,7 +68,7 @@ const londonFadeDelay = animationDuration * 0.3;
     introDone.current = false;
 
     const isMobile = window.innerWidth <= 768;
-    const finalHeight = isMobile ? '100%' : '100vh';
+    const finalHeight = isMobile ? '82vh' : '100vh';
     const intermediateWidth = isMobile ? '30vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
 
@@ -231,53 +231,32 @@ gsap.to('.home-mobile-top-logo', {
       <div className="fyve-hero-section">
   <div ref={setHeroViewportRef} className="fyve-hero-viewport">
     <div className="fyve-animation-stage">
-      <div className="fyve-brand-row">
-        <div className="fyve-text">
-          {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
-        </div>
-
-        <div className="fyve-image-shell">
-          <div className="fyve-image-container">
-            <picture>
-              <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-              <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-            </picture>
-            <div className="mask-left"></div>
-            <div className="mask-right"></div>
-          </div>
-        </div>
-
-        <div className="fyve-text">
-          {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
-        </div>
+  <div className="fyve-brand-layer">
+    <div className="fyve-mask">
+      <div className="fyve-text">
+        {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
       </div>
 
-      <div className="london-mask">
-        <div className="london-text">
-          {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
-        </div>
-        <div className="london-text">
-          {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
-        </div>
+      <div className="fyve-image-container">
+        <picture>
+          <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+          <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+        </picture>
+        <div className="mask-left"></div>
+        <div className="mask-right"></div>
+      </div>
+
+      <div className="fyve-text">
+        {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
       </div>
     </div>
 
-    <div className="fyve-ui-layer">
-      <div className="home-mobile-top-logo">
-        <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
+    <div className="london-mask">
+      <div className="london-text">
+        {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
       </div>
-
-      <div className="lottie-container">
-        <div className="lottie-animation-wrap">
-          <Lottie
-            lottieRef={lottieRef}
-            animationData={FYVEHeroLottie}
-            loop={false}
-            autoplay={false}
-            style={{ width: '100%', height: '100%' }}
-          />
-        </div>
-        <div className="london-below">LONDON</div>
+      <div className="london-text">
+        {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
       </div>
     </div>
   </div>

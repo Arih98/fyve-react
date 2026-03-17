@@ -429,7 +429,8 @@
 .fyve-hero-section,
 .fyve-hero-viewport,
 .fyve-animation-stage,
-.fyve-image-shell {
+.fyve-image-shell
+.fyve-brand-layer {
   height: 82vh;
 }
 
