@@ -5,9 +5,14 @@
 @media (max-width: 768px) {
   .home-inline-mobile-header {
     --header-icon-color: #4A494A;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
-    margin-top: 18px;
-    padding: 15px 22px calc(15px + env(safe-area-inset-bottom));
+    z-index: 20;
+    margin-top: 0;
+    padding: 15px 22px 15px;
     box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(4, 40px);
@@ -16,7 +21,7 @@
     align-items: center;
     background: #ffffff;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     pointer-events: auto;
   }
 

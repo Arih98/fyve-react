@@ -266,9 +266,9 @@ gsap.to('.home-mobile-top-logo', {
     />
   </div>
   <div className="london-below">LONDON</div>
-  <HomeMobileHeader />
-</div>
     </div>
+      <HomeMobileHeader />
+</div>
   </div>
 </div>
 
