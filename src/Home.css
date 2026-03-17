@@ -383,7 +383,7 @@
 
 @media (max-width: 768px) {
 .fyve-image-container {
-  height: 100%;
+  height: 50vw;
 }
 .fyve-image {
   position: absolute;
