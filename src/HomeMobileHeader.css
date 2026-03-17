@@ -5,7 +5,7 @@
 @media (max-width: 768px) {
   .home-inline-mobile-header {
     --header-icon-color: #4A494A;
-    position: absolute;
+    position: relative;
     left: 0;
     right: 0;
     bottom: 0;
