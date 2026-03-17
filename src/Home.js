@@ -5,6 +5,7 @@ import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
 import './Home.css';
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json';
+import HomeHeroMobileHeader from './HomeHeroMobileHeader';
 import { Observer } from "gsap/Observer";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(Observer, ScrollTrigger);
@@ -276,6 +277,7 @@ gsap.to('.home-mobile-top-logo', {
     />
   </div>
   <div className="london-below">LONDON</div>
+  <HomeHeroMobileHeader />
 </div>
     </div>
   </div>

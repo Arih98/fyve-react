@@ -19,7 +19,6 @@ const location = useLocation();
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-const isMobileHomeHeader = isMobile && isHomePage && !isProductDetailPage;
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
@@ -62,31 +61,16 @@ useEffect(() => {
 
 
 useEffect(() => {
+  if (isMobile) {
+    setHideHeader(false);
+    return;
+  }
+
   let lastScrollY = window.scrollY;
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
-
     if (isMenuOpen) return;
-
-    if (isMobile) {
-      if (!isHomePage) {
-        setHideHeader(false);
-        lastScrollY = currentScrollY;
-        return;
-      }
-
-      if (currentScrollY <= 10) {
-        setHideHeader(false);
-      } else if (currentScrollY > lastScrollY) {
-        setHideHeader(true);
-      } else if (currentScrollY < lastScrollY) {
-        setHideHeader(false);
-      }
-
-      lastScrollY = currentScrollY;
-      return;
-    }
 
     if (currentScrollY <= 0) {
       setHideHeader(false);
@@ -99,11 +83,9 @@ useEffect(() => {
     lastScrollY = currentScrollY;
   };
 
-  handleScroll();
-  window.addEventListener('scroll', handleScroll, { passive: true });
-
+  window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isHomePage, isMenuOpen]);
+}, [isMobile, isMenuOpen]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
@@ -306,9 +288,9 @@ const handleToggleMenu = () => {
   return (
   <>
     
-<div
+    <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${isMobileHomeHeader ? ' mobile-home-hero-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 

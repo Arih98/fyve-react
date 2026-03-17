@@ -1,0 +1,37 @@
+.home-hero-mobile-header {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .home-hero-mobile-header {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 18px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .home-hero-mobile-header.hide {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+  }
+
+  .home-hero-mobile-header button {
+    background: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-hero-mobile-header img {
+    width: 20px;
+    height: 20px;
+  }
+}
