@@ -24,6 +24,7 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
+const [showFixedHomeMobileHeader, setShowFixedHomeMobileHeader] = useState(() => window.scrollY > 10);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -41,6 +42,22 @@ const logoSrc = useWhiteHeaderIcons ? '/assets/FYVE-White-Logo.png' : '/assets/F
 const searchIconSrc = useWhiteHeaderIcons ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useWhiteHeaderIcons ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useWhiteHeaderIcons ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+
+useEffect(() => {
+  if (!isMobile || !isHomePage) {
+    setShowFixedHomeMobileHeader(true);
+    return;
+  }
+
+  const handleHomeHeaderVisibility = () => {
+    setShowFixedHomeMobileHeader(window.scrollY > 10);
+  };
+
+  handleHomeHeaderVisibility();
+  window.addEventListener('scroll', handleHomeHeaderVisibility, { passive: true });
+
+  return () => window.removeEventListener('scroll', handleHomeHeaderVisibility);
+}, [isMobile, isHomePage]);
 
 useEffect(() => {
   const handleHeaderThemeScroll = () => {
@@ -290,7 +307,7 @@ const handleToggleMenu = () => {
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}${isHomePage && isMobile && !showFixedHomeMobileHeader ? ' home-mobile-hidden' : ' home-mobile-visible'}`}
 >
   {BurgerIcon}
 
