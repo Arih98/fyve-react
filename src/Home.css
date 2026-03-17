@@ -44,15 +44,16 @@
   overflow: hidden;
   z-index: 1;
   pointer-events: none;
+  background: #F1DBD1;
 }
 
 .fyve-animation-stage {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100dvh;
   overflow: hidden;
+  background: #F1DBD1;
 }
 
 .fyve-brand-layer {

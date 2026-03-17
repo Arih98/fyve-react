@@ -15,7 +15,11 @@ const heroRef = useRef(null);
 const hasAnimated = useRef(false);
 const introDone = useRef(false);
 const heroSceneRef = useRef(null);
-const [inViewRef, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
+const [inViewRef, inView] = useInView({
+  triggerOnce: false,
+  threshold: 0,
+  rootMargin: '0px 0px -1px 0px'
+});
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
 
