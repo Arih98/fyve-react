@@ -390,23 +390,57 @@
 }
 
 @media (max-width: 768px) {
-  .fyve-hero-section,
-  .fyve-hero-viewport,
-  .fyve-animation-stage {
-    height: 100dvh;
+  .fyve-hero-section {
+    position: relative;
+    height: 72dvh;
+    min-height: 72dvh;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .fyve-hero-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    z-index: 2;
   }
 
   .fyve-animation-stage {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+    height: 100dvh;
     transform: none;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .fyve-brand-layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
   }
 
   .fyve-ui-layer {
+    position: absolute;
+    inset: 0;
     height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 3;
+    pointer-events: none;
     padding-top: 18px;
     padding-bottom: 12px;
+    box-sizing: border-box;
   }
 
   .home-mobile-top-logo {
@@ -423,6 +457,15 @@
     display: block;
     height: 38px;
     width: auto;
+  }
+
+  .fyve-mask {
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0;
+    z-index: 1;
   }
 
   .fyve-image-container {
@@ -456,6 +499,7 @@
     justify-content: flex-end;
     padding: 0 0 12px;
     margin: 0;
+    box-sizing: border-box;
   }
 
   .lottie-animation-wrap {
@@ -486,6 +530,9 @@
     height: auto;
     min-height: 100dvh;
     padding: 60px 15px;
+    position: relative;
+    z-index: 4;
+    background: #fff;
   }
 
   .section1-content {
@@ -573,6 +620,8 @@
     padding: 60px 15px;
     padding-top: 0;
     background: #fff;
+    position: relative;
+    z-index: 4;
   }
 
   .section2-bg-picture {
