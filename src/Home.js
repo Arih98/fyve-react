@@ -69,7 +69,6 @@ const londonFadeDelay = animationDuration * 0.3;
 
     const isMobile = window.innerWidth <= 768;
 const sizes = {
-  shellHeight: '100dvh',
   sectionHeight: isMobile ? '72dvh' : '100dvh',
   finalHeight: '100dvh',
   intermediateWidth: isMobile ? '30vw' : '18vw',
@@ -85,7 +84,6 @@ const sizes = {
 const mobileHeaderEl = document.querySelector('.mobile-header');
 
     const ctx = gsap.context(() => {
-      gsap.set('.fyve-hero-shell', { height: sizes.shellHeight });
 gsap.set('.fyve-hero-section', { height: sizes.sectionHeight });
 
 gsap.to(".section1-img-overlay", {
