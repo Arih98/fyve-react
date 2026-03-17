@@ -623,10 +623,29 @@
   white-space: nowrap;
   align-self: flex-start;
 }
-
-.fyve-hero-section,
-.fyve-hero-viewport,
-.fyve-animation-stage {
-  height: 75vh;
 }
+
+@media (max-width: 768px) {
+  .fyve-text {
+    font-size: 20vw;
+  }
+
+  .fyve-image-container {
+    height: 38vw;
+  }
+
+  .lottie-container {
+    width: 82%;
+    padding: 0 0 12px;
+  }
+
+  .lottie-animation-wrap {
+    max-height: 42vh;
+  }
+
+  .london-below {
+    font-size: 3.5vw;
+    letter-spacing: 5vw;
+    margin-bottom: 12px;
+  }
 }
