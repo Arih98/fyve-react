@@ -40,33 +40,22 @@
 
 .fyve-animation-stage {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.fyve-brand-row {
-  position: absolute;
   top: 50%;
   left: 50%;
   width: 100%;
+  height: 100vh;
   transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+.fyve-brand-layer {
+  position: absolute;
+  inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 1;
-}
-
-.fyve-image-shell {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-}
-
-.fyve-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .fyve-ui-layer {
@@ -82,6 +71,15 @@
   padding-bottom: 0;
   height: 100%;
   box-sizing: border-box;
+}
+
+.fyve-mask {
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0;
+  z-index: 1;
 }
 
 .fyve-text {
@@ -106,12 +104,22 @@
   display: inline-block;
 }
 
+.fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
+  margin-right: -0.08em;
+}
+
 .fyve-image-container {
-  width: 0;
   height: 14vw;
+  width: 0;
   position: relative;
   overflow: hidden;
   z-index: 1;
+}
+
+.fyve-image {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
 }
 
 .mask-left,
@@ -209,7 +217,7 @@
 
 .section-1 {
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   background: #fff;
   padding: 60px 7%;
   box-sizing: border-box;
@@ -310,8 +318,8 @@
 
 .section-2 {
   width: 100%;
-  height: 100vh;
-  max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   padding: 60px 7%;
   box-sizing: border-box;
   position: relative;
@@ -382,18 +390,19 @@
 }
 
 @media (max-width: 768px) {
-.fyve-image-container {
-  height: 50vw;
-}
-.fyve-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
+  .fyve-image-container {
+    height: 50vw;
+  }
+
+  .fyve-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 
   .fyve-text {
     font-size: 25vw;
@@ -403,11 +412,25 @@
     font-size: 2.5vw;
   }
 
+.fyve-hero-section {
+  height: 100vh;
+}
 
+.fyve-hero-viewport {
+  height: 100vh;
+}
 
 .fyve-ui-layer {
   padding-top: 30px;
   padding-bottom: 24px;
+}
+
+.fyve-animation-stage {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  transform: none;
 }
 
 .home-mobile-top-logo {
@@ -424,14 +447,6 @@
   display: block;
   height: 45px;
   width: auto;
-}
-
-.fyve-hero-section,
-.fyve-hero-viewport,
-.fyve-animation-stage,
-.fyve-image-shell
-.fyve-brand-layer {
-  height: 82vh;
 }
 
 .lottie-container {
@@ -454,7 +469,7 @@
 
 .section-1 {
   height: auto;
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 60px 15px;
 }
 
