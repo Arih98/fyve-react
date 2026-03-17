@@ -14,11 +14,8 @@ const lottieRef = useRef();
 const heroRef = useRef(null);
 const hasAnimated = useRef(false);
 const introDone = useRef(false);
+const heroSceneRef = useRef(null);
 const [inViewRef, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
-const setHeroViewportRef = (node) => {
-  heroRef.current = node;
-  inViewRef(node);
-};
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
 
@@ -333,7 +330,7 @@ const londonFadeDelay = animationDuration * 0.3;
         }
       });
     }
-  }, heroRef);
+  }, heroSceneRef);
 
   requestAnimationFrame(() => {
     ScrollTrigger.refresh();
@@ -362,7 +359,7 @@ const londonFadeDelay = animationDuration * 0.3;
           })
         }}
       />
-<div className="fyve-hero-scene">
+<div ref={heroSceneRef} className="fyve-hero-scene">
   <div className="fyve-hero-fixed-layer">
     <div className="fyve-animation-stage">
       <div className="fyve-brand-layer">
@@ -416,7 +413,7 @@ const londonFadeDelay = animationDuration * 0.3;
     </div>
   </div>
 
-  <div ref={setHeroViewportRef} className="fyve-hero-spacer" />
+  <div ref={inViewRef} className="fyve-hero-spacer" />
 </div>
 
       <div className="section-1">
