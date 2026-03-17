@@ -412,12 +412,12 @@
     font-size: 2.5vw;
   }
 
-  .fyve-hero-section {
-  height: 82vh;
+.fyve-hero-section {
+  height: 100vh;
 }
 
 .fyve-hero-viewport {
-  height: 82vh;
+  height: 100vh;
 }
 
 .fyve-ui-layer {
@@ -426,8 +426,11 @@
 }
 
 .fyve-animation-stage {
-  height: 100vh;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100dvh;
+  transform: none;
 }
 
 .home-mobile-top-logo {
