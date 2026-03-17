@@ -68,7 +68,7 @@ const londonFadeDelay = animationDuration * 0.3;
     introDone.current = false;
 
     const isMobile = window.innerWidth <= 768;
-    const finalHeight = isMobile ? '82vh' : '100vh';
+    const finalHeight = isMobile ? '80vh' : '100vh';
     const intermediateWidth = isMobile ? '30vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
 
@@ -257,6 +257,27 @@ gsap.to('.home-mobile-top-logo', {
       </div>
       <div className="london-text">
         {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div className="fyve-ui-layer">
+      <div className="home-mobile-top-logo">
+        <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
+      </div>
+
+      <div className="lottie-container">
+        <div className="lottie-animation-wrap">
+          <Lottie
+            lottieRef={lottieRef}
+            animationData={FYVEHeroLottie}
+            loop={false}
+            autoplay={false}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div>
+        <div className="london-below">LONDON</div>
       </div>
     </div>
   </div>
