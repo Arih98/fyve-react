@@ -394,15 +394,15 @@
     height: 50vw;
   }
 
-  .fyve-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
+.fyve-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
 
   .fyve-text {
     font-size: 25vw;
@@ -431,6 +431,10 @@
   width: 100%;
   height: 100vh;
   transform: none;
+}
+
+.fyve-image-container {
+  height: 100vh;
 }
 
 .home-mobile-top-logo {
