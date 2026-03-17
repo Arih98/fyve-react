@@ -19,6 +19,7 @@ const location = useLocation();
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+const isMobileHomeHeader = isMobile && isHomePage && !isProductDetailPage;
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
