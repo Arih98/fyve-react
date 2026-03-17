@@ -239,17 +239,7 @@ gsap.to('.home-mobile-top-logo', {
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
           <div className="fyve-image-container">
-            <picture>
-  <source
-    media="(max-width: 768px)"
-    srcSet="/assets/home/fyve-london-hero-mobile.webp 1x, /assets/home/fyve-london-hero-mobile@2x.webp 2x"
-  />
-  <img
-    src="/assets/home/fyve-london-hero.webp"
-    srcSet="/assets/home/fyve-london-hero.webp 1x, /assets/home/fyve-london-hero@2x.webp 2x"
-    className="fyve-image"
-  />
-</picture>
+            <picture> <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" /> <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" /> </picture>
 
             <div className="mask-left"></div>
             <div className="mask-right"></div>
