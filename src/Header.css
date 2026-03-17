@@ -653,10 +653,23 @@ body.locked {
   background-image: none;
 }
 
-  .mobile-header.first-header.hide-header {
-    transform: translateY(0) !important;
-    pointer-events: auto;
-  }
+.mobile-header.first-header.hide-header {
+  transform: translateY(0) !important;
+  pointer-events: auto;
+}
+
+.mobile-header.first-header.mobile-home-hero-header.hide-header {
+  transform: translateY(140%) !important;
+  pointer-events: none;
+}
+
+.mobile-header.first-header.mobile-home-hero-header {
+  bottom: 28px;
+}
+
+.mobile-header.first-header.mobile-home-hero-header {
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s;
+}
 
   .mobile-header .header-logo.mobile-hide-logo {
     display: none !important;

@@ -61,16 +61,31 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if (isMobile) {
-    setHideHeader(false);
-    return;
-  }
-
   let lastScrollY = window.scrollY;
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
+
     if (isMenuOpen) return;
+
+    if (isMobile) {
+      if (!isHomePage) {
+        setHideHeader(false);
+        lastScrollY = currentScrollY;
+        return;
+      }
+
+      if (currentScrollY <= 10) {
+        setHideHeader(false);
+      } else if (currentScrollY > lastScrollY) {
+        setHideHeader(true);
+      } else if (currentScrollY < lastScrollY) {
+        setHideHeader(false);
+      }
+
+      lastScrollY = currentScrollY;
+      return;
+    }
 
     if (currentScrollY <= 0) {
       setHideHeader(false);
@@ -83,9 +98,11 @@ useEffect(() => {
     lastScrollY = currentScrollY;
   };
 
-  window.addEventListener('scroll', handleScroll);
+  handleScroll();
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen]);
+}, [isMobile, isHomePage, isMenuOpen]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
@@ -288,9 +305,9 @@ const handleToggleMenu = () => {
   return (
   <>
     
-    <div
+<div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${isMobileHomeHeader ? ' mobile-home-hero-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
