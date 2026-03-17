@@ -399,7 +399,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     object-fit: cover;
     object-position: center;
   }
@@ -413,11 +413,11 @@
   }
 
 .fyve-hero-section {
-  height: 80vh;
+  height: 100vh;
 }
 
 .fyve-hero-viewport {
-  height: 80vh;
+  height: 100vh;
 }
 
 .fyve-ui-layer {
