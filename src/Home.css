@@ -25,19 +25,25 @@
   overflow: visible;
 }
 
-.fyve-hero-section {
+.fyve-hero-scene {
+  position: relative;
+  width: 100%;
+}
+
+.fyve-hero-spacer {
   position: relative;
   width: 100%;
   height: 100dvh;
 }
 
-.fyve-hero-shell {
-  position: absolute;
-  top: 0;
-  left: 0;
+.fyve-hero-fixed-layer {
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100dvh;
   overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .fyve-animation-stage {
@@ -399,23 +405,7 @@
 }
 
 @media (max-width: 768px) {
-.fyve-hero-shell {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.fyve-hero-section {
-  position: relative;
-  height: 72dvh;
-  z-index: 2;
-  pointer-events: none;
-}
+.fyve-hero-shell
 
 .section-1,
 .section-2 {
