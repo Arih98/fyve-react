@@ -10,6 +10,10 @@
   display: none;
 }
 
+.mobile-header {
+  opacity: 0;
+}
+
 .home-page {
   position: relative;
   width: 100%;
