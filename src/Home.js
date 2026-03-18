@@ -23,45 +23,6 @@ const setHeroViewportRef = (node) => {
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
 
-useEffect(() => {
-  const setLockedViewportHeight = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--locked-vh', `${vh}px`);
-  };
-
-  setLockedViewportHeight();
-
-  const handleOrientationChange = () => {
-    setTimeout(setLockedViewportHeight, 150);
-  };
-
-  window.addEventListener('orientationchange', handleOrientationChange);
-
-  const refreshScroll = () => {
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-      setTimeout(() => ScrollTrigger.refresh(), 250);
-    });
-  };
-
-  window.addEventListener('load', refreshScroll);
-
-  const images = Array.from(document.querySelectorAll('img'));
-  images.forEach((img) => {
-    if (!img.complete) {
-      img.addEventListener('load', refreshScroll);
-    }
-  });
-
-  return () => {
-    window.removeEventListener('orientationchange', handleOrientationChange);
-    window.removeEventListener('load', refreshScroll);
-    images.forEach((img) => {
-      img.removeEventListener('load', refreshScroll);
-    });
-  };
-}, []);
-
   useEffect(() => {
     if (lottieRef.current) {
       if (inView) {
@@ -78,14 +39,39 @@ useEffect(() => {
     }
   }, [inView]);
 
+    useEffect(() => {
+    const refreshScroll = () => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        setTimeout(() => ScrollTrigger.refresh(), 250);
+      });
+    };
+
+    window.addEventListener('load', refreshScroll);
+
+    const images = Array.from(document.querySelectorAll('img'));
+    images.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener('load', refreshScroll);
+      }
+    });
+
+    return () => {
+      window.removeEventListener('load', refreshScroll);
+      images.forEach((img) => {
+        img.removeEventListener('load', refreshScroll);
+      });
+    };
+  }, []);
+
   useEffect(() => {
     hasAnimated.current = false;
     introDone.current = false;
 
     const isMobile = window.innerWidth <= 768;
-    const finalHeight = 'calc(var(--locked-vh, 1vh) * 100)';
-    const intermediateWidth = isMobile ? '30vw' : '18vw';
-    const headerEl = document.querySelector('.mobile-header');
+    const finalHeight = '100vh';
+const intermediateWidth = isMobile ? '30vw' : '18vw';
+const desktopHeaderEl = !isMobile ? document.querySelector('.mobile-header') : null;
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
@@ -115,7 +101,6 @@ gsap.to(".section1-img-overlay", {
 
       let rotation = 0;
       const stamp = document.querySelector('.section1-stamp');
-
       if (stamp) {
         Observer.create({
           type: "wheel,touch,scroll",
@@ -141,9 +126,10 @@ gsap.to(".section1-img-overlay", {
       const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
 
       if (hasAnimated.current) {
-  if (!isMobile && headerEl) gsap.set(headerEl, { opacity: 1 });
-  gsap.set('.fyve-mask', { visibility: 'visible' });
-  gsap.set('.fyve-image', { visibility: 'visible' });
+        if (desktopHeaderEl) gsap.set(desktopHeaderEl, { opacity: 1 });
+gsap.set('.home-mobile-top-logo', { opacity: 1 });
+        gsap.set('.fyve-mask', { visibility: 'visible' });
+        gsap.set('.fyve-image', { visibility: 'visible' });
         gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
         gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
         gsap.set('.fyve-letter', { y: 0 });
@@ -158,65 +144,67 @@ gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.lottie-container', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
-  if (!isMobile && headerEl) gsap.set(headerEl, { opacity: 0 });
   gsap.set('.fyve-mask', { visibility: 'visible' });
   gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
-        gsap.set('.fyve-image', { visibility: 'visible' });
-        gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
-        gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
-        gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
-        gsap.set('.lottie-container', { autoAlpha: 0 });
-        gsap.set('.london-below', { opacity: 0 });
-        gsap.fromTo('.fyve-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
-        gsap.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-gsap.set('.home-mobile-top-logo', { opacity: 0 });
+  gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
+  gsap.set('.fyve-image', { visibility: 'visible' });
+  gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
+  gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
+  gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
+  gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
+  gsap.set('.lottie-container', { autoAlpha: 0 });
+  gsap.set('.london-below', { opacity: 0 });
+  gsap.fromTo('.fyve-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
+  gsap.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
+  gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
+  gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
 
-if (!isMobile && headerEl) {
-  gsap.to(headerEl, {
+  if (desktopHeaderEl) gsap.set(desktopHeaderEl, { opacity: 0 });
+  gsap.set('.home-mobile-top-logo', { opacity: 0 });
+
+  if (desktopHeaderEl) {
+    gsap.to(desktopHeaderEl, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'expo.inOut',
+      delay: 2.8
+    });
+  }
+
+  gsap.to('.home-mobile-top-logo', {
     opacity: 1,
     duration: 0.5,
     ease: 'expo.inOut',
     delay: 2.8
   });
-}
 
-gsap.to('.home-mobile-top-logo', {
-  opacity: 1,
-  duration: 0.5,
-  ease: 'expo.inOut',
-  delay: 2.8
-});
-        gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
-        gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.london-mask .london-text:first-child', { x: '-150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
-        gsap.to('.london-mask .london-text:last-child', { x: '150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
-        gsap.to('.lottie-container', {
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'expo.inOut',
-          delay: 2.8,
-          onStart: () => {
-            lottieRef.current?.play();
-            setTimeout(() => {
-              gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-            }, londonFadeDelay);
-          },
-          onComplete: () => {
-            introDone.current = true;
-          }
-        });
-      }
+  gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
+  gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+  gsap.to('.london-mask .london-text:first-child', { x: '-150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
+  gsap.to('.london-mask .london-text:last-child', { x: '150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
+  gsap.to('.london-mask', { marginTop: `-${londonHeight}vw`, y: `${londonY + londonHeight}vw`, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+  gsap.to('.lottie-container', {
+    autoAlpha: 1,
+    duration: 0.8,
+    ease: 'expo.inOut',
+    delay: 2.8,
+    onStart: () => {
+      lottieRef.current?.play();
+      setTimeout(() => {
+        gsap.to('.london-below', { opacity: 1, duration: 0.5 });
+      }, londonFadeDelay);
+    },
+    onComplete: () => {
+      introDone.current = true;
+    }
+  });
+}
     }, heroRef);
 
     requestAnimationFrame(() => {
@@ -277,24 +265,25 @@ gsap.to('.home-mobile-top-logo', {
     </div>
 
     <div className="fyve-ui-layer">
-      <div className="home-mobile-top-logo">
-        <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
-      </div>
-
-      <div className="lottie-container">
-  <div className="lottie-animation-wrap">
-    <Lottie
-      lottieRef={lottieRef}
-      animationData={FYVEHeroLottie}
-      loop={false}
-      autoplay={false}
-      style={{ width: '100%', height: '100%' }}
-    />
+  <div className="home-mobile-top-logo">
+    <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
   </div>
-  <div className="london-below">LONDON</div>
+
+  <div className="lottie-container">
+    <div className="lottie-animation-wrap">
+      <Lottie
+        lottieRef={lottieRef}
+        animationData={FYVEHeroLottie}
+        loop={false}
+        autoplay={false}
+        style={{ width: '100%', height: '100%' }}
+      />
     </div>
-      <HomeMobileHeader />
+    <div className="london-below">LONDON</div>
+  </div>
 </div>
+
+<HomeMobileHeader />
   </div>
 </div>
 
