@@ -150,7 +150,7 @@
 }
 
 .london-text {
-  font-family: 'Quasimoda', sans-serif;
+  font-family: "Quasimoda", sans-serif;
   font-weight: 700 !important;
   font-size: 0.9vw;
   text-transform: uppercase;
@@ -171,8 +171,8 @@
 }
 
 .london-below {
-  font-family: 'Quasimoda', sans-serif;
-  font-weight: 600 !important;
+  font-family: "Quasimoda", sans-serif;
+  font-weight: 700 !important;
   letter-spacing: clamp(18px, 3.2vw, 56px);
   font-size: clamp(18px, 1.6vw, 34px);
   text-transform: uppercase;
@@ -482,7 +482,8 @@
     margin-bottom: 0;
     text-align: center;
     color: #fff;
-    font-family: Quasimoda, sans-serif;
+    font-family: "Quasimoda", sans-serif;
+    font-weight: 700;
     font-size: clamp(16px, 3.8vw, 22px);
     letter-spacing: clamp(10px, 5vw, 28px);
     line-height: 1;
