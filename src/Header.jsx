@@ -50,7 +50,7 @@ useEffect(() => {
   }
 
   const handleHomeHeaderVisibility = () => {
-  setShowFixedHomeMobileHeader(window.scrollY > 0.5);
+  setShowFixedHomeMobileHeader(window.scrollY > 1);
 };
 
   handleHomeHeaderVisibility();
