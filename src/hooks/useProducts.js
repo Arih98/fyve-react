@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchProducts } from "../api/products";
 import { mapProductsForList } from "../domain/product/product.mappers";
 
-export function useProducts({ page = 1, perPage = 24 } = {}) {
+export function useProducts({ page = 1, perPage = 24, category = "" } = {}) {
   const [data, setData] = useState([]);
   const [meta, setMeta] = useState({
     page,
@@ -21,18 +21,13 @@ export function useProducts({ page = 1, perPage = 24 } = {}) {
         setLoading(true);
         setError(null);
 
-        const response = await fetchProducts({ page, perPage });
+        const response = await fetchProducts({ page, perPage, category });
 
         if (!active) return;
 
         const rawItems = Array.isArray(response)
           ? response
           : response.items || response.products || [];
-          
-          if (rawItems[0]?.variations?.[0]) {
-  console.log('[useProducts] FIRST PRODUCT JSON', JSON.stringify(rawItems[0], null, 2));
-  console.log('[useProducts] FIRST VARIATION JSON', JSON.stringify(rawItems[0].variations[0], null, 2));
-}
 
         const items = mapProductsForList(rawItems);
 
@@ -60,7 +55,7 @@ export function useProducts({ page = 1, perPage = 24 } = {}) {
     return () => {
       active = false;
     };
-  }, [page, perPage]);
+  }, [page, perPage, category]);
 
   return {
     data,

@@ -1,6 +1,7 @@
 import { apiFetch } from "./client";
 
 const productsCache = new Map();
+const categoriesCache = new Map();
 
 function extractItems(response) {
   if (Array.isArray(response)) return response;
@@ -19,15 +20,37 @@ function extractSingleItem(response) {
   return items[0] || null;
 }
 
-export async function fetchProducts({ page = 1, perPage = 24 } = {}) {
-  const cacheKey = `${page}:${perPage}`;
+export async function fetchProducts({ page = 1, perPage = 24, category = "" } = {}) {
+  const cacheKey = `${page}:${perPage}:${category}`;
 
   if (productsCache.has(cacheKey)) {
     return productsCache.get(cacheKey);
   }
 
-  const response = await apiFetch(`/fyve/v1/products?page=${page}&per_page=${perPage}`);
+  const params = new URLSearchParams({
+    page: String(page),
+    per_page: String(perPage)
+  });
+
+  if (category) {
+    params.set("category", category);
+  }
+
+  const response = await apiFetch(`/fyve/v1/products?${params.toString()}`);
   productsCache.set(cacheKey, response);
+
+  return response;
+}
+
+export async function fetchCategories() {
+  const cacheKey = "all";
+
+  if (categoriesCache.has(cacheKey)) {
+    return categoriesCache.get(cacheKey);
+  }
+
+  const response = await apiFetch(`/fyve/v1/categories`);
+  categoriesCache.set(cacheKey, response);
 
   return response;
 }

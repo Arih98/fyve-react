@@ -2,16 +2,13 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
+import { useCategories } from '../hooks/useCategories';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
   const productsPerPage = 12;
-  const { data: products, loading, error } = useProducts({
-    page: 1,
-    perPage: 200
-  });
   const navigate = useNavigate();
   const navigationType = useNavigationType();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,50 +16,65 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+
+  const selectedCategory = searchParams.get('category') || '';
+
+  const { data: categories } = useCategories();
+  const { data: products, loading, error, meta } = useProducts({
+    page: 1,
+    perPage: 200,
+    category: selectedCategory
+  });
+
   const [visibleCount, setVisibleCount] = useState(() => {
-    const saved = sessionStorage.getItem('productsVisibleCount');
+    const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
     return saved ? Number(saved) : productsPerPage;
   });
 
-useEffect(() => {
-  if (!isMobile) return;
-  if (navigationType !== 'POP') return;
-  if (loading) return;
-  if (!products.length) return;
-
-  const savedY = Number(sessionStorage.getItem('productsPageScrollY') || 0);
-  if (savedY <= 0) return;
-
-  let frame = 0;
-  let cancelled = false;
-  const maxFrames = 60;
-
-  const tryRestore = () => {
-    if (cancelled) return;
-
-    const pageHeight = document.documentElement.scrollHeight;
-    const viewportHeight = window.innerHeight;
-    const canRestore = pageHeight >= savedY + viewportHeight;
-
-    if (canRestore || frame >= maxFrames) {
-      window.scrollTo(0, savedY);
-      return;
-    }
-
-    frame += 1;
-    requestAnimationFrame(tryRestore);
-  };
-
-  requestAnimationFrame(tryRestore);
-
-  return () => {
-    cancelled = true;
-  };
-}, [isMobile, navigationType, loading, products.length, visibleCount]);
+  useEffect(() => {
+    const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
+    setVisibleCount(saved ? Number(saved) : productsPerPage);
+  }, [selectedCategory]);
 
   useEffect(() => {
-    sessionStorage.setItem('productsVisibleCount', String(visibleCount));
-  }, [visibleCount]);
+    if (!isMobile) return;
+    if (navigationType !== 'POP') return;
+    if (loading) return;
+    if (!products.length) return;
+
+    const savedY = Number(sessionStorage.getItem(`productsPageScrollY:${selectedCategory || 'all'}`) || 0);
+    if (savedY <= 0) return;
+
+    let frame = 0;
+    let cancelled = false;
+    const maxFrames = 60;
+
+    const tryRestore = () => {
+      if (cancelled) return;
+
+      const pageHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      const canRestore = pageHeight >= savedY + viewportHeight;
+
+      if (canRestore || frame >= maxFrames) {
+        window.scrollTo(0, savedY);
+        return;
+      }
+
+      frame += 1;
+      requestAnimationFrame(tryRestore);
+    };
+
+    requestAnimationFrame(tryRestore);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isMobile, navigationType, loading, products.length, visibleCount, selectedCategory]);
+
+  useEffect(() => {
+    sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
+  }, [visibleCount, selectedCategory]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -89,64 +101,103 @@ useEffect(() => {
   }));
 
   const handleProductClick = (item) => {
-  const sourceEl = imageRefs.current.get(item.displayId);
-  const sourceSrc =
-    item.gallery && item.gallery.length > 0
-      ? item.gallery[0]
-      : placeholderImage;
+    const sourceEl = imageRefs.current.get(item.displayId);
+    const sourceSrc =
+      item.gallery && item.gallery.length > 0
+        ? item.gallery[0]
+        : placeholderImage;
 
-  const targetProduct = products.find((p) => p.id === item.parentId);
-  if (!targetProduct) return;
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) return;
 
-  const colorQuery = item.selectedColor
-    ? `?color=${encodeURIComponent(item.selectedColor)}`
-    : '';
+    const colorQuery = item.selectedColor
+      ? `?color=${encodeURIComponent(item.selectedColor)}`
+      : '';
 
-  const targetPath = `/product/${item.parentId}${colorQuery}`;
+    const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-  if (sourceEl) {
-    const isMobileViewport = window.innerWidth <= 768;
+    if (sourceEl) {
+      const isMobileViewport = window.innerWidth <= 768;
 
-    startProductImageTransition({
-      src: sourceSrc,
-      fromElement: sourceEl,
-      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: isMobileViewport ? 520 : 620,
-      minTargetTop: isMobileViewport ? 80 : 0,
-      zIndex: isMobileViewport ? 80 : 999999
-    });
-  }
-
-  if (isMobile) {
-    sessionStorage.setItem('productsPageScrollY', String(window.scrollY || 0));
-    sessionStorage.setItem('productsVisibleCount', String(visibleCount));
-  }
-
-  navigate(targetPath, {
-    state: {
-      product: targetProduct,
-      initialColor: item.selectedColor,
-      transitionSourceDisplayId: item.displayId,
-      transitionSourceSrc: sourceSrc,
-      fromProductGrid: true
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: isMobileViewport ? 520 : 620,
+        minTargetTop: isMobileViewport ? 80 : 0,
+        zIndex: isMobileViewport ? 80 : 999999
+      });
     }
-  });
-};
+
+    if (isMobile) {
+      sessionStorage.setItem(`productsPageScrollY:${selectedCategory || 'all'}`, String(window.scrollY || 0));
+      sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
+    }
+
+    navigate(targetPath, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc,
+        fromProductGrid: true
+      }
+    });
+  };
 
   const currentProducts = isMobile
     ? display.slice(0, visibleCount)
     : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
-  const totalPages = Math.ceil(display.length / productsPerPage);
+  const totalPages = isMobile
+    ? 1
+    : Math.max(1, meta?.totalPages || Math.ceil(display.length / productsPerPage));
 
   const handlePageChange = (page) => {
-    setSearchParams({ page: String(page) });
+    const next = new URLSearchParams(searchParams);
+    next.set('page', String(page));
+    setSearchParams(next);
+    window.scrollTo(0, 0);
+  };
+
+  const handleCategoryChange = (slug) => {
+    const next = new URLSearchParams(searchParams);
+
+    if (slug) {
+      next.set('category', slug);
+    } else {
+      next.delete('category');
+    }
+
+    next.delete('page');
+    setSearchParams(next);
+    window.scrollTo(0, 0);
   };
 
   if (loading) {
     return (
       <div className="products-container">
         <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+          <div className="products-category-filter">
+            <button
+              type="button"
+              className={`products-category-pill ${selectedCategory === '' ? 'is-active' : ''}`}
+              onClick={() => handleCategoryChange('')}
+            >
+              All
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className={`products-category-pill ${selectedCategory === category.slug ? 'is-active' : ''}`}
+                onClick={() => handleCategoryChange(category.slug)}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+
           <div className="products-grid">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="product-card skeleton-card">
@@ -168,6 +219,27 @@ useEffect(() => {
   return (
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+        <div className="products-category-filter">
+          <button
+            type="button"
+            className={`products-category-pill ${selectedCategory === '' ? 'is-active' : ''}`}
+            onClick={() => handleCategoryChange('')}
+          >
+            All
+          </button>
+
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              className={`products-category-pill ${selectedCategory === category.slug ? 'is-active' : ''}`}
+              onClick={() => handleCategoryChange(category.slug)}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+
         <ProductGrid
           products={currentProducts}
           onProductClick={handleProductClick}
@@ -186,7 +258,7 @@ useEffect(() => {
           </div>
         )}
 
-        {!isMobile && (
+        {!isMobile && totalPages > 1 && (
           <div className="pagination">
             {Array.from({ length: totalPages }, (_, i) => {
               const page = i + 1;
