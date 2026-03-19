@@ -370,7 +370,7 @@ body.locked {
 .menu-items li .submenu-item a {
   text-transform: none;
   font-size: 2em;
-  line-height: 1.2em;
+  line-height: 1em;
   color: #4A494A;
   text-decoration: none;
   font-family: quasimoda, sans-serif !important;
@@ -882,12 +882,16 @@ body.locked {
   line-height: 16vw;
 }
 
+.menu-parent-button::after {
+  content: none;
+}
+
 .submenu-items {
   margin-top: 8px;
 }
 
 .menu-items li .submenu-item a {
-  font-size: 1.5em;
+  font-size: 1em;
   line-height: 1.2em;
 }
 
