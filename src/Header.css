@@ -358,9 +358,10 @@ body.locked {
 
 .submenu-items {
   list-style: none;
-  margin: 10px 0 0 0;
+  margin: 2px 0 0 0;
   padding: 0;
   display: none;
+  margin-left: 14px;
 }
 
 .submenu-items.open {
