@@ -364,12 +364,14 @@ body.locked {
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.3s ease;
+  transform: translateY(-8px);
+  transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.3s ease, transform 0.35s ease;
 }
 
 .submenu-items.open {
   max-height: 500px;
   opacity: 1;
+  transform: translateY(0);
 }
 
 .submenu-item {
@@ -558,7 +560,7 @@ body.locked {
   text-align: left;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .menu-items {
