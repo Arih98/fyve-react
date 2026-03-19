@@ -369,7 +369,7 @@ body.locked {
 
 .submenu-item a {
   text-transform: none;
-  font-size: 2em;
+  font-size: 0.45em;
   line-height: 1.8vw;
   color: #4A494A;
   text-decoration: none;
@@ -887,7 +887,7 @@ body.locked {
 }
 
 .submenu-item a {
-  font-size: 1.5em;
+  font-size: 0.3em;
   line-height: 7vw;
 }
 
