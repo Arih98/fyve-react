@@ -437,7 +437,7 @@
 
   .home-mobile-top-logo {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 28px);
+    top: calc(env(safe-area-inset-top, 0px) + 35px);
     left: 50%;
     transform: translateX(-50%);
     z-index: 20;
@@ -478,7 +478,7 @@
 
   .london-below {
     width: 100%;
-    margin-top: 4px;
+    margin-top: -15px;
     margin-bottom: 0;
     text-align: center;
     color: #fff;
