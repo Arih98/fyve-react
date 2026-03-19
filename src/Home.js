@@ -133,7 +133,7 @@ gsap.to(".section1-img-overlay", {
         gsap.set('.fyve-letter', { y: 0 });
         gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
         gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-        gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
+        gsap.set('.fyve-image-scale', { width: '100vw', height: finalHeight });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
 gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
@@ -158,10 +158,10 @@ gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
         gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
+        gsap.to('.fyve-image-scale', { width: intermediateWidth, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-left', { x: '-100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.mask-right', { x: '100%', duration: 0.8, ease: 'expo.inOut', delay: 1 });
-        gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
+        gsap.to('.fyve-image-scale', { width: '100vw', height: finalHeight, duration: 0.8, ease: 'expo.inOut', delay: 2 });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
 gsap.set('.home-mobile-top-logo', { opacity: 0 });
 if (mobileHeaderEl) {
@@ -238,12 +238,17 @@ gsap.to('.home-mobile-top-logo', {
           <div className="fyve-text">
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
-          <div className="fyve-image-container">
-            <picture> <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" /> <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" /> </picture>
+<div className="fyve-image-scale">
+  <div className="fyve-image-container">
+    <picture>
+      <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+      <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+    </picture>
 
-            <div className="mask-left"></div>
-            <div className="mask-right"></div>
-          </div>
+    <div className="mask-left"></div>
+    <div className="mask-right"></div>
+  </div>
+</div>
           <div className="fyve-text">
             {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
           </div>
