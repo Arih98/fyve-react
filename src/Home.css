@@ -419,10 +419,12 @@
   height: 100vh;
 }
 
-.fyve-ui-layer {
-    padding-top: 30px;
-    padding-bottom: 0;
-    justify-content: flex-end;
+  .fyve-ui-layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    padding: 0;
+    height: 100%;
   }
 
 .fyve-animation-stage {
@@ -433,30 +435,52 @@
   transform: none;
 }
 
-.home-mobile-top-logo {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: block;
-  opacity: 0;
-}
+  .home-mobile-top-logo {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 18px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: block;
+    opacity: 0;
+  }
 
-.home-mobile-top-logo img {
-  display: block;
-  height: 45px;
-  width: auto;
-}
+  .home-mobile-top-logo img {
+    display: block;
+    height: 45px;
+    width: auto;
+  }
 
   .lottie-container {
-    position: absolute;
-    left: 50%;
-    bottom: 42px;
-    transform: translateX(-50%);
-    width: 90%;
+    width: 100%;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .lottie-animation-wrap {
+    width: 100%;
+    max-height: none;
+    aspect-ratio: 1.75 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .london-below {
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 0;
+    text-align: center;
+    color: #fff;
+    font-family: Quasimoda, sans-serif;
+    font-size: clamp(16px, 3.8vw, 22px);
+    letter-spacing: clamp(10px, 5vw, 28px);
+    line-height: 1;
+    white-space: nowrap;
   }
 
 .london-below {
