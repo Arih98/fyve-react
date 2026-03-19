@@ -75,6 +75,19 @@ const londonFadeDelay = animationDuration * 0.3;
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
 
+gsap.to(".fyve-image", {
+  yPercent: -10,
+  ease: "none",
+  immediateRender: false,
+  scrollTrigger: {
+    trigger: ".fyve-hero-section",
+    start: "top top",
+    end: "bottom top",
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+});
+
 gsap.to(".section1-img-overlay", {
   y: "-12vh",
   ease: "none",
