@@ -202,8 +202,8 @@
 }
 
 .lottie-animation-wrap {
-  width: min(100%, 1400px);
-  max-height: min(62vh, 760px);
+  width: min(120%, 2000px);
+  max-height: 85vh;
   display: flex;
   justify-content: center;
   align-items: center;
