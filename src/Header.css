@@ -556,7 +556,8 @@ body.locked {
   flex: 1 1 auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 0px;
+  padding-top: 8vw;
+  padding-bottom: 0;
   text-align: left;
   display: flex;
   flex-direction: column;
