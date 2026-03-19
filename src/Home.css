@@ -639,11 +639,6 @@
 }
 
 .section2-shop-button {
-  position: static;
-  transform: none;
-  margin-top: 0;
-  width: max-content;
-  white-space: nowrap;
-  align-self: flex-start;
+  display: none;
 }
 }
