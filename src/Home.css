@@ -139,6 +139,13 @@
   right: 0;
 }
 
+.fyve-image-parallax {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .london-mask {
   visibility: hidden;
   display: flex;
