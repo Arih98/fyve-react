@@ -514,12 +514,13 @@
 
 .section1-image-stack {
   position: relative;
-  width: 100%;
+  width: 88%;
   min-height: 92vw;
+  margin: 0 auto;
 }
 
 .section1-img-main {
-  width: 92%;
+  width: 88%;
   height: auto;
   display: block;
   margin-left: auto;
@@ -530,7 +531,7 @@
   position: absolute;
   left: 0;
   top: 60%;
-  width: 42%;
+  width: 36%;
   overflow: visible;
 }
 
