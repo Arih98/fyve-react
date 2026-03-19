@@ -420,9 +420,10 @@
 }
 
 .fyve-ui-layer {
-  padding-top: 30px;
-  padding-bottom: 24px;
-}
+    padding-top: 30px;
+    padding-bottom: 0;
+    justify-content: flex-end;
+  }
 
 .fyve-animation-stage {
   top: 0;
@@ -448,13 +449,15 @@
   width: auto;
 }
 
-.lottie-container {
-  width: 90%;
-  padding: 0 0 18px;
-  margin-top: auto;
-  margin-left: auto;
-  margin-right: auto;
-}
+  .lottie-container {
+    position: absolute;
+    left: 50%;
+    bottom: 42px;
+    transform: translateX(-50%);
+    width: 90%;
+    padding: 0;
+    margin: 0;
+  }
 
 .london-below {
   color: #fff;
