@@ -255,6 +255,7 @@ const handleToggleMenu = () => {
   };
 
   const menuItems = [
+    { id: 'ss26', name: 'SS26', path: '/products?category=ss26', image: '/api/Uploads/LOOK_11_2043-1.webp' },
     { id: 'boy', name: 'BOY', path: '/products?category=boys', image: '/api/Uploads/LOOK_11_2043-1.webp' },
     { id: 'girl', name: 'GIRL', path: '/products?category=girls', image: '/api/Uploads/LOOK-9_1416.webp' },
     { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
