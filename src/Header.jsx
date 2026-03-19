@@ -399,13 +399,13 @@ const menuItems = [
   const isSubmenuOpen = openSubmenuId === item.id;
 
   return (
-    <li
-      key={item.id}
-      data-menu-item={item.id}
-      className={`${activeMenuImage === item.id ? 'active' : ''}${hasChildren ? ' has-submenu' : ''}${isSubmenuOpen ? ' submenu-open' : ''}`}
-      onFocus={() => handleMenuImageChange(item.id)}
-      onTouchStart={() => handleMenuImageChange(item.id)}
-    >
+<li
+  key={item.id}
+  data-menu-item={item.id}
+  className={`${activeMenuImage === item.id ? 'active' : ''}${hasChildren ? ' has-submenu' : ''}${isSubmenuOpen ? ' submenu-open' : ''}`}
+  onFocus={() => handleMenuImageChange(item.id)}
+  onTouchStart={() => handleMenuImageChange(item.id)}
+>
       {hasChildren ? (
         <>
           <button

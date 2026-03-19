@@ -493,7 +493,7 @@
 .section-1 {
   height: auto;
   min-height: 100dvh;
-  padding: 60px 15px;
+  padding: 60px 30px;
 }
 
 .section1-content {
@@ -514,7 +514,7 @@
 
 .section1-image-stack {
   position: relative;
-  width: 88%;
+  width: 100%;
   min-height: 92vw;
   margin: 0 auto;
 }
@@ -557,7 +557,7 @@
 }
 
 .section1-body-text {
-  max-width: 100%;
+  max-width: 20ch;
   font-size: 4.8vw;
   font-weight: 500;
   line-height: 1.3;

@@ -329,6 +329,7 @@ body.locked {
   display: inline-block;
   line-height: 4.6vw;
   position: relative;
+  padding-right: 24px;
   cursor: pointer;
 }
 
@@ -924,12 +925,26 @@ body.locked {
   content: none;
 }
 
+.menu-parent-button::before {
+  content: '+';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  }
+
+.menu-items li.has-submenu.submenu-open > .menu-parent-button::before {
+  content: '−';
+}
+
 .submenu-items {
   margin-top: 8px;
 }
 
 .menu-items li .submenu-item a {
-  font-size: 1.5em;
+  font-size: 1.2em;
   line-height: 1.2em;
 }
 
