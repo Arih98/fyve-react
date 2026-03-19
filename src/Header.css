@@ -319,6 +319,7 @@ body.locked {
   background: none;
   border: none;
   padding: 0;
+  padding-bottom: 0.25em;
   margin: 0;
   text-transform: uppercase;
   text-decoration: none;
@@ -345,8 +346,15 @@ body.locked {
   transition: transform 0.3s ease;
 }
 
-.menu-parent-button:hover::after {
-  transform: scaleX(1);
+.menu-parent-button:focus::after,
+.menu-parent-button:active::after {
+  transform: scaleX(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-parent-button:hover::after {
+    transform: scaleX(1);
+  }
 }
 
 .submenu-items {
@@ -379,7 +387,7 @@ body.locked {
   padding: 2px 0;
 }
 
-.submenu-item a::after {
+.menu-items li .submenu-item a::after {
   display: none;
 }
 
@@ -576,8 +584,10 @@ body.locked {
   transition: transform 0.3s ease;
 }
 
-.menu-items li a:hover::after {
-  transform: scaleX(1);
+@media (hover: hover) and (pointer: fine) {
+  .menu-items li a:hover::after {
+    transform: scaleX(1);
+  }
 }
 
 .mobile-menu-logo {
