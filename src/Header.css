@@ -364,14 +364,12 @@ body.locked {
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  transform: translateY(-8px);
-  transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.3s ease, transform 0.35s ease;
+  transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.3s ease;
 }
 
 .submenu-items.open {
   max-height: 500px;
   opacity: 1;
-  transform: translateY(0);
 }
 
 .submenu-item {
