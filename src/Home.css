@@ -170,12 +170,6 @@
   display: inline-block;
 }
 
-.hero-mobile-lottie-slot {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .london-below {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 600 !important;
@@ -457,15 +451,20 @@
     width: auto;
   }
 
-  .lottie-container {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
+.lottie-container {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + clamp(76px, 11vw, 96px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(88vw, 520px);
+  z-index: 12;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
 
   .lottie-animation-wrap {
     width: 100%;
@@ -488,18 +487,6 @@
     line-height: 1;
     white-space: nowrap;
   }
-
-.hero-mobile-lottie-slot {
-  position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + clamp(76px, 11vw, 96px));
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(88vw, 520px);
-  z-index: 12;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
 
 .section-1 {
   height: auto;
