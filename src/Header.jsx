@@ -24,7 +24,7 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
-const [fixedHomeMobileHeaderOpacity, setFixedHomeMobileHeaderOpacity] = useState(() => Math.max(0, Math.min(window.scrollY / 70, 1)));
+const [fixedHomeMobileHeaderOpacity, setFixedHomeMobileHeaderOpacity] = useState(() => Math.max(0, Math.min(window.scrollY / 50, 1)));
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -50,7 +50,7 @@ useEffect(() => {
   }
 
   const handleHomeHeaderVisibility = () => {
-    setFixedHomeMobileHeaderOpacity(Math.max(0, Math.min(window.scrollY / 70, 1)));
+    setFixedHomeMobileHeaderOpacity(Math.max(0, Math.min(window.scrollY / 50, 1)));
   };
 
   handleHomeHeaderVisibility();
@@ -61,14 +61,18 @@ useEffect(() => {
 
 useEffect(() => {
   const handleHeaderThemeScroll = () => {
-    setIsScrolled(window.scrollY > 10);
+    if (isMobile && isHomePage) {
+      setIsScrolled(window.scrollY > 0);
+    } else {
+      setIsScrolled(window.scrollY > 10);
+    }
   };
 
   handleHeaderThemeScroll();
   window.addEventListener('scroll', handleHeaderThemeScroll, { passive: true });
 
   return () => window.removeEventListener('scroll', handleHeaderThemeScroll);
-}, [location.pathname]);
+}, [location.pathname, isMobile, isHomePage]);
 
 useEffect(() => {
   if (!isProductDetailPage) {

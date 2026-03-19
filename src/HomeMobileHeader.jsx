@@ -11,7 +11,7 @@ const HomeMobileHeader = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');
   const [isImageAnimating, setIsImageAnimating] = useState(false);
-  const [fadeProgress, setFadeProgress] = useState(() => Math.max(0, Math.min(window.scrollY / 70, 1)));
+  const [fadeProgress, setFadeProgress] = useState(() => Math.max(0, Math.min(window.scrollY / 50, 1)));
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
   const prevMenuStateRef = useRef(menuState);
 
