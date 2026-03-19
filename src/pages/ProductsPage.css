@@ -2,28 +2,6 @@
   background-color: #fff;
 }
 
-.products-category-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 24px 0 20px;
-}
-
-.products-category-pill {
-  border: 1px solid #4A494A;
-  background: transparent;
-  color: #4A494A;
-  padding: 10px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-  font: inherit;
-}
-
-.products-category-pill.is-active {
-  background: #4A494A;
-  color: #F7F7F7;
-}
-
 @media (min-width: 769px) {
   .products-container {
     padding-top: 155px;

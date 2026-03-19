@@ -2,7 +2,6 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
-import { useCategories } from '../hooks/useCategories';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
@@ -19,7 +18,6 @@ const ProductsPage = () => {
 
   const selectedCategory = searchParams.get('category') || '';
 
-  const { data: categories } = useCategories();
   const { data: products, loading, error, meta } = useProducts({
     page: 1,
     perPage: 200,
@@ -160,43 +158,10 @@ const ProductsPage = () => {
     window.scrollTo(0, 0);
   };
 
-  const handleCategoryChange = (slug) => {
-    const next = new URLSearchParams(searchParams);
-
-    if (slug) {
-      next.set('category', slug);
-    } else {
-      next.delete('category');
-    }
-
-    next.delete('page');
-    setSearchParams(next);
-    window.scrollTo(0, 0);
-  };
-
   if (loading) {
     return (
       <div className="products-container">
         <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-          <div className="products-category-filter">
-            <button
-              type="button"
-              className={`products-category-pill ${selectedCategory === '' ? 'is-active' : ''}`}
-              onClick={() => handleCategoryChange('')}
-            >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                className={`products-category-pill ${selectedCategory === category.slug ? 'is-active' : ''}`}
-                onClick={() => handleCategoryChange(category.slug)}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
 
           <div className="products-grid">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -219,26 +184,6 @@ const ProductsPage = () => {
   return (
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-        <div className="products-category-filter">
-          <button
-            type="button"
-            className={`products-category-pill ${selectedCategory === '' ? 'is-active' : ''}`}
-            onClick={() => handleCategoryChange('')}
-          >
-            All
-          </button>
-
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              className={`products-category-pill ${selectedCategory === category.slug ? 'is-active' : ''}`}
-              onClick={() => handleCategoryChange(category.slug)}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
 
         <ProductGrid
           products={currentProducts}
