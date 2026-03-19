@@ -75,19 +75,6 @@ const londonFadeDelay = animationDuration * 0.3;
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
 
-gsap.to(".fyve-image-parallax", {
-  yPercent: -10,
-  ease: "none",
-  immediateRender: false,
-  scrollTrigger: {
-    trigger: ".fyve-hero-section",
-    start: "top top",
-    end: "bottom top",
-    scrub: true,
-    invalidateOnRefresh: true
-  }
-});
-
 gsap.to(".section1-img-overlay", {
   y: "-12vh",
   ease: "none",
@@ -252,16 +239,11 @@ gsap.to('.home-mobile-top-logo', {
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
           <div className="fyve-image-container">
-  <div className="fyve-image-parallax">
-    <picture>
-      <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-      <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-    </picture>
-  </div>
+            <picture> <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" /> <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" /> </picture>
 
-  <div className="mask-left"></div>
-  <div className="mask-right"></div>
-</div>
+            <div className="mask-left"></div>
+            <div className="mask-right"></div>
+          </div>
           <div className="fyve-text">
             {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
           </div>
