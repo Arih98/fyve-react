@@ -1,5 +1,3 @@
-header.jsx:
-
 import { useMobileMenuController } from './hooks/useMobileMenuController';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
