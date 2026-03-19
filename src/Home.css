@@ -483,14 +483,16 @@
     white-space: nowrap;
   }
 
-.london-below {
-  color: #fff;
-  font-family: Quasimoda, sans-serif;
-  font-size: 4vw;
-  letter-spacing: 6vw;
-  white-space: nowrap;
-  margin-top: 0;
-  margin-bottom: 20px;
+.hero-mobile-lottie-slot {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + clamp(76px, 11vw, 96px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(88vw, 520px);
+  z-index: 12;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .section-1 {
