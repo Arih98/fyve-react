@@ -647,12 +647,6 @@ body.locked {
   align-items: center;
 }
 
-.mobile-header.first-header.home-transparent {
-  --header-icon-color: #4A494A;
-  background-color: #ffffff !important;
-  background-image: none;
-}
-
   .mobile-header.first-header.hide-header {
     transform: translateY(0) !important;
     pointer-events: auto;
@@ -867,17 +861,4 @@ body {
     line-height: 16vw;
   }
 
-}
-
-@media (max-width: 768px) {
-  .mobile-header.first-header.home-mobile-hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .mobile-header.first-header.home-mobile-visible {
-    opacity: 1;
-    pointer-events: auto;
-    transition: opacity 0.3s ease;
-  }
 }

@@ -1,3 +1,5 @@
+header.jsx:
+
 import { useMobileMenuController } from './hooks/useMobileMenuController';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
@@ -24,7 +26,6 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
-const [showFixedHomeMobileHeader, setShowFixedHomeMobileHeader] = useState(() => window.scrollY > 0);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -36,43 +37,21 @@ const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
   !delayTransparentHeader &&
   !(menuState === 'closing' && !isMobile && isHomePage && !isScrolled && !isSearchOpen);
-const useWhiteHeaderIcons = useTransparentHomeHeader && !isMobile;
-
-const logoSrc = useWhiteHeaderIcons ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
-const searchIconSrc = useWhiteHeaderIcons ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
-const accountIconSrc = useWhiteHeaderIcons ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
-const bagIconSrc = useWhiteHeaderIcons ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
-
-useEffect(() => {
-  if (!isMobile || !isHomePage) {
-    setShowFixedHomeMobileHeader(true);
-    return;
-  }
-
-  const handleHomeHeaderVisibility = () => {
-    setShowFixedHomeMobileHeader(window.scrollY > 0);
-  };
-
-  handleHomeHeaderVisibility();
-  window.addEventListener('scroll', handleHomeHeaderVisibility, { passive: true });
-
-  return () => window.removeEventListener('scroll', handleHomeHeaderVisibility);
-}, [isMobile, isHomePage]);
+const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
+const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
+const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
+const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
 
 useEffect(() => {
   const handleHeaderThemeScroll = () => {
-    if (isMobile && isHomePage) {
-      setIsScrolled(window.scrollY > 0);
-    } else {
-      setIsScrolled(window.scrollY > 10);
-    }
+    setIsScrolled(window.scrollY > 10);
   };
 
   handleHeaderThemeScroll();
   window.addEventListener('scroll', handleHeaderThemeScroll, { passive: true });
 
   return () => window.removeEventListener('scroll', handleHeaderThemeScroll);
-}, [location.pathname, isMobile, isHomePage]);
+}, [location.pathname]);
 
 useEffect(() => {
   if (!isProductDetailPage) {
@@ -309,9 +288,9 @@ const handleToggleMenu = () => {
   return (
   <>
     
-<div
+    <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}${isHomePage && isMobile && !showFixedHomeMobileHeader ? ' home-mobile-hidden' : ' home-mobile-visible'}`}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 

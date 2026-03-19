@@ -412,11 +412,11 @@
   }
 
 .fyve-hero-section {
-  height: 93vh;
+  height: 100vh;
 }
 
 .fyve-hero-viewport {
-  height: 93vh;
+  height: 100vh;
 }
 
 .fyve-ui-layer {
@@ -428,7 +428,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 93vh;
+  height: 100vh;
   transform: none;
 }
 
@@ -608,7 +608,6 @@
   transform: none;
   font-size: 9vw;
   font-weight: 500;
-  letter-spacing: -0.01em;
   line-height: 0.95;
   max-width: 19ch;
   text-align: left;
