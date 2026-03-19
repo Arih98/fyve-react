@@ -59,7 +59,7 @@ body.locked {
   z-index: 10002;
   box-sizing: border-box;
   transform: translateY(0);
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.1s, background-color 0.3s;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s, background-image 0.3s;
 }
 
 .mobile-header.first-header.home-transparent {
@@ -867,17 +867,4 @@ body {
     line-height: 16vw;
   }
 
-}
-
-@media (max-width: 768px) {
-  .mobile-header.first-header.home-mobile-hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .mobile-header.first-header.home-mobile-visible {
-    opacity: 1;
-    pointer-events: auto;
-    transition: opacity 0.3s ease;
-  }
 }

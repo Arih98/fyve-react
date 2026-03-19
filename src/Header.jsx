@@ -24,7 +24,7 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
-const [showFixedHomeMobileHeader, setShowFixedHomeMobileHeader] = useState(() => window.scrollY > 2);
+const [fixedHomeMobileHeaderOpacity, setFixedHomeMobileHeaderOpacity] = useState(() => Math.max(0, Math.min(window.scrollY / 70, 1)));
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -45,13 +45,13 @@ const bagIconSrc = useWhiteHeaderIcons ? '/assets/BagIcon-White.svg' : '/assets/
 
 useEffect(() => {
   if (!isMobile || !isHomePage) {
-    setShowFixedHomeMobileHeader(true);
+    setFixedHomeMobileHeaderOpacity(1);
     return;
   }
 
   const handleHomeHeaderVisibility = () => {
-  setShowFixedHomeMobileHeader(window.scrollY > 1);
-};
+    setFixedHomeMobileHeaderOpacity(Math.max(0, Math.min(window.scrollY / 70, 1)));
+  };
 
   handleHomeHeaderVisibility();
   window.addEventListener('scroll', handleHomeHeaderVisibility, { passive: true });
@@ -305,9 +305,17 @@ const handleToggleMenu = () => {
   return (
   <>
     
-    <div
+<div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}${isHomePage && isMobile && !showFixedHomeMobileHeader ? ' home-mobile-hidden' : ' home-mobile-visible'}`}
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  style={
+    isHomePage && isMobile
+      ? {
+          opacity: fixedHomeMobileHeaderOpacity,
+          pointerEvents: fixedHomeMobileHeaderOpacity < 0.05 ? 'none' : 'auto'
+        }
+      : undefined
+  }
 >
   {BurgerIcon}
 
