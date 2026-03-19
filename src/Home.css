@@ -608,6 +608,7 @@
   transform: none;
   font-size: 9vw;
   font-weight: 500;
+  letter-spacing: -0.01em;
   line-height: 0.95;
   max-width: 19ch;
   text-align: left;

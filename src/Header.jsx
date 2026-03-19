@@ -24,7 +24,7 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
-const [showFixedHomeMobileHeader, setShowFixedHomeMobileHeader] = useState(() => window.scrollY > 10);
+const [showFixedHomeMobileHeader, setShowFixedHomeMobileHeader] = useState(() => window.scrollY > 2);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -50,8 +50,8 @@ useEffect(() => {
   }
 
   const handleHomeHeaderVisibility = () => {
-    setShowFixedHomeMobileHeader(window.scrollY > 10);
-  };
+  setShowFixedHomeMobileHeader(window.scrollY > 2);
+};
 
   handleHomeHeaderVisibility();
   window.addEventListener('scroll', handleHomeHeaderVisibility, { passive: true });
