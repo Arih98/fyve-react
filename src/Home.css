@@ -170,6 +170,13 @@
   display: inline-block;
 }
 
+.hero-mobile-lottie-slot {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
 .london-below {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 600 !important;
