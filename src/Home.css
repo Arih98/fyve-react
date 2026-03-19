@@ -466,14 +466,15 @@
   justify-content: flex-start;
 }
 
-  .lottie-animation-wrap {
-    width: 100%;
-    max-height: none;
-    aspect-ratio: 1.75 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.lottie-animation-wrap {
+  width: 100%;
+  max-height: none;
+  aspect-ratio: 1.75 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-10px);
+}
 
   .london-below {
     width: 100%;
