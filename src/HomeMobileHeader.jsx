@@ -11,13 +11,13 @@ const HomeMobileHeader = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');
   const [isImageAnimating, setIsImageAnimating] = useState(false);
-  const [fadeProgress, setFadeProgress] = useState(() => Math.max(0, Math.min(window.scrollY / 50, 1)));
+  const [isVisible, setIsVisible] = useState(() => window.scrollY <= 0);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
   const prevMenuStateRef = useRef(menuState);
 
-  useEffect(() => {
+useEffect(() => {
   const handleScroll = () => {
-    setFadeProgress(Math.max(0, Math.min(window.scrollY / 50, 1)));
+    setIsVisible(window.scrollY <= 0);
   };
 
   handleScroll();
@@ -111,14 +111,7 @@ const HomeMobileHeader = () => {
 
   return (
     <>
-      <div
-  className={`home-inline-mobile-header${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}
-  style={{
-    opacity: 1 - fadeProgress,
-    transform: 'translateY(0)',
-    pointerEvents: fadeProgress > 0.95 ? 'none' : 'auto'
-  }}
->
+<div className={`home-inline-mobile-header${isVisible ? ' is-visible' : ' is-hidden'}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
         {BurgerIcon}
 
         <div className="header-logo mobile-hide-logo">

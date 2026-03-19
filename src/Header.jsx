@@ -24,7 +24,7 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
-const [fixedHomeMobileHeaderOpacity, setFixedHomeMobileHeaderOpacity] = useState(() => Math.max(0, Math.min(window.scrollY / 50, 1)));
+const [showFixedHomeMobileHeader, setShowFixedHomeMobileHeader] = useState(() => window.scrollY > 0);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -45,12 +45,12 @@ const bagIconSrc = useWhiteHeaderIcons ? '/assets/BagIcon-White.svg' : '/assets/
 
 useEffect(() => {
   if (!isMobile || !isHomePage) {
-    setFixedHomeMobileHeaderOpacity(1);
+    setShowFixedHomeMobileHeader(true);
     return;
   }
 
   const handleHomeHeaderVisibility = () => {
-    setFixedHomeMobileHeaderOpacity(Math.max(0, Math.min(window.scrollY / 50, 1)));
+    setShowFixedHomeMobileHeader(window.scrollY > 0);
   };
 
   handleHomeHeaderVisibility();
@@ -311,15 +311,7 @@ const handleToggleMenu = () => {
     
 <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
-  style={
-    isHomePage && isMobile
-      ? {
-          opacity: fixedHomeMobileHeaderOpacity,
-          pointerEvents: fixedHomeMobileHeaderOpacity < 0.2 ? 'none' : 'auto'
-        }
-      : undefined
-  }
+  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}${isHomePage && isMobile && !showFixedHomeMobileHeader ? ' home-mobile-hidden' : ' home-mobile-visible'}`}
 >
   {BurgerIcon}
 
