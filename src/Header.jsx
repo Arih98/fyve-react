@@ -316,7 +316,7 @@ const handleToggleMenu = () => {
     isHomePage && isMobile
       ? {
           opacity: fixedHomeMobileHeaderOpacity,
-          pointerEvents: fixedHomeMobileHeaderOpacity < 0.05 ? 'none' : 'auto'
+          pointerEvents: fixedHomeMobileHeaderOpacity < 0.2 ? 'none' : 'auto'
         }
       : undefined
   }

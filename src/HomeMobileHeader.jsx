@@ -17,7 +17,7 @@ const HomeMobileHeader = () => {
 
   useEffect(() => {
   const handleScroll = () => {
-    setFadeProgress(Math.max(0, Math.min(window.scrollY / 70, 1)));
+    setFadeProgress(Math.max(0, Math.min(window.scrollY / 50, 1)));
   };
 
   handleScroll();
@@ -115,7 +115,7 @@ const HomeMobileHeader = () => {
   className={`home-inline-mobile-header${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}`}
   style={{
     opacity: 1 - fadeProgress,
-    transform: `translateY(${fadeProgress * 10}px)`,
+    transform: 'translateY(0)',
     pointerEvents: fadeProgress > 0.95 ? 'none' : 'auto'
   }}
 >
