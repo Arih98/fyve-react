@@ -367,10 +367,10 @@ body.locked {
   transition: none !important;
 }
 
-.submenu-item a {
+.menu-items li .submenu-item a {
   text-transform: none;
-  font-size: 0.45em;
-  line-height: 1.8vw;
+  font-size: 2em;
+  line-height: 1.2em;
   color: #4A494A;
   text-decoration: none;
   font-family: quasimoda, sans-serif !important;
@@ -886,9 +886,9 @@ body.locked {
   margin-top: 8px;
 }
 
-.submenu-item a {
-  font-size: 0.3em;
-  line-height: 7vw;
+.menu-items li .submenu-item a {
+  font-size: 1.5em;
+  line-height: 1.2em;
 }
 
 body {
