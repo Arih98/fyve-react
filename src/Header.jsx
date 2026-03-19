@@ -24,6 +24,7 @@ const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
+const [openSubmenuId, setOpenSubmenuId] = useState(null);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -254,14 +255,25 @@ const handleToggleMenu = () => {
     setActiveMenuImage(newId);
   };
 
-  const menuItems = [
-    { id: 'ss26', name: 'SS26', path: '/products?category=ss26', image: '/api/Uploads/LOOK_11_2043-1.webp' },
-    { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/api/Uploads/LOOK_11_2043-1.webp' },
-    { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/api/Uploads/LOOK-9_1416.webp' },
-    { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
-    { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
-    { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
-  ];
+const menuItems = [
+  {
+    id: 'ss26',
+    name: 'SS26',
+    path: '/products?category=ss26',
+    image: '/api/Uploads/LOOK_11_2043-1.webp',
+    children: [
+      { id: 'regents', name: 'The Regents Collection', path: '/products?category=the-regents-collection' },
+      { id: 'grosvenor', name: 'The Grosvenor Collection', path: '/products?category=the-grosvenor-collection' },
+      { id: 'langham', name: 'The Langham Collection', path: '/products?category=the-langham-collection' },
+      { id: 'bloomsbury', name: 'The Bloomsbury Collection', path: '/products?category=the-bloomsbury-collection' }
+    ]
+  },
+  { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/api/Uploads/LOOK_11_2043-1.webp' },
+  { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/api/Uploads/LOOK-9_1416.webp' },
+  { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
+  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
+  { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
+];
 
   const BurgerIcon = (
   <button
@@ -382,20 +394,62 @@ const handleToggleMenu = () => {
             </div>
             <div className="menu-items-wrapper">
               <ul className="menu-items">
-                {menuItems.map(item => (
-                  <li
-                    key={item.id}
-                    data-menu-item={item.id}
-                    className={activeMenuImage === item.id ? 'active' : ''}
-                    onFocus={() => handleMenuImageChange(item.id)}
-                    onTouchStart={() => handleMenuImageChange(item.id)}
-onClick={() => {
-  setIsMenuOpen(false);
-}}
-                  >
-                    <NavLink to={item.path} onMouseEnter={() => handleMenuImageChange(item.id)}>{item.name}</NavLink>
-                  </li>
-                ))}
+                {menuItems.map(item => {
+  const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+  const isSubmenuOpen = openSubmenuId === item.id;
+
+  return (
+    <li
+      key={item.id}
+      data-menu-item={item.id}
+      className={`${activeMenuImage === item.id ? 'active' : ''}${hasChildren ? ' has-submenu' : ''}${isSubmenuOpen ? ' submenu-open' : ''}`}
+      onFocus={() => handleMenuImageChange(item.id)}
+      onTouchStart={() => handleMenuImageChange(item.id)}
+    >
+      {hasChildren ? (
+        <>
+          <button
+            type="button"
+            className="menu-parent-button"
+            onMouseEnter={() => handleMenuImageChange(item.id)}
+            onClick={() => {
+              setOpenSubmenuId(prev => prev === item.id ? null : item.id);
+            }}
+          >
+            {item.name}
+          </button>
+
+          <ul className={`submenu-items${isSubmenuOpen ? ' open' : ''}`}>
+            {item.children.map(child => (
+              <li key={child.id} className="submenu-item">
+                <NavLink
+                  to={child.path}
+                  onClick={() => {
+                    setOpenSubmenuId(null);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  {child.name}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <NavLink
+          to={item.path}
+          onMouseEnter={() => handleMenuImageChange(item.id)}
+          onClick={() => {
+            setOpenSubmenuId(null);
+            setIsMenuOpen(false);
+          }}
+        >
+          {item.name}
+        </NavLink>
+      )}
+    </li>
+  );
+})}
               </ul>
             </div>
           </div>

@@ -309,6 +309,80 @@ body.locked {
   opacity: 1;
 }
 
+.menu-items li.has-submenu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.menu-parent-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #4A494A;
+  font-size: 3.6111111111vw;
+  font-family: quasimoda, sans-serif !important;
+  font-weight: 400;
+  display: inline-block;
+  line-height: 4.6vw;
+  position: relative;
+  cursor: pointer;
+}
+
+.menu-parent-button::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background-color: #4A494A;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.menu-parent-button:hover::after {
+  transform: scaleX(1);
+}
+
+.submenu-items {
+  list-style: none;
+  margin: 10px 0 0 0;
+  padding: 0;
+  display: none;
+}
+
+.submenu-items.open {
+  display: block;
+}
+
+.submenu-item {
+  margin: 0;
+  transform: none !important;
+  clip-path: none !important;
+  transition: none !important;
+}
+
+.submenu-item a {
+  text-transform: none;
+  font-size: 1.25vw;
+  line-height: 1.8vw;
+  color: #4A494A;
+  text-decoration: none;
+  font-family: quasimoda, sans-serif !important;
+  font-weight: 400;
+  display: inline-block;
+  padding: 2px 0;
+}
+
+.submenu-item a::after {
+  display: none;
+}
+
 .menu-background {
   position: absolute;
   top: 110px;
@@ -801,6 +875,20 @@ body.locked {
   bottom: 0;
   height: auto;
   background: transparent;
+}
+
+.menu-parent-button {
+  font-size: 13vw;
+  line-height: 16vw;
+}
+
+.submenu-items {
+  margin-top: 8px;
+}
+
+.submenu-item a {
+  font-size: 5.4vw;
+  line-height: 7vw;
 }
 
 body {
