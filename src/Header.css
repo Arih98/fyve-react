@@ -358,8 +358,9 @@ body.locked {
 
 .submenu-items {
   list-style: none;
-  margin: 2px 0 0 0;
+  margin: 0;
   padding: 0;
+  margin-left: 14px;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
