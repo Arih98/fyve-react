@@ -196,20 +196,20 @@ gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0
 gsap.to('.london-mask .london-text:last-child', { x: '200vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
 
         gsap.to('.lottie-container', {
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'expo.inOut',
-          delay: 2.8,
-          onStart: () => {
-            lottieRef.current?.play();
-            setTimeout(() => {
-              gsap.to('.london-below', { opacity: 1, duration: 0.5 });
-            }, londonFadeDelay);
-          },
-          onComplete: () => {
-            introDone.current = true;
-          }
-        });
+  autoAlpha: 1,
+  duration: 0.8 * speed,
+  ease: 'expo.inOut',
+  delay: 2.8 * speed,
+  onStart: () => {
+    lottieRef.current?.play();
+    setTimeout(() => {
+      gsap.to('.london-below', { opacity: 1, duration: 0.5 * speed });
+    }, londonFadeDelay);
+  },
+  onComplete: () => {
+    introDone.current = true;
+  }
+});
       }
     }, heroRef);
 
