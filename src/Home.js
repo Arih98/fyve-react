@@ -122,8 +122,8 @@ gsap.to(".section1-img-overlay", {
       const londonY = isMobile ? -14.41 : -1.41;
       const fyveMoveX = isMobile ? '-5px' : '-0.4vw';
       const fyveMoveXEnd = isMobile ? '5px' : '0.4vw';
-      const londonMoveX = isMobile ? '-70px' : '-8.9vw';
-      const londonMoveXEnd = isMobile ? '70px' : '8.9vw';
+      const londonMoveX = isMobile ? '-55px' : '-8.9vw';
+      const londonMoveXEnd = isMobile ? '55px' : '8.9vw';
 
       if (hasAnimated.current) {
         gsap.set('.fyve-mask', { visibility: 'visible' });
