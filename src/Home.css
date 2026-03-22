@@ -50,10 +50,6 @@
 .fyve-brand-layer {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   z-index: 1;
 }
 
@@ -74,11 +70,15 @@
 
 .fyve-mask {
   visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: flex;
   align-items: center;
   flex-direction: row;
   gap: 0;
   z-index: 1;
+  transform: translate(-50%, -50%);
 }
 
 .fyve-text {
@@ -141,6 +141,9 @@
 
 .london-mask {
   visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
