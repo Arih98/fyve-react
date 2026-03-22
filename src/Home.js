@@ -138,12 +138,12 @@ gsap.to(".section1-img-overlay", {
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
 gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
-        gsap.set('.london-mask', {
+gsap.set('.london-mask', {
   xPercent: -50,
   yPercent: -50,
   x: `${londonX}vw`,
-  y: `${londonY + londonHeight}vw`,
-  marginTop: `-${londonHeight}vw`,
+  y: isMobile ? `${londonY}vw` : `${londonY + londonHeight}vw`,
+  marginTop: isMobile ? 0 : `-${londonHeight}vw`,
   visibility: 'visible'
 });
         gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
@@ -152,10 +152,11 @@ gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
         gsap.set('.fyve-mask', { visibility: 'visible' });
-        gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
-        gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
-        gsap.set('.fyve-image', { visibility: 'visible' });
-        gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
+gsap.set('.fyve-mask', { xPercent: -50, yPercent: -50 });
+gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
+gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
+gsap.set('.fyve-image', { visibility: 'visible' });
+gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
         gsap.set('.london-mask', { xPercent: -50, yPercent: -50, x: `${londonX}vw`, y: `${londonY}vw`, marginTop: 0, visibility: 'visible' });
         gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
 gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
