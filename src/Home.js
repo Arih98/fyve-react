@@ -148,7 +148,7 @@ gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
         gsap.set('.fyve-image', { visibility: 'visible' });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
-        gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, visibility: 'visible' });
+        gsap.set('.london-mask', { x: `${londonX}vw`, y: `${londonY}vw`, marginTop: 0, visibility: 'visible' });
         gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
         gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
         gsap.set('.lottie-container', { autoAlpha: 0 });
@@ -179,22 +179,20 @@ gsap.to('.home-mobile-top-logo', {
   ease: 'expo.inOut',
   delay: 2.8
 });
-        if (!isMobile) {
-  gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
-} else {
-  gsap.set('.london-letter', { y: 0 });
-}
+        gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3, ease: 'expo.inOut' });
         gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8, ease: 'expo.inOut', delay: 1 });
         gsap.to('.london-mask .london-text:first-child', { x: '-150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
         gsap.to('.london-mask .london-text:last-child', { x: '150vw', duration: 0.69, ease: 'expo.inOut', delay: 2, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.london-mask', {
-  marginTop: `-${londonHeight}vw`,
-  y: isMobile ? `${londonY}vw` : `${londonY + londonHeight}vw`,
-  duration: 0.8,
-  ease: 'expo.inOut',
-  delay: 2
-});
+        if (!isMobile) {
+  gsap.to('.london-mask', {
+    marginTop: `-${londonHeight}vw`,
+    y: `${londonY + londonHeight}vw`,
+    duration: 0.8,
+    ease: 'expo.inOut',
+    delay: 2
+  });
+}
         gsap.to('.lottie-container', {
           autoAlpha: 1,
           duration: 0.8,
