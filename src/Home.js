@@ -69,7 +69,7 @@ const londonFadeDelay = animationDuration * 0.3;
 
     const isMobile = window.innerWidth <= 768;
     const finalHeight = '100vh';
-    const intermediateWidth = '18vw';
+    const intermediateWidth = isMobile ? '30vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
 
     const ctx = gsap.context(() => {
