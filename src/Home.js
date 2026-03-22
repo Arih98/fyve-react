@@ -119,7 +119,7 @@ gsap.to(".section1-img-overlay", {
 
       const fyveTextY = -1.11;
       const londonX = 1.3;
-      const londonY = isMobile ? -14.41 : -1.41;
+      const londonY = isMobile ? -10.5 : 1.2;
       const fyveMoveX = isMobile ? '-5px' : '-0.4vw';
       const fyveMoveXEnd = isMobile ? '5px' : '0.4vw';
       const londonMoveX = isMobile ? '-55px' : '-8.9vw';
