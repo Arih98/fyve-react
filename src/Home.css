@@ -173,12 +173,12 @@
 .london-below {
   font-family: "Quasimoda", sans-serif;
   font-weight: 700 !important;
-  letter-spacing: clamp(18px, 3.2vw, 56px);
-  font-size: clamp(18px, 1.6vw, 34px);
+  font-size: clamp(28px, 2.4vw, 48px);
+  letter-spacing: clamp(20px, 3vw, 60px);
   text-transform: uppercase;
   color: #fff;
   z-index: 3;
-  margin: 8px 0 0;
+  margin: -20px 0 0;
   padding: 0;
   width: 100%;
   text-align: center;
@@ -189,6 +189,7 @@
 
 .lottie-container {
   position: relative;
+  transform: translateY(-40px);
   width: 100%;
   z-index: 2;
   display: flex;
@@ -478,7 +479,7 @@
 
   .london-below {
     width: 100%;
-    margin-top: -35px;
+    margin-top: -32px;
     margin-bottom: 0;
     text-align: center;
     color: #fff;
