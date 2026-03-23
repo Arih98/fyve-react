@@ -21,11 +21,6 @@ const setHeroViewportRef = (node) => {
 };
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
-const londonStart = 0.35 * speed;
-const londonDuration = 1.3 * speed;
-const londonEnd = londonStart + londonDuration;
-const pauseAfterLondon = 0.4 * speed;
-const imageRevealDelay = londonEnd + pauseAfterLondon;
 
 
   useEffect(() => {
@@ -73,11 +68,16 @@ const imageRevealDelay = londonEnd + pauseAfterLondon;
     hasAnimated.current = false;
     introDone.current = false;
 
-    const isMobile = window.innerWidth <= 768;
-    const finalHeight = '100vh';
-    const intermediateWidth = isMobile ? '28vw' : '18vw';
-    const mobileHeaderEl = document.querySelector('.mobile-header');
-    const speed = 1.35;
+const isMobile = window.innerWidth <= 768;
+const finalHeight = '100vh';
+const intermediateWidth = isMobile ? '28vw' : '18vw';
+const mobileHeaderEl = document.querySelector('.mobile-header');
+const speed = 1.35;
+const londonStart = 0.35 * speed;
+const londonDuration = 1.3 * speed;
+const londonEnd = londonStart + londonDuration;
+const pauseAfterLondon = 0.4 * speed;
+const imageRevealDelay = londonEnd + pauseAfterLondon;
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
