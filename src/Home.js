@@ -147,8 +147,8 @@ gsap.set('.london-mask', {
   marginTop: 0,
   visibility: 'visible'
 });
-        gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
-        gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:first-child', { x: '-70vw', transformOrigin: 'left center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:last-child', { x: '70vw', transformOrigin: 'right center', visibility: 'hidden' });
         gsap.set('.lottie-container', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
