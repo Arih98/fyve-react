@@ -147,8 +147,8 @@ gsap.set('.london-mask', {
   marginTop: 0,
   visibility: 'visible'
 });
-        gsap.set('.london-mask .london-text:first-child', { x: '-70vw', transformOrigin: 'left center', visibility: 'hidden' });
-        gsap.set('.london-mask .london-text:last-child', { x: '70vw', transformOrigin: 'right center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
+        gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center', visibility: 'hidden' });
         gsap.set('.lottie-container', { opacity: 1 });
         gsap.set('.london-below', { opacity: 1 });
       } else {
@@ -192,8 +192,8 @@ gsap.to('.home-mobile-top-logo', {
         gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3 * speed, ease: 'expo.inOut', delay: 0.35 * speed });
         gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
-        gsap.to('.london-mask .london-text:first-child', { x: '-200vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
-gsap.to('.london-mask .london-text:last-child', { x: '200vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
+        gsap.to('.london-mask .london-text:first-child', { x: '-150vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
+gsap.to('.london-mask .london-text:last-child', { x: '150vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
 
         gsap.to('.lottie-container', {
   autoAlpha: 1,
