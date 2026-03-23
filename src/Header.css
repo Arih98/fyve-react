@@ -329,7 +329,6 @@ body.locked {
   display: inline-block;
   line-height: 4.6vw;
   position: relative;
-  padding-right: 24px;
   cursor: pointer;
 }
 
@@ -928,12 +927,12 @@ body.locked {
 .menu-parent-button::before {
   content: '+';
   position: absolute;
-  right: 0;
+  left: calc(100% + 10px);
   top: 50%;
-  transform: translateY(-50%) rotate(0deg);
+  transform: translateY(-50%);
   font-size: 16px;
   transition: transform 0.3s ease;
-  }
+}
 
 .menu-items li.has-submenu.submenu-open > .menu-parent-button::before {
   content: '−';
