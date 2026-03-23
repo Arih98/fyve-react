@@ -68,16 +68,16 @@ const londonFadeDelay = animationDuration * 0.3;
     hasAnimated.current = false;
     introDone.current = false;
 
-const isMobile = window.innerWidth <= 768;
-const finalHeight = '100vh';
-const intermediateWidth = isMobile ? '28vw' : '18vw';
-const mobileHeaderEl = document.querySelector('.mobile-header');
-const speed = 1.35;
-const londonStart = 0.35 * speed;
-const londonDuration = 1.3 * speed;
-const londonEnd = londonStart + londonDuration;
-const pauseAfterLondon = 0.4 * speed;
-const imageRevealDelay = londonEnd + pauseAfterLondon;
+    const isMobile = window.innerWidth <= 768;
+    const finalHeight = '100vh';
+    const intermediateWidth = isMobile ? '28vw' : '18vw';
+    const mobileHeaderEl = document.querySelector('.mobile-header');
+    const speed = 1.35;
+    const londonStartDelay = 0.35 * speed;
+const londonRevealDuration = 1.3 * speed;
+const londonRevealEnd = londonStartDelay + londonRevealDuration;
+const pauseAfterLondonReveal = 0.4 * speed;
+const imageRevealDelay = londonRevealEnd + pauseAfterLondonReveal;
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
