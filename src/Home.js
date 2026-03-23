@@ -22,7 +22,6 @@ const setHeroViewportRef = (node) => {
 const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000;
 const londonFadeDelay = animationDuration * 0.3;
 
-
   useEffect(() => {
     if (lottieRef.current) {
       if (inView) {
@@ -73,11 +72,6 @@ const londonFadeDelay = animationDuration * 0.3;
     const intermediateWidth = isMobile ? '28vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
     const speed = 1.35;
-    const londonStartDelay = 0.35 * speed;
-const londonRevealDuration = 1.3 * speed;
-const londonRevealEnd = londonStartDelay + londonRevealDuration;
-const pauseAfterLondonReveal = 0.4 * speed;
-const imageRevealDelay = londonRevealEnd + pauseAfterLondonReveal;
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
@@ -174,9 +168,9 @@ gsap.set('.london-below', { opacity: 0 });
 gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1 * speed });
         gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
 gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed, ease: 'expo.inOut', delay: imageRevealDelay });
-gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: imageRevealDelay });
-gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: imageRevealDelay });
+        gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
+gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
+gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
 gsap.set('.home-mobile-top-logo', { opacity: 0 });
