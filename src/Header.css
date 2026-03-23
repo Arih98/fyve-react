@@ -939,6 +939,10 @@ body.locked {
 }
 
 .submenu-items {
+  margin-top: 0;
+}
+
+.submenu-items.open {
   margin-top: 8px;
 }
 
