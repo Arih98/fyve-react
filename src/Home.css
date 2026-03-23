@@ -220,9 +220,9 @@
 
 .section-1 {
   width: 100%;
-  height: 100dvh;
+  height: 130dvh;
   background: #fff;
-  padding: 60px 7%;
+  padding: 60px 18%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -250,17 +250,17 @@
   line-height: 0.9em;
   letter-spacing: -0.8px;
   color: #4A494A;
-  max-width: 12ch;
+  max-width: 10ch;
 }
 
 .section1-body-text {
   margin-top: 24px;
   margin-bottom: 0;
   font-family: "Quasimoda", sans-serif;
-  font-size: 1.5vw;
+  font-size: 1.3vw;
   line-height: 1.5;
   color: #4A494A;
-  max-width: 29vw;
+  max-width: 20vw;
 }
 
 .section1-shop-button {
