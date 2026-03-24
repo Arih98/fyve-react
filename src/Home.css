@@ -174,9 +174,11 @@
 }
 
 .london-below {
+  position: relative;
+  top: -40px;
   font-family: "Quasimoda", sans-serif;
   font-weight: 500 !important;
-  font-size: clamp(48px, 4vw, 90px);
+  font-size: clamp(28px, 2.2vw, 48px);
   letter-spacing: clamp(20px, 3vw, 60px);
   text-transform: uppercase;
   color: #fff;
@@ -207,7 +209,7 @@
 
 .lottie-animation-wrap {
   width: 100vw;
-  max-height: 92vh;
+  max-height: none;
   display: flex;
   justify-content: center;
   align-items: center;
