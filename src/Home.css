@@ -200,13 +200,13 @@
   align-items: center;
   justify-content: flex-end;
   margin-top: auto;
-  padding: 0 30px 32px;
+  padding: 0;
   box-sizing: border-box;
   flex-shrink: 0;
 }
 
 .lottie-animation-wrap {
-  width: min(120%, 2000px);
+  width: 100vw;
   max-height: 92vh;
   display: flex;
   justify-content: center;
