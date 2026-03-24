@@ -598,14 +598,12 @@ body.locked {
 }
 .mobile-header.first-header.pdp-mobile-header {
   --nav-icon-size: 40px;
+  --nav-icon-gap: 40px;
   --nav-side-padding: 22px;
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
   --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
   --pdp-button-width: 220px;
-  --pdp-space-start: calc(var(--nav-side-padding) + var(--nav-icon-size));
-  --pdp-space-width: calc(100% - (var(--nav-side-padding) * 2) - var(--nav-icon-size));
-  --pdp-button-left: calc(var(--pdp-space-start) + ((var(--pdp-space-width) - var(--pdp-button-width)) / 2));
 
   position: fixed;
   left: 0;
@@ -616,14 +614,18 @@ body.locked {
   padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
   padding-bottom: var(--nav-bottom-safe-padding) !important;
   box-sizing: border-box;
-  display: flex !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, var(--nav-icon-size));
+  column-gap: var(--nav-icon-gap);
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
   z-index: 10004;
 }
 
 .mobile-header.first-header.pdp-mobile-header .a-burger {
-  position: relative !important;
+  grid-column: 1;
+  justify-self: center;
+  position: static !important;
   transform: none !important;
   width: 40px;
   height: 40px;
@@ -634,17 +636,16 @@ body.locked {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 var(--nav-icon-size);
 }
 
 .pdp-mobile-add-to-bag {
   position: absolute;
-  left: var(--pdp-button-left);
   width: var(--pdp-button-width);
-  box-sizing: border-box;
   height: 48px;
+  left: 50%;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
   border: none;
   border-radius: 999px;
   background: #4A494A;
