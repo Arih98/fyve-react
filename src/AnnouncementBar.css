@@ -3,15 +3,18 @@
 }
 
 .announcement-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: var(--announcement-height);
-  background: #4A494A;
-  color: #F7F7F7;
+  background: #F7F7F7;
+  color: #4A494A;
   overflow: hidden;
   display: flex;
   align-items: center;
-  position: relative;
   z-index: 10003;
+  border-bottom: 1px solid #4A494A;
 }
 
 .announcement-marquee {
