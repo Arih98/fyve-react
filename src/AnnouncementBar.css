@@ -14,7 +14,6 @@
   display: flex;
   align-items: center;
   z-index: 10003;
-  border-bottom: 1px solid #4A494A;
 }
 
 .announcement-marquee {
