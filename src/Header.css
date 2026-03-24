@@ -557,7 +557,7 @@ body.locked {
   text-decoration: none;
   color: #4A494A;
   font-size: 3.6111111111vw;
-  font-family: quasimoda, sans-serif !important;
+  font-family: quasimoda, sans-serif;
   font-weight: 400;
   display: inline-block;
   line-height: 4.6vw;
