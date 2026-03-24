@@ -278,16 +278,6 @@ if (hasAnimated.current) {
     ease: 'power2.inOut',
     onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' })
   }, 2 * speed)
-  .to(mobileHeaderEl, {
-    opacity: 1,
-    duration: 0.5 * speed,
-    ease: 'expo.inOut'
-  }, 2.8 * speed)
-  .to('.home-mobile-top-logo', {
-    opacity: 1,
-    duration: 0.5 * speed,
-    ease: 'expo.inOut'
-  }, 2.8 * speed)
   .fromTo('.london-letter', {
     y: '100%'
   }, {
@@ -295,6 +285,11 @@ if (hasAnimated.current) {
     duration: 1.3 * speed,
     ease: 'expo.inOut'
   }, 0.35 * speed)
+  .to('.home-mobile-top-logo', {
+    opacity: 1,
+    duration: 0.5 * speed,
+    ease: 'expo.inOut'
+  }, 2.8 * speed)
   .to('.lottie-container', {
     autoAlpha: 1,
     duration: 0.8 * speed,
@@ -306,35 +301,14 @@ if (hasAnimated.current) {
       }, londonFadeDelay);
     }
   }, 2.8 * speed);
-}
 
-gsap.to('.home-mobile-top-logo', {
-  opacity: 1,
-  duration: 0.5 * speed,
-  ease: 'expo.inOut',
-  delay: 2.8 * speed
-});
-        gsap.fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3 * speed, ease: 'expo.inOut', delay: 0.35 * speed });
-        gsap.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
-gsap.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
-        gsap.to('.london-mask .london-text:first-child', { x: '-135vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' }) });
-gsap.to('.london-mask .london-text:last-child', { x: '135vw', duration: 0.95 * speed, ease: 'power2.inOut', delay: 2 * speed, onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' }) });
-
-        gsap.to('.lottie-container', {
-  autoAlpha: 1,
-  duration: 0.8 * speed,
-  ease: 'expo.inOut',
-  delay: 2.8 * speed,
-  onStart: () => {
-    lottieRef.current?.play();
-    setTimeout(() => {
-      gsap.to('.london-below', { opacity: 1, duration: 0.5 * speed });
-    }, londonFadeDelay);
-  },
-  onComplete: () => {
-    introDone.current = true;
+  if (mobileHeaderEl) {
+    tl.to(mobileHeaderEl, {
+      opacity: 1,
+      duration: 0.5 * speed,
+      ease: 'expo.inOut'
+    }, 2.8 * speed);
   }
-});
       }
     }, heroRef);
 
