@@ -8,7 +8,7 @@
   left: 0;
   width: 100%;
   height: var(--announcement-height);
-  background: #F7F7F7;
+  background: #f1dbd1;
   color: #4A494A;
   overflow: hidden;
   display: flex;
