@@ -394,15 +394,15 @@
 
 @media (max-width: 768px) {
 .home-page {
-  padding-top: 0;
+  padding-top: var(--announcement-height);
 }
 
 .fyve-hero-section {
-  height: 100svh;
+  height: calc(100svh - var(--announcement-height));
 }
 
 .fyve-animation-stage {
-  height: 100svh;
+  height: calc(100svh - var(--announcement-height));
 }
 
   .fyve-image-container {
