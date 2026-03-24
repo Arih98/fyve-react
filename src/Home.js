@@ -168,20 +168,23 @@ gsap.set('.london-below', { opacity: 0 });
 gsap.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1 * speed });
         gsap.to('.fyve-text:first-child', { x: '-100vw', duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed, onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' }) });
 gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed, onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' }) });
-        gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
+const sideClip = isMobile ? '36vw' : '41vw';
+
+gsap.set('.fyve-image-container', {
+  width: '100vw',
+  height: finalHeight,
+  clipPath: `inset(0 ${sideClip} 0 ${sideClip})`
+});
+
 gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
-gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed });
-        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
-gsap.set('.home-mobile-top-logo', { opacity: 0 });
-if (mobileHeaderEl) {
-  gsap.to(mobileHeaderEl, {
-    opacity: 1,
-    duration: 0.5 * speed,
-    ease: 'expo.inOut',
-    delay: 2.8 * speed
-  });
-}
+
+gsap.to('.fyve-image-container', {
+  clipPath: 'inset(0 0vw 0 0vw)',
+  duration: 0.8 * speed,
+  ease: 'expo.inOut',
+  delay: 2 * speed
+});
 
 gsap.to('.home-mobile-top-logo', {
   opacity: 1,
