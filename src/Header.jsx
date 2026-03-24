@@ -471,6 +471,17 @@ const menuItems = [
   className={`${activeMenuImage === item.id ? 'active' : ''}${hasChildren ? ' has-submenu' : ''}${isSubmenuOpen ? ' submenu-open' : ''}`}
   onFocus={() => handleMenuImageChange(item.id)}
   onTouchStart={() => handleMenuImageChange(item.id)}
+  onMouseEnter={() => {
+    if (!isMobile && hasChildren) {
+      setOpenSubmenuId(item.id);
+    }
+    handleMenuImageChange(item.id);
+  }}
+  onMouseLeave={() => {
+    if (!isMobile && hasChildren) {
+      setOpenSubmenuId(null);
+    }
+  }}
 >
       {hasChildren ? (
         <>
@@ -479,7 +490,9 @@ const menuItems = [
             className="menu-parent-button"
             onMouseEnter={() => handleMenuImageChange(item.id)}
 onClick={() => {
-  toggleSubmenu(item.id);
+  if (isMobile) {
+    toggleSubmenu(item.id);
+  }
 }}
           >
             {item.name}
