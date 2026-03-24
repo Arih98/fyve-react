@@ -415,11 +415,15 @@
   }
 
 .fyve-hero-section {
-  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
 }
 
 .fyve-hero-viewport {
-  height: 100vh;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
   .fyve-ui-layer {
@@ -431,23 +435,12 @@
   }
 
 .fyve-animation-stage {
-  top: 0;
-  left: 0;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   transform: none;
-}
-
-.fyve-hero-section {
-  background: red;
-}
-
-.fyve-animation-stage {
-  background: blue;
-}
-
-.fyve-image-container {
-  background: green;
+  overflow: hidden;
 }
 
   .home-mobile-top-logo {
