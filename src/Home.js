@@ -196,18 +196,18 @@ gsap.set('.home-mobile-top-logo', { opacity: 0 });
 
 gsap.to(document.documentElement, {
   '--home-announcement-offset': `${announcementHeight}px`,
-  duration: 0.7 * speed,
+  duration: 0.9 * speed,
   ease: 'expo.inOut',
-  delay: 2.4 * speed
+  delay: 2.35 * speed
 });
 
 if (announcementBarEl) {
   if (isMobile) {
     gsap.to(announcementBarEl, {
       y: 0,
-      duration: 0.7 * speed,
+      duration: 0.9 * speed,
       ease: 'expo.inOut',
-      delay: 2.4 * speed
+      delay: 2.35 * speed
     });
   } else {
     gsap.to(announcementBarEl, {
