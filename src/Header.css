@@ -598,11 +598,14 @@ body.locked {
 }
 .mobile-header.first-header.pdp-mobile-header {
   --nav-icon-size: 40px;
-  --nav-icon-gap: 40px;
   --nav-side-padding: 22px;
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
   --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
+  --pdp-button-width: 220px;
+  --pdp-space-start: calc(var(--nav-side-padding) + var(--nav-icon-size));
+  --pdp-space-width: calc(100% - (var(--nav-side-padding) * 2) - var(--nav-icon-size));
+  --pdp-button-left: calc(var(--pdp-space-start) + ((var(--pdp-space-width) - var(--pdp-button-width)) / 2));
 
   position: fixed;
   left: 0;
@@ -610,23 +613,17 @@ body.locked {
   bottom: 0;
   top: auto;
   width: 100%;
-
   padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
   padding-bottom: var(--nav-bottom-safe-padding) !important;
-
   box-sizing: border-box;
-
-  display: grid !important;
-  grid-template-columns: repeat(4, var(--nav-icon-size));
-  column-gap: var(--nav-icon-gap);
-  justify-content: center;
+  display: flex !important;
   align-items: center;
-
+  justify-content: flex-start;
   z-index: 10004;
 }
 
 .mobile-header.first-header.pdp-mobile-header .a-burger {
-  position: static !important;
+  position: relative !important;
   transform: none !important;
   width: 40px;
   height: 40px;
@@ -637,15 +634,17 @@ body.locked {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 var(--nav-icon-size);
 }
 
 .pdp-mobile-add-to-bag {
-  grid-column: 2 / 5;
-  justify-self: stretch;
-  width: auto;
+  position: absolute;
+  left: var(--pdp-button-left);
+  width: var(--pdp-button-width);
   box-sizing: border-box;
   height: 48px;
-  align-self: center;
+  top: 50%;
+  transform: translateY(-50%);
   border: none;
   border-radius: 999px;
   background: #4A494A;
@@ -692,9 +691,10 @@ body.locked {
   z-index: 10005;
 }
 
-  .mobile-header.first-header.pdp-mobile-header.menu-open {
+.mobile-header.first-header.pdp-mobile-header.menu-open {
+  display: grid !important;
   grid-template-columns: repeat(4, var(--nav-icon-size));
-  column-gap: var(--nav-icon-gap);
+  column-gap: 40px;
   justify-content: center;
 }
 
