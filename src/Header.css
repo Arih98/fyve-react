@@ -374,8 +374,9 @@ body.locked {
   text-transform: none;
   color: #4A494A;
   text-decoration: none;
-  font-family: quasimoda, sans-serif !important;
-  font-weight: 400;
+  font-family: "ArizonaFlare", sans-serif;
+  font-weight: 500;
+  font-size: 1.5em;
   display: inline-block;
   padding: 2px 0;
 }
