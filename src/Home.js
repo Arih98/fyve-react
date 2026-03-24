@@ -71,6 +71,7 @@ const londonFadeDelay = animationDuration * 0.3;
     const finalHeight = window.innerWidth <= 768 ? '100svh' : '100vh';
     const intermediateWidth = isMobile ? '28vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
+    const announcementBarEl = document.querySelector('.announcement-bar');
     const speed = 1.35;
 
     const ctx = gsap.context(() => {
@@ -137,6 +138,7 @@ gsap.to(".section1-img-overlay", {
         gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
         gsap.set('.fyve-mask', { xPercent: -50, yPercent: -50 });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
+        if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1 });
 gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
 gsap.set('.london-mask', {
@@ -173,7 +175,17 @@ gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', d
 gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
+        if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 0 });
 gsap.set('.home-mobile-top-logo', { opacity: 0 });
+if (announcementBarEl) {
+  gsap.to(announcementBarEl, {
+    opacity: 1,
+    duration: 0.4 * speed,
+    ease: 'expo.inOut',
+    delay: 2.6 * speed
+  });
+}
+
 if (mobileHeaderEl) {
   gsap.to(mobileHeaderEl, {
     opacity: 1,
