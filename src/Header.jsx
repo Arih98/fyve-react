@@ -25,6 +25,7 @@ const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
+const submenuRefs = useRef(new Map());
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -40,6 +41,16 @@ const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/ass
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+
+useEffect(() => {
+  if (!isMenuOpen) {
+    setOpenSubmenuId(null);
+    submenuRefs.current.forEach((el) => {
+      gsap.killTweensOf(el);
+      gsap.set(el, { height: 0, opacity: 0, y: -8 });
+    });
+  }
+}, [isMenuOpen]);
 
 useEffect(() => {
   const handleHeaderThemeScroll = () => {
@@ -255,6 +266,65 @@ const handleToggleMenu = () => {
     setActiveMenuImage(newId);
   };
 
+  const setSubmenuRef = (id, el) => {
+  if (el) {
+    submenuRefs.current.set(id, el);
+  } else {
+    submenuRefs.current.delete(id);
+  }
+};
+
+const toggleSubmenu = (id) => {
+  const currentId = openSubmenuId;
+  const nextId = currentId === id ? null : id;
+  const currentEl = currentId ? submenuRefs.current.get(currentId) : null;
+  const nextEl = nextId ? submenuRefs.current.get(nextId) : null;
+
+  if (currentEl) {
+    gsap.killTweensOf(currentEl);
+    gsap.to(currentEl, {
+      height: 0,
+      opacity: 0,
+      y: -8,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+  }
+
+  setOpenSubmenuId(nextId);
+
+  if (nextEl && nextEl !== currentEl) {
+    gsap.killTweensOf(nextEl);
+
+    requestAnimationFrame(() => {
+      gsap.set(nextEl, {
+        height: 'auto',
+        opacity: 1,
+        y: 0
+      });
+
+      const targetHeight = nextEl.scrollHeight;
+
+      gsap.set(nextEl, {
+        height: 0,
+        opacity: 0,
+        y: -8
+      });
+
+      gsap.to(nextEl, {
+        height: targetHeight,
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.set(nextEl, { height: 'auto' });
+        }
+      });
+    });
+  }
+};
+
 const menuItems = [
   {
     id: 'ss26',
@@ -412,14 +482,17 @@ const menuItems = [
             type="button"
             className="menu-parent-button"
             onMouseEnter={() => handleMenuImageChange(item.id)}
-            onClick={() => {
-              setOpenSubmenuId(prev => prev === item.id ? null : item.id);
-            }}
+onClick={() => {
+  toggleSubmenu(item.id);
+}}
           >
             {item.name}
           </button>
 
-          <ul className={`submenu-items${isSubmenuOpen ? ' open' : ''}`}>
+          <ul
+  ref={(el) => setSubmenuRef(item.id, el)}
+  className={`submenu-items${isSubmenuOpen ? ' open' : ''}`}
+>
             {item.children.map(child => (
               <li key={child.id} className="submenu-item">
                 <NavLink
