@@ -393,6 +393,18 @@
 }
 
 @media (max-width: 768px) {
+.home-page {
+  padding-top: var(--announcement-height);
+}
+
+.fyve-hero-section {
+  height: calc(100svh - var(--announcement-height));
+}
+
+.fyve-animation-stage {
+  height: calc(100svh - var(--announcement-height));
+}
+
   .fyve-image-container {
     height: 50vw;
   }
