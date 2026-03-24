@@ -36,6 +36,8 @@
   white-space: nowrap;
   flex-shrink: 0;
   padding-right: 48px;
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
