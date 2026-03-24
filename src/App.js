@@ -16,6 +16,7 @@ import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import './App.css';
 import './Header.css';
 import ScrollManager from './components/ScrollManager';
+import AnnouncementBar from './AnnouncementBar';
 
 const ProductDetailWrapper = () => {
   const location = useLocation();
@@ -27,9 +28,11 @@ const Layout = () => {
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showCart = location.pathname !== '/admin';
+  const showAnnouncementBar = location.pathname !== '/admin';
 
   return (
     <div className="App">
+      {showAnnouncementBar && <AnnouncementBar />}
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
       {showCart && <Cart />}
