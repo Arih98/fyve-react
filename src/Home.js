@@ -171,7 +171,15 @@ gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8 * speed, ease: 'exp
         gsap.to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
-gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed });
+gsap.fromTo('.fyve-image-container',
+  { scaleX: 0 },
+  {
+    scaleX: 1,
+    transformOrigin: 'center center',
+    duration: 0.8 * speed,
+    ease: 'expo.inOut'
+  }
+);
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
 gsap.set('.home-mobile-top-logo', { opacity: 0 });
 if (mobileHeaderEl) {
