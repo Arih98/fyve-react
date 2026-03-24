@@ -358,17 +358,12 @@ body.locked {
 
 .submenu-items {
   list-style: none;
-  margin: 0;
+  margin: 8px 0 0 14px;
   padding: 0;
-  margin-left: 14px;
   height: 0;
   overflow: hidden;
   opacity: 0;
   transform: translateY(-8px);
-}
-
-.submenu-items.open {
-  margin-top: 8px;
 }
 
 .submenu-item {

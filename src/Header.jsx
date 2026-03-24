@@ -283,12 +283,11 @@ const toggleSubmenu = (id) => {
   if (currentEl) {
     gsap.killTweensOf(currentEl);
     gsap.to(currentEl, {
-      height: 0,
-      opacity: 0,
-      y: -8,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
+  height: 0,
+  opacity: 0,
+  duration: 0.35,
+  ease: 'power2.out'
+});
   }
 
   setOpenSubmenuId(nextId);
@@ -298,29 +297,26 @@ const toggleSubmenu = (id) => {
 
     requestAnimationFrame(() => {
       gsap.set(nextEl, {
-        height: 'auto',
-        opacity: 1,
-        y: 0
-      });
+  height: 'auto',
+  opacity: 1
+});
 
-      const targetHeight = nextEl.scrollHeight;
+const targetHeight = nextEl.scrollHeight;
 
-      gsap.set(nextEl, {
-        height: 0,
-        opacity: 0,
-        y: -8
-      });
+gsap.set(nextEl, {
+  height: 0,
+  opacity: 0
+});
 
-      gsap.to(nextEl, {
-        height: targetHeight,
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: 'power2.out',
-        onComplete: () => {
-          gsap.set(nextEl, { height: 'auto' });
-        }
-      });
+gsap.to(nextEl, {
+  height: targetHeight,
+  opacity: 1,
+  duration: 0.4,
+  ease: 'power2.out',
+  onComplete: () => {
+    gsap.set(nextEl, { height: 'auto' });
+  }
+});
     });
   }
 };
