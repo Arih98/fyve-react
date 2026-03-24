@@ -358,12 +358,16 @@ body.locked {
 
 .submenu-items {
   list-style: none;
-  margin: 8px 0 0 14px;
+  margin: 0 0 0 14px;
   padding: 0;
   height: 0;
   overflow: hidden;
   opacity: 0;
   transform: translateY(-8px);
+}
+
+.menu-items li.has-submenu.submenu-open .submenu-items {
+  margin-top: 8px;
 }
 
 .submenu-item {
@@ -909,10 +913,6 @@ body.locked {
 
 .menu-items li.has-submenu.submenu-open > .menu-parent-button::before {
   content: '−';
-}
-
-.submenu-items {
-  margin-top: 8px;
 }
 
 .menu-items li .submenu-item a {
