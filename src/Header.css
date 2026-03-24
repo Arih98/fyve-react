@@ -44,7 +44,7 @@ body.locked {
 .mobile-header.first-header {
   --header-icon-color: #4A494A;
   position: fixed;
-  top: 0;
+  top: var(--announcement-height);
   left: 0;
   width: 100%;
   display: grid;

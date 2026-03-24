@@ -4,7 +4,7 @@
 
 .announcement-bar {
   width: 100%;
-  height: 36px;
+  height: var(--announcement-height);
   background: #4A494A;
   color: #F7F7F7;
   overflow: hidden;
@@ -17,20 +17,23 @@
 .announcement-marquee {
   display: flex;
   width: max-content;
-  animation: announcement-marquee 18s linear infinite;
+  min-width: 100%;
+  animation: announcement-marquee 22s linear infinite;
 }
 
 .announcement-group {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  width: max-content;
 }
 
 .announcement-group span {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
-  padding: 0 32px;
+  flex-shrink: 0;
+  padding-right: 48px;
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -48,6 +51,6 @@
 @media (max-width: 768px) {
   .announcement-group span {
     font-size: 11px;
-    padding: 0 24px;
+    padding-right: 36px;
   }
 }

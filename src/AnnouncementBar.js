@@ -1,12 +1,7 @@
 import React from 'react';
 import './AnnouncementBar.css';
 
-const items = [
-  'FREE SHIPPING SITEWIDE',
-  'FREE SHIPPING SITEWIDE',
-  'FREE SHIPPING SITEWIDE',
-  'FREE SHIPPING SITEWIDE'
-];
+const items = Array(10).fill('FREE SHIPPING SITEWIDE');
 
 const AnnouncementBar = () => {
   return (
@@ -14,12 +9,12 @@ const AnnouncementBar = () => {
       <div className="announcement-marquee">
         <div className="announcement-group">
           {items.map((item, index) => (
-            <span key={`first-${index}`}>{item}</span>
+            <span key={`group1-${index}`}>{item}</span>
           ))}
         </div>
         <div className="announcement-group" aria-hidden="true">
           {items.map((item, index) => (
-            <span key={`second-${index}`}>{item}</span>
+            <span key={`group2-${index}`}>{item}</span>
           ))}
         </div>
       </div>
