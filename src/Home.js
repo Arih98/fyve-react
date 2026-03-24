@@ -142,7 +142,7 @@ gsap.to(".section1-img-overlay", {
   '--home-announcement-offset': `${announcementHeight}px`
 });
 if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
-if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1 });
+if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1, y: 0 });
 gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
 gsap.set('.london-mask', {
@@ -183,7 +183,15 @@ gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration
 });
 
 if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
-if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 0 });
+
+if (announcementBarEl) {
+  if (isMobile) {
+    gsap.set(announcementBarEl, { opacity: 1, y: -announcementHeight });
+  } else {
+    gsap.set(announcementBarEl, { opacity: 0, y: 0 });
+  }
+}
+
 gsap.set('.home-mobile-top-logo', { opacity: 0 });
 
 gsap.to(document.documentElement, {
@@ -194,12 +202,21 @@ gsap.to(document.documentElement, {
 });
 
 if (announcementBarEl) {
-  gsap.to(announcementBarEl, {
-    opacity: 1,
-    duration: 0.6 * speed,
-    ease: 'expo.inOut',
-    delay: 2.75 * speed
-  });
+  if (isMobile) {
+    gsap.to(announcementBarEl, {
+      y: 0,
+      duration: 0.7 * speed,
+      ease: 'expo.inOut',
+      delay: 2.4 * speed
+    });
+  } else {
+    gsap.to(announcementBarEl, {
+      opacity: 1,
+      duration: 0.6 * speed,
+      ease: 'expo.inOut',
+      delay: 2.75 * speed
+    });
+  }
 }
 
 if (mobileHeaderEl) {
