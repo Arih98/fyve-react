@@ -188,26 +188,26 @@ gsap.set('.home-mobile-top-logo', { opacity: 0 });
 
 gsap.to(document.documentElement, {
   '--home-announcement-offset': `${announcementHeight}px`,
-  duration: 0.45 * speed,
+  duration: 0.7 * speed,
   ease: 'expo.inOut',
-  delay: 2.45 * speed
+  delay: 2.4 * speed
 });
 
 if (announcementBarEl) {
   gsap.to(announcementBarEl, {
     opacity: 1,
-    duration: 0.4 * speed,
+    duration: 0.6 * speed,
     ease: 'expo.inOut',
-    delay: 2.6 * speed
+    delay: 2.75 * speed
   });
 }
 
 if (mobileHeaderEl) {
   gsap.to(mobileHeaderEl, {
     opacity: 1,
-    duration: 0.5 * speed,
+    duration: 0.7 * speed,
     ease: 'expo.inOut',
-    delay: 2.8 * speed
+    delay: 3.1 * speed
   });
 }
 
