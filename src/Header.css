@@ -643,7 +643,6 @@ body.locked {
   grid-column: 2 / 5;
   justify-self: stretch;
   width: auto;
-  margin-right: 8px;
   box-sizing: border-box;
   height: 48px;
   align-self: center;
