@@ -511,51 +511,53 @@ onMouseLeave={() => {
 }}
 >
       {hasChildren ? (
-        <>
-          <button
-            type="button"
-            className="menu-parent-button"
-            onMouseEnter={() => handleMenuImageChange(item.id)}
-onClick={() => {
-  if (isMobile) {
-    toggleSubmenu(item.id);
-  }
-}}
-          >
-            {item.name}
-          </button>
+  <>
+    <button
+      type="button"
+      className="menu-parent-button"
+      onMouseEnter={() => handleMenuImageChange(item.id)}
+      onClick={() => {
+        if (isMobile) {
+          toggleSubmenu(item.id);
+        }
+      }}
+    >
+      {item.name}
+    </button>
 
-          <ul
-  ref={(el) => setSubmenuRef(item.id, el)}
-  className={`submenu-items${isSubmenuOpen ? ' open' : ''}`}
->
-            {item.children.map(child => (
-              <li key={child.id} className="submenu-item">
-                <NavLink
-                  to={child.path}
-                  onClick={() => {
-                    setOpenSubmenuId(null);
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  {child.name}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <NavLink
-          to={item.path}
-          onMouseEnter={() => handleMenuImageChange(item.id)}
-          onClick={() => {
-            setOpenSubmenuId(null);
-            setIsMenuOpen(false);
-          }}
-        >
-          {item.name}
-        </NavLink>
-      )}
+    <div
+      ref={(el) => setSubmenuRef(item.id, el)}
+      className="submenu-items"
+    >
+      <ul className="submenu-inner">
+        {item.children.map(child => (
+          <li key={child.id} className="submenu-item">
+            <NavLink
+              to={child.path}
+              onClick={() => {
+                setOpenSubmenuId(null);
+                setIsMenuOpen(false);
+              }}
+            >
+              {child.name}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </>
+) : (
+  <NavLink
+    to={item.path}
+    onMouseEnter={() => handleMenuImageChange(item.id)}
+    onClick={() => {
+      setOpenSubmenuId(null);
+      setIsMenuOpen(false);
+    }}
+  >
+    {item.name}
+  </NavLink>
+)}
     </li>
   );
 })}

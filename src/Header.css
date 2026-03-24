@@ -357,13 +357,17 @@ body.locked {
 }
 
 .submenu-items {
-  list-style: none;
-  margin: 0 0 0 14px;
-  padding: 0;
+  margin-left: 14px;
   height: 0;
   overflow: hidden;
   opacity: 0;
   transform: translateY(-8px);
+}
+
+.submenu-inner {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
 }
 
 .submenu-item {
