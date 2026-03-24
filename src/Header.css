@@ -379,14 +379,11 @@ body.locked {
   text-transform: none;
   color: #4A494A;
   text-decoration: none;
-  font-size: 3.6111111111vw;
-  line-height: 4.6vw;
   font-family: quasimoda, sans-serif !important;
   font-weight: 400;
   display: inline-block;
   padding: 2px 0;
 }
-
 .menu-items li .submenu-item a::after {
   display: none;
 }
@@ -903,7 +900,7 @@ body.locked {
   left: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%);
-  font-size: 16px;
+  font-size: 6vw;
   transition: transform 0.3s ease;
 }
 
@@ -920,8 +917,8 @@ body.locked {
 }
 
 .menu-items li .submenu-item a {
-  font-size: 13vw;
-  line-height: 16vw;
+  font-size: 1.2em;
+  line-height: 1.2em;
 }
 
 body {
