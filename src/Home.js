@@ -68,7 +68,7 @@ const londonFadeDelay = animationDuration * 0.3;
     introDone.current = false;
 
     const isMobile = window.innerWidth <= 768;
-    const finalHeight = '100vh';
+    const finalHeight = window.innerWidth <= 768 ? '100svh' : '100vh';
     const intermediateWidth = isMobile ? '28vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
     const speed = 1.35;
