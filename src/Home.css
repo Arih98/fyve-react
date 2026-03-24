@@ -503,7 +503,7 @@
     text-align: center;
     color: #fff;
     font-family: "Quasimoda", sans-serif;
-    font-weight: 700;
+    font-weight: 700 !important;
     font-size: clamp(16px, 3.8vw, 22px);
     letter-spacing: clamp(10px, 5vw, 28px);
     line-height: 1;
