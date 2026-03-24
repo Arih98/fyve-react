@@ -274,50 +274,76 @@ const handleToggleMenu = () => {
   }
 };
 
-const toggleSubmenu = (id) => {
-  const currentId = openSubmenuId;
-  const nextId = currentId === id ? null : id;
-  const currentEl = currentId ? submenuRefs.current.get(currentId) : null;
-  const nextEl = nextId ? submenuRefs.current.get(nextId) : null;
+const closeSubmenu = (id) => {
+  const el = submenuRefs.current.get(id);
+  if (!el) return;
 
-  if (currentEl) {
+  gsap.killTweensOf(el);
+  gsap.to(el, {
+    height: 0,
+    opacity: 0,
+    y: -8,
+    duration: 0.35,
+    ease: 'power2.out'
+  });
+};
+
+const openSubmenu = (id) => {
+  const currentId = openSubmenuId;
+  const currentEl = currentId ? submenuRefs.current.get(currentId) : null;
+  const nextEl = submenuRefs.current.get(id);
+
+  if (currentEl && currentId !== id) {
     gsap.killTweensOf(currentEl);
     gsap.to(currentEl, {
-  height: 0,
-  opacity: 0,
-  duration: 0.35,
-  ease: 'power2.out'
-});
-  }
-
-  setOpenSubmenuId(nextId);
-
-  if (nextEl && nextEl !== currentEl) {
-    gsap.killTweensOf(nextEl);
-
-    requestAnimationFrame(() => {
-      gsap.set(nextEl, {
-  height: 'auto',
-  opacity: 1
-});
-
-const targetHeight = nextEl.scrollHeight;
-
-gsap.set(nextEl, {
-  height: 0,
-  opacity: 0
-});
-
-gsap.to(nextEl, {
-  height: targetHeight,
-  opacity: 1,
-  duration: 0.4,
-  ease: 'power2.out',
-  onComplete: () => {
-    gsap.set(nextEl, { height: 'auto' });
-  }
-});
+      height: 0,
+      opacity: 0,
+      y: -8,
+      duration: 0.35,
+      ease: 'power2.out'
     });
+  }
+
+  setOpenSubmenuId(id);
+
+  if (!nextEl) return;
+
+  gsap.killTweensOf(nextEl);
+
+  requestAnimationFrame(() => {
+    gsap.set(nextEl, {
+      height: 'auto',
+      opacity: 1,
+      y: 0
+    });
+
+    const targetHeight = nextEl.scrollHeight;
+
+    gsap.set(nextEl, {
+      height: 0,
+      opacity: 0,
+      y: -8
+    });
+
+    gsap.to(nextEl, {
+      height: targetHeight,
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      ease: 'power2.out',
+      onComplete: () => {
+        gsap.set(nextEl, { height: 'auto' });
+      }
+    });
+  });
+};
+
+const toggleSubmenu = (id) => {
+  if (openSubmenuId === id) {
+    closeSubmenu(id);
+    setOpenSubmenuId(null);
+  } else {
+    openSubmenu(id);
   }
 };
 
@@ -472,16 +498,17 @@ const menuItems = [
   onFocus={() => handleMenuImageChange(item.id)}
   onTouchStart={() => handleMenuImageChange(item.id)}
   onMouseEnter={() => {
-    if (!isMobile && hasChildren) {
-      setOpenSubmenuId(item.id);
-    }
-    handleMenuImageChange(item.id);
-  }}
-  onMouseLeave={() => {
-    if (!isMobile && hasChildren) {
-      setOpenSubmenuId(null);
-    }
-  }}
+  if (!isMobile && hasChildren) {
+    openSubmenu(item.id);
+  }
+  handleMenuImageChange(item.id);
+}}
+onMouseLeave={() => {
+  if (!isMobile && hasChildren) {
+    closeSubmenu(item.id);
+    setOpenSubmenuId(null);
+  }
+}}
 >
       {hasChildren ? (
         <>
