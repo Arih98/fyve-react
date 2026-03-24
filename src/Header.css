@@ -366,11 +366,6 @@ body.locked {
   transform: translateY(-8px);
 }
 
-.menu-items li.has-submenu.submenu-open .submenu-items {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
 .submenu-item {
   margin: 0;
 }
