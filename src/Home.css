@@ -113,6 +113,8 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  clip-path: inset(0 0 0 0);
+  will-change: clip-path;
 }
 
 .fyve-image {
@@ -393,9 +395,10 @@
 }
 
 @media (max-width: 768px) {
-  .fyve-image-container {
-    height: 50vw;
-  }
+.fyve-image-container {
+  height: 100%;
+  width: 100vw;
+}
 
   .fyve-image {
     position: absolute;

@@ -134,7 +134,7 @@ gsap.to(".section1-img-overlay", {
         gsap.set('.fyve-letter', { y: 0 });
         gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
         gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-        gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
+        gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight, clipPath: 'inset(0 0vw 0 0vw)' });
         gsap.set('.fyve-mask', { xPercent: -50, yPercent: -50 });
         if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
 gsap.set('.home-mobile-top-logo', { opacity: 1 });
