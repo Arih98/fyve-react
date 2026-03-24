@@ -69,7 +69,6 @@ const londonFadeDelay = animationDuration * 0.3;
 
     const isMobile = window.innerWidth <= 768;
     const finalHeight = window.innerWidth <= 768 ? '100svh' : '100vh';
-    const intermediateWidth = isMobile ? '28vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
     const speed = 1.35;
 
@@ -172,12 +171,19 @@ const sideClip = isMobile ? '36vw' : '41vw';
 
 gsap.set('.fyve-image-container', {
   width: '100vw',
-  height: finalHeight,
+  height: isMobile ? '50vw' : finalHeight,
   clipPath: `inset(0 ${sideClip} 0 ${sideClip})`
 });
 
 gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
+
+gsap.to('.fyve-image-container', {
+  height: finalHeight,
+  duration: 0.8 * speed,
+  ease: 'expo.inOut',
+  delay: 2 * speed
+});
 
 gsap.to('.fyve-image-container', {
   clipPath: 'inset(0 0vw 0 0vw)',

@@ -395,10 +395,9 @@
 }
 
 @media (max-width: 768px) {
-.fyve-image-container {
-  height: 100%;
-  width: 100vw;
-}
+  .fyve-image-container {
+    height: 50vw;
+  }
 
   .fyve-image {
     position: absolute;
