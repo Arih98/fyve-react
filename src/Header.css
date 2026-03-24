@@ -368,6 +368,7 @@ body.locked {
 
 .menu-items li.has-submenu.submenu-open .submenu-items {
   margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .submenu-item {
