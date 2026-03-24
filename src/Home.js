@@ -71,8 +71,9 @@ const londonFadeDelay = animationDuration * 0.3;
     const finalHeight = window.innerWidth <= 768 ? '100svh' : '100vh';
     const intermediateWidth = isMobile ? '28vw' : '18vw';
     const mobileHeaderEl = document.querySelector('.mobile-header');
-    const announcementBarEl = document.querySelector('.announcement-bar');
-    const speed = 1.35;
+const announcementBarEl = document.querySelector('.announcement-bar');
+const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0;
+const speed = 1.35;
 
     const ctx = gsap.context(() => {
 const isMobile = window.innerWidth <= 768;
@@ -137,8 +138,11 @@ gsap.to(".section1-img-overlay", {
         gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
         gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
         gsap.set('.fyve-mask', { xPercent: -50, yPercent: -50 });
-        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
-        if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1 });
+        gsap.set(document.documentElement, {
+  '--home-announcement-offset': `${announcementHeight}px`
+});
+if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 });
+if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1 });
 gsap.set('.home-mobile-top-logo', { opacity: 1 });
         gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
 gsap.set('.london-mask', {
@@ -174,9 +178,21 @@ gsap.to('.fyve-text:last-child', { x: '100vw', duration: 0.8 * speed, ease: 'exp
 gsap.to('.mask-left', { x: '-100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.mask-right', { x: '100%', duration: 0.8 * speed, ease: 'expo.inOut', delay: 1.2 * speed });
 gsap.to('.fyve-image-container', { width: '100vw', height: finalHeight, duration: 0.8 * speed, ease: 'expo.inOut', delay: 2 * speed });
-        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
-        if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 0 });
+        gsap.set(document.documentElement, {
+  '--home-announcement-offset': '0px'
+});
+
+if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 });
+if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 0 });
 gsap.set('.home-mobile-top-logo', { opacity: 0 });
+
+gsap.to(document.documentElement, {
+  '--home-announcement-offset': `${announcementHeight}px`,
+  duration: 0.45 * speed,
+  ease: 'expo.inOut',
+  delay: 2.45 * speed
+});
+
 if (announcementBarEl) {
   gsap.to(announcementBarEl, {
     opacity: 1,
@@ -232,7 +248,10 @@ gsap.to('.london-mask .london-text:last-child', { x: '135vw', duration: 0.95 * s
 
     hasAnimated.current = true;
 
-    return () => ctx.revert();
+    return () => {
+  ctx.revert();
+  document.documentElement.style.removeProperty('--home-announcement-offset');
+};
   }, []);
 
   return (
