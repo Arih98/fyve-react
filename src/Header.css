@@ -604,6 +604,13 @@ body.locked {
   --nav-bottom-padding: 15px;
   --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
   --pdp-button-width: 220px;
+  --pdp-grid-width: calc((4 * var(--nav-icon-size)) + (3 * var(--nav-icon-gap)));
+  --pdp-grid-left: calc((100% - var(--pdp-grid-width)) / 2);
+  --pdp-burger-center: calc(var(--pdp-grid-left) + (var(--nav-icon-size) / 2));
+  --pdp-burger-right: calc(var(--pdp-burger-center) + (var(--nav-icon-size) / 2));
+  --pdp-right-edge: calc(100% - var(--nav-side-padding));
+  --pdp-available-width: calc(var(--pdp-right-edge) - var(--pdp-burger-right));
+  --pdp-button-left: calc(var(--pdp-burger-right) + ((var(--pdp-available-width) - var(--pdp-button-width)) / 2));
 
   position: fixed;
   left: 0;
@@ -640,11 +647,11 @@ body.locked {
 
 .pdp-mobile-add-to-bag {
   position: absolute;
+  left: var(--pdp-button-left);
   width: var(--pdp-button-width);
   height: 48px;
-  left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
   box-sizing: border-box;
   border: none;
   border-radius: 999px;
