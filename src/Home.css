@@ -192,7 +192,7 @@
 
 .lottie-container {
   position: relative;
-  transform: translateY(-100px);
+  transform: translateY(-120px);
   width: 100vw;
   z-index: 2;
   display: flex;
