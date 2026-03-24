@@ -114,11 +114,11 @@
   overflow: hidden;
   z-index: 1;
   clip-path: inset(0 0 0 0);
-  will-change: clip-path;
+  will-change: clip-path, height;
 }
 
 .fyve-image {
-  width: 100vw;
+  width: 100%;
   height: 100%;
   object-fit: cover;
 }
