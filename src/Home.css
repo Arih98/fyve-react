@@ -175,7 +175,7 @@
 
 .london-below {
   font-family: "Quasimoda", sans-serif;
-  font-weight: 700 !important;
+  font-weight: 500 !important;
   font-size: clamp(48px, 4vw, 90px);
   letter-spacing: clamp(20px, 3vw, 60px);
   text-transform: uppercase;
