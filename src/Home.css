@@ -438,6 +438,18 @@
   transform: none;
 }
 
+.fyve-hero-section {
+  background: red;
+}
+
+.fyve-animation-stage {
+  background: blue;
+}
+
+.fyve-image-container {
+  background: green;
+}
+
   .home-mobile-top-logo {
     position: absolute;
     top: calc(env(safe-area-inset-top, 0px) + 35px);
