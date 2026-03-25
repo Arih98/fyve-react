@@ -121,7 +121,7 @@ const ProductsPage = () => {
         src: sourceSrc,
         fromElement: sourceEl,
         toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: isMobileViewport ? 520 : 620,
+        duration: isMobileViewport ? 650 : 760,
         minTargetTop: isMobileViewport ? 80 : 0,
         zIndex: isMobileViewport ? 80 : 999999
       });
