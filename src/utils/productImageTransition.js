@@ -56,8 +56,9 @@ const createClone = ({ src, fromRect, borderRadius, zIndex }) => {
   clone.style.background = '#f7f7f7';
   clone.style.borderRadius = borderRadius || '0px';
   clone.style.transformOrigin = 'top left';
-  clone.style.willChange = 'left, top, width, height, opacity';
+  clone.style.willChange = 'transform, opacity, border-radius';
   clone.style.opacity = '0';
+  clone.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
   document.body.appendChild(clone);
   return clone;
 };
@@ -82,18 +83,11 @@ export const startProductImageTransition = async ({
     activeClone = null;
   }
 
-  const fromRectRaw = fromElement.getBoundingClientRect();
+  const fromRect = getRect(fromElement);
 
-  if (!fromRectRaw.width || !fromRectRaw.height) {
+  if (!fromRect.width || !fromRect.height) {
     return;
   }
-
-  const fromRect = {
-    left: fromRectRaw.left,
-    top: fromRectRaw.top,
-    width: fromRectRaw.width,
-    height: fromRectRaw.height
-  };
 
   const fromStyle = window.getComputedStyle(fromElement);
 
@@ -104,12 +98,11 @@ export const startProductImageTransition = async ({
     zIndex
   });
 
-activeClone = clone;
+  activeClone = clone;
 
-const toElement = await waitForElement(toElementGetter);
+  const toElement = await waitForElement(toElementGetter);
 
   if (!toElement) {
-    fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
@@ -121,7 +114,7 @@ const toElement = await waitForElement(toElementGetter);
   await waitForNextFrame();
 
   if (!toElement.isConnected) {
-    fromElement.style.opacity = '';
+    toElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
@@ -131,7 +124,6 @@ const toElement = await waitForElement(toElementGetter);
 
   if (!toRectRaw.width || !toRectRaw.height) {
     toElement.style.opacity = '';
-    fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
@@ -139,31 +131,30 @@ const toElement = await waitForElement(toElementGetter);
 
   const toStyle = window.getComputedStyle(toElement);
 
-const toRect = {
-  left: toRectRaw.left,
-  top: Math.max(toRectRaw.top, minTargetTop),
-  width: toRectRaw.width,
-  height: toRectRaw.height
-};
+  const toRect = {
+    left: toRectRaw.left,
+    top: Math.max(toRectRaw.top, minTargetTop),
+    width: toRectRaw.width,
+    height: toRectRaw.height
+  };
 
-fromElement.style.opacity = '0';
-clone.style.opacity = '1';
+  const deltaX = toRect.left - fromRect.left;
+  const deltaY = toRect.top - fromRect.top;
+  const scaleX = toRect.width / fromRect.width;
+  const scaleY = toRect.height / fromRect.height;
 
-const animation = clone.animate(
+  fromElement.style.opacity = '0';
+  clone.style.opacity = '1';
+
+  const animation = clone.animate(
     [
       {
-        left: `${fromRect.left}px`,
-        top: `${fromRect.top}px`,
-        width: `${fromRect.width}px`,
-        height: `${fromRect.height}px`,
+        transform: 'translate3d(0, 0, 0) scale(1, 1)',
         borderRadius: fromStyle.borderRadius,
         opacity: 1
       },
       {
-        left: `${toRect.left}px`,
-        top: `${toRect.top}px`,
-        width: `${toRect.width}px`,
-        height: `${toRect.height}px`,
+        transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`,
         borderRadius: toStyle.borderRadius,
         opacity: 1
       }
@@ -181,11 +172,10 @@ const animation = clone.animate(
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
 
+    clone.remove();
+
     if (activeClone === clone) {
-      clone.remove();
       activeClone = null;
-    } else {
-      clone.remove();
     }
 
     if (activeAnimation === animation) {

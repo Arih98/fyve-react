@@ -1,8 +1,8 @@
 // CategoryProducts.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
-import { motion } from 'framer-motion';
+import { startProductImageTransition } from './utils/productImageTransition';
 import './pages/ProductsPage.css';
 
 const CategoryProducts = () => {
@@ -13,6 +13,8 @@ const CategoryProducts = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
+  const imageRefs = useRef(new Map());
+  const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const navigate = useNavigate();
   const { isMenuOpen } = useContext(MenuContext);
   const { slug } = useParams();
@@ -103,40 +105,44 @@ const CategoryProducts = () => {
     setDisplay(flattened);
   }, [categories, products, slug]);
 
-  const handleProductClick = (item, e) => {
-    console.log('[CategoryProducts] Product click:', {
-      displayId: item.displayId,
-      parentId: item.parentId,
-      title: item.title,
-      selectedColor: item.selectedColor,
-      galleryLength: item.gallery?.length || 0,
-      isMenuOpen,
-    });
-    const imgElement = document.getElementById(`img-${item.displayId}`);
-    if (imgElement) {
-      console.log('[CategoryProducts] Source image details on click:', {
-        src: imgElement.src,
-        clientWidth: imgElement.clientWidth,
-        clientHeight: imgElement.clientHeight,
-        naturalWidth: imgElement.naturalWidth,
-        naturalHeight: imgElement.naturalHeight,
-        boundingRect: imgElement.getBoundingClientRect(),
-        complete: imgElement.complete,
+    const handleProductClick = (item) => {
+    const sourceEl = imageRefs.current.get(item.displayId);
+    const sourceSrc =
+      item.gallery && item.gallery.length > 0
+        ? item.gallery[0]
+        : placeholderImage;
+
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) return;
+
+    const colorQuery = item.selectedColor
+      ? `?color=${encodeURIComponent(item.selectedColor)}`
+      : '';
+
+    const targetPath = `/product/${item.parentId}${colorQuery}`;
+
+    if (sourceEl) {
+      const isMobileViewport = window.innerWidth <= 768;
+
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: isMobileViewport ? 520 : 620,
+        minTargetTop: isMobileViewport ? 80 : 0,
+        zIndex: isMobileViewport ? 80 : 999999
       });
-    } else {
-      console.warn('[CategoryProducts] Source image element not found for', item.displayId);
     }
-    const targetProduct = products.find(p => p.id === item.parentId);
-    console.log('[CategoryProducts] Navigating with product:', {
-      id: targetProduct?.id,
-      title: targetProduct?.title,
-      productType: targetProduct?.product_type,
-      variationsLength: targetProduct?.variations?.length || 0,
-      galleryLength: targetProduct?.gallery?.length || 0,
-      initialColor: item.selectedColor,
-      transitionKey: item.displayId,
+
+    navigate(targetPath, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc,
+        fromProductGrid: true
+      }
     });
-    navigate(`/product/${item.parentId}`, { state: { product: targetProduct, initialColor: item.selectedColor, transitionKey: item.displayId } });
   };
 
   const idxLast = currentPage * productsPerPage;
@@ -160,7 +166,14 @@ const CategoryProducts = () => {
               className="product-card"
             >
               
-<motion.img
+<img
+  ref={(el) => {
+    if (el) {
+      imageRefs.current.set(item.displayId, el);
+    } else {
+      imageRefs.current.delete(item.displayId);
+    }
+  }}
   id={`img-${item.displayId}`}
   src={
     item.gallery && item.gallery.length > 0
@@ -168,15 +181,10 @@ const CategoryProducts = () => {
       : '/api/Uploads/fallback-image.png'
   }
   alt={item.title}
-  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-  onLoad={e => console.log('[CategoryProducts] Image loaded for', item.displayId, {
-    src: e.target.src,
-    naturalWidth: e.target.naturalWidth,
-    naturalHeight: e.target.naturalHeight,
-  })}
+  onError={(e) => {
+    e.target.src = '/api/Uploads/fallback-image.png';
+  }}
   className="product-image"
-  onAnimationStart={() => console.log('[CategoryProducts] Animation start for', item.displayId)}
-  onAnimationComplete={() => console.log('[CategoryProducts] Animation complete for', item.displayId)}
 />
               <div className="product-info">
                 <h3 className="product-title">

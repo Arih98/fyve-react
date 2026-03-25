@@ -19,8 +19,7 @@ import ScrollManager from './components/ScrollManager';
 import AnnouncementBar from './AnnouncementBar';
 
 const ProductDetailWrapper = () => {
-  const location = useLocation();
-  return <ProductDetail key={location.key} />;
+  return <ProductDetail />;
 };
 
 const Layout = () => {

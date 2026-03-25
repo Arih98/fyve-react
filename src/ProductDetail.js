@@ -145,16 +145,6 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
   : (product?.description || product?.shortDescription || '');
 
   useEffect(() => {
-  if (!location.state?.fromProductGrid) return;
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo(0, 0);
-    });
-  });
-}, [location.state]);
-
-  useEffect(() => {
   if (!location.state?.fromProductGrid) {
     setShowGalleryProgress(true);
     return;
