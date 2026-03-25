@@ -28,7 +28,7 @@ export default function ScrollManager() {
     };
   }, [location.pathname, location.search]);
 
-  useEffect(() => {
+    useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
     if (location.pathname === '/') {
@@ -63,6 +63,16 @@ export default function ScrollManager() {
     }
 
     if (location.state?.fromProductGrid) {
+      window.scrollTo(0, 0);
+
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+        });
+      });
+
       return;
     }
 

@@ -56,9 +56,8 @@ const createClone = ({ src, fromRect, borderRadius, zIndex }) => {
   clone.style.background = '#f7f7f7';
   clone.style.borderRadius = borderRadius || '0px';
   clone.style.transformOrigin = 'top left';
-  clone.style.willChange = 'transform, opacity, border-radius';
+  clone.style.willChange = 'left, top, width, height, opacity';
   clone.style.opacity = '0';
-  clone.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
   document.body.appendChild(clone);
   return clone;
 };
@@ -83,11 +82,18 @@ export const startProductImageTransition = async ({
     activeClone = null;
   }
 
-  const fromRect = getRect(fromElement);
+  const fromRectRaw = fromElement.getBoundingClientRect();
 
-  if (!fromRect.width || !fromRect.height) {
+  if (!fromRectRaw.width || !fromRectRaw.height) {
     return;
   }
+
+  const fromRect = {
+    left: fromRectRaw.left,
+    top: fromRectRaw.top,
+    width: fromRectRaw.width,
+    height: fromRectRaw.height
+  };
 
   const fromStyle = window.getComputedStyle(fromElement);
 
@@ -103,6 +109,7 @@ export const startProductImageTransition = async ({
   const toElement = await waitForElement(toElementGetter);
 
   if (!toElement) {
+    fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
@@ -114,7 +121,7 @@ export const startProductImageTransition = async ({
   await waitForNextFrame();
 
   if (!toElement.isConnected) {
-    toElement.style.opacity = '';
+    fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
@@ -124,6 +131,7 @@ export const startProductImageTransition = async ({
 
   if (!toRectRaw.width || !toRectRaw.height) {
     toElement.style.opacity = '';
+    fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
@@ -138,23 +146,24 @@ export const startProductImageTransition = async ({
     height: toRectRaw.height
   };
 
-  const deltaX = toRect.left - fromRect.left;
-  const deltaY = toRect.top - fromRect.top;
-  const scaleX = toRect.width / fromRect.width;
-  const scaleY = toRect.height / fromRect.height;
-
   fromElement.style.opacity = '0';
   clone.style.opacity = '1';
 
   const animation = clone.animate(
     [
       {
-        transform: 'translate3d(0, 0, 0) scale(1, 1)',
+        left: `${fromRect.left}px`,
+        top: `${fromRect.top}px`,
+        width: `${fromRect.width}px`,
+        height: `${fromRect.height}px`,
         borderRadius: fromStyle.borderRadius,
         opacity: 1
       },
       {
-        transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`,
+        left: `${toRect.left}px`,
+        top: `${toRect.top}px`,
+        width: `${toRect.width}px`,
+        height: `${toRect.height}px`,
         borderRadius: toStyle.borderRadius,
         opacity: 1
       }
@@ -172,10 +181,11 @@ export const startProductImageTransition = async ({
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
 
-    clone.remove();
-
     if (activeClone === clone) {
+      clone.remove();
       activeClone = null;
+    } else {
+      clone.remove();
     }
 
     if (activeAnimation === animation) {
