@@ -13,7 +13,6 @@ const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
-  const clickLockRef = useRef(false);
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
 
@@ -100,19 +99,14 @@ const ProductsPage = () => {
   }));
 
   const handleProductClick = (item) => {
-    if (clickLockRef.current) return;
-    clickLockRef.current = true;
     const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
         ? item.gallery[0]
         : placeholderImage;
 
-        const targetProduct = products.find((p) => p.id === item.parentId);
-    if (!targetProduct) {
-      clickLockRef.current = false;
-      return;
-    }
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) return;
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
