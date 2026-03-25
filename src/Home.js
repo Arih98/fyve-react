@@ -351,7 +351,7 @@ gsap.to('.london-mask .london-text:last-child', { x: '135vw', duration: 0.95 * s
       Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
     </p>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss25" className="section1-shop-button">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button">
       Shop Collection
       <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
     </a>
