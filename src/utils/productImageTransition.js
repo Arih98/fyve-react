@@ -40,7 +40,7 @@ const getRect = (el) => {
   };
 };
 
-const createClone = ({ src, fromRect, borderRadius, zIndex }) => {
+const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   const clone = document.createElement('img');
   clone.src = src;
   clone.alt = '';
@@ -50,13 +50,16 @@ const createClone = ({ src, fromRect, borderRadius, zIndex }) => {
   clone.style.top = `${fromRect.top}px`;
   clone.style.width = `${fromRect.width}px`;
   clone.style.height = `${fromRect.height}px`;
-  clone.style.objectFit = 'contain';
+  clone.style.objectFit = fromStyle.objectFit || 'contain';
   clone.style.pointerEvents = 'none';
   clone.style.zIndex = String(zIndex);
-  clone.style.background = '#f7f7f7';
-  clone.style.borderRadius = borderRadius || '0px';
-  clone.style.transformOrigin = 'top left';
-  clone.style.willChange = 'left, top, width, height, opacity';
+  clone.style.background = fromStyle.backgroundColor || '#f7f7f7';
+  clone.style.borderRadius = fromStyle.borderRadius || '0px';
+  clone.style.padding = fromStyle.padding || '0px';
+  clone.style.boxSizing = fromStyle.boxSizing || 'border-box';
+  clone.style.transform = fromStyle.transform === 'none' ? 'none' : fromStyle.transform;
+  clone.style.transformOrigin = fromStyle.transformOrigin || 'center center';
+  clone.style.willChange = 'left, top, width, height, opacity, transform, padding, border-radius';
   clone.style.opacity = '0';
   document.body.appendChild(clone);
   return clone;
@@ -97,10 +100,10 @@ export const startProductImageTransition = async ({
 
   const fromStyle = window.getComputedStyle(fromElement);
 
-    const clone = createClone({
+  const clone = createClone({
     src,
     fromRect,
-    borderRadius: fromStyle.borderRadius,
+    fromStyle,
     zIndex
   });
 
@@ -141,12 +144,15 @@ export const startProductImageTransition = async ({
 
   const toStyle = window.getComputedStyle(toElement);
 
-  const toRect = {
+    const toRect = {
     left: toRectRaw.left,
     top: Math.max(toRectRaw.top, minTargetTop),
     width: toRectRaw.width,
     height: toRectRaw.height
   };
+
+  await waitForNextFrame();
+  clone.getBoundingClientRect();
 
   const animation = clone.animate(
     [
@@ -156,6 +162,8 @@ export const startProductImageTransition = async ({
         width: `${fromRect.width}px`,
         height: `${fromRect.height}px`,
         borderRadius: fromStyle.borderRadius,
+        padding: fromStyle.padding,
+        transform: fromStyle.transform === 'none' ? 'none' : fromStyle.transform,
         opacity: 1
       },
       {
@@ -164,12 +172,14 @@ export const startProductImageTransition = async ({
         width: `${toRect.width}px`,
         height: `${toRect.height}px`,
         borderRadius: toStyle.borderRadius,
+        padding: toStyle.padding || '0px',
+        transform: toStyle.transform === 'none' ? 'none' : toStyle.transform,
         opacity: 1
       }
     ],
     {
       duration,
-      easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
+      easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
       fill: 'forwards'
     }
   );
