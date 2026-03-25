@@ -170,7 +170,7 @@ export const startProductImageTransition = async ({
     ],
     {
       duration,
-      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
       fill: 'forwards'
     }
   );
