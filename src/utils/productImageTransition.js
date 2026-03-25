@@ -97,7 +97,7 @@ export const startProductImageTransition = async ({
 
   const fromStyle = window.getComputedStyle(fromElement);
 
-  const clone = createClone({
+    const clone = createClone({
     src,
     fromRect,
     borderRadius: fromStyle.borderRadius,
@@ -105,6 +105,9 @@ export const startProductImageTransition = async ({
   });
 
   activeClone = clone;
+
+  fromElement.style.opacity = '0';
+  clone.style.opacity = '1';
 
   const toElement = await waitForElement(toElementGetter);
 
@@ -117,15 +120,14 @@ export const startProductImageTransition = async ({
 
   toElement.style.opacity = '0';
 
-  await waitForNextFrame();
-  await waitForNextFrame();
-
   if (!toElement.isConnected) {
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
   }
+
+  await waitForNextFrame();
 
   const toRectRaw = getRect(toElement);
 
@@ -145,9 +147,6 @@ export const startProductImageTransition = async ({
     width: toRectRaw.width,
     height: toRectRaw.height
   };
-
-  fromElement.style.opacity = '0';
-  clone.style.opacity = '1';
 
   const animation = clone.animate(
     [

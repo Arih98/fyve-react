@@ -39,12 +39,14 @@ const Layout = () => {
   <LayoutGroup>
     <AnimatePresence initial={false} mode="wait">
       <motion.div
-        key={location.pathname + location.search}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+  key={location.pathname + location.search}
+  initial={false}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 1 }}
+  transition={{ duration: 0 }}
+>
+  <Outlet />
+</motion.div>
         <Outlet />
       </motion.div>
     </AnimatePresence>
