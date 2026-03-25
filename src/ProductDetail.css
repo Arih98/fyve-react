@@ -35,16 +35,6 @@
   overflow: hidden;
 }
 
-.product-gallery-image-inner {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: scale(1.08);
-  transform-origin: center;
-}
-
 .product-gallery-image,
 .product-main-image {
   width: 100%;
@@ -449,10 +439,6 @@
   width: 100%;
   scroll-snap-align: start;
   aspect-ratio: 3 / 3;
-}
-
-.product-gallery-image-inner {
-  transform: scale(1.14);
 }
 
 .product-gallery-progress {
