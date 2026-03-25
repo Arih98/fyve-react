@@ -36,22 +36,20 @@ const Layout = () => {
       {showHeader && <Header />}
       {showCart && <Cart />}
       <div className={location.pathname === '/' ? '' : 'site-content'}>
-  <LayoutGroup>
-    <AnimatePresence initial={false} mode="wait">
-      <motion.div
-  key={location.pathname + location.search}
-  initial={false}
-  animate={{ opacity: 1 }}
-  exit={{ opacity: 1 }}
-  transition={{ duration: 0 }}
->
-  <Outlet />
-</motion.div>
-        <Outlet />
-      </motion.div>
-    </AnimatePresence>
-  </LayoutGroup>
-</div>
+        <LayoutGroup>
+          <AnimatePresence initial={false} mode="wait">
+            <motion.div
+              key={location.pathname + location.search}
+              initial={false}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 1 }}
+              transition={{ duration: 0 }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
+        </LayoutGroup>
+      </div>
     </div>
   );
 };
