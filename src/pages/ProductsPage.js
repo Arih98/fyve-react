@@ -114,33 +114,41 @@ const ProductsPage = () => {
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-    if (sourceEl) {
-      const isMobileViewport = window.innerWidth <= 768;
-
-      startProductImageTransition({
-        src: sourceSrc,
-        fromElement: sourceEl,
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: isMobileViewport ? 650 : 760,
-        minTargetTop: isMobileViewport ? 80 : 0,
-        zIndex: isMobileViewport ? 80 : 999999
-      });
-    }
-
     if (isMobile) {
-      sessionStorage.setItem(`productsPageScrollY:${selectedCategory || 'all'}`, String(window.scrollY || 0));
-      sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
-    }
+  sessionStorage.setItem(`productsPageScrollY:${selectedCategory || 'all'}`, String(window.scrollY || 0));
+  sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
+}
 
-    navigate(targetPath, {
-      state: {
-        product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionSourceDisplayId: item.displayId,
-        transitionSourceSrc: sourceSrc,
-        fromProductGrid: true
-      }
-    });
+const goToProduct = () => {
+  navigate(targetPath, {
+    state: {
+      product: targetProduct,
+      initialColor: item.selectedColor,
+      transitionSourceDisplayId: item.displayId,
+      transitionSourceSrc: sourceSrc,
+      fromProductGrid: true
+    }
+  });
+};
+
+if (sourceEl) {
+  const isMobileViewport = window.innerWidth <= 768;
+
+  startProductImageTransition({
+    src: sourceSrc,
+    fromElement: sourceEl,
+    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+    duration: isMobileViewport ? 650 : 760,
+    minTargetTop: isMobileViewport ? 80 : 0,
+    zIndex: isMobileViewport ? 80 : 999999
+  });
+
+  requestAnimationFrame(() => {
+    goToProduct();
+  });
+} else {
+  goToProduct();
+}
   };
 
   const currentProducts = isMobile
