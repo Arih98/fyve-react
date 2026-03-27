@@ -362,7 +362,8 @@ className={`a-burger${isMenuOpen ? ' menu-open' : ''}${menuState === 'open' ? ' 
     
     <div
   ref={headerRef}
-className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+>
   {BurgerIcon}
 
   {(!isProductDetailPage || !isMobile) && (
