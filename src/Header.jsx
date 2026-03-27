@@ -35,7 +35,6 @@ const shouldBeTransparentHomeHeader =
 
 const useTransparentHomeHeader = shouldBeTransparentHomeHeader;
 
-const useTransparentHomeHeader = shouldBeTransparentHomeHeader;
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
@@ -340,8 +339,7 @@ const menuItems = [
   const BurgerIcon = (
   <button
     type="button"
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}
-    ref={burgerRef}
+className={`a-burger${isMenuVisuallyActive ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuVisuallyActive ? ' menu-active' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}    ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
@@ -363,8 +361,7 @@ const menuItems = [
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
->
+className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuVisuallyActive ? ' menu-active' : ''}${isMenuVisuallyActive ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}>
   {BurgerIcon}
 
   {(!isProductDetailPage || !isMobile) && (
