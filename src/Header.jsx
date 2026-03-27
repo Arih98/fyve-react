@@ -84,20 +84,30 @@ useEffect(() => {
     const currentScrollY = window.scrollY;
     if (isMenuOpen) return;
 
+    let nextHideHeader = hideHeader;
+
     if (currentScrollY <= 0) {
-      setHideHeader(false);
+      nextHideHeader = false;
     } else if (currentScrollY > lastScrollY) {
-      setHideHeader(true);
+      nextHideHeader = true;
     } else if (currentScrollY < lastScrollY) {
-      setHideHeader(false);
+      nextHideHeader = false;
     }
 
+    console.log('[DESKTOP SCROLL DECISION]', {
+      lastScrollY,
+      currentScrollY,
+      currentHideHeader: hideHeader,
+      nextHideHeader
+    });
+
+    setHideHeader(nextHideHeader);
     lastScrollY = currentScrollY;
   };
 
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen]);
+}, [isMobile, isMenuOpen, hideHeader]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
@@ -233,23 +243,6 @@ useEffect(() => {
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onResize);
-
-  const el = headerRef.current;
-  if (el) {
-    el.addEventListener('transitionstart', onTransitionStart);
-    el.addEventListener('transitionend', onTransitionEnd);
-  }
-
-  return () => {
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-
-    if (el) {
-      el.removeEventListener('transitionstart', onTransitionStart);
-      el.removeEventListener('transitionend', onTransitionEnd);
-    }
-  };
-}, [isMobile, hideHeader, isScrolled, isMenuOpen, menuState]);
 
 useEffect(() => {
   if (isMobile) return;
