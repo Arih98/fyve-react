@@ -370,7 +370,7 @@ const menuItems = [
   const BurgerIcon = (
   <button
     type="button"
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}
     ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
