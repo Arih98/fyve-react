@@ -393,7 +393,7 @@ const menuItems = [
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
