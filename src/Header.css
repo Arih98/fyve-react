@@ -59,8 +59,7 @@ body.locked {
   z-index: 10002;
   box-sizing: border-box;
   transform: translateY(0);
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s, background-image 0.3s;
-}
+transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.15s, background-image 0.15s;}
 
 .mobile-header.first-header.home-transparent {
   --header-icon-color: #ffffff;
