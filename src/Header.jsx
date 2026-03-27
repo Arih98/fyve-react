@@ -134,7 +134,7 @@ useEffect(() => {
 
     const timeout = setTimeout(() => {
       setDelayTransparentHeader(false);
-    }, 500);
+    }, 250);
 
     prevMenuStateRef.current = menuState;
     return () => clearTimeout(timeout);
