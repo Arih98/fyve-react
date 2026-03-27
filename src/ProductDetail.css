@@ -438,7 +438,7 @@
   flex: 0 0 100%;
   width: 100%;
   scroll-snap-align: start;
-  aspect-ratio: 3 / 4.7;
+  aspect-ratio: 3 / 3;
 }
 
 .product-gallery-progress {

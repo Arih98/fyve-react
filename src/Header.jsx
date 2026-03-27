@@ -393,7 +393,7 @@ const menuItems = [
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}`}
 >
   {BurgerIcon}
 
@@ -432,7 +432,7 @@ const menuItems = [
 )}
 
 
-  {isProductDetailPage && isMenuOpen && (
+  {isMobile && isProductDetailPage && isMenuOpen && (
     <div className="mobile-nav-icons pdp-open-icons">
       <button className="mobile-nav-icon" onClick={toggleSearch}>
         <img src={searchIconSrc} alt="Search" />
