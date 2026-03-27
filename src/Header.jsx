@@ -35,7 +35,8 @@ const shouldBeTransparentHomeHeader =
 
 const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
-  !delayTransparentHeader;
+  !delayTransparentHeader &&
+  !(menuState === 'closing' && !isMobile && isHomePage && !isScrolled && !isSearchOpen);
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
@@ -133,7 +134,7 @@ useEffect(() => {
 
     const timeout = setTimeout(() => {
       setDelayTransparentHeader(false);
-    }, 200);
+    }, 500);
 
     prevMenuStateRef.current = menuState;
     return () => clearTimeout(timeout);
