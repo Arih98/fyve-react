@@ -26,7 +26,6 @@ const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
-const headerTransitionLogRef = useRef(null);
 const lastDesktopHeaderMetricsRef = useRef(null);
 
 const shouldBeTransparentHomeHeader =
@@ -212,6 +211,7 @@ useEffect(() => {
 
   const onTransitionStart = (e) => {
     if (e.target !== headerRef.current) return;
+
     console.log('[DESKTOP HEADER TRANSITION START]', {
       propertyName: e.propertyName,
       elapsedTime: e.elapsedTime,
@@ -244,20 +244,6 @@ useEffect(() => {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onResize);
 
-useEffect(() => {
-  if (isMobile) return;
-
-  console.log('[HIDE HEADER STATE]', {
-    time: Date.now(),
-    hideHeader,
-    scrollY: window.scrollY,
-    isScrolled,
-    isMenuOpen,
-    menuState,
-    pathname: location.pathname
-  });
-}, [isMobile, hideHeader, isScrolled, isMenuOpen, menuState, location.pathname]);
-
   const el = headerRef.current;
   if (el) {
     el.addEventListener('transitionstart', onTransitionStart);
@@ -274,6 +260,20 @@ useEffect(() => {
     }
   };
 }, [isMobile, hideHeader, isScrolled, isMenuOpen, menuState]);
+
+useEffect(() => {
+  if (isMobile) return;
+
+  console.log('[HIDE HEADER STATE]', {
+    time: Date.now(),
+    hideHeader,
+    scrollY: window.scrollY,
+    isScrolled,
+    isMenuOpen,
+    menuState,
+    pathname: location.pathname
+  });
+}, [isMobile, hideHeader, isScrolled, isMenuOpen, menuState, location.pathname]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
