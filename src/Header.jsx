@@ -22,16 +22,18 @@ const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
-const prevMenuStateRef = useRef(menuState);
-const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 
+const isMenuVisuallyActive = isMenuOpen || menuState === 'closing';
+
 const shouldBeTransparentHomeHeader =
   isHomePage &&
-  !isMenuOpen &&
+  !isMenuVisuallyActive &&
   !isSearchOpen &&
-  (!isScrolled || hideHeader);
+  !isScrolled;
+
+const useTransparentHomeHeader = shouldBeTransparentHomeHeader;
 
 const useTransparentHomeHeader = shouldBeTransparentHomeHeader;
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
@@ -114,11 +116,6 @@ useEffect(() => {
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
 }, []);
-
-useEffect(() => {
-  setDelayTransparentHeader(false);
-  prevMenuStateRef.current = menuState;
-}, [menuState]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
