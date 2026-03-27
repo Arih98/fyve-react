@@ -53,7 +53,7 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   clone.style.objectFit = fromStyle.objectFit || 'contain';
   clone.style.pointerEvents = 'none';
   clone.style.zIndex = String(zIndex);
-  clone.style.background = fromStyle.backgroundColor || 'transparent';
+  clone.style.background = 'transparent';
   clone.style.borderRadius = fromStyle.borderRadius || '0px';
   clone.style.boxSizing = 'border-box';
   clone.style.transformOrigin = 'center center';
