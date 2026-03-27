@@ -22,20 +22,21 @@ const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
+const prevMenuStateRef = useRef(menuState);
+const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 
-const isMenuFullyOpen = menuState === 'open';
-const isMenuClosing = menuState === 'closing';
-
 const shouldBeTransparentHomeHeader =
   isHomePage &&
-  !isMenuFullyOpen &&
+  !isMenuOpen &&
   !isSearchOpen &&
-  !isScrolled;
+  (!isScrolled || hideHeader);
 
-const useTransparentHomeHeader = shouldBeTransparentHomeHeader;
-
+const useTransparentHomeHeader =
+  shouldBeTransparentHomeHeader &&
+  !delayTransparentHeader &&
+  !(menuState === 'closing' && !isMobile && isHomePage && !isScrolled && !isSearchOpen);
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
@@ -116,6 +117,35 @@ useEffect(() => {
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
 }, []);
+
+useEffect(() => {
+  const wasOpen = prevMenuStateRef.current === 'open';
+  const isNowClosing = menuState === 'closing';
+
+  if (
+    !isMobile &&
+    isHomePage &&
+    !isScrolled &&
+    !isSearchOpen &&
+    wasOpen &&
+    isNowClosing
+  ) {
+    setDelayTransparentHeader(true);
+
+    const timeout = setTimeout(() => {
+      setDelayTransparentHeader(false);
+    }, 500);
+
+    prevMenuStateRef.current = menuState;
+    return () => clearTimeout(timeout);
+  }
+
+  if (!shouldBeTransparentHomeHeader || isMobile) {
+    setDelayTransparentHeader(false);
+  }
+
+  prevMenuStateRef.current = menuState;
+}, [isMobile, isHomePage, isScrolled, isSearchOpen, menuState, shouldBeTransparentHomeHeader]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
@@ -340,7 +370,7 @@ const menuItems = [
   const BurgerIcon = (
   <button
     type="button"
-className={`a-burger${isMenuOpen ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}    ref={burgerRef}
+className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}    ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}

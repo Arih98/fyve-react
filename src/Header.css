@@ -98,6 +98,12 @@ body.locked {
   line-height: 0;
 }
 
+.a-burger.hide-header {
+  transform: translateY(-97px) !important;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+
 .a-burger.menu-active {
   z-index: 1002;
 }
