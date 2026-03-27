@@ -24,7 +24,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4.7;
-  background: transparent;
+  background: #f7f7f7;
   overflow: hidden;
 }
 
