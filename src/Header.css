@@ -56,7 +56,7 @@ body.locked {
   padding-left: 50px !important;
   background-color: #F1DBD1;
   background-image: none;
-  z-index: 10004;
+  z-index: 10002;
   box-sizing: border-box;
   transform: translateY(0);
   transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s, background-image 0.3s;
