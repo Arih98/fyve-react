@@ -26,7 +26,6 @@ const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
-const lastDesktopHeaderMetricsRef = useRef(null);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -83,30 +82,20 @@ useEffect(() => {
     const currentScrollY = window.scrollY;
     if (isMenuOpen) return;
 
-    let nextHideHeader = hideHeader;
-
     if (currentScrollY <= 0) {
-      nextHideHeader = false;
+      setHideHeader(false);
     } else if (currentScrollY > lastScrollY) {
-      nextHideHeader = true;
+      setHideHeader(true);
     } else if (currentScrollY < lastScrollY) {
-      nextHideHeader = false;
+      setHideHeader(false);
     }
 
-    console.log('[DESKTOP SCROLL DECISION]', {
-      lastScrollY,
-      currentScrollY,
-      currentHideHeader: hideHeader,
-      nextHideHeader
-    });
-
-    setHideHeader(nextHideHeader);
     lastScrollY = currentScrollY;
   };
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen, hideHeader]);
+}, [isMobile, isMenuOpen]);
 
 useEffect(() => {
   const handlePdpButtonLabel = e => {
@@ -157,123 +146,6 @@ useEffect(() => {
 
   prevMenuStateRef.current = menuState;
 }, [isMobile, isHomePage, isScrolled, isSearchOpen, menuState, shouldBeTransparentHomeHeader]);
-
-useEffect(() => {
-  if (isMobile) return;
-
-  const logDesktopHeaderMetrics = (source) => {
-    const el = headerRef.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    const styles = window.getComputedStyle(el);
-
-    const metrics = {
-      source,
-      time: Date.now(),
-      scrollY: window.scrollY,
-      hideHeader,
-      isScrolled,
-      isMenuOpen,
-      menuState,
-      topStyle: styles.top,
-      transformStyle: styles.transform,
-      transitionStyle: styles.transition,
-      className: el.className,
-      rectTop: rect.top,
-      rectBottom: rect.bottom,
-      rectHeight: rect.height,
-      announcementHeightVar: getComputedStyle(document.documentElement).getPropertyValue('--announcement-height').trim()
-    };
-
-    const prev = lastDesktopHeaderMetricsRef.current;
-
-    if (
-      !prev ||
-      prev.rectTop !== metrics.rectTop ||
-      prev.rectBottom !== metrics.rectBottom ||
-      prev.transformStyle !== metrics.transformStyle ||
-      prev.hideHeader !== metrics.hideHeader ||
-      prev.scrollY !== metrics.scrollY
-    ) {
-      console.log('[DESKTOP HEADER METRICS]', metrics);
-      lastDesktopHeaderMetricsRef.current = metrics;
-    }
-  };
-
-  const onScroll = () => {
-    logDesktopHeaderMetrics('scroll');
-  };
-
-  const onResize = () => {
-    logDesktopHeaderMetrics('resize');
-  };
-
-  const onTransitionStart = (e) => {
-    if (e.target !== headerRef.current) return;
-
-    console.log('[DESKTOP HEADER TRANSITION START]', {
-      propertyName: e.propertyName,
-      elapsedTime: e.elapsedTime,
-      hideHeader,
-      scrollY: window.scrollY,
-      className: headerRef.current?.className
-    });
-  };
-
-  const onTransitionEnd = (e) => {
-    if (e.target !== headerRef.current) return;
-
-    const el = headerRef.current;
-    const rect = el?.getBoundingClientRect();
-
-    console.log('[DESKTOP HEADER TRANSITION END]', {
-      propertyName: e.propertyName,
-      elapsedTime: e.elapsedTime,
-      hideHeader,
-      scrollY: window.scrollY,
-      className: el?.className,
-      rectTop: rect?.top,
-      rectBottom: rect?.bottom,
-      transform: el ? window.getComputedStyle(el).transform : null
-    });
-  };
-
-  logDesktopHeaderMetrics('mount');
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onResize);
-
-  const el = headerRef.current;
-  if (el) {
-    el.addEventListener('transitionstart', onTransitionStart);
-    el.addEventListener('transitionend', onTransitionEnd);
-  }
-
-  return () => {
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-
-    if (el) {
-      el.removeEventListener('transitionstart', onTransitionStart);
-      el.removeEventListener('transitionend', onTransitionEnd);
-    }
-  };
-}, [isMobile, hideHeader, isScrolled, isMenuOpen, menuState]);
-
-useEffect(() => {
-  if (isMobile) return;
-
-  console.log('[HIDE HEADER STATE]', {
-    time: Date.now(),
-    hideHeader,
-    scrollY: window.scrollY,
-    isScrolled,
-    isMenuOpen,
-    menuState,
-    pathname: location.pathname
-  });
-}, [isMobile, hideHeader, isScrolled, isMenuOpen, menuState, location.pathname]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
