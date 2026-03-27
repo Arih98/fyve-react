@@ -73,7 +73,7 @@ body.locked {
 }
 
 .mobile-header.first-header.hide-header {
-  transform: translateY(calc(-100% - var(--announcement-height)));
+  transform: translateY(-100%);
   pointer-events: none;
 }
 
