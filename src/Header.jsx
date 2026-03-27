@@ -22,8 +22,6 @@ const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const debugPdpHeader = true;
 const headerRef = useRef(null);
 const lastHeaderMetricsRef = useRef(null);
-const prevMenuStateRef = useRef(menuState);
-const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 
@@ -113,35 +111,6 @@ useEffect(() => {
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
 }, []);
-
-useEffect(() => {
-  const wasOpen = prevMenuStateRef.current === 'open';
-  const isNowClosing = menuState === 'closing';
-
-  if (
-    !isMobile &&
-    isHomePage &&
-    !isScrolled &&
-    !isSearchOpen &&
-    wasOpen &&
-    isNowClosing
-  ) {
-    setDelayTransparentHeader(true);
-
-    const timeout = setTimeout(() => {
-      setDelayTransparentHeader(false);
-    }, 500);
-
-    prevMenuStateRef.current = menuState;
-    return () => clearTimeout(timeout);
-  }
-
-  if (!shouldBeTransparentHomeHeader || isMobile) {
-    setDelayTransparentHeader(false);
-  }
-
-  prevMenuStateRef.current = menuState;
-}, [isMobile, isHomePage, isScrolled, isSearchOpen, menuState, shouldBeTransparentHomeHeader]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
