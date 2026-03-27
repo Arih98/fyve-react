@@ -25,11 +25,12 @@ const lastHeaderMetricsRef = useRef(null);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 
-const isMenuVisuallyActive = isMenuOpen || menuState === 'closing';
+const isMenuFullyOpen = menuState === 'open';
+const isMenuClosing = menuState === 'closing';
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
-  !isMenuVisuallyActive &&
+  !isMenuFullyOpen &&
   !isSearchOpen &&
   !isScrolled;
 
@@ -339,7 +340,7 @@ const menuItems = [
   const BurgerIcon = (
   <button
     type="button"
-className={`a-burger${isMenuVisuallyActive ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuVisuallyActive ? ' menu-active' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}    ref={burgerRef}
+className={`a-burger${isMenuOpen ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}    ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
@@ -361,7 +362,7 @@ className={`a-burger${isMenuVisuallyActive ? ' menu-open' : ''}${menuState === '
     
     <div
   ref={headerRef}
-className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuVisuallyActive ? ' menu-active' : ''}${isMenuVisuallyActive ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}>
+className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
   {BurgerIcon}
 
   {(!isProductDetailPage || !isMobile) && (
