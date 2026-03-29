@@ -112,7 +112,9 @@ const hideGalleryProgress = !showGalleryProgress;
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
 const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
-
+const [hidePrimaryImageForTransition, setHidePrimaryImageForTransition] = useState(
+  !!location.state?.fromProductGrid
+);
 useEffect(() => {
   if (!location.state?.fromProductGrid) return;
   if (!isMobile) return;
@@ -384,17 +386,25 @@ useEffect(() => {
 
 
 useLayoutEffect(() => {
-  if (!location.state?.fromProductGrid) return;
+  if (!location.state?.fromProductGrid) {
+    setHidePrimaryImageForTransition(false);
+    return;
+  }
+
   if (!mainImageRef.current) return;
 
   const raw = sessionStorage.getItem('pendingProductTransition');
-  if (!raw) return;
+  if (!raw) {
+    setHidePrimaryImageForTransition(false);
+    return;
+  }
 
   let parsed;
   try {
     parsed = JSON.parse(raw);
   } catch {
     sessionStorage.removeItem('pendingProductTransition');
+    setHidePrimaryImageForTransition(false);
     return;
   }
 
@@ -412,8 +422,11 @@ useLayoutEffect(() => {
     },
     toElement: mainImageRef.current,
     duration: isMobileViewport ? 520 : 620,
-    minTargetTop: isMobileViewport ? 80 : 0,
-    zIndex: isMobileViewport ? 80 : 999999
+    minTargetTop: 0,
+    zIndex: isMobileViewport ? 80 : 999999,
+    onFinish: () => {
+      setHidePrimaryImageForTransition(false);
+    }
   });
 }, [location.state?.fromProductGrid, currentDisplayId]);
 
@@ -457,7 +470,7 @@ return (
     src={img}
     alt={`${displayTitle} ${idx + 1}`}
     data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-    className="product-gallery-image"
+    className={`product-gallery-image ${idx === 0 && hidePrimaryImageForTransition ? 'product-gallery-image-hidden-for-transition' : ''}`}
               onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
               onLoad={e => console.log('[PDP] gallery image loaded', {
                 imageKey,
