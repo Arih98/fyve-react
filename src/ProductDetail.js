@@ -113,6 +113,35 @@ const hideGalleryProgress = !showGalleryProgress;
 const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
 
 useEffect(() => {
+  if (!location.state?.fromProductGrid) return;
+  if (!isMobile) return;
+
+  let frame = 0;
+  const maxFrames = 10;
+
+  const check = () => {
+    const el = document.querySelector('[data-pdp-primary-image="true"]');
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      console.log('[PDP TARGET CHECK]', {
+        frame,
+        rect,
+        scrollY: window.scrollY,
+        vvTop: window.visualViewport ? window.visualViewport.offsetTop : null,
+        vvHeight: window.visualViewport ? window.visualViewport.height : null
+      });
+    }
+
+    frame += 1;
+    if (frame < maxFrames) {
+      requestAnimationFrame(check);
+    }
+  };
+
+  requestAnimationFrame(check);
+}, [location.state?.fromProductGrid, isMobile]);
+
+useEffect(() => {
   if (!location.state?.fromProductGrid) {
     setShowDetails(true);
     return;
