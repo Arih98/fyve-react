@@ -126,7 +126,11 @@ if (!targetProduct) {
       startProductImageTransition({
         src: sourceSrc,
         fromElement: sourceEl,
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        toElementGetter: () => {
+  const readyRoot = document.querySelector('[data-pdp-transition-ready="true"]');
+  if (!readyRoot) return null;
+  return document.querySelector('[data-pdp-primary-image="true"]');
+},
         duration: isMobileViewport ? 520 : 620,
         minTargetTop: isMobileViewport ? 80 : 0,
         zIndex: isMobileViewport ? 80 : 999999
