@@ -102,16 +102,11 @@ const clickLockRef = useRef(false);
   const handleProductClick = (item) => {
   if (clickLockRef.current) return;
   clickLockRef.current = true;
-
-  setTimeout(() => {
-    clickLockRef.current = false;
-  }, 1200);
-
-  const sourceEl = imageRefs.current.get(item.displayId);
-  const sourceSrc =
-    item.gallery && item.gallery.length > 0
-      ? item.gallery[0]
-      : placeholderImage;
+    const sourceEl = imageRefs.current.get(item.displayId);
+    const sourceSrc =
+      item.gallery && item.gallery.length > 0
+        ? item.gallery[0]
+        : placeholderImage;
 
 const targetProduct = products.find((p) => p.id === item.parentId);
 if (!targetProduct) {

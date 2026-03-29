@@ -58,6 +58,36 @@ function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
+    const originalScrollTo = window.scrollTo;
+    const originalScroll = window.scroll;
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    const originalFocus = HTMLElement.prototype.focus;
+
+    window.scrollTo = function (...args) {
+      return originalScrollTo.apply(window, args);
+    };
+
+    window.scroll = function (...args) {
+      return originalScroll.apply(window, args);
+    };
+
+    Element.prototype.scrollIntoView = function (...args) {
+      return originalScrollIntoView.apply(this, args);
+    };
+
+    HTMLElement.prototype.focus = function (...args) {
+      return originalFocus.apply(this, args);
+    };
+
+    return () => {
+      window.scrollTo = originalScrollTo;
+      window.scroll = originalScroll;
+      Element.prototype.scrollIntoView = originalScrollIntoView;
+      HTMLElement.prototype.focus = originalFocus;
+    };
+  }, []);
+
+  useEffect(() => {
     const handlePopState = () => {};
 
     window.addEventListener('popstate', handlePopState);
@@ -67,9 +97,9 @@ function AppContent() {
   useEffect(() => {
     const debugScroll = () => {};
 
-    window.addEventListener('scroll', debugScroll);
+    window.addEventListener("scroll", debugScroll);
 
-    return () => window.removeEventListener('scroll', debugScroll);
+    return () => window.removeEventListener("scroll", debugScroll);
   }, []);
 
   useEffect(() => {
@@ -87,8 +117,8 @@ function AppContent() {
       });
     });
 
-    window.addEventListener('load', () => logNow());
-    window.addEventListener('pageshow', () => logNow());
+    window.addEventListener("load", () => logNow());
+    window.addEventListener("pageshow", () => logNow());
 
     setTimeout(() => logNow(), 100);
     setTimeout(() => logNow(), 500);

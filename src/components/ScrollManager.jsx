@@ -28,20 +28,24 @@ export default function ScrollManager() {
     };
   }, [location.pathname, location.search]);
 
-  useEffect(() => {
+    useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
     if (location.pathname === '/') {
       window.scrollTo(0, 0);
+
       requestAnimationFrame(() => {
         window.scrollTo(0, 0);
+
         requestAnimationFrame(() => {
           window.scrollTo(0, 0);
+
           setTimeout(() => {
             window.scrollTo(0, 0);
           }, 300);
         });
       });
+
       return;
     }
 
@@ -58,7 +62,8 @@ export default function ScrollManager() {
       return;
     }
 
-    if (location.state?.fromProductGrid) {
+        if (location.state?.fromProductGrid) {
+      window.scrollTo(0, 0);
       return;
     }
 
