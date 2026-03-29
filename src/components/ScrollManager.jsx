@@ -62,17 +62,8 @@ export default function ScrollManager() {
       return;
     }
 
-    if (location.state?.fromProductGrid) {
+        if (location.state?.fromProductGrid) {
       window.scrollTo(0, 0);
-
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
-
-        requestAnimationFrame(() => {
-          window.scrollTo(0, 0);
-        });
-      });
-
       return;
     }
 
