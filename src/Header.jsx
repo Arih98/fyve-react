@@ -3,14 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
-import { useMobileSplitTransition } from './components/MobileSplitTransition';
+
 
 const Header = () => {
-  const waitForMenuPaint = async () => {
-  await new Promise((resolve) => requestAnimationFrame(resolve));
-  await new Promise((resolve) => requestAnimationFrame(resolve));
-};
-  const { openMenuReveal, closeMenuReveal, navigateFromMenuReveal } = useMobileSplitTransition();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -215,32 +210,15 @@ const metrics = {
   };
 }, [debugPdpHeader, isMobile, isProductDetailPage]);
 
-const handleToggleMenu = async () => {
+const handleToggleMenu = () => {
+  toggleMenu();
   if (isSearchOpen) setIsSearchOpen(false);
-
-  if (!isMobile) {
-    toggleMenu();
-    return;
-  }
-
-  if (!isMenuOpen) {
-    toggleMenu();
-    await waitForMenuPaint();
-    await openMenuReveal();
-    return;
-  }
-
-  await closeMenuReveal(() => {
-    if (isMenuOpen) {
-      toggleMenu();
-    }
-  });
 };
 
-const toggleSearch = () => {
-  setIsSearchOpen(v => !v);
-  if (isMenuOpen) toggleMenu();
-};
+  const toggleSearch = () => {
+    setIsSearchOpen(v => !v);
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -382,26 +360,6 @@ const menuItems = [
   { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
   { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
 ];
-
-
-const handleMenuNavigate = async (e, path) => {
-  if (!isMobile) {
-    e.preventDefault();
-    setOpenSubmenuId(null);
-    setIsMenuOpen(false);
-    navigate(path);
-    return;
-  }
-
-  e.preventDefault();
-  setOpenSubmenuId(null);
-
-  await navigateFromMenuReveal(path, () => {
-    if (isMenuOpen) {
-      toggleMenu();
-    }
-  });
-};
 
   const BurgerIcon = (
   <button
@@ -568,24 +526,30 @@ onMouseLeave={() => {
         {item.children.map(child => (
           <li key={child.id} className="submenu-item">
             <NavLink
-  to={child.path}
-  onClick={(e) => handleMenuNavigate(e, child.path)}
->
-  {child.name}
-</NavLink>
+              to={child.path}
+              onClick={() => {
+                setOpenSubmenuId(null);
+                setIsMenuOpen(false);
+              }}
+            >
+              {child.name}
+            </NavLink>
           </li>
         ))}
       </ul>
     </div>
   </>
 ) : (
-<NavLink
-  to={item.path}
-  onMouseEnter={() => handleMenuImageChange(item.id)}
-  onClick={(e) => handleMenuNavigate(e, item.path)}
->
-  {item.name}
-</NavLink>
+  <NavLink
+    to={item.path}
+    onMouseEnter={() => handleMenuImageChange(item.id)}
+    onClick={() => {
+      setOpenSubmenuId(null);
+      setIsMenuOpen(false);
+    }}
+  >
+    {item.name}
+  </NavLink>
 )}
     </li>
   );
