@@ -52,7 +52,7 @@ useEffect(() => {
   } else if (menuState === 'closing') {
     timeout = setTimeout(() => {
       setMenuVisualActive(false);
-    }, 320);
+    }, 350);
   } else if (!isMenuOpen) {
     setMenuVisualActive(false);
   }
