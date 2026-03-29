@@ -228,16 +228,6 @@ setActiveImageIndex(nextIndex);
       targetCurrentSrc: document.querySelector('[data-pdp-primary-image="true"]')?.currentSrc || document.querySelector('[data-pdp-primary-image="true"]')?.src || null,
       targetRect: document.querySelector('[data-pdp-primary-image="true"]')?.getBoundingClientRect() || null
     });
-  }, [
-    product?.id,
-    product?.title,
-    current?.sku,
-    currentDisplayId,
-    shouldAnimateDetailsIn,
-    gallery.length,
-    mainImage,
-    currentVariation?.id
-  ]);
 
   const handleAddToCart = useCallback(() => {
   const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
