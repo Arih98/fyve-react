@@ -380,7 +380,7 @@ return (
   data-pdp-primary-image={idx === 0 ? 'true' : undefined}
   className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
 >
-  <div className="product-gallery-image-inner">
+  <div className={`product-gallery-image-inner ${idx === 0 ? 'product-gallery-image-inner-main' : ''}`}>
     <img
       ref={el => {
         if (idx === 0) {
@@ -404,17 +404,6 @@ return (
     />
   </div>
 </div>
-              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-              onLoad={e => console.log('[PDP] gallery image loaded', {
-                imageKey,
-                src: e.target.currentSrc || e.target.src,
-                naturalWidth: e.target.naturalWidth,
-                naturalHeight: e.target.naturalHeight,
-                rect: e.target.getBoundingClientRect(),
-                complete: e.target.complete
-              })}
-            />
-          </div>
         );
       })}
     </div>
