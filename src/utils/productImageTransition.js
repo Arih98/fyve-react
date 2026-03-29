@@ -1,5 +1,6 @@
 let activeClone = null;
 let activeAnimation = null;
+let transitionSeq = 0;
 
 const waitForElement = (getEl, { maxFrames = 90 } = {}) =>
   new Promise((resolve) => {
@@ -40,74 +41,6 @@ const getRect = (el) => {
   };
 };
 
-const rectsMatch = (a, b, tolerance = 0.5) =>
-  Math.abs(a.left - b.left) <= tolerance &&
-  Math.abs(a.top - b.top) <= tolerance &&
-  Math.abs(a.width - b.width) <= tolerance &&
-  Math.abs(a.height - b.height) <= tolerance;
-
-const waitForStableRect = async (el, { maxFrames = 20, stableFrames = 2 } = {}) => {
-  let previousRect = null;
-  let stableCount = 0;
-
-  for (let i = 0; i < maxFrames; i += 1) {
-    await waitForNextFrame();
-
-    if (!el || !el.isConnected) return null;
-
-    const rect = getRect(el);
-
-    if (!rect.width || !rect.height) {
-      stableCount = 0;
-      previousRect = rect;
-      continue;
-    }
-
-    if (previousRect && rectsMatch(previousRect, rect)) {
-      stableCount += 1;
-      if (stableCount >= stableFrames) {
-        return rect;
-      }
-    } else {
-      stableCount = 0;
-    }
-
-    previousRect = rect;
-  }
-
-  return el && el.isConnected ? getRect(el) : null;
-};
-
-const waitForImageReady = async (el) => {
-  if (!(el instanceof HTMLImageElement)) return;
-
-  if (el.complete && el.naturalWidth > 0) {
-    if (typeof el.decode === 'function') {
-      try {
-        await el.decode();
-      } catch {}
-    }
-    return;
-  }
-
-  await new Promise((resolve) => {
-    const done = () => {
-      el.removeEventListener('load', done);
-      el.removeEventListener('error', done);
-      resolve();
-    };
-
-    el.addEventListener('load', done, { once: true });
-    el.addEventListener('error', done, { once: true });
-  });
-
-  if (typeof el.decode === 'function') {
-    try {
-      await el.decode();
-    } catch {}
-  }
-};
-
 const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   const clone = document.createElement('img');
   clone.src = src;
@@ -131,6 +64,39 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   return clone;
 };
 
+const getViewportMetrics = () => {
+  const vv = window.visualViewport;
+  return {
+    scrollY: window.scrollY,
+    innerWidth: window.innerWidth,
+    innerHeight: window.innerHeight,
+    vvWidth: vv ? vv.width : null,
+    vvHeight: vv ? vv.height : null,
+    vvOffsetTop: vv ? vv.offsetTop : null,
+    vvOffsetLeft: vv ? vv.offsetLeft : null,
+    vvPageTop: vv ? vv.pageTop : null,
+    vvPageLeft: vv ? vv.pageLeft : null
+  };
+};
+
+const logFrameSeries = async (label, el, id, frames = 8) => {
+  for (let i = 0; i < frames; i += 1) {
+    await waitForNextFrame();
+    if (!el || !el.isConnected) {
+      console.log(`[transition ${id}] ${label} frame ${i}`, {
+        connected: false,
+        ...getViewportMetrics()
+      });
+      continue;
+    }
+
+    console.log(`[transition ${id}] ${label} frame ${i}`, {
+      rect: getRect(el),
+      ...getViewportMetrics()
+    });
+  }
+};
+
 export const startProductImageTransition = async ({
   src,
   fromElement,
@@ -139,21 +105,41 @@ export const startProductImageTransition = async ({
   minTargetTop = 0,
   zIndex = 999999
 }) => {
-  if (!src || !fromElement) return;
+  const id = ++transitionSeq;
+
+  if (!src || !fromElement) {
+    console.log(`[transition ${id}] aborted before start`, {
+      hasSrc: !!src,
+      hasFromElement: !!fromElement
+    });
+    return;
+  }
 
   if (activeAnimation) {
+    console.log(`[transition ${id}] cancelling previous animation`);
     activeAnimation.cancel();
     activeAnimation = null;
   }
 
   if (activeClone) {
+    console.log(`[transition ${id}] removing previous clone`);
     activeClone.remove();
     activeClone = null;
   }
 
   const fromRect = getRect(fromElement);
 
+  console.log(`[transition ${id}] source initial`, {
+    fromRect,
+    computed: {
+      objectFit: window.getComputedStyle(fromElement).objectFit,
+      borderRadius: window.getComputedStyle(fromElement).borderRadius
+    },
+    ...getViewportMetrics()
+  });
+
   if (!fromRect.width || !fromRect.height) {
+    console.log(`[transition ${id}] source rect invalid`, { fromRect });
     return;
   }
 
@@ -171,18 +157,35 @@ export const startProductImageTransition = async ({
   fromElement.style.opacity = '0';
   clone.style.opacity = '1';
 
+  console.log(`[transition ${id}] clone shown`, {
+    cloneRect: getRect(clone),
+    ...getViewportMetrics()
+  });
+
+  logFrameSeries('source-after-click', fromElement, id, 6);
+
   const toElement = await waitForElement(toElementGetter);
 
   if (!toElement) {
+    console.log(`[transition ${id}] target not found`);
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
   }
+
+  console.log(`[transition ${id}] target found`, {
+    tagName: toElement.tagName,
+    rect: getRect(toElement),
+    ...getViewportMetrics()
+  });
 
   toElement.style.opacity = '0';
 
+  logFrameSeries('target-after-found', toElement, id, 10);
+
   if (!toElement.isConnected) {
+    console.log(`[transition ${id}] target disconnected immediately`);
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
     clone.remove();
@@ -190,29 +193,28 @@ export const startProductImageTransition = async ({
     return;
   }
 
-  await waitForImageReady(toElement);
+  await waitForNextFrame();
 
-  const stableRect = await waitForStableRect(toElement, {
-    maxFrames: 20,
-    stableFrames: 2
-  });
-
-  if (!stableRect || !stableRect.width || !stableRect.height) {
-    toElement.style.opacity = '';
-    fromElement.style.opacity = '';
-    clone.remove();
-    if (activeClone === clone) activeClone = null;
-    return;
-  }
-
+  const measuredRect = getRect(toElement);
   const toStyle = window.getComputedStyle(toElement);
 
   const toRect = {
-    left: stableRect.left,
-    top: Math.max(stableRect.top, minTargetTop),
-    width: stableRect.width,
-    height: stableRect.height
+    left: measuredRect.left,
+    top: Math.max(measuredRect.top, minTargetTop),
+    width: measuredRect.width,
+    height: measuredRect.height
   };
+
+  console.log(`[transition ${id}] target used for animation`, {
+    measuredRect,
+    adjustedToRect: toRect,
+    minTargetTop,
+    computed: {
+      objectFit: toStyle.objectFit,
+      borderRadius: toStyle.borderRadius
+    },
+    ...getViewportMetrics()
+  });
 
   clone.getBoundingClientRect();
 
@@ -244,7 +246,17 @@ export const startProductImageTransition = async ({
 
   activeAnimation = animation;
 
-  const cleanup = () => {
+  logFrameSeries('target-during-animation', toElement, id, 12);
+  logFrameSeries('clone-during-animation', clone, id, 12);
+
+  const cleanup = (reason) => {
+    console.log(`[transition ${id}] cleanup`, {
+      reason,
+      targetRect: toElement && toElement.isConnected ? getRect(toElement) : null,
+      cloneRect: clone.isConnected ? getRect(clone) : null,
+      ...getViewportMetrics()
+    });
+
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
 
@@ -259,8 +271,8 @@ export const startProductImageTransition = async ({
     }
   };
 
-  animation.addEventListener('finish', cleanup, { once: true });
-  animation.addEventListener('cancel', cleanup, { once: true });
+  animation.addEventListener('finish', () => cleanup('finish'), { once: true });
+  animation.addEventListener('cancel', () => cleanup('cancel'), { once: true });
 };
 
 export const clearProductImageTransitionClone = () => {
