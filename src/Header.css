@@ -985,7 +985,7 @@ body {
 .menu-items-wrapper {
   width: 100%;
   min-height: 100%;
-  padding-top: 100px;
+  padding-top: 0px;
   padding-right: 43px;
   padding-left: 43px;
   box-sizing: border-box;
