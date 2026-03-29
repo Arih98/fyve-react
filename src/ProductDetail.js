@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
@@ -158,7 +158,7 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
 
   return () => clearTimeout(timeout);
 }, [location.state?.fromProductGrid, isMobile]);
-useEffect(() => {
+useLayoutEffect(() => {
   setActiveImageIndex(0);
   if (mobileGalleryRef.current) {
     mobileGalleryRef.current.scrollLeft = 0;
