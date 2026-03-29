@@ -377,10 +377,10 @@ return (
     galleryRefs.current.set(imageKey, el);
   }}
   key={imageKey}
+  className={`product-gallery-image-shell ${idx === 0 ? 'product-gallery-image-shell-main' : ''}`}
   data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
 >
-  <div className={`product-gallery-image-inner ${idx === 0 ? 'product-gallery-image-inner-main' : ''}`}>
+  <div className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}>
     <img
       ref={el => {
         if (idx === 0) {
