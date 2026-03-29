@@ -26,10 +26,11 @@ const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
+const [menuVisualActive, setMenuVisualActive] = useState(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
-  !isMenuOpen &&
+  !menuVisualActive &&
   !isSearchOpen &&
   (!isScrolled || hideHeader);
 
@@ -40,6 +41,24 @@ const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/ass
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+
+useEffect(() => {
+  let timeout;
+
+  if (menuState === 'open') {
+    timeout = setTimeout(() => {
+      setMenuVisualActive(true);
+    }, 80);
+  } else if (menuState === 'closing') {
+    timeout = setTimeout(() => {
+      setMenuVisualActive(false);
+    }, 180);
+  } else if (!isMenuOpen) {
+    setMenuVisualActive(false);
+  }
+
+  return () => clearTimeout(timeout);
+}, [menuState, isMenuOpen]);
 
 useEffect(() => {
   if (!isMenuOpen) {
