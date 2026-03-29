@@ -216,7 +216,7 @@ setActiveImageIndex(nextIndex);
   }, [productId, location.state, location.search]);
 
   useEffect(() => {
-    console.log('[PDP] render state', {
+        console.log('[PDP] render state', {
       productId: product?.id,
       productTitle: product?.title,
       currentSku: current?.sku,
@@ -224,7 +224,9 @@ setActiveImageIndex(nextIndex);
       shouldAnimateDetailsIn,
       galleryLength: gallery.length,
       mainImage,
-      currentVariationId: currentVariation?.id
+      currentVariationId: currentVariation?.id,
+      targetCurrentSrc: document.querySelector('[data-pdp-primary-image="true"]')?.currentSrc || document.querySelector('[data-pdp-primary-image="true"]')?.src || null,
+      targetRect: document.querySelector('[data-pdp-primary-image="true"]')?.getBoundingClientRect() || null
     });
   }, [
     product?.id,
