@@ -40,6 +40,74 @@ const getRect = (el) => {
   };
 };
 
+const rectsMatch = (a, b, tolerance = 0.5) =>
+  Math.abs(a.left - b.left) <= tolerance &&
+  Math.abs(a.top - b.top) <= tolerance &&
+  Math.abs(a.width - b.width) <= tolerance &&
+  Math.abs(a.height - b.height) <= tolerance;
+
+const waitForStableRect = async (el, { maxFrames = 20, stableFrames = 2 } = {}) => {
+  let previousRect = null;
+  let stableCount = 0;
+
+  for (let i = 0; i < maxFrames; i += 1) {
+    await waitForNextFrame();
+
+    if (!el || !el.isConnected) return null;
+
+    const rect = getRect(el);
+
+    if (!rect.width || !rect.height) {
+      stableCount = 0;
+      previousRect = rect;
+      continue;
+    }
+
+    if (previousRect && rectsMatch(previousRect, rect)) {
+      stableCount += 1;
+      if (stableCount >= stableFrames) {
+        return rect;
+      }
+    } else {
+      stableCount = 0;
+    }
+
+    previousRect = rect;
+  }
+
+  return el && el.isConnected ? getRect(el) : null;
+};
+
+const waitForImageReady = async (el) => {
+  if (!(el instanceof HTMLImageElement)) return;
+
+  if (el.complete && el.naturalWidth > 0) {
+    if (typeof el.decode === 'function') {
+      try {
+        await el.decode();
+      } catch {}
+    }
+    return;
+  }
+
+  await new Promise((resolve) => {
+    const done = () => {
+      el.removeEventListener('load', done);
+      el.removeEventListener('error', done);
+      resolve();
+    };
+
+    el.addEventListener('load', done, { once: true });
+    el.addEventListener('error', done, { once: true });
+  });
+
+  if (typeof el.decode === 'function') {
+    try {
+      await el.decode();
+    } catch {}
+  }
+};
+
 const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   const clone = document.createElement('img');
   clone.src = src;
@@ -83,18 +151,11 @@ export const startProductImageTransition = async ({
     activeClone = null;
   }
 
-  const fromRectRaw = fromElement.getBoundingClientRect();
+  const fromRect = getRect(fromElement);
 
-  if (!fromRectRaw.width || !fromRectRaw.height) {
+  if (!fromRect.width || !fromRect.height) {
     return;
   }
-
-  const fromRect = {
-    left: fromRectRaw.left,
-    top: fromRectRaw.top,
-    width: fromRectRaw.width,
-    height: fromRectRaw.height
-  };
 
   const fromStyle = window.getComputedStyle(fromElement);
 
@@ -122,17 +183,21 @@ export const startProductImageTransition = async ({
   toElement.style.opacity = '0';
 
   if (!toElement.isConnected) {
+    toElement.style.opacity = '';
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
     return;
   }
 
-  await waitForNextFrame();
+  await waitForImageReady(toElement);
 
-  const toRectRaw = getRect(toElement);
+  const stableRect = await waitForStableRect(toElement, {
+    maxFrames: 20,
+    stableFrames: 2
+  });
 
-  if (!toRectRaw.width || !toRectRaw.height) {
+  if (!stableRect || !stableRect.width || !stableRect.height) {
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
     clone.remove();
@@ -143,10 +208,10 @@ export const startProductImageTransition = async ({
   const toStyle = window.getComputedStyle(toElement);
 
   const toRect = {
-    left: toRectRaw.left,
-    top: Math.max(toRectRaw.top, minTargetTop),
-    width: toRectRaw.width,
-    height: toRectRaw.height
+    left: stableRect.left,
+    top: Math.max(stableRect.top, minTargetTop),
+    width: stableRect.width,
+    height: stableRect.height
   };
 
   clone.getBoundingClientRect();
@@ -183,11 +248,10 @@ export const startProductImageTransition = async ({
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
 
+    clone.remove();
+
     if (activeClone === clone) {
-      clone.remove();
       activeClone = null;
-    } else {
-      clone.remove();
     }
 
     if (activeAnimation === animation) {
