@@ -381,10 +381,12 @@ return (
 >
   <img
     ref={el => {
-      if (idx === 0) {
-        mainImageRef.current = el;
-      }
-    }}
+  if (idx === 0) {
+    mainImageRef.current = el;
+  } else if (mainImageRef.current === el) {
+    mainImageRef.current = null;
+  }
+}}
     src={img}
     alt={`${displayTitle} ${idx + 1}`}
     data-pdp-primary-image={idx === 0 ? 'true' : undefined}
