@@ -2,7 +2,6 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMem
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
-import { startProductImageTransitionToTarget } from './utils/productImageTransition';
 import { CartContext } from './CartContext';
 import './ProductDetail.css';
 import { useProduct } from './hooks/useProduct';
@@ -112,37 +111,6 @@ const hideGalleryProgress = !showGalleryProgress;
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
 const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
-const [hidePrimaryImageForTransition, setHidePrimaryImageForTransition] = useState(
-  !!location.state?.fromProductGrid
-);
-useEffect(() => {
-  if (!location.state?.fromProductGrid) return;
-  if (!isMobile) return;
-
-  let frame = 0;
-  const maxFrames = 10;
-
-  const check = () => {
-    const el = document.querySelector('[data-pdp-primary-image="true"]');
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      console.log('[PDP TARGET CHECK]', {
-        frame,
-        rect,
-        scrollY: window.scrollY,
-        vvTop: window.visualViewport ? window.visualViewport.offsetTop : null,
-        vvHeight: window.visualViewport ? window.visualViewport.height : null
-      });
-    }
-
-    frame += 1;
-    if (frame < maxFrames) {
-      requestAnimationFrame(check);
-    }
-  };
-
-  requestAnimationFrame(check);
-}, [location.state?.fromProductGrid, isMobile]);
 
 useEffect(() => {
   if (!location.state?.fromProductGrid) {
@@ -219,7 +187,7 @@ setActiveImageIndex(nextIndex);
   }, [productId, location.state, location.search]);
 
   useEffect(() => {
-        console.log('[PDP] render state', {
+    console.log('[PDP] render state', {
       productId: product?.id,
       productTitle: product?.title,
       currentSku: current?.sku,
@@ -227,9 +195,7 @@ setActiveImageIndex(nextIndex);
       shouldAnimateDetailsIn,
       galleryLength: gallery.length,
       mainImage,
-      currentVariationId: currentVariation?.id,
-      targetCurrentSrc: document.querySelector('[data-pdp-primary-image="true"]')?.currentSrc || document.querySelector('[data-pdp-primary-image="true"]')?.src || null,
-      targetRect: document.querySelector('[data-pdp-primary-image="true"]')?.getBoundingClientRect() || null
+      currentVariationId: currentVariation?.id
     });
   }, [
     product?.id,
@@ -384,52 +350,6 @@ useEffect(() => {
   };
 }, [handleAddToCart]);
 
-
-useLayoutEffect(() => {
-  if (!location.state?.fromProductGrid) {
-    setHidePrimaryImageForTransition(false);
-    return;
-  }
-
-  if (!mainImageRef.current) return;
-
-  const raw = sessionStorage.getItem('pendingProductTransition');
-  if (!raw) {
-    setHidePrimaryImageForTransition(false);
-    return;
-  }
-
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    sessionStorage.removeItem('pendingProductTransition');
-    setHidePrimaryImageForTransition(false);
-    return;
-  }
-
-  sessionStorage.removeItem('pendingProductTransition');
-
-  const isMobileViewport = window.innerWidth <= 768;
-
-  startProductImageTransitionToTarget({
-    src: parsed.src,
-    fromRect: {
-      left: parsed.left,
-      top: parsed.top,
-      width: parsed.width,
-      height: parsed.height
-    },
-    toElement: mainImageRef.current,
-    duration: isMobileViewport ? 520 : 620,
-    minTargetTop: 0,
-    zIndex: isMobileViewport ? 80 : 999999,
-    onFinish: () => {
-      setHidePrimaryImageForTransition(false);
-    }
-  });
-}, [location.state?.fromProductGrid, currentDisplayId]);
-
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -449,7 +369,7 @@ return (
       onScroll={handleMobileGalleryScroll}
     >
       {displayImages.map((img, idx) => {
-        const imageKey = `${product.id}-${idx}`;
+        const imageKey = `${current?.sku || product.id}-${idx}`;
 
         return (
           <div
@@ -470,7 +390,7 @@ return (
     src={img}
     alt={`${displayTitle} ${idx + 1}`}
     data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-    className={`product-gallery-image ${idx === 0 && hidePrimaryImageForTransition ? 'product-gallery-image-hidden-for-transition' : ''}`}
+    className="product-gallery-image"
               onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
               onLoad={e => console.log('[PDP] gallery image loaded', {
                 imageKey,

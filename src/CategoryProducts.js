@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
+import { startProductImageTransition } from './utils/productImageTransition';
 import './pages/ProductsPage.css';
 
 const CategoryProducts = () => {
@@ -120,19 +121,17 @@ const CategoryProducts = () => {
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
-        if (sourceEl) {
-      const rect = sourceEl.getBoundingClientRect();
+    if (sourceEl) {
+      const isMobileViewport = window.innerWidth <= 768;
 
-      sessionStorage.setItem(
-        'pendingProductTransition',
-        JSON.stringify({
-          src: sourceSrc,
-          left: rect.left,
-          top: rect.top,
-          width: rect.width,
-          height: rect.height
-        })
-      );
+      startProductImageTransition({
+        src: sourceSrc,
+        fromElement: sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: isMobileViewport ? 520 : 620,
+        minTargetTop: isMobileViewport ? 80 : 0,
+        zIndex: isMobileViewport ? 80 : 999999
+      });
     }
 
     navigate(targetPath, {

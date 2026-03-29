@@ -30,27 +30,23 @@ const ProductCard = ({
       className={`product-card real-product-card ${isVisible ? 'card-visible' : ''}`}
     >
       <div
-  id={`img-${item.displayId}`}
-  className="product-image-wrapper"
->
-  <img
-    ref={el => {
-      if (el) {
-        imageRefs.current.set(item.displayId, el);
-      } else {
-        imageRefs.current.delete(item.displayId);
-      }
-    }}
-    src={imageSrc}
-    alt={item.title}
-    className={`product-image real-product-image ${imageLoaded ? 'image-loaded' : ''}`}
-    onLoad={() => setImageLoaded(true)}
-    onError={e => {
-      e.target.src = placeholderImage;
-      setImageLoaded(true);
-    }}
-  />
-</div>
+        ref={el => {
+          imageRefs.current.set(item.displayId, el);
+        }}
+        id={`img-${item.displayId}`}
+        className="product-image-wrapper"
+      >
+        <img
+          src={imageSrc}
+          alt={item.title}
+          className={`product-image real-product-image ${imageLoaded ? 'image-loaded' : ''}`}
+          onLoad={() => setImageLoaded(true)}
+          onError={e => {
+            e.target.src = placeholderImage;
+            setImageLoaded(true);
+          }}
+        />
+      </div>
 
       <div className="product-info">
         <h3 className="product-title">{item.title}</h3>

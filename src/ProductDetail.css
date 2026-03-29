@@ -1,7 +1,3 @@
-.product-gallery-image-hidden-for-transition {
-  opacity: 0;
-}
-
 .product-detail-container {
   display: flex;
   width: 100%;
