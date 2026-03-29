@@ -398,7 +398,7 @@ return (
       onScroll={handleMobileGalleryScroll}
     >
       {displayImages.map((img, idx) => {
-        const imageKey = `${product.id}-${idx}`;
+        const imageKey = `${current?.sku || product.id}-${idx}`;
 
         return (
           <div

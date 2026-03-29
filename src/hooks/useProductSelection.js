@@ -35,7 +35,7 @@ export function useProductSelection({
     });
   }, [product]);
 
-  const getInitialVariation = useMemo(() => {
+  const initialVariation = useMemo(() => {
     if (!product || product.product_type !== 'variable' || !product.variations?.length) {
       return null;
     }
@@ -54,43 +54,50 @@ export function useProductSelection({
     );
   }, [product, initialColorValue]);
 
-  const buildInitialAttributes = useMemo(() => {
-    if (!getInitialVariation) return {};
+  const initialAttributes = useMemo(() => {
+    if (!initialVariation) return {};
 
-    const initialAttrs = {};
+    const attrs = {};
 
-    getInitialVariation.attributes.forEach((attr) => {
+    initialVariation.attributes.forEach((attr) => {
       const termName = String(attr.term_name || '').trim();
       if (termName && !termName.startsWith('Any')) {
-        initialAttrs[attr.attribute_name] = termName;
+        attrs[attr.attribute_name] = termName;
       }
     });
 
     const colorKey =
-      Object.keys(initialAttrs).find(isColorAttribute) ||
-      getInitialVariation.attributes?.find((attr) => isColorAttribute(attr.attribute_name))?.attribute_name ||
+      Object.keys(attrs).find(isColorAttribute) ||
+      initialVariation.attributes?.find((attr) => isColorAttribute(attr.attribute_name))?.attribute_name ||
       'Color';
 
-    if (location.state?.initialColor && !initialAttrs[colorKey]) {
-      initialAttrs[colorKey] = location.state.initialColor;
+    if (location.state?.initialColor && !attrs[colorKey]) {
+      attrs[colorKey] = location.state.initialColor;
     }
 
-    return initialAttrs;
-  }, [getInitialVariation, location.state]);
+    return attrs;
+  }, [initialVariation, location.state, isColorAttribute]);
 
-  const [selectedAttributes, setSelectedAttributes] = useState(buildInitialAttributes);
-  const [currentVariation, setCurrentVariation] = useState(getInitialVariation);
+  const [selectedAttributes, setSelectedAttributes] = useState(initialAttributes);
 
   useEffect(() => {
     if (!product || product.product_type !== 'variable' || !product.variations?.length) {
       setSelectedAttributes({});
-      setCurrentVariation(null);
       return;
     }
 
-    setSelectedAttributes(buildInitialAttributes);
-    setCurrentVariation(getInitialVariation);
-  }, [product, getInitialVariation, buildInitialAttributes]);
+    setSelectedAttributes((prev) => {
+      const prevKeys = Object.keys(prev);
+      const nextKeys = Object.keys(initialAttributes);
+
+      if (prevKeys.length === nextKeys.length) {
+        const same = nextKeys.every((key) => prev[key] === initialAttributes[key]);
+        if (same) return prev;
+      }
+
+      return initialAttributes;
+    });
+  }, [product?.id, initialColorValue, initialAttributes]);
 
   const getAvailableOptions = (attrName, attributesOverride = selectedAttributes) => {
     if (!product?.variations?.length) return [];
@@ -104,7 +111,7 @@ export function useProductSelection({
           Object.entries(otherSelected).every(([otherAttr, term]) => {
             const vAttr = v.attributes.find((a) => a.attribute_name === otherAttr);
             const vTermName = String(vAttr?.term_name || '');
-            return vTermName === term || vTermName.startsWith('Any');
+            return vTermName === term || vTermName === `Any ${otherAttr}`;
           })
         )
         .flatMap((v) => {
@@ -134,28 +141,6 @@ export function useProductSelection({
     if (!product || product.product_type !== 'variable') return;
     if (!attributeNames.length) return;
 
-    const hasAnySelection = attributeNames.some((attr) => !!selectedAttributes[attr]);
-    if (!hasAnySelection) return;
-
-    const matchingVariation = product.variations.find((v) =>
-      attributeNames.every((attr) => {
-        const sel = selectedAttributes[attr];
-        if (!sel) return true;
-
-        const vAttr = v.attributes.find((a) => a.attribute_name === attr);
-        const vTermName = String(vAttr?.term_name || '');
-
-        return vTermName === sel || vTermName === `Any ${attr}`;
-      })
-    );
-
-    setCurrentVariation(matchingVariation || null);
-  }, [selectedAttributes, product, attributeNames]);
-
-  useEffect(() => {
-    if (!product || product.product_type !== 'variable') return;
-    if (!attributeNames.length) return;
-
     let updatedSelected = { ...selectedAttributes };
     let changed = false;
 
@@ -171,6 +156,32 @@ export function useProductSelection({
       setSelectedAttributes(updatedSelected);
     }
   }, [selectedAttributes, product, attributeNames]);
+
+  const currentVariation = useMemo(() => {
+    if (!product || product.product_type !== 'variable' || !product.variations?.length) {
+      return null;
+    }
+
+    const hasAnySelection = attributeNames.some((attr) => !!selectedAttributes[attr]);
+
+    if (!hasAnySelection) {
+      return initialVariation;
+    }
+
+    return (
+      product.variations.find((v) =>
+        attributeNames.every((attr) => {
+          const sel = selectedAttributes[attr];
+          if (!sel) return true;
+
+          const vAttr = v.attributes.find((a) => a.attribute_name === attr);
+          const vTermName = String(vAttr?.term_name || '');
+
+          return vTermName === sel || vTermName === `Any ${attr}`;
+        })
+      ) || null
+    );
+  }, [product, attributeNames, selectedAttributes, initialVariation]);
 
   const handleAttributeChange = (attrName, value) => {
     setSelectedAttributes((prev) => {
