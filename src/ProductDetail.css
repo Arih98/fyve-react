@@ -1,3 +1,27 @@
+.product-gallery-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-gallery-image-inner {
+  width: 78%;
+  aspect-ratio: 1 / 1;
+  background: #f7f7f7;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  box-sizing: border-box;
+}
+
 .product-detail-container {
   display: flex;
   width: 100%;
