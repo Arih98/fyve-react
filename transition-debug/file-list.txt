@@ -1,0 +1,9 @@
+Relevant files:
+./src/App.js
+./src/CategoryProducts.js
+./src/ProductDetail.js
+./src/components/ScrollManager.jsx
+./src/hooks/useProductSelection.js
+./src/hooks/useRelatedProductNavigation.js
+./src/pages/ProductsPage.js
+./src/utils/productImageTransition.js

@@ -1,0 +1,581 @@
+===== ROUTES =====
+./src/index.js:3:import { BrowserRouter } from 'react-router-dom';
+./src/index.js:11:    <BrowserRouter basename={process.env.PUBLIC_URL}>
+./src/index.js:13:    </BrowserRouter>
+./src/App.js:2:import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
+./src/App.js:15:import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+./src/App.js:39:        <LayoutGroup>
+./src/App.js:40:          <AnimatePresence initial={false} mode="wait">
+./src/App.js:50:          </AnimatePresence>
+./src/App.js:51:        </LayoutGroup>
+./src/App.js:132:        <Routes>
+./src/App.js:133:          <Route element={<Layout />}>
+./src/App.js:134:            <Route path="/" element={<Home />} />
+./src/App.js:135:            <Route path="/admin" element={<Admin />} />
+./src/App.js:136:            <Route path="/products" element={<ProductsPage />} />
+./src/App.js:137:            <Route path="/product/:id" element={<ProductDetailWrapper />} />
+./src/App.js:138:            <Route path="/product-category/:slug" element={<CategoryProducts />} />
+./src/App.js:139:            <Route path="/checkout" element={<Checkout />} />
+./src/App.js:140:            <Route path="/account" element={<Account />} />
+./src/App.js:141:          </Route>
+./src/App.js:142:        </Routes>
+
+===== PRODUCT DETAIL =====
+./src/Header.jsx:2:import React, { useState, useEffect, useRef } from 'react';
+./src/Header.jsx:20:const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
+./src/Header.jsx:45:useEffect(() => {
+./src/Header.jsx:63:useEffect(() => {
+./src/Header.jsx:73:useEffect(() => {
+./src/Header.jsx:75:    setIsScrolled(window.scrollY > 10);
+./src/Header.jsx:84:useEffect(() => {
+./src/Header.jsx:91:useEffect(() => {
+./src/Header.jsx:97:  let lastScrollY = window.scrollY;
+./src/Header.jsx:100:    const currentScrollY = window.scrollY;
+./src/Header.jsx:118:useEffect(() => {
+./src/Header.jsx:130:useEffect(() => {
+./src/Header.jsx:139:useEffect(() => {
+./src/Header.jsx:144:useEffect(() => {
+./src/Header.jsx:152:    const rect = el.getBoundingClientRect();
+./src/Header.jsx:158:  scrollY: window.scrollY,
+./src/Header.jsx:179:      prev.scrollY !== metrics.scrollY
+./src/Header.jsx:230:    const prevElem = document.querySelector(`.menu-image[data-menu-item="${prevId}"]`);
+./src/Header.jsx:231:    const newElem = document.querySelector(`.menu-image[data-menu-item="${newId}"]`);
+./src/Header.jsx:240:    const newImg = newElem.querySelector('img');
+./src/Header.jsx:243:    const prevImg = prevElem ? prevElem.querySelector('img') : null;
+./src/CartContext.js:1:import React, { createContext, useState, useEffect } from 'react';
+./src/CartContext.js:11:  useEffect(() => {
+./src/CartContext.js:15:  useEffect(() => {
+./src/CategoryProducts.js:2:import React, { useState, useEffect, useContext, useRef } from 'react';
+./src/CategoryProducts.js:5:import { startProductImageTransition } from './utils/productImageTransition';
+./src/CategoryProducts.js:22:  useEffect(() => {
+./src/CategoryProducts.js:51:  useEffect(() => {
+./src/CategoryProducts.js:127:      startProductImageTransition({
+./src/CategoryProducts.js:130:        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+./src/CategoryProducts.js:143:        fromProductGrid: true
+./src/ProductEditor.js:1:import React, { useState, useEffect, useRef } from 'react';
+./src/ProductEditor.js:104:  useEffect(() => {
+./src/ProductDetail.js:1:import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
+./src/ProductDetail.js:33:  useEffect(() => {
+./src/ProductDetail.js:39:  const fallbackProduct = location.state?.product;
+./src/ProductDetail.js:44:  const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
+./src/ProductDetail.js:45:  const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
+./src/ProductDetail.js:46:const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
+./src/ProductDetail.js:113:const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
+./src/ProductDetail.js:115:useEffect(() => {
+./src/ProductDetail.js:116:  if (!location.state?.fromProductGrid) {
+./src/ProductDetail.js:128:}, [location.state?.fromProductGrid, isMobile]);
+./src/ProductDetail.js:147:  useEffect(() => {
+./src/ProductDetail.js:148:  if (!location.state?.fromProductGrid) {
+./src/ProductDetail.js:160:}, [location.state?.fromProductGrid, isMobile]);
+./src/ProductDetail.js:161:useLayoutEffect(() => {
+./src/ProductDetail.js:181:  useEffect(() => {
+./src/ProductDetail.js:184:      locationState: location.state,
+./src/ProductDetail.js:187:  }, [productId, location.state, location.search]);
+./src/ProductDetail.js:189:  useEffect(() => {
+./src/ProductDetail.js:259:useEffect(() => {
+./src/ProductDetail.js:269:  useEffect(() => {
+./src/ProductDetail.js:274:    const header = document.querySelector('.mobile-header.first-header.pdp-mobile-header');
+./src/ProductDetail.js:277:    const rootRect = root.getBoundingClientRect();
+./src/ProductDetail.js:278:    const headerRect = header.getBoundingClientRect();
+./src/ProductDetail.js:284:      scrollY: window.scrollY,
+./src/ProductDetail.js:307:      prev.scrollY !== metrics.scrollY
+./src/ProductDetail.js:341:useEffect(() => {
+./src/ProductDetail.js:392:    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+./src/ProductDetail.js:400:                rect: e.target.getBoundingClientRect(),
+./src/utils/productImageTransition.js:34:  const rect = el.getBoundingClientRect();
+./src/utils/productImageTransition.js:134:export const startProductImageTransition = async ({
+./src/utils/productImageTransition.js:217:  clone.getBoundingClientRect();
+./src/Home.js:2:import React, { useEffect, useRef } from 'react';
+./src/Home.js:25:  useEffect(() => {
+./src/Home.js:41:    useEffect(() => {
+./src/Home.js:51:    const images = Array.from(document.querySelectorAll('img'));
+./src/Home.js:66:  useEffect(() => {
+./src/Home.js:73:    const mobileHeaderEl = document.querySelector('.mobile-header');
+./src/Home.js:74:const announcementBarEl = document.querySelector('.announcement-bar');
+./src/Home.js:95:      const londonMask = document.querySelector('.london-mask');
+./src/Home.js:105:      const stamp = document.querySelector('.section1-stamp');
+./src/components/ScrollManager.jsx:1:import { useEffect } from 'react';
+./src/components/ScrollManager.jsx:10:  useEffect(() => {
+./src/components/ScrollManager.jsx:16:  useEffect(() => {
+./src/components/ScrollManager.jsx:20:      scrollPositions.set(pageKey, window.scrollY || 0);
+./src/components/ScrollManager.jsx:31:    useEffect(() => {
+./src/components/ScrollManager.jsx:35:      window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:38:        window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:41:          window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:44:            window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:61:      window.scrollTo(0, savedY);
+./src/components/ScrollManager.jsx:65:        if (location.state?.fromProductGrid) {
+./src/components/ScrollManager.jsx:66:      window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:70:    window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:71:  }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
+./src/components/product/ProductCard.jsx:1:import React, { useEffect, useState } from 'react';
+./src/components/product/ProductCard.jsx:19:  useEffect(() => {
+./src/Account.js:1:import React, { useState, useEffect } from 'react';
+./src/Account.js:12:  useEffect(() => {
+./src/hooks/useQuantity.js:1:import { useEffect, useState } from "react";
+./src/hooks/useQuantity.js:6:  useEffect(() => {
+./src/hooks/useRelatedProductNavigation.js:18:        fromProductGrid: false
+./src/hooks/useMobileMenuController.js:1:import { useContext, useEffect, useRef, useState } from 'react';
+./src/hooks/useMobileMenuController.js:12:  useEffect(() => {
+./src/hooks/useMobileMenuController.js:22:  useEffect(() => {
+./src/hooks/useMobileMenuController.js:34:  useEffect(() => {
+./src/hooks/useMobileMenuController.js:36:    const xSvg = burgerRef.current.querySelector('.x-svg');
+./src/hooks/useMobileMenuController.js:38:    const xLineLeft = xSvg.querySelector('.x-line.left');
+./src/hooks/useMobileMenuController.js:39:    const xLineRight = xSvg.querySelector('.x-line.right');
+./src/hooks/useMobileMenuController.js:44:  useEffect(() => {
+./src/hooks/useMobileMenuController.js:47:    const topLine = burgerRef.current.querySelector('.hamburger-line.top');
+./src/hooks/useMobileMenuController.js:48:    const middleLine = burgerRef.current.querySelector('.hamburger-line.middle');
+./src/hooks/useMobileMenuController.js:49:    const bottomLine = burgerRef.current.querySelector('.hamburger-line.bottom');
+./src/hooks/useMobileMenuController.js:50:    const xSvg = burgerRef.current.querySelector('.x-svg');
+./src/hooks/useMobileMenuController.js:54:    const xLineLeft = xSvg.querySelector('.x-line.left');
+./src/hooks/useMobileMenuController.js:55:    const xLineRight = xSvg.querySelector('.x-line.right');
+./src/hooks/useMobileMenuController.js:92:  useEffect(() => {
+./src/hooks/useProductSelection.js:1:import { useEffect, useMemo, useState } from 'react';
+./src/hooks/useProductSelection.js:40:  useEffect(() => {
+./src/hooks/useProductSelection.js:67:    if (location.state?.initialColor && !initialAttrs[colorKey]) {
+./src/hooks/useProductSelection.js:68:      initialAttrs[colorKey] = location.state.initialColor;
+./src/hooks/useProductSelection.js:73:  }, [product, initialColorValue, location.state]);
+./src/hooks/useProductSelection.js:113:  useEffect(() => {
+./src/hooks/useProductSelection.js:135:  useEffect(() => {
+./src/hooks/useProductSelection.js:165:            ...location.state,
+./src/hooks/useProductSelection.js:169:            fromProductGrid: false,
+./src/hooks/useStoredProducts.js:1:import { useEffect, useState } from "react";
+./src/hooks/useStoredProducts.js:6:  useEffect(() => {
+./src/hooks/useScrollDirection.js:1:import { useEffect, useRef, useState } from "react";
+./src/hooks/useScrollDirection.js:8:  useEffect(() => {
+./src/hooks/useScrollDirection.js:10:      const scrollY = window.pageYOffset;
+./src/hooks/useScrollDirection.js:12:      if (Math.abs(scrollY - lastScrollY.current) < 10) return;
+./src/hooks/useScrollDirection.js:14:      const newDirection = scrollY > lastScrollY.current ? "down" : "up";
+./src/hooks/useScrollDirection.js:21:      lastScrollY.current = scrollY;
+./src/hooks/useInventory.js:1:import { useEffect, useState } from 'react';
+./src/hooks/useInventory.js:9:  useEffect(() => {
+./src/hooks/useProducts.js:1:import { useEffect, useState } from "react";
+./src/hooks/useProducts.js:16:  useEffect(() => {
+./src/hooks/useProduct.js:1:import { useEffect, useState } from "react";
+./src/hooks/useProduct.js:10:  useEffect(() => {
+./src/hooks/useCategories.js:1:import { useEffect, useState } from "react";
+./src/hooks/useCategories.js:9:  useEffect(() => {
+./src/Cart.jsx:1:import React, { useState, useEffect, useRef, useContext } from 'react';
+./src/Cart.jsx:33:  useEffect(() => {
+./src/Cart.jsx:39:  useEffect(() => {
+./src/Cart.jsx:60:  useEffect(() => {
+./src/Admin.js:1:import React, { useState, useEffect } from 'react';
+./src/Admin.js:11:  useEffect(() => {
+./src/pages/ProductsPage.js:1:import React, { useContext, useRef, useState, useEffect } from 'react';
+./src/pages/ProductsPage.js:6:import { startProductImageTransition } from '../utils/productImageTransition';
+./src/pages/ProductsPage.js:33:  useEffect(() => {
+./src/pages/ProductsPage.js:38:  useEffect(() => {
+./src/pages/ProductsPage.js:59:        window.scrollTo(0, savedY);
+./src/pages/ProductsPage.js:74:  useEffect(() => {
+./src/pages/ProductsPage.js:78:  useEffect(() => {
+./src/pages/ProductsPage.js:126:      startProductImageTransition({
+./src/pages/ProductsPage.js:129:        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+./src/pages/ProductsPage.js:137:      sessionStorage.setItem(`productsPageScrollY:${selectedCategory || 'all'}`, String(window.scrollY || 0));
+./src/pages/ProductsPage.js:147:        fromProductGrid: true
+./src/pages/ProductsPage.js:164:    window.scrollTo(0, 0);
+./src/App.js:1:import React, { useState, useEffect } from 'react';
+./src/App.js:60:  useEffect(() => {
+./src/App.js:61:    const originalScrollTo = window.scrollTo;
+./src/App.js:66:    window.scrollTo = function (...args) {
+./src/App.js:83:      window.scrollTo = originalScrollTo;
+./src/App.js:90:  useEffect(() => {
+./src/App.js:97:  useEffect(() => {
+./src/App.js:105:  useEffect(() => {
+./src/Checkout.js:1:import React, { useState, useEffect, useContext } from 'react';
+./src/Checkout.js:14:  useEffect(() => {
+./src/Checkout.js:54:  useEffect(() => {
+./src/Checkout.js:75:  useEffect(() => {
+
+===== USE PRODUCT SELECTION =====
+./src/ProductDetail.js:8:import { useProductSelection } from './hooks/useProductSelection';
+./src/ProductDetail.js:57:  } = useProductSelection({
+./src/hooks/useProductSelection.js:4:export function useProductSelection({
+
+===== PRODUCT GRID / CARD =====
+./src/Header.jsx:368:    onClick={handleToggleMenu}
+./src/Header.jsx:396:      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+./src/Header.jsx:400:      <button className="mobile-nav-icon" onClick={toggleSearch}>
+./src/Header.jsx:404:      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+./src/Header.jsx:408:      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+./src/Header.jsx:419:    onClick={() => {
+./src/Header.jsx:430:      <button className="mobile-nav-icon" onClick={toggleSearch}>
+./src/Header.jsx:434:      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+./src/Header.jsx:438:      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+./src/Header.jsx:453:      <button className="custom-search-close" onClick={toggleSearch}>
+./src/Header.jsx:467:    <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
+./src/Header.jsx:512:      onClick={() => {
+./src/Header.jsx:530:              onClick={() => {
+./src/Header.jsx:546:    onClick={() => {
+./src/ProductDetailMobileHeader.jsx:27:          onClick={onToggleMenu}
+./src/ProductDetailMobileHeader.jsx:46:            onClick={onAddToBag}
+./src/ProductDetailMobileHeader.jsx:53:            <button className="mobile-nav-icon" onClick={toggleSearch}>
+./src/ProductDetailMobileHeader.jsx:57:            <button className="mobile-nav-icon" onClick={() => navigate('/my-account')}>
+./src/ProductDetailMobileHeader.jsx:61:            <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+./src/ProductDetailMobileHeader.jsx:75:          <button className="custom-search-close" onClick={toggleSearch}>
+./src/CategoryProducts.js:137:    navigate(targetPath, {
+./src/CategoryProducts.js:143:        fromProductGrid: true
+./src/CategoryProducts.js:165:              onClick={(e) => handleProductClick(item, e)}
+./src/CategoryProducts.js:205:              onClick={() => setCurrentPage(i + 1)}
+./src/ProductEditor.js:110:          navigate('/account');
+./src/ProductEditor.js:705:                onClick={() => setEditingProduct(0)}
+./src/ProductEditor.js:711:                onClick={syncAllStock}
+./src/ProductEditor.js:763:                        onClick={() => handleEdit(product)}
+./src/ProductEditor.js:769:                        onClick={() => handleDelete(product.id)}
+./src/ProductEditor.js:790:              onClick={() => setActiveTab('product')}
+./src/ProductEditor.js:797:                onClick={() => setActiveTab('variations')}
+./src/ProductEditor.js:804:              onClick={() => setActiveTab('attributes')}
+./src/ProductEditor.js:810:              onClick={() => setActiveTab('categories')}
+./src/ProductEditor.js:933:        onClick={() => removeGalleryImage(index)}
+./src/ProductEditor.js:970:                          onClick={() => toggleVariationAccordion(varIndex)}
+./src/ProductEditor.js:980:                          onClick={() => duplicateVariation(varIndex)}
+./src/ProductEditor.js:1064:        onClick={() => removeVariationGalleryImage(varIndex, index)}
+./src/ProductEditor.js:1141:                            onClick={() => removeVariation(varIndex)}
+./src/ProductEditor.js:1152:                    onClick={addVariation}
+./src/ProductEditor.js:1168:                  onClick={cancelEdit}
+./src/ProductEditor.js:1180:                onClick={() => {
+./src/ProductEditor.js:1209:                    onClick={handleAddOrUpdateAttribute}
+./src/ProductEditor.js:1220:                    onClick={() => toggleAccordion(attr.id)}
+./src/ProductEditor.js:1232:                          onClick={() => handleEditAttribute(attr)}
+./src/ProductEditor.js:1239:                          onClick={() => handleDeleteAttribute(attr.id)}
+./src/ProductEditor.js:1255:                onClick={() => {
+./src/ProductEditor.js:1275:                    onClick={handleAddOrUpdateCategory}
+./src/ProductEditor.js:1286:                    onClick={() => toggleCategoryAccordion(cat.id)}
+./src/ProductEditor.js:1297:                          onClick={() => handleEditCategory(cat)}
+./src/ProductEditor.js:1304:                          onClick={() => handleDeleteCategory(cat.id)}
+./src/ProductDetail.js:39:  const fallbackProduct = location.state?.product;
+./src/ProductDetail.js:44:  const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
+./src/ProductDetail.js:45:  const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
+./src/ProductDetail.js:46:const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
+./src/ProductDetail.js:113:const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
+./src/ProductDetail.js:116:  if (!location.state?.fromProductGrid) {
+./src/ProductDetail.js:128:}, [location.state?.fromProductGrid, isMobile]);
+./src/ProductDetail.js:148:  if (!location.state?.fromProductGrid) {
+./src/ProductDetail.js:160:}, [location.state?.fromProductGrid, isMobile]);
+./src/ProductDetail.js:184:      locationState: location.state,
+./src/ProductDetail.js:187:  }, [productId, location.state, location.search]);
+./src/ProductDetail.js:463:                          onClick={() => {
+./src/ProductDetail.js:478:                          onClick={() => {
+./src/ProductDetail.js:501:          <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
+./src/ProductDetail.js:505:          <button onClick={() => increaseQuantity(availableStock)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
+./src/ProductDetail.js:511:      <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
+./src/ProductDetail.js:525:              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
+./src/components/ScrollManager.jsx:65:        if (location.state?.fromProductGrid) {
+./src/components/ScrollManager.jsx:71:  }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
+./src/components/product/ProductCard.jsx:29:      onClick={(e) => onProductClick(item, e)}
+./src/Account.js:19:        navigate('/admin');
+./src/Account.js:62:          navigate('/admin');
+./src/Account.js:170:              onClick={handleLogout}
+./src/hooks/useRelatedProductNavigation.js:14:    navigate(`/product/${relItem.id}${colorQuery}`, {
+./src/hooks/useRelatedProductNavigation.js:18:        fromProductGrid: false
+./src/hooks/useProductSelection.js:67:    if (location.state?.initialColor && !initialAttrs[colorKey]) {
+./src/hooks/useProductSelection.js:68:      initialAttrs[colorKey] = location.state.initialColor;
+./src/hooks/useProductSelection.js:73:  }, [product, initialColorValue, location.state]);
+./src/hooks/useProductSelection.js:162:        navigate(`/product/${product.id}?${nextParams.toString()}`, {
+./src/hooks/useProductSelection.js:165:            ...location.state,
+./src/hooks/useProductSelection.js:169:            fromProductGrid: false,
+./src/hooks/useProductSelection.js:170:            transitionKey: null
+./src/Cart.jsx:102:      <div className={`cart-icon${cartItems.length > 0 ? ' has-items' : ''}`} onClick={toggleCart} ref={cartIconRef}>
+./src/Cart.jsx:110:          <div className="cart-close-button" onClick={toggleCart}>✕</div>
+./src/Cart.jsx:138:                              <button className="quantity-minus" onClick={() => handleQuantityChange(item.id, variationKey, -1)}>-</button>
+./src/Cart.jsx:146:                              <button className="quantity-plus" onClick={() => handleQuantityChange(item.id, variationKey, 1)}>+</button>
+./src/Cart.jsx:151:                            <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>Remove</button>
+./src/pages/ProductsPage.js:141:    navigate(targetPath, {
+./src/pages/ProductsPage.js:147:        fromProductGrid: true
+./src/pages/ProductsPage.js:205:              onClick={() => setVisibleCount(v => v + productsPerPage)}
+./src/pages/ProductsPage.js:219:                  onClick={() => handlePageChange(page)}
+./src/MobileTopHeader.jsx:14:        onClick={() => navigate('/')}
+./src/Checkout.js:151:        <button onClick={handleCardPayment} className="card-button">Pay with Credit/Debit Card</button>
+
+===== TRANSITION UTILS =====
+./src/Header.jsx:152:    const rect = el.getBoundingClientRect();
+./src/Header.jsx:307:  requestAnimationFrame(() => {
+./src/CategoryProducts.js:5:import { startProductImageTransition } from './utils/productImageTransition';
+./src/CategoryProducts.js:127:      startProductImageTransition({
+./src/ProductDetail.js:277:    const rootRect = root.getBoundingClientRect();
+./src/ProductDetail.js:278:    const headerRect = header.getBoundingClientRect();
+./src/ProductDetail.js:400:                rect: e.target.getBoundingClientRect(),
+./src/ProductDetail.js:430:    animate={{ x: 0, y: 0, opacity: 1 }}
+./src/utils/productImageTransition.js:22:      requestAnimationFrame(check);
+./src/utils/productImageTransition.js:30:    requestAnimationFrame(() => resolve());
+./src/utils/productImageTransition.js:34:  const rect = el.getBoundingClientRect();
+./src/utils/productImageTransition.js:134:export const startProductImageTransition = async ({
+./src/utils/productImageTransition.js:217:  clone.getBoundingClientRect();
+./src/utils/productImageTransition.js:219:  const animation = clone.animate(
+./src/Home.js:43:      requestAnimationFrame(() => {
+./src/Home.js:261:    requestAnimationFrame(() => {
+./src/components/ScrollManager.jsx:37:      requestAnimationFrame(() => {
+./src/components/ScrollManager.jsx:40:        requestAnimationFrame(() => {
+./src/pages/ProductsPage.js:6:import { startProductImageTransition } from '../utils/productImageTransition';
+./src/pages/ProductsPage.js:64:      requestAnimationFrame(tryRestore);
+./src/pages/ProductsPage.js:67:    requestAnimationFrame(tryRestore);
+./src/pages/ProductsPage.js:126:      startProductImageTransition({
+./src/App.js:44:              animate={{ opacity: 1 }}
+./src/App.js:110:    requestAnimationFrame(() => {
+./src/App.js:114:    requestAnimationFrame(() => {
+./src/App.js:115:      requestAnimationFrame(() => {
+
+===== LENIS / SCROLL / RESTORATION =====
+./src/ProductDetail.js:11:import { useScrollDirection } from './hooks/useScrollDirection';
+./src/ProductDetail.js:28:  const scrollDirection = useScrollDirection();
+./src/Home.js:9:import { ScrollTrigger } from "gsap/ScrollTrigger";
+./src/Home.js:10:gsap.registerPlugin(Observer, ScrollTrigger);
+./src/Home.js:44:        ScrollTrigger.refresh();
+./src/Home.js:45:        setTimeout(() => ScrollTrigger.refresh(), 250);
+./src/Home.js:262:      ScrollTrigger.refresh();
+./src/Home.js:263:      setTimeout(() => ScrollTrigger.refresh(), 250);
+./src/components/ScrollManager.jsx:11:    if ('scrollRestoration' in window.history) {
+./src/components/ScrollManager.jsx:12:      window.history.scrollRestoration = 'manual';
+./src/components/ScrollManager.jsx:35:      window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:38:        window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:41:          window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:44:            window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:60:      const savedY = scrollPositions.get(pageKey) ?? 0;
+./src/components/ScrollManager.jsx:61:      window.scrollTo(0, savedY);
+./src/components/ScrollManager.jsx:66:      window.scrollTo(0, 0);
+./src/components/ScrollManager.jsx:70:    window.scrollTo(0, 0);
+./src/hooks/useScrollDirection.js:3:export function useScrollDirection() {
+./src/pages/ProductsPage.js:44:    const savedY = Number(sessionStorage.getItem(`productsPageScrollY:${selectedCategory || 'all'}`) || 0);
+./src/pages/ProductsPage.js:45:    if (savedY <= 0) return;
+./src/pages/ProductsPage.js:56:      const canRestore = pageHeight >= savedY + viewportHeight;
+./src/pages/ProductsPage.js:59:        window.scrollTo(0, savedY);
+./src/pages/ProductsPage.js:164:    window.scrollTo(0, 0);
+./src/App.js:61:    const originalScrollTo = window.scrollTo;
+./src/App.js:66:    window.scrollTo = function (...args) {
+./src/App.js:83:      window.scrollTo = originalScrollTo;
+
+===== PDP PRIMARY IMAGE TARGET =====
+./src/CategoryProducts.js:130:        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+./src/ProductDetail.js:392:    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+./src/pages/ProductsPage.js:129:        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+
+===== PRODUCT DETAIL CSS =====
+./src/Home.css:24:  overflow: visible;
+./src/Home.css:37:  overflow: hidden;
+./src/Home.css:46:  transform: translate(-50%, -50%);
+./src/Home.css:47:  overflow: hidden;
+./src/Home.css:81:  transform: translate(-50%, -50%);
+./src/Home.css:88:  text-transform: uppercase;
+./src/Home.css:96:  overflow: hidden;
+./src/Home.css:114:  overflow: hidden;
+./src/Home.css:159:  text-transform: uppercase;
+./src/Home.css:167:  overflow: hidden;
+./src/Home.css:181:  text-transform: uppercase;
+./src/Home.css:197:  transform: translateX(-50%);
+./src/Home.css:229:  overflow: hidden;
+./src/Home.css:312:  transform: translateY(-50%);
+./src/Home.css:333:  overflow: hidden;
+./src/Home.css:360:  transform: translateX(-50%);
+./src/Home.css:431:  overflow: hidden;
+./src/Home.css:438:  overflow: hidden;
+./src/Home.css:454:  transform: none;
+./src/Home.css:455:  overflow: hidden;
+./src/Home.css:462:    transform: translateX(-50%);
+./src/Home.css:478:  transform: translateX(-50%);
+./src/Home.css:492:  aspect-ratio: 1.75 / 1;
+./src/Home.css:496:  transform: translateY(-30px);
+./src/Home.css:555:  overflow: visible;
+./src/Home.css:563:  will-change: transform;
+./src/Home.css:630:  transform: translateY(-8vw);
+./src/Home.css:654:  transform: none;
+./src/CategoryProducts.js:141:        transitionSourceDisplayId: item.displayId,
+./src/CategoryProducts.js:142:        transitionSourceSrc: sourceSrc,
+./src/ProductEditor.js:700:        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+./src/ProductEditor.js:706:                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mr-2"
+./src/ProductEditor.js:712:                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+./src/ProductEditor.js:718:          <div className="overflow-x-auto">
+./src/ProductEditor.js:971:                          className="flex-grow text-left bg-gray-200 p-3 rounded-lg hover:bg-gray-300 transition"
+./src/ProductEditor.js:981:                          className="ml-2 bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition"
+./src/ProductEditor.js:1142:                            className="mt-4 bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
+./src/ProductEditor.js:1153:                    className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+./src/ProductEditor.js:1162:                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+./src/ProductEditor.js:1169:                  className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
+./src/ProductEditor.js:1186:                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mb-4"
+./src/ProductEditor.js:1210:                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+./src/ProductEditor.js:1221:                    className="w-full text-left bg-gray-200 p-3 rounded-lg hover:bg-gray-300 transition"
+./src/ProductEditor.js:1233:                          className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition"
+./src/ProductEditor.js:1240:                          className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
+./src/ProductEditor.js:1260:                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition mb-4"
+./src/ProductEditor.js:1276:                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+./src/ProductEditor.js:1287:                    className="w-full text-left bg-gray-200 p-3 rounded-lg hover:bg-gray-300 transition"
+./src/ProductEditor.js:1298:                          className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition"
+./src/ProductEditor.js:1305:                          className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
+./src/ProductDetail.js:363:      <motion.div className="product-detail-container">
+./src/ProductDetail.js:364:        <div className="images-container">
+./src/ProductDetail.js:365:  <div className="product-image-gallery">
+./src/ProductDetail.js:368:      className="product-image-gallery-track"
+./src/ProductDetail.js:410:  <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
+./src/ProductDetail.js:431:    transition={{
+./src/App.css:12:  -ms-overflow-style: none;
+./src/App.css:23:    @apply px-4 py-2 rounded-lg font-medium transition-colors;
+./src/utils/productImageTransition.js:127:  clone.style.transformOrigin = 'center center';
+./src/Cart.css:2:  position: fixed;
+./src/Cart.css:8:  overflow: visible;
+./src/Cart.css:10:  transition: none;
+./src/Cart.css:31:  transition: opacity 0.3s ease;
+./src/Cart.css:70:  transition: opacity 0.2s ease, visibility 0.2s ease;
+./src/Cart.css:108:  overflow-y: auto;
+./src/Cart.css:109:  overflow-x: hidden;
+./src/Cart.css:115:  position: sticky;
+./src/Cart.css:165:  overflow-y: auto;
+./src/Cart.css:166:  overflow-x: hidden;
+./src/Cart.css:167:  -webkit-overflow-scrolling: touch;
+./src/Cart.css:180:  position: sticky;
+./src/Cart.css:250:  overflow-wrap: break-word;
+./src/Cart.css:328:  text-transform: capitalize;
+./src/Cart.css:368:  text-transform: uppercase;
+./src/Home.js:134:        gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
+./src/Home.js:135:        gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
+./src/Home.js:156:        gsap.set('.london-mask .london-text:first-child', { x: '-100vw', transformOrigin: 'left center', visibility: 'hidden' });
+./src/Home.js:157:        gsap.set('.london-mask .london-text:last-child', { x: '100vw', transformOrigin: 'right center', visibility: 'hidden' });
+./src/Home.js:163:gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
+./src/Home.js:164:gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
+./src/Home.js:168:        gsap.set('.london-mask .london-text:first-child', { x: '0%', transformOrigin: 'left center' });
+./src/Home.js:169:gsap.set('.london-mask .london-text:last-child', { x: '0%', transformOrigin: 'right center' });
+./src/hooks/useProductSelection.js:170:            transitionKey: null
+./src/Cart.jsx:101:    <div className={`cart-slide-menu${isCartOpen ? ' active' : ''}`} ref={cartRef} style={{ opacity: 0, transform: 'translateX(100px)', pointerEvents: 'none' }}>
+./src/Header.css:23:  transition: transform 0.7s cubic-bezier(.4,0,.2,1);
+./src/Header.css:24:  will-change: transform;
+./src/Header.css:25:  transition-delay: 0.111s;
+./src/Header.css:29:  transform: translateY(80vh) scale(0.96);
+./src/Header.css:30:  transition-delay: 0s;
+./src/Header.css:36:  overflow-x: hidden;
+./src/Header.css:40:  overflow: hidden;
+./src/Header.css:46:  position: fixed;
+./src/Header.css:61:  transform: translateY(0);
+./src/Header.css:62:  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s, background-image 0.3s;
+./src/Header.css:76:  transform: translateY(-100%);
+./src/Header.css:86:  transform: translateY(0);
+./src/Header.css:87:  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+./src/Header.css:102:  transform: translateY(-97px) !important;
+./src/Header.css:103:  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+./src/Header.css:130:  transform: scaleX(1) translateZ(0);
+./src/Header.css:142:  transform-origin: left;
+./src/Header.css:146:  transform-origin: right;
+./src/Header.css:151:  transition: opacity 0.5s;
+./src/Header.css:223:  position: fixed;
+./src/Header.css:278:  transform: translateY(-100%);
+./src/Header.css:279:  transition: transform 0.5s ease-out;
+./src/Header.css:280:  transition-delay: 0.7s;
+./src/Header.css:289:  transform: translateY(-100%);
+./src/Header.css:290:  transition: transform 0.75s ease;
+./src/Header.css:295:  position: fixed;
+./src/Header.css:301:  overflow: hidden;
+./src/Header.css:304:  transition: opacity 0.3s;
+./src/Header.css:323:  text-transform: uppercase;
+./src/Header.css:343:  transform: scaleX(0);
+./src/Header.css:344:  transform-origin: left;
+./src/Header.css:345:  transition: transform 0.3s ease;
+./src/Header.css:350:  transform: scaleX(0);
+./src/Header.css:355:    transform: scaleX(1);
+./src/Header.css:362:  overflow: hidden;
+./src/Header.css:364:  transform: translateY(-8px);
+./src/Header.css:378:  text-transform: none;
+./src/Header.css:400:  transform: translateY(-100%);
+./src/Header.css:402:  transition: transform 0.75s ease;
+./src/Header.css:403:  transition-delay: 0.05s;
+./src/Header.css:407:  transform: translateY(0);
+./src/Header.css:416:  transform: translateY(-100%);
+./src/Header.css:422:  transition: transform 0.75s ease;
+./src/Header.css:427:  transform: translateY(0);
+./src/Header.css:431:  transform: translateY(100%);
+./src/Header.css:432:  transition: transform 0.5s ease-out, clip-path 0.5s ease-out;
+./src/Header.css:433:  transition-delay: 0.7s;
+./src/Header.css:446:  overflow: hidden;
+./src/Header.css:474:  overflow: hidden;
+./src/Header.css:486:  overflow: hidden;
+./src/Header.css:492:  overflow: hidden;
+./src/Header.css:510:  transform: translate(-30%, -50%);
+./src/Header.css:531:  overflow-y: auto;
+./src/Header.css:532:  -webkit-overflow-scrolling: touch;
+./src/Header.css:550:  transform: translateY(100%);
+./src/Header.css:552:  transition: transform 0.5s ease-out, clip-path 0.5s ease-out;
+./src/Header.css:556:.mobile-menu.active .menu-items > li:nth-child(1) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.7s; }
+./src/Header.css:557:.mobile-menu.active .menu-items > li:nth-child(2) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.8s; }
+./src/Header.css:558:.mobile-menu.active .menu-items > li:nth-child(3) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.9s; }
+./src/Header.css:559:.mobile-menu.active .menu-items > li:nth-child(4) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 1.0s; }
+./src/Header.css:560:.mobile-menu.active .menu-items > li:nth-child(5) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 1.1s; }
+./src/Header.css:561:.mobile-menu.active .menu-items > li:nth-child(6) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 1.2s; }
+./src/Header.css:564:  text-transform: uppercase;
+./src/Header.css:584:  transform: scaleX(0);
+./src/Header.css:585:  transform-origin: left;
+./src/Header.css:586:  transition: transform 0.3s ease;
+./src/Header.css:591:    transform: scaleX(1);
+./src/Header.css:619:  position: fixed;
+./src/Header.css:640:  transform: none !important;
+./src/Header.css:658:  transform: translateY(-50%);
+./src/Header.css:667:  text-transform: none;
+./src/Header.css:727:  position: fixed;
+./src/Header.css:735:  transform: translateY(0) !important;
+./src/Header.css:744:    transform: translateY(0) !important;
+./src/Header.css:752:    overflow: hidden !important;
+./src/Header.css:757:  transform: none !important;
+./src/Header.css:785:  transform: translate(-50%, -50%) scale(0.8);
+./src/Header.css:787:  transition: opacity 0.15s ease, transform 0.15s ease;
+./src/Header.css:807:  transform: translateY(-50%);
+./src/Header.css:814:  transform: translate(-50%, -50%) scale(1);
+./src/Header.css:819:  transform: translate(-50%, -50%) scale(0.8);
+./src/Header.css:828:  transform: scaleX(1);
+./src/Header.css:878:  transform: translate(-50%, -20px);
+./src/Header.css:881:  transition: opacity 0.4s ease, transform 0.4s ease;
+./src/Header.css:913:  transform: translateY(-50%);
+./src/Header.css:915:  transition: transform 0.3s ease;
+./src/Header.css:949:  transform: translateY(-100%);
+./src/Header.css:950:  transition: transform 0.75s ease;
+./src/Header.css:955:  transform: translate(-50%, 0);
+./src/Header.css:959:  transform: translateY(0);
+./src/ProductDetail.css:1:.product-detail-container {
+./src/ProductDetail.css:8:  overflow-x: hidden;
+./src/ProductDetail.css:11:.images-container {
+./src/ProductDetail.css:17:.product-image-gallery {
+./src/ProductDetail.css:23:.product-image-gallery-track {
+./src/ProductDetail.css:33:  aspect-ratio: 3 / 4.7;
+./src/ProductDetail.css:35:  overflow: hidden;
+./src/ProductDetail.css:49:  transition: opacity 0.2s ease;
+./src/ProductDetail.css:52:.product-gallery-progress.is-hidden-during-transition {
+./src/ProductDetail.css:62:  overflow-x: hidden;
+./src/ProductDetail.css:86:  overflow-x: auto;
+./src/ProductDetail.css:87:  overflow-y: hidden;
+./src/ProductDetail.css:89:  -webkit-overflow-scrolling: touch;
+./src/ProductDetail.css:131:  overflow-x: auto;
+./src/ProductDetail.css:149:  position: sticky;
+./src/ProductDetail.css:152:  transition: top 0.3s ease;
+./src/ProductDetail.css:159:.product-detail-container .product-title {
+./src/ProductDetail.css:229:  transition: border-width 0.2s ease, border-color 0.2s ease;
+./src/ProductDetail.css:247:  transition: border-width 0.2s ease, border-color 0.2s ease;
+./src/ProductDetail.css:317:  text-transform: uppercase;
+./src/ProductDetail.css:325:  transition: background-color 0.2s ease;
+./src/ProductDetail.css:379:  transition: opacity 0.2s ease;
+./src/ProductDetail.css:400:.product-detail-container {
+./src/ProductDetail.css:407:.images-container {
+./src/ProductDetail.css:414:.product-image-gallery {
+./src/ProductDetail.css:419:.product-image-gallery-track {
+./src/ProductDetail.css:423:  overflow-x: auto;
+./src/ProductDetail.css:424:  overflow-y: hidden;
+./src/ProductDetail.css:426:  -webkit-overflow-scrolling: touch;
+./src/ProductDetail.css:431:.product-image-gallery-track::-webkit-scrollbar {
+./src/ProductDetail.css:440:  aspect-ratio: 3 / 4.7;
+./src/ProductDetail.css:448:  transform: translateX(-50%);
+./src/ProductDetail.css:453:  overflow: hidden;
+./src/ProductDetail.css:461:  transition: width 0.2s ease;
+./src/ProductDetail.css:480:  .product-detail-container .product-title {
+./src/ProductDetail.css:516:  overflow-x: auto;
+./src/ProductDetail.css:517:  overflow-y: visible;
+./src/ProductDetail.css:518:  -webkit-overflow-scrolling: touch;
+./src/ProductDetail.css:520:  -ms-overflow-style: none;
+./src/pages/ProductsPage.css:26:  aspect-ratio: 3 / 4.7;
+./src/pages/ProductsPage.css:28:  overflow: hidden;
+./src/pages/ProductsPage.css:37:  transform-origin: center;
+./src/pages/ProductsPage.css:138:  overflow: hidden;
+./src/pages/ProductsPage.css:147:  overflow: hidden;
+./src/pages/ProductsPage.css:182:  transform: translateY(10px);
+./src/pages/ProductsPage.css:183:  transition: opacity 0.45s ease, transform 0.45s ease;
+./src/pages/ProductsPage.css:188:  transform: translateY(0);
+./src/pages/ProductsPage.css:193:  transition: opacity 0.35s ease;
+./src/pages/ProductsPage.js:145:        transitionSourceDisplayId: item.displayId,
+./src/pages/ProductsPage.js:146:        transitionSourceSrc: sourceSrc,
+./src/AnnouncementBar.css:6:  position: fixed;
+./src/AnnouncementBar.css:13:  overflow: hidden;
+./src/AnnouncementBar.css:42:  text-transform: uppercase;
+./src/AnnouncementBar.css:47:    transform: translateX(0);
+./src/AnnouncementBar.css:50:    transform: translateX(-50%);
+./src/App.js:46:              transition={{ duration: 0 }}
