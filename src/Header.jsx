@@ -27,6 +27,8 @@ const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
+const [mobileDoorPhase, setMobileDoorPhase] = useState('idle');
+const [mobileMenuContentFading, setMobileMenuContentFading] = useState(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -142,6 +144,13 @@ useEffect(() => {
 }, [menuState, isMobile, isHomePage, isScrolled, isSearchOpen]);
 
 useEffect(() => {
+  if (!isMobile) {
+    setMobileDoorPhase('idle');
+    setMobileMenuContentFading(false);
+  }
+}, [isMobile]);
+
+useEffect(() => {
   if (!debugPdpHeader) return;
   if (!isMobile || !isProductDetailPage) return;
 
@@ -211,8 +220,35 @@ const metrics = {
 }, [debugPdpHeader, isMobile, isProductDetailPage]);
 
 const handleToggleMenu = () => {
-  toggleMenu();
-  if (isSearchOpen) setIsSearchOpen(false);
+  if (!isMobile) {
+    toggleMenu();
+    if (isSearchOpen) setIsSearchOpen(false);
+    return;
+  }
+
+  if (!isMenuOpen) {
+    if (isSearchOpen) setIsSearchOpen(false);
+    setMobileDoorPhase('opening');
+    toggleMenu();
+
+    setTimeout(() => {
+      setMobileDoorPhase('idle');
+    }, 620);
+
+    return;
+  }
+
+  setMobileMenuContentFading(true);
+
+  setTimeout(() => {
+    setMobileDoorPhase('closing');
+    toggleMenu();
+  }, 180);
+
+  setTimeout(() => {
+    setMobileDoorPhase('idle');
+    setMobileMenuContentFading(false);
+  }, 800);
 };
 
   const toggleSearch = () => {
@@ -459,106 +495,114 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
 </div>
 
 
-      <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
+      <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}${mobileMenuContentFading ? ' mobile-menu-content-fading' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">
-
-  <div className="mobile-menu-logo">
-    <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
-  </div>
-
-  <div className="menu-columns">
-            <div className="menu-image-column">
-              {menuItems.map(item => (
-                <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
-                  <div className="menu-image-reveal">
-                    <img src={item.image} alt={`${item.name} Image`} />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="menu-items-wrapper">
-              <ul className="menu-items">
-                {menuItems.map(item => {
-  const hasChildren = Array.isArray(item.children) && item.children.length > 0;
-  const isSubmenuOpen = openSubmenuId === item.id;
-
-  return (
-<li
-  key={item.id}
-  data-menu-item={item.id}
-  className={`${activeMenuImage === item.id ? 'active' : ''}${hasChildren ? ' has-submenu' : ''}${isSubmenuOpen ? ' submenu-open' : ''}`}
-  onFocus={() => handleMenuImageChange(item.id)}
-  onTouchStart={() => handleMenuImageChange(item.id)}
-  onMouseEnter={() => {
-  if (!isMobile && hasChildren) {
-    openSubmenu(item.id);
-  }
-  handleMenuImageChange(item.id);
-}}
-onMouseLeave={() => {
-  if (!isMobile && hasChildren) {
-    closeSubmenu(item.id);
-    setOpenSubmenuId(null);
-  }
-}}
->
-      {hasChildren ? (
-  <>
-    <button
-      type="button"
-      className="menu-parent-button"
-      onMouseEnter={() => handleMenuImageChange(item.id)}
-      onClick={() => {
-        if (isMobile) {
-          toggleSubmenu(item.id);
-        }
-      }}
-    >
-      {item.name}
-    </button>
-
-    <div
-      ref={(el) => setSubmenuRef(item.id, el)}
-      className="submenu-items"
-    >
-      <ul className="submenu-inner">
-        {item.children.map(child => (
-          <li key={child.id} className="submenu-item">
-            <NavLink
-              to={child.path}
-              onClick={() => {
-                setOpenSubmenuId(null);
-                setIsMenuOpen(false);
-              }}
-            >
-              {child.name}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+  <div className={`menu-visual-content${mobileMenuContentFading ? ' is-fading' : ''}`}>
+    <div className="mobile-menu-logo">
+      <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
     </div>
-  </>
-) : (
-  <NavLink
-    to={item.path}
-    onMouseEnter={() => handleMenuImageChange(item.id)}
-    onClick={() => {
-      setOpenSubmenuId(null);
-      setIsMenuOpen(false);
-    }}
-  >
-    {item.name}
-  </NavLink>
-)}
-    </li>
-  );
-})}
-              </ul>
+
+    <div className="menu-columns">
+      <div className="menu-image-column">
+        {menuItems.map(item => (
+          <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
+            <div className="menu-image-reveal">
+              <img src={item.image} alt={`${item.name} Image`} />
             </div>
           </div>
-        </div>
+        ))}
       </div>
+
+      <div className="menu-items-wrapper">
+        <ul className="menu-items">
+          {menuItems.map(item => {
+            const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+            const isSubmenuOpen = openSubmenuId === item.id;
+
+            return (
+              <li
+                key={item.id}
+                data-menu-item={item.id}
+                className={`${activeMenuImage === item.id ? 'active' : ''}${hasChildren ? ' has-submenu' : ''}${isSubmenuOpen ? ' submenu-open' : ''}`}
+                onFocus={() => handleMenuImageChange(item.id)}
+                onTouchStart={() => handleMenuImageChange(item.id)}
+                onMouseEnter={() => {
+                  if (!isMobile && hasChildren) {
+                    openSubmenu(item.id);
+                  }
+                  handleMenuImageChange(item.id);
+                }}
+                onMouseLeave={() => {
+                  if (!isMobile && hasChildren) {
+                    closeSubmenu(item.id);
+                    setOpenSubmenuId(null);
+                  }
+                }}
+              >
+                {hasChildren ? (
+                  <>
+                    <button
+                      type="button"
+                      className="menu-parent-button"
+                      onMouseEnter={() => handleMenuImageChange(item.id)}
+                      onClick={() => {
+                        if (isMobile) {
+                          toggleSubmenu(item.id);
+                        }
+                      }}
+                    >
+                      {item.name}
+                    </button>
+
+                    <div
+                      ref={(el) => setSubmenuRef(item.id, el)}
+                      className="submenu-items"
+                    >
+                      <ul className="submenu-inner">
+                        {item.children.map(child => (
+                          <li key={child.id} className="submenu-item">
+                            <NavLink
+                              to={child.path}
+                              onClick={() => {
+                                setOpenSubmenuId(null);
+                                setIsMenuOpen(false);
+                              }}
+                            >
+                              {child.name}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  <NavLink
+                    to={item.path}
+                    onMouseEnter={() => handleMenuImageChange(item.id)}
+                    onClick={() => {
+                      setOpenSubmenuId(null);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item.name}
+                  </NavLink>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+            {isMobile && mobileDoorPhase !== 'idle' && (
+        <div className={`mobile-door-transition ${mobileDoorPhase}${isHomePage ? ' is-home' : ' is-page'}`}>
+          <div className="mobile-door left"></div>
+          <div className="mobile-door right"></div>
+        </div>
+      )}
     </>
   );
 };
