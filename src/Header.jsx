@@ -35,8 +35,7 @@ const shouldBeTransparentHomeHeader =
 
 const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
-  !delayTransparentHeader &&
-  !(menuState === 'closing' && !isMobile && isHomePage && !isScrolled && !isSearchOpen);
+  !delayTransparentHeader;
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
@@ -119,33 +118,9 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  const wasOpen = prevMenuStateRef.current === 'open';
-  const isNowClosing = menuState === 'closing';
-
-  if (
-    !isMobile &&
-    isHomePage &&
-    !isScrolled &&
-    !isSearchOpen &&
-    wasOpen &&
-    isNowClosing
-  ) {
-    setDelayTransparentHeader(true);
-
-    const timeout = setTimeout(() => {
-      setDelayTransparentHeader(false);
-    }, 500);
-
-    prevMenuStateRef.current = menuState;
-    return () => clearTimeout(timeout);
-  }
-
-  if (!shouldBeTransparentHomeHeader || isMobile) {
-    setDelayTransparentHeader(false);
-  }
-
+  setDelayTransparentHeader(false);
   prevMenuStateRef.current = menuState;
-}, [isMobile, isHomePage, isScrolled, isSearchOpen, menuState, shouldBeTransparentHomeHeader]);
+}, [menuState, isMobile, isHomePage, isScrolled, isSearchOpen]);
 
 useEffect(() => {
   if (!debugPdpHeader) return;
