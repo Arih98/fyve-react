@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams, useNavigationType } from 'react-router-do
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
-import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
