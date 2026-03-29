@@ -6,6 +6,8 @@ import './MobileSplitTransition.css';
 
 const MobileSplitTransitionContext = createContext(null);
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const waitFrames = (count = 2) =>
   new Promise((resolve) => {
     let remaining = count;
@@ -24,7 +26,7 @@ const waitFrames = (count = 2) =>
     requestAnimationFrame(step);
   });
 
-const MobileSplitTransitionOverlay = ({ active, image, mode }) => {
+const MobileSplitTransitionOverlay = ({ active, image, mode, phase }) => {
   return (
     <AnimatePresence>
       {active && image && (
@@ -32,16 +34,32 @@ const MobileSplitTransitionOverlay = ({ active, image, mode }) => {
           <motion.div
             className="mobile-split-transition-half left"
             style={{ backgroundImage: `url(${image})` }}
-            initial={{ x: mode === 'open' ? '0%' : '-102%' }}
-            animate={{ x: mode === 'open' ? '-102%' : '0%' }}
+            initial={
+              mode === 'open'
+                ? { x: '0%' }
+                : { x: phase === 'ready' ? '-102%' : '0%' }
+            }
+            animate={
+              mode === 'open'
+                ? { x: phase === 'animate' ? '-102%' : '0%' }
+                : { x: phase === 'animate' ? '0%' : '-102%' }
+            }
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           />
           <motion.div
             className="mobile-split-transition-half right"
             style={{ backgroundImage: `url(${image})` }}
-            initial={{ x: mode === 'open' ? '0%' : '102%' }}
-            animate={{ x: mode === 'open' ? '102%' : '0%' }}
+            initial={
+              mode === 'open'
+                ? { x: '0%' }
+                : { x: phase === 'ready' ? '102%' : '0%' }
+            }
+            animate={
+              mode === 'open'
+                ? { x: phase === 'animate' ? '102%' : '0%' }
+                : { x: phase === 'animate' ? '0%' : '102%' }
+            }
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           />
@@ -53,12 +71,13 @@ const MobileSplitTransitionOverlay = ({ active, image, mode }) => {
 
 export const MobileSplitTransitionProvider = ({ children }) => {
   const navigate = useNavigate();
+  const clearRef = useRef(null);
   const [overlay, setOverlay] = useState({
     active: false,
     image: '',
-    mode: 'open'
+    mode: 'open',
+    phase: 'ready'
   });
-  const clearRef = useRef(null);
 
   const isMobileViewport = useCallback(() => window.innerWidth <= 768, []);
 
@@ -79,59 +98,111 @@ export const MobileSplitTransitionProvider = ({ children }) => {
     return canvas.toDataURL('image/png');
   }, []);
 
-  const playOverlay = useCallback((image, mode) => {
+  const clearOverlayLater = useCallback((delay = 900) => {
     if (clearRef.current) {
       clearTimeout(clearRef.current);
     }
-
-    setOverlay({
-      active: true,
-      image,
-      mode
-    });
 
     clearRef.current = setTimeout(() => {
       setOverlay({
         active: false,
         image: '',
-        mode: 'open'
+        mode: 'open',
+        phase: 'ready'
       });
-    }, 850);
+    }, delay);
   }, []);
 
   const openMenuReveal = useCallback(async () => {
     if (!isMobileViewport()) return false;
 
     const image = await captureViewport();
-    playOverlay(image, 'open');
-    return true;
-  }, [captureViewport, isMobileViewport, playOverlay]);
 
-  const closeMenuReveal = useCallback(async () => {
-    if (!isMobileViewport()) return false;
+    setOverlay({
+      active: true,
+      image,
+      mode: 'open',
+      phase: 'ready'
+    });
+
+    await waitFrames(2);
+
+    setOverlay({
+      active: true,
+      image,
+      mode: 'open',
+      phase: 'animate'
+    });
+
+    clearOverlayLater(900);
+    return true;
+  }, [captureViewport, clearOverlayLater, isMobileViewport]);
+
+  const closeMenuReveal = useCallback(async (closeMenuFn) => {
+    if (!isMobileViewport()) {
+      closeMenuFn();
+      return false;
+    }
+
+    closeMenuFn();
+    await waitFrames(2);
+    await wait(30);
 
     const image = await captureViewport();
-    playOverlay(image, 'close');
+
+    setOverlay({
+      active: true,
+      image,
+      mode: 'close',
+      phase: 'ready'
+    });
+
+    await waitFrames(2);
+
+    setOverlay({
+      active: true,
+      image,
+      mode: 'close',
+      phase: 'animate'
+    });
+
+    clearOverlayLater(900);
     return true;
-  }, [captureViewport, isMobileViewport, playOverlay]);
+  }, [captureViewport, clearOverlayLater, isMobileViewport]);
 
-  const navigateFromMenuReveal = useCallback(
-    async (path, closeMenuFn) => {
-      if (!isMobileViewport()) {
-        closeMenuFn();
-        navigate(path);
-        return;
-      }
-
-      navigate(path);
-      await waitFrames(2);
-
-      const image = await captureViewport();
-      playOverlay(image, 'close');
+  const navigateFromMenuReveal = useCallback(async (path, closeMenuFn) => {
+    if (!isMobileViewport()) {
       closeMenuFn();
-    },
-    [captureViewport, isMobileViewport, navigate, playOverlay]
-  );
+      navigate(path);
+      return;
+    }
+
+    closeMenuFn();
+    navigate(path);
+
+    await waitFrames(4);
+    await wait(80);
+
+    const image = await captureViewport();
+
+    setOverlay({
+      active: true,
+      image,
+      mode: 'close',
+      phase: 'ready'
+    });
+
+    await waitFrames(2);
+
+    setOverlay({
+      active: true,
+      image,
+      mode: 'close',
+      phase: 'animate'
+    });
+
+    clearOverlayLater(900);
+  }, [captureViewport, clearOverlayLater, isMobileViewport, navigate]);
 
   useEffect(() => {
     return () => {
@@ -153,7 +224,12 @@ export const MobileSplitTransitionProvider = ({ children }) => {
   return (
     <MobileSplitTransitionContext.Provider value={value}>
       {children}
-      <MobileSplitTransitionOverlay active={overlay.active} image={overlay.image} mode={overlay.mode} />
+      <MobileSplitTransitionOverlay
+        active={overlay.active}
+        image={overlay.image}
+        mode={overlay.mode}
+        phase={overlay.phase}
+      />
     </MobileSplitTransitionContext.Provider>
   );
 };

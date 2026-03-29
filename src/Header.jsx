@@ -6,6 +6,10 @@ import './Header.css';
 import { useMobileSplitTransition } from './components/MobileSplitTransition';
 
 const Header = () => {
+  const waitForMenuPaint = async () => {
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+};
   const { openMenuReveal, closeMenuReveal, navigateFromMenuReveal } = useMobileSplitTransition();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -220,13 +224,17 @@ const handleToggleMenu = async () => {
   }
 
   if (!isMenuOpen) {
-    await openMenuReveal();
     toggleMenu();
+    await waitForMenuPaint();
+    await openMenuReveal();
     return;
   }
 
-  await closeMenuReveal();
-  toggleMenu();
+  await closeMenuReveal(() => {
+    if (isMenuOpen) {
+      toggleMenu();
+    }
+  });
 };
 
 const toggleSearch = () => {
