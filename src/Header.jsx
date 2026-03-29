@@ -229,10 +229,10 @@ const handleToggleMenu = async () => {
   toggleMenu();
 };
 
-  const toggleSearch = () => {
-    setIsSearchOpen(v => !v);
-    if (isMenuOpen) setIsMenuOpen(false);
-  };
+const toggleSearch = () => {
+  setIsSearchOpen(v => !v);
+  if (isMenuOpen) toggleMenu();
+};
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -378,8 +378,10 @@ const menuItems = [
 
 const handleMenuNavigate = async (e, path) => {
   if (!isMobile) {
+    e.preventDefault();
     setOpenSubmenuId(null);
     setIsMenuOpen(false);
+    navigate(path);
     return;
   }
 
