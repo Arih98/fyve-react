@@ -372,21 +372,21 @@ return (
         const imageKey = `${current?.sku || product.id}-${idx}`;
 
         return (
-<div
-  ref={el => {
-    galleryRefs.current.set(imageKey, el);
-    if (displayImages.length === 1) {
-      mainImageRef.current = el;
-    }
-  }}
-  key={imageKey}
-  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
->
-  <img
-    src={img}
-    alt={`${displayTitle} ${idx + 1}`}
-    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-    className="product-gallery-image"
+          <div
+            ref={el => {
+              galleryRefs.current.set(imageKey, el);
+              if (displayImages.length === 1) {
+                mainImageRef.current = el;
+              }
+            }}
+            key={imageKey}
+            data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+            className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+          >
+            <img
+              src={img}
+              alt={`${displayTitle} ${idx + 1}`}
+              className="product-gallery-image"
               onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
               onLoad={e => console.log('[PDP] gallery image loaded', {
                 imageKey,
