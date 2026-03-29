@@ -18,7 +18,22 @@ const ProductsPage = () => {
 const clickLockRef = useRef(false);
 
   const selectedCategory = searchParams.get('category') || '';
+const setPendingProductTransition = ({ src, fromElement }) => {
+  if (!fromElement) return;
 
+  const rect = fromElement.getBoundingClientRect();
+
+  sessionStorage.setItem(
+    'pendingProductTransition',
+    JSON.stringify({
+      src,
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height
+    })
+  );
+};
   const { data: products, loading, error, meta } = useProducts({
     page: 1,
     perPage: 200,
@@ -121,19 +136,9 @@ if (!targetProduct) {
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
     if (sourceEl) {
-      const isMobileViewport = window.innerWidth <= 768;
-
-      startProductImageTransition({
+      setPendingProductTransition({
         src: sourceSrc,
-        fromElement: sourceEl,
-        toElementGetter: () => {
-  const readyRoot = document.querySelector('[data-pdp-transition-ready="true"]');
-  if (!readyRoot) return null;
-  return document.querySelector('[data-pdp-primary-image="true"]');
-},
-        duration: isMobileViewport ? 520 : 620,
-        minTargetTop: isMobileViewport ? 80 : 0,
-        zIndex: isMobileViewport ? 80 : 999999
+        fromElement: sourceEl
       });
     }
 

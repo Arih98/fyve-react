@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMem
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
+import { startProductImageTransitionToTarget } from './utils/productImageTransition';
 import { CartContext } from './CartContext';
 import './ProductDetail.css';
 import { useProduct } from './hooks/useProduct';
@@ -380,6 +381,41 @@ useEffect(() => {
     window.removeEventListener('pdp:add-to-cart', handleExternalAddToCart);
   };
 }, [handleAddToCart]);
+
+
+useLayoutEffect(() => {
+  if (!location.state?.fromProductGrid) return;
+  if (!mainImageRef.current) return;
+
+  const raw = sessionStorage.getItem('pendingProductTransition');
+  if (!raw) return;
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    sessionStorage.removeItem('pendingProductTransition');
+    return;
+  }
+
+  sessionStorage.removeItem('pendingProductTransition');
+
+  const isMobileViewport = window.innerWidth <= 768;
+
+  startProductImageTransitionToTarget({
+    src: parsed.src,
+    fromRect: {
+      left: parsed.left,
+      top: parsed.top,
+      width: parsed.width,
+      height: parsed.height
+    },
+    toElement: mainImageRef.current,
+    duration: isMobileViewport ? 520 : 620,
+    minTargetTop: isMobileViewport ? 80 : 0,
+    zIndex: isMobileViewport ? 80 : 999999
+  });
+}, [location.state?.fromProductGrid, currentDisplayId]);
 
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
