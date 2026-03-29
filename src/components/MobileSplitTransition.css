@@ -1,0 +1,33 @@
+.mobile-split-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mobile-split-transition-half {
+  position: absolute;
+  top: 0;
+  width: 50.2%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  will-change: transform;
+}
+
+.mobile-split-transition-half.left {
+  left: -0.1%;
+  background-position: left top;
+}
+
+.mobile-split-transition-half.right {
+  right: -0.1%;
+  background-position: right top;
+}
+
+@media (min-width: 769px) {
+  .mobile-split-transition {
+    display: none;
+  }
+}

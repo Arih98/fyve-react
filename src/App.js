@@ -17,6 +17,7 @@ import './App.css';
 import './Header.css';
 import ScrollManager from './components/ScrollManager';
 import AnnouncementBar from './AnnouncementBar';
+import { MobileSplitTransitionProvider } from './components/MobileSplitTransition';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -30,27 +31,29 @@ const Layout = () => {
   const showAnnouncementBar = location.pathname !== '/admin';
 
   return (
-    <div className="App">
-      {showAnnouncementBar && <AnnouncementBar />}
-      {showMobileTopHeader && <MobileTopHeader />}
-      {showHeader && <Header />}
-      {showCart && <Cart />}
-      <div className={location.pathname === '/' ? '' : 'site-content'}>
-        <LayoutGroup>
-          <AnimatePresence initial={false} mode="wait">
-            <motion.div
-              key={location.pathname + location.search}
-              initial={false}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 1 }}
-              transition={{ duration: 0 }}
-            >
-              <Outlet />
-            </motion.div>
-          </AnimatePresence>
-        </LayoutGroup>
+    <MobileSplitTransitionProvider>
+      <div className="App">
+        {showAnnouncementBar && <AnnouncementBar />}
+        {showMobileTopHeader && <MobileTopHeader />}
+        {showHeader && <Header />}
+        {showCart && <Cart />}
+        <div className={location.pathname === '/' ? '' : 'site-content'}>
+          <LayoutGroup>
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                key={location.pathname + location.search}
+                initial={false}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 1 }}
+                transition={{ duration: 0 }}
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
+          </LayoutGroup>
+        </div>
       </div>
-    </div>
+    </MobileSplitTransitionProvider>
   );
 };
 
@@ -97,9 +100,9 @@ function AppContent() {
   useEffect(() => {
     const debugScroll = () => {};
 
-    window.addEventListener("scroll", debugScroll);
+    window.addEventListener('scroll', debugScroll);
 
-    return () => window.removeEventListener("scroll", debugScroll);
+    return () => window.removeEventListener('scroll', debugScroll);
   }, []);
 
   useEffect(() => {
@@ -117,8 +120,8 @@ function AppContent() {
       });
     });
 
-    window.addEventListener("load", () => logNow());
-    window.addEventListener("pageshow", () => logNow());
+    window.addEventListener('load', () => logNow());
+    window.addEventListener('pageshow', () => logNow());
 
     setTimeout(() => logNow(), 100);
     setTimeout(() => logNow(), 500);
