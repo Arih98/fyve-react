@@ -53,9 +53,9 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   clone.style.objectFit = fromStyle.objectFit || 'contain';
   clone.style.pointerEvents = 'none';
   clone.style.zIndex = String(zIndex);
-  clone.style.background = fromStyle.backgroundColor || 'transparent';
+  clone.style.background = fromStyle.backgroundColor || '#f7f7f7';
   clone.style.borderRadius = fromStyle.borderRadius || '0px';
-  clone.style.boxSizing = 'border-box';
+  clone.style.boxSizing = fromStyle.boxSizing || 'border-box';
   clone.style.transformOrigin = 'center center';
   clone.style.willChange = 'left, top, width, height, opacity, border-radius';
   clone.style.opacity = '0';
@@ -83,11 +83,18 @@ export const startProductImageTransition = async ({
     activeClone = null;
   }
 
-  const fromRect = getRect(fromElement);
+  const fromRectRaw = fromElement.getBoundingClientRect();
 
-  if (!fromRect.width || !fromRect.height) {
+  if (!fromRectRaw.width || !fromRectRaw.height) {
     return;
   }
+
+  const fromRect = {
+    left: fromRectRaw.left,
+    top: fromRectRaw.top,
+    width: fromRectRaw.width,
+    height: fromRectRaw.height
+  };
 
   const fromStyle = window.getComputedStyle(fromElement);
 
@@ -115,7 +122,6 @@ export const startProductImageTransition = async ({
   toElement.style.opacity = '0';
 
   if (!toElement.isConnected) {
-    toElement.style.opacity = '';
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
@@ -166,7 +172,7 @@ export const startProductImageTransition = async ({
     ],
     {
       duration,
-      easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
+      easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
       fill: 'forwards'
     }
   );
@@ -177,10 +183,11 @@ export const startProductImageTransition = async ({
     toElement.style.opacity = '';
     fromElement.style.opacity = '';
 
-    clone.remove();
-
     if (activeClone === clone) {
+      clone.remove();
       activeClone = null;
+    } else {
+      clone.remove();
     }
 
     if (activeAnimation === animation) {
