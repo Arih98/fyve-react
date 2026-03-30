@@ -444,6 +444,7 @@
   justify-content: center;
   align-items: center;
   margin: 0;
+  aspect-ratio: 3 / 3;
 }
 
 .product-gallery-image-box {
