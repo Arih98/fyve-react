@@ -119,6 +119,7 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   clone.style.width = `${fromRect.width}px`;
   clone.style.height = `${fromRect.height}px`;
   clone.style.objectFit = 'contain';
+  clone.style.transform = 'scale(1.18)';
   clone.style.pointerEvents = 'none';
   clone.style.zIndex = String(zIndex);
   clone.style.background = fromStyle.backgroundColor || '#f7f7f7';
@@ -213,6 +214,7 @@ export const startProductImageTransition = async ({
   clone.style.width = `${fromRect.width}px`;
   clone.style.height = `${fromRect.height}px`;
   clone.style.objectFit = 'contain';
+  clone.style.transform = 'scale(1.18)';
 
   clone.getBoundingClientRect();
 
