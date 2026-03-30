@@ -419,15 +419,15 @@
 .product-image-gallery-track {
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 0;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 0;
+  padding-right: 0;
   box-sizing: border-box;
 }
 
@@ -437,13 +437,12 @@
 
 .product-gallery-image-wrapper,
 .product-main-image-wrapper {
-  flex: 0 0 clamp(260px, 82vw, 380px);
-  width: clamp(260px, 82vw, 380px);
-  scroll-snap-align: center;
-  aspect-ratio: 3 / 4.7;
-  margin: 0 auto;
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  aspect-ratio: 1 / 1.15;
+  margin: 0;
 }
-
 .product-gallery-progress {
   display: block;
   position: absolute;
