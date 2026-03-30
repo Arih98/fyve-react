@@ -171,13 +171,15 @@ if (!targetProduct) {
 
           <div className="products-grid">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="product-card skeleton-card">
-                <div className="product-image-wrapper skeleton-image"></div>
-                <div className="product-info">
-                  <div className="skeleton-text skeleton-title"></div>
-                  <div className="skeleton-text skeleton-price"></div>
-                </div>
-              </div>
+<div key={i} className="product-card skeleton-card">
+  <div className="product-image-frame skeleton-image-frame">
+    <div className="product-image-wrapper skeleton-image"></div>
+  </div>
+  <div className="product-info">
+    <div className="skeleton-text skeleton-title"></div>
+    <div className="skeleton-text skeleton-price"></div>
+  </div>
+</div>
             ))}
           </div>
         </div>
