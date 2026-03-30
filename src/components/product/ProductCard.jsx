@@ -29,24 +29,26 @@ const ProductCard = ({
       onClick={(e) => onProductClick(item, e)}
       className={`product-card real-product-card ${isVisible ? 'card-visible' : ''}`}
     >
-      <div
-        ref={el => {
-          imageRefs.current.set(item.displayId, el);
-        }}
-        id={`img-${item.displayId}`}
-        className="product-image-wrapper"
-      >
-        <img
-          src={imageSrc}
-          alt={item.title}
-          className={`product-image real-product-image ${imageLoaded ? 'image-loaded' : ''}`}
-          onLoad={() => setImageLoaded(true)}
-          onError={e => {
-            e.target.src = placeholderImage;
-            setImageLoaded(true);
-          }}
-        />
-      </div>
+      <div className="product-image-frame">
+  <div
+    ref={el => {
+      imageRefs.current.set(item.displayId, el);
+    }}
+    id={`img-${item.displayId}`}
+    className="product-image-wrapper"
+  >
+    <img
+      src={imageSrc}
+      alt={item.title}
+      className={`product-image real-product-image ${imageLoaded ? 'image-loaded' : ''}`}
+      onLoad={() => setImageLoaded(true)}
+      onError={e => {
+        e.target.src = placeholderImage;
+        setImageLoaded(true);
+      }}
+    />
+  </div>
+</div>
 
       <div className="product-info">
         <h3 className="product-title">{item.title}</h3>
