@@ -444,6 +444,7 @@
   justify-content: center;
   align-items: flex-start;
   margin: 0;
+  aspect-ratio: 3 / 3;
 }
 
 .product-gallery-image-box {
@@ -452,6 +453,16 @@
   background: #f7f7f7;
   overflow: hidden;
   position: relative;
+  z-index: 2;
+}
+
+.product-gallery-image-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #f7f7f7;
+  pointer-events: none;
+  z-index: 3;
 }
 
 .product-gallery-image {
