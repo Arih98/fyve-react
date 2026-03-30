@@ -118,7 +118,7 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   clone.style.top = `${fromRect.top}px`;
   clone.style.width = `${fromRect.width}px`;
   clone.style.height = `${fromRect.height}px`;
-  clone.style.objectFit = fromStyle.objectFit || 'contain';
+  clone.style.objectFit = 'contain';
   clone.style.pointerEvents = 'none';
   clone.style.zIndex = String(zIndex);
   clone.style.background = fromStyle.backgroundColor || '#f7f7f7';
@@ -182,16 +182,6 @@ export const startProductImageTransition = async ({
 
   toElement.style.opacity = '0';
 
-  if (!toElement.isConnected) {
-    toElement.style.opacity = '';
-    fromElement.style.opacity = '';
-    clone.remove();
-    if (activeClone === clone) activeClone = null;
-    return;
-  }
-
-  await waitForImageReady(toElement);
-
   const stableRect = await waitForStableRect(toElement, {
     maxFrames: 20,
     stableFrames: 2
@@ -205,14 +195,24 @@ export const startProductImageTransition = async ({
     return;
   }
 
-  const toStyle = window.getComputedStyle(toElement);
-
   const toRect = {
     left: stableRect.left,
     top: Math.max(stableRect.top, minTargetTop),
     width: stableRect.width,
     height: stableRect.height
   };
+
+  const scale = Math.min(toRect.width / fromRect.width, toRect.height / fromRect.height);
+  const finalWidth = fromRect.width * scale;
+  const finalHeight = fromRect.height * scale;
+  const finalLeft = toRect.left + (toRect.width - finalWidth) / 2;
+  const finalTop = toRect.top + (toRect.height - finalHeight) / 2;
+
+  clone.style.left = `${fromRect.left}px`;
+  clone.style.top = `${fromRect.top}px`;
+  clone.style.width = `${fromRect.width}px`;
+  clone.style.height = `${fromRect.height}px`;
+  clone.style.objectFit = 'contain';
 
   clone.getBoundingClientRect();
 
@@ -223,15 +223,13 @@ export const startProductImageTransition = async ({
         top: `${fromRect.top}px`,
         width: `${fromRect.width}px`,
         height: `${fromRect.height}px`,
-        borderRadius: fromStyle.borderRadius,
         opacity: 1
       },
       {
-        left: `${toRect.left}px`,
-        top: `${toRect.top}px`,
-        width: `${toRect.width}px`,
-        height: `${toRect.height}px`,
-        borderRadius: toStyle.borderRadius,
+        left: `${finalLeft}px`,
+        top: `${finalTop}px`,
+        width: `${finalWidth}px`,
+        height: `${finalHeight}px`,
         opacity: 1
       }
     ],
