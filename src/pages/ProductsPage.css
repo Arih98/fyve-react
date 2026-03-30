@@ -132,6 +132,7 @@
   pointer-events: none;
 }
 
+.skeleton-image-frame,
 .skeleton-image {
   background: #ececec;
   position: relative;
@@ -159,7 +160,7 @@
   margin-right: auto;
 }
 
-.skeleton-image::after,
+.skeleton-image-frame::after,
 .skeleton-text::after {
   content: '';
   position: absolute;
