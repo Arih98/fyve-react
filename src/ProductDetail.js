@@ -369,42 +369,45 @@ return (
       onScroll={handleMobileGalleryScroll}
     >
       {displayImages.map((img, idx) => {
-        const imageKey = `${current?.sku || product.id}-${idx}`;
+  const imageKey = `${current?.sku || product.id}-${idx}`;
 
-        return (
-          <div
-  ref={el => {
-    galleryRefs.current.set(imageKey, el);
-  }}
-  key={imageKey}
-  data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
->
-  <img
-    ref={el => {
-      if (idx === 0) {
-        mainImageRef.current = el;
-      } else if (mainImageRef.current === el) {
-        mainImageRef.current = null;
-      }
-    }}
-    src={img}
-    alt={`${displayTitle} ${idx + 1}`}
-    className="product-gallery-image"
-    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-    onLoad={e => console.log('[PDP] gallery image loaded', {
-      imageKey,
-      src: e.target.currentSrc || e.target.src,
-      naturalWidth: e.target.naturalWidth,
-      naturalHeight: e.target.naturalHeight,
-      rect: e.target.getBoundingClientRect(),
-      complete: e.target.complete
-    })}
-  />
-</div>
-        );
-      })}
+  return (
+    <div
+      ref={el => {
+        galleryRefs.current.set(imageKey, el);
+      }}
+      key={imageKey}
+      className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+    >
+      <div
+        data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+        className="product-gallery-image-box"
+      >
+        <img
+          ref={el => {
+            if (idx === 0) {
+              mainImageRef.current = el;
+            } else if (mainImageRef.current === el) {
+              mainImageRef.current = null;
+            }
+          }}
+          src={img}
+          alt={`${displayTitle} ${idx + 1}`}
+          className="product-gallery-image"
+          onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+          onLoad={e => console.log('[PDP] gallery image loaded', {
+            imageKey,
+            src: e.target.currentSrc || e.target.src,
+            naturalWidth: e.target.naturalWidth,
+            naturalHeight: e.target.naturalHeight,
+            rect: e.target.getBoundingClientRect(),
+            complete: e.target.complete
+          })}
+        />
+      </div>
     </div>
+  );
+})}
 
 {displayImages.length > 1 && (
   <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>

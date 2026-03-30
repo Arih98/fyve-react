@@ -437,11 +437,28 @@
 
 .product-gallery-image-wrapper,
 .product-main-image-wrapper {
-  flex: 0 0 78vw;
-  width: 78vw;
-  scroll-snap-align: center;
-  aspect-ratio: 3 / 4.7;
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   margin: 0;
+}
+
+.product-gallery-image-box {
+  width: min(100%, 320px);
+  aspect-ratio: 1 / 1.2;
+  background: #f7f7f7;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .product-gallery-progress {
