@@ -210,9 +210,15 @@
     gap: 15px;
   }
 
-  .product-image {
-    padding: 0px;
-  }
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  box-sizing: border-box;
+  transform: scale(1.18);
+  transform-origin: center;
+}
 
   .products-container {
     padding-top: 95px;
