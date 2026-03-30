@@ -437,10 +437,10 @@
 
 .product-gallery-image-wrapper,
 .product-main-image-wrapper {
-  flex: 0 0 calc(100vw - 40px);
-  width: calc(100vw - 40px);
+  flex: 0 0 clamp(260px, 82vw, 380px);
+  width: clamp(260px, 82vw, 380px);
   scroll-snap-align: center;
-  aspect-ratio: 3 / 3.6;
+  aspect-ratio: 3 / 4.7;
   margin: 0 auto;
 }
 
