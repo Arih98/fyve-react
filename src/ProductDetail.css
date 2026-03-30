@@ -2,7 +2,6 @@
   display: flex;
   width: 100%;
   max-width: 100%;
-  padding: 20px;
   padding-bottom: 125px;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -140,6 +139,7 @@
 .details-container {
   flex: 1;
   margin-top: 180px;
+  margin-right: 30px;
   margin-left: 30px;
   width: 100%;
   min-width: 0;
