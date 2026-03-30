@@ -61,7 +61,8 @@
 @media (max-width: 768px) {
   .product-image-frame {
     background: #f7f7f7;
-    padding-bottom: 22%;
+    padding-top: 40px;
+    padding-bottom: 40px;
   }
 
   .product-image-wrapper {
@@ -78,9 +79,5 @@
     object-fit: cover;
     display: block;
     box-sizing: border-box;
-  }
-
-  .product-info {
-    background: #f7f7f7;
   }
 }
