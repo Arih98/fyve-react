@@ -437,12 +437,13 @@
 
 .product-gallery-image-wrapper,
 .product-main-image-wrapper {
-  flex: 0 0 100%;
-  width: 100%;
-  scroll-snap-align: start;
-  aspect-ratio: 1 / 1.15;
+  flex: 0 0 78vw;
+  width: 78vw;
+  scroll-snap-align: center;
+  aspect-ratio: 3 / 4.7;
   margin: 0;
 }
+
 .product-gallery-progress {
   display: block;
   position: absolute;
