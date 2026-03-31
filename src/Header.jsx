@@ -19,18 +19,16 @@ const location = useLocation();
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-const debugPdpHeader = true;
 const headerRef = useRef(null);
-const lastHeaderMetricsRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
-  const { cartItems } = useContext(CartContext);
-  const bagIconButtonRef = useRef(null);
-  const bagCountRef = useRef(null);
-    const totalBagQuantity = useMemo(
+const { cartItems } = useContext(CartContext);
+const bagIconButtonRef = useRef(null);
+const bagCountRef = useRef(null);
+const totalBagQuantity = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
     [cartItems]
   );
@@ -222,74 +220,6 @@ useEffect(() => {
   prevMenuStateRef.current = menuState;
 }, [menuState, isMobile, isHomePage, isScrolled, isSearchOpen]);
 
-useEffect(() => {
-  if (!debugPdpHeader) return;
-  if (!isMobile || !isProductDetailPage) return;
-
-  const logMetrics = (source) => {
-    const el = headerRef.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    const vv = window.visualViewport;
-
-const metrics = {
-  source,
-  time: Date.now(),
-  scrollY: window.scrollY,
-  innerHeight: window.innerHeight,
-  clientHeight: document.documentElement.clientHeight,
-  visualViewportHeight: vv ? vv.height : null,
-  visualViewportOffsetTop: vv ? vv.offsetTop : null,
-  visualViewportOffsetLeft: vv ? vv.offsetLeft : null,
-  headerTop: rect.top,
-  headerBottom: rect.bottom,
-  headerHeight: rect.height,
-  gapBelowViewport: window.innerHeight - rect.bottom,
-  headerClassName: el.className
-};
-
-    const prev = lastHeaderMetricsRef.current;
-
-    if (
-      !prev ||
-      prev.headerTop !== metrics.headerTop ||
-      prev.headerBottom !== metrics.headerBottom ||
-      prev.innerHeight !== metrics.innerHeight ||
-      prev.visualViewportHeight !== metrics.visualViewportHeight ||
-      prev.scrollY !== metrics.scrollY
-    ) {
-      console.log('[PDP HEADER DEBUG]', metrics);
-      lastHeaderMetricsRef.current = metrics;
-    }
-  };
-
-  const onScroll = () => logMetrics('scroll');
-  const onResize = () => logMetrics('resize');
-  const onOrientationChange = () => logMetrics('orientationchange');
-
-  logMetrics('mount');
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onResize);
-  window.addEventListener('orientationchange', onOrientationChange);
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', onResize);
-    window.visualViewport.addEventListener('scroll', onScroll);
-  }
-
-  return () => {
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-    window.removeEventListener('orientationchange', onOrientationChange);
-
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', onResize);
-      window.visualViewport.removeEventListener('scroll', onScroll);
-    }
-  };
-}, [debugPdpHeader, isMobile, isProductDetailPage]);
 
 const handleToggleMenu = () => {
   toggleMenu();

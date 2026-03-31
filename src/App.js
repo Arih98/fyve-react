@@ -94,37 +94,6 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  useEffect(() => {
-    const debugScroll = () => {};
-
-    window.addEventListener("scroll", debugScroll);
-
-    return () => window.removeEventListener("scroll", debugScroll);
-  }, []);
-
-  useEffect(() => {
-    const logNow = () => {};
-
-    logNow();
-
-    requestAnimationFrame(() => {
-      logNow();
-    });
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        logNow();
-      });
-    });
-
-    window.addEventListener("load", () => logNow());
-    window.addEventListener("pageshow", () => logNow());
-
-    setTimeout(() => logNow(), 100);
-    setTimeout(() => logNow(), 500);
-    setTimeout(() => logNow(), 1000);
-  }, []);
-
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>

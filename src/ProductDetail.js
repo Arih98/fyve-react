@@ -26,9 +26,6 @@ const ProductDetail = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
-const pdpDebugRef = useRef(null);
-const lastPdpMetricsRef = useRef(null);
-const debugPdp = true;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -178,35 +175,6 @@ const nextIndex = Math.min(
 );
 setActiveImageIndex(nextIndex);
 };
-  useEffect(() => {
-    console.log('[PDP] route state', {
-      productId,
-      locationState: location.state,
-      search: location.search
-    });
-  }, [productId, location.state, location.search]);
-
-  useEffect(() => {
-    console.log('[PDP] render state', {
-      productId: product?.id,
-      productTitle: product?.title,
-      currentSku: current?.sku,
-      currentDisplayId,
-      shouldAnimateDetailsIn,
-      galleryLength: gallery.length,
-      mainImage,
-      currentVariationId: currentVariation?.id
-    });
-  }, [
-    product?.id,
-    product?.title,
-    current?.sku,
-    currentDisplayId,
-    shouldAnimateDetailsIn,
-    gallery.length,
-    mainImage,
-    currentVariation?.id
-  ]);
 
   const handleAddToCart = useCallback(() => {
   const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
@@ -285,78 +253,6 @@ useEffect(() => {
   );
 }, [pdpMobileButtonLabel]);
 
-  useEffect(() => {
-  if (!debugPdp || !isMobile) return;
-
-  const logPdpMetrics = (source) => {
-    const root = pdpDebugRef.current;
-    const header = document.querySelector('.mobile-header.first-header');
-    if (!root || !header) return;
-
-    const rootRect = root.getBoundingClientRect();
-    const headerRect = header.getBoundingClientRect();
-    const vv = window.visualViewport;
-
-    const metrics = {
-      source,
-      time: Date.now(),
-      scrollY: window.scrollY,
-      innerHeight: window.innerHeight,
-      clientHeight: document.documentElement.clientHeight,
-      visualViewportHeight: vv ? vv.height : null,
-      visualViewportOffsetTop: vv ? vv.offsetTop : null,
-      rootTop: rootRect.top,
-      rootBottom: rootRect.bottom,
-      rootHeight: rootRect.height,
-      headerTop: headerRect.top,
-      headerBottom: headerRect.bottom,
-      headerHeight: headerRect.height,
-      gapBelowHeader: window.innerHeight - headerRect.bottom
-    };
-
-    const prev = lastPdpMetricsRef.current;
-
-    if (
-      !prev ||
-      prev.headerTop !== metrics.headerTop ||
-      prev.headerBottom !== metrics.headerBottom ||
-      prev.gapBelowHeader !== metrics.gapBelowHeader ||
-      prev.innerHeight !== metrics.innerHeight ||
-      prev.visualViewportHeight !== metrics.visualViewportHeight ||
-      prev.scrollY !== metrics.scrollY
-    ) {
-      console.log('[PDP PAGE DEBUG]', metrics);
-      lastPdpMetricsRef.current = metrics;
-    }
-  };
-
-  const onScroll = () => logPdpMetrics('scroll');
-  const onResize = () => logPdpMetrics('resize');
-  const onOrientationChange = () => logPdpMetrics('orientationchange');
-
-  logPdpMetrics('mount');
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onResize);
-  window.addEventListener('orientationchange', onOrientationChange);
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', onResize);
-    window.visualViewport.addEventListener('scroll', onScroll);
-  }
-
-  return () => {
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-    window.removeEventListener('orientationchange', onOrientationChange);
-
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', onResize);
-      window.visualViewport.removeEventListener('scroll', onScroll);
-    }
-  };
-}, [debugPdp, isMobile]);
-
 useEffect(() => {
   const handleExternalAddToCart = () => {
     handleAddToCart();
@@ -378,7 +274,7 @@ useEffect(() => {
 
 return (
   <>
-    <div ref={pdpDebugRef} data-pdp-debug-root="true">
+    <div>
       <motion.div className="product-detail-container">
         <div className="images-container">
   <div className="product-image-gallery">
@@ -412,14 +308,6 @@ return (
                 alt={`${displayTitle} ${idx + 1}`}
                 className="product-gallery-image"
                 onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                onLoad={e => console.log('[PDP] gallery image loaded', {
-                  imageKey,
-                  src: e.target.currentSrc || e.target.src,
-                  naturalWidth: e.target.naturalWidth,
-                  naturalHeight: e.target.naturalHeight,
-                  rect: e.target.getBoundingClientRect(),
-                  complete: e.target.complete
-                })}
               />
             </div>
           </div>
