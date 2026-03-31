@@ -14,7 +14,7 @@ import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation
 
 
 const ProductDetail = () => {
-  const { setCartItems } = useContext(CartContext);
+  const { cartItems, setCartItems } = useContext(CartContext);
   const location = useLocation();
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
@@ -82,7 +82,8 @@ const hideGalleryProgress = !showGalleryProgress;
 
   const effectiveVariation = currentVariation || fallbackVariation;
   const current = product ? (isVariableProduct ? effectiveVariation : product) : null;
-  const availableStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
+const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
+const availableStock = availableStockRaw === null ? null : Number(availableStockRaw);
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
 
   const relatedProducts = useRelatedProducts(product, effectiveVariation, allProducts, isColorAttribute);
@@ -176,33 +177,80 @@ const nextIndex = Math.min(
 setActiveImageIndex(nextIndex);
 };
 
-  const handleAddToCart = useCallback(() => {
-  const freshStock = current?.stockQuantity ?? current?.stock_quantity ?? 0;
+const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
+const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
+const currentItemId = current?.id || product?.id;
+const currentVariationKey = `${sizeValue}-${colorValue}`;
 
-  if (freshStock < quantity) {
-    setCartError(quantity > 1 ? `Only ${freshStock} available` : 'Out of stock');
+const existingCartItem = cartItems.find(
+  item => item.id === currentItemId && `${item.size || ''}-${item.color || ''}` === currentVariationKey
+);
+
+const existingQuantityInCart = existingCartItem?.quantity || 0;
+const remainingStockForSelection =
+  availableStock === null
+    ? null
+    : Math.max(0, Number(availableStock) - existingQuantityInCart);
+
+const isAddDisabled =
+  remainingStockForSelection !== null && remainingStockForSelection < quantity;
+
+  const handleAddToCart = useCallback(() => {
+  const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
+
+  const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
+  const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
+  const variationKey = `${sizeValue}-${colorValue}`;
+  const itemId = current?.id || product?.id;
+
+  const existingCartItem = cartItems.find(
+    item => item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey
+  );
+
+  const existingQuantityInCart = existingCartItem?.quantity || 0;
+  const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
+
+  if (remainingStock <= 0) {
+    setCartError('No more stock available for this selection');
+    return;
+  }
+
+  if (quantity > remainingStock) {
+    setCartError(
+      remainingStock === 1
+        ? 'Only 1 more available'
+        : `Only ${remainingStock} more available`
+    );
     return;
   }
 
   const newItem = {
-    id: current?.id || product?.id,
-name: current?.title || product?.title,
+    id: itemId,
+    name: current?.title || product?.title,
     price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
     quantity,
     image: displayImages[0] || '/api/Uploads/fallback-image.png',
-    size: selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '',
-    color: selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '',
+    size: sizeValue,
+    color: colorValue,
+    stockQuantity: freshStock
   };
 
   setCartItems(prev => {
-    const variationKey = `${newItem.size}-${newItem.color}`;
     const existingIndex = prev.findIndex(
-      i => i.id === newItem.id && `${i.size}-${i.color}` === variationKey
+      i => i.id === newItem.id && `${i.size || ''}-${i.color || ''}` === variationKey
     );
 
     if (existingIndex !== -1) {
       const newPrev = [...prev];
-      newPrev[existingIndex].quantity += quantity;
+      const nextQuantity = Math.min(
+        freshStock,
+        newPrev[existingIndex].quantity + quantity
+      );
+      newPrev[existingIndex] = {
+        ...newPrev[existingIndex],
+        quantity: nextQuantity,
+        stockQuantity: freshStock
+      };
       return newPrev;
     }
 
@@ -210,23 +258,23 @@ name: current?.title || product?.title,
   });
 
   const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
-const sourceRect = sourceImageEl?.getBoundingClientRect();
+  const sourceRect = sourceImageEl?.getBoundingClientRect();
 
-    window.dispatchEvent(
-  new CustomEvent('cart:item-added', {
-    detail: {
-      sourceSelector: '[data-pdp-primary-image="true"]',
-      startRect: sourceRect
-        ? {
-            top: sourceRect.top,
-            left: sourceRect.left,
-            width: sourceRect.width,
-            height: sourceRect.height
-          }
-        : null
-    }
-  })
-);
+  window.dispatchEvent(
+    new CustomEvent('cart:item-added', {
+      detail: {
+        sourceSelector: '[data-pdp-primary-image="true"]',
+        startRect: sourceRect
+          ? {
+              top: sourceRect.top,
+              left: sourceRect.left,
+              width: sourceRect.width,
+              height: sourceRect.height
+            }
+          : null
+      }
+    })
+  );
 
   setCartError(null);
 }, [
@@ -237,6 +285,7 @@ const sourceRect = sourceImageEl?.getBoundingClientRect();
   selectedAttributes,
   isSizeAttribute,
   isColorAttribute,
+  cartItems,
   setCartItems
 ]);
 
@@ -269,8 +318,6 @@ useEffect(() => {
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
   if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
-
-  const isAddDisabled = availableStock !== null && availableStock < quantity;
 
 return (
   <>
@@ -411,7 +458,11 @@ return (
             <span className="qty-symbol">-</span>
           </button>
           <span className="qty-value">{quantity}</span>
-          <button onClick={() => increaseQuantity(availableStock)} className="qty-btn plus" disabled={availableStock !== null && quantity >= availableStock}>
+          <button
+  onClick={() => increaseQuantity(remainingStockForSelection)}
+  className="qty-btn plus"
+  disabled={remainingStockForSelection !== null && quantity >= remainingStockForSelection}
+>
             <span className="qty-symbol">+</span>
           </button>
         </div>

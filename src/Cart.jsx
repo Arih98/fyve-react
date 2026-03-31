@@ -62,14 +62,22 @@ const Cart = () => {
   };
 
   const handleQuantityChange = (itemId, variationKey, delta) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === itemId && `${item.size}-${item.color}` === variationKey
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
+  setCartItems(prevItems =>
+    prevItems.map(item => {
+      if (!(item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey)) {
+        return item;
+      }
+
+      const maxStock = Number(item.stockQuantity ?? Infinity);
+      const nextQuantity = item.quantity + delta;
+
+      return {
+        ...item,
+        quantity: Math.max(1, Math.min(maxStock, nextQuantity))
+      };
+    })
+  );
+};
 
   useEffect(() => {
     const handleToggleCart = () => {
@@ -101,9 +109,13 @@ const Cart = () => {
     };
   }, [isCartOpen]);
 
-  const handleRemoveItem = (itemId, variationKey) => {
-    setCartItems(prevItems => prevItems.filter(item => !(item.id === itemId && `${item.size}-${item.color}` === variationKey)));
-  };
+const handleRemoveItem = (itemId, variationKey) => {
+  setCartItems(prevItems =>
+    prevItems.filter(
+      item => !(item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey)
+    )
+  );
+};
 
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   return (
@@ -152,7 +164,13 @@ const Cart = () => {
                               min="1"
                               readOnly
                             />
-                            <button className="quantity-plus" onClick={() => handleQuantityChange(item.id, variationKey, 1)}>+</button>
+                            <button
+  className="quantity-plus"
+  onClick={() => handleQuantityChange(item.id, variationKey, 1)}
+  disabled={Number(item.quantity) >= Number(item.stockQuantity ?? Infinity)}
+>
+  +
+</button>
                           </div>
                           <div className="subtotal" data-price={item.price}>
                             ${(item.price * item.quantity).toFixed(2)}
