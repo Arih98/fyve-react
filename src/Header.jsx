@@ -81,55 +81,51 @@ const handleCartItemAdded = (e) => {
   document.body.appendChild(flyingImage);
 
   const targetSize = 20;
-  const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
-  const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
-  const flightDuration = 1.1;
+const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
+const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
+const flightDuration = 1.1;
 
-  gsap.to(flyingImage, {
-    top: targetTop,
-    left: targetLeft,
-    width: targetSize,
-    height: targetSize,
-    scale: 0.2,
-    opacity: 1,
-    duration: flightDuration,
-    ease: 'power2.inOut',
-    onComplete: () => {
-      gsap.fromTo(
-        bagEl,
-        { scale: 1 },
-        {
-          scale: 1.16,
-          duration: 0.18,
-          ease: 'power2.out',
-          yoyo: true,
-          repeat: 1
-        }
-      );
+const tl = gsap.timeline({
+  onComplete: () => {
+    gsap.fromTo(bagEl, { scale: 1 }, {
+      scale: 1.16,
+      duration: 0.18,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: 1
+    });
 
-      if (bagCountRef.current) {
-        gsap.fromTo(
-          bagCountRef.current,
-          { scale: 0.7 },
-          {
-            scale: 1,
-            duration: 0.28,
-            ease: 'back.out(2.4)'
-          }
-        );
-      }
-
-      gsap.to(flyingImage, {
-        opacity: 0,
-        duration: 0.2,
-        ease: 'power2.out',
-        onComplete: () => {
-          flyingImage.remove();
-        }
+    if (bagCountRef.current) {
+      gsap.fromTo(bagCountRef.current, { scale: 0.7 }, {
+        scale: 1,
+        duration: 0.28,
+        ease: 'back.out(2.4)'
       });
     }
-  });
-};
+
+    gsap.to(flyingImage, {
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.out',
+      onComplete: () => flyingImage.remove()
+    });
+  }
+});
+
+tl.to(flyingImage, {
+  top: targetTop,
+  left: targetLeft,
+  duration: flightDuration,
+  ease: 'power2.inOut'
+}, 0);
+
+tl.to(flyingImage, {
+  width: targetSize,
+  height: targetSize,
+  scale: 0.2,
+  duration: flightDuration * 0.45,
+  ease: 'power3.in'
+}, flightDuration * 0.55);
 
 useEffect(() => {
   window.addEventListener('cart:item-added', handleCartItemAdded);
