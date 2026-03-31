@@ -72,6 +72,7 @@ const handleCartItemAdded = (e) => {
   flyingImage.style.pointerEvents = 'none';
   flyingImage.style.zIndex = '100000';
   flyingImage.style.transformOrigin = 'center center';
+  flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
   flyingImage.style.background = 'transparent';
   flyingImage.style.boxShadow = 'none';
   flyingImage.style.border = 'none';
@@ -85,68 +86,50 @@ const handleCartItemAdded = (e) => {
   const flightDuration = 1.1;
 
   gsap.to(flyingImage, {
-  top: targetTop,
-  left: targetLeft,
-  width: targetSize,
-  height: targetSize,
-  scale: 0.2,
-  opacity: 1,
-  duration: flightDuration,
-  ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
-  onComplete: () => {
-    gsap.to(flyingImage, {
-      opacity: 0,
-      duration: 0.2,
-      ease: 'power2.out',
-      onComplete: () => {
-        flyingImage.remove();
-      }
-    });
-  }
-});gsap.to(flyingImage, {
-  top: targetTop,
-  left: targetLeft,
-  width: targetSize,
-  height: targetSize,
-  scale: 0.2,
-  opacity: 1,
-  duration: flightDuration,
-  ease: 'power2.inOut',
-  onComplete: () => {
-    gsap.fromTo(
-      bagEl,
-      { scale: 1 },
-      {
-        scale: 1.16,
-        duration: 0.18,
-        ease: 'power2.out',
-        yoyo: true,
-        repeat: 1
-      }
-    );
-
-    if (bagCountRef.current) {
+    top: targetTop,
+    left: targetLeft,
+    width: targetSize,
+    height: targetSize,
+    scale: 0.2,
+    opacity: 1,
+    duration: flightDuration,
+    ease: 'power2.inOut',
+    onComplete: () => {
       gsap.fromTo(
-        bagCountRef.current,
-        { scale: 0.7 },
+        bagEl,
+        { scale: 1 },
         {
-          scale: 1,
-          duration: 0.28,
-          ease: 'back.out(2.4)'
+          scale: 1.16,
+          duration: 0.18,
+          ease: 'power2.out',
+          yoyo: true,
+          repeat: 1
         }
       );
-    }
 
-    gsap.to(flyingImage, {
-      opacity: 0,
-      duration: 0.2,
-      ease: 'power2.out',
-      onComplete: () => {
-        flyingImage.remove();
+      if (bagCountRef.current) {
+        gsap.fromTo(
+          bagCountRef.current,
+          { scale: 0.7 },
+          {
+            scale: 1,
+            duration: 0.28,
+            ease: 'back.out(2.4)'
+          }
+        );
       }
-    });
-  }
-});
+
+      gsap.to(flyingImage, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.out',
+        onComplete: () => {
+          flyingImage.remove();
+        }
+      });
+    }
+  });
+};
 
 useEffect(() => {
   window.addEventListener('cart:item-added', handleCartItemAdded);
