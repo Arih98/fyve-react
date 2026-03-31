@@ -242,7 +242,8 @@ name: current?.title || product?.title,
   });
 
   const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
-  const sourceRect = sourceImageEl?.getBoundingClientRect();
+const sourceBoxEl = sourceImageEl?.closest('.product-gallery-image-box');
+const sourceRect = (sourceBoxEl || sourceImageEl)?.getBoundingClientRect();
 
     window.dispatchEvent(
     new CustomEvent('cart:item-added', {

@@ -20,6 +20,17 @@ body.locked {
   width: 100%;
 }
 
+.flying-cart-clone {
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.flying-cart-clone img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .header-bag-button {
   position: relative;
   overflow: visible;
