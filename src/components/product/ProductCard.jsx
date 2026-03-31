@@ -36,8 +36,12 @@ const ProductCard = ({
 >
   <img
     ref={el => {
-      imageRefs.current.set(item.displayId, el);
-    }}
+  if (el) {
+    imageRefs.current.set(item.displayId, el);
+  } else {
+    imageRefs.current.delete(item.displayId);
+  }
+}}
     src={imageSrc}
     alt={item.title}
     className={`product-image real-product-image ${imageLoaded ? 'image-loaded' : ''}`}
