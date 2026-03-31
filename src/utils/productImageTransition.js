@@ -50,6 +50,17 @@ const waitForStableElementRect = async (
   getEl,
   { maxAttempts = 90, maxFramesPerAttempt = 20, stableFrames = 2 } = {}
 ) => {
+  let hiddenElement = null;
+
+  const hideElement = (el) => {
+    if (!el) return;
+    if (hiddenElement && hiddenElement !== el && hiddenElement.isConnected) {
+      hiddenElement.style.opacity = '';
+    }
+    el.style.opacity = '0';
+    hiddenElement = el;
+  };
+
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const el = getEl?.();
 
@@ -57,6 +68,8 @@ const waitForStableElementRect = async (
       await waitForNextFrame();
       continue;
     }
+
+    hideElement(el);
 
     let previousRect = null;
     let stableCount = 0;
@@ -75,6 +88,8 @@ const waitForStableElementRect = async (
         disconnected = true;
         break;
       }
+
+      hideElement(latestEl);
 
       const rect = getRect(el);
 
@@ -225,7 +240,6 @@ export const startProductImageTransition = async ({
   }
 
   const toElement = stableTarget.element;
-  toElement.style.opacity = '0';
 
   const stableRect = stableTarget.rect;
 
