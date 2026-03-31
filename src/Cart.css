@@ -1,15 +1,16 @@
 .cart-slide-menu {
   position: fixed;
-  bottom: 20px;
+  top: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  overflow: visible;
+  width: 400px;
+  height: min(600px, calc(100vh - 40px));
+  border-radius: 20px;
+  overflow: hidden;
   z-index: 99999;
   transition: none;
-  pointer-events: auto;
+  pointer-events: none;
   padding-bottom: env(safe-area-inset-bottom, 0);
+  opacity: 0;
 }
 
 .cart-slide-menu.active {
@@ -18,71 +19,8 @@
   border: 0.8px solid #4A494A;
 }
 
-.cart-icon {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-  background-color: #fff;
-  border-radius: 50%;
-  padding: 8px;
-  z-index: 1001;
-  border: 1px solid #4A494A;
-}
-
-.cart-slide-menu.active .cart-icon {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.cart-icon img {
-  max-height: 20px;
-  width: 100%;
-  height: 100%;
-}
-
-.cart-count {
-  position: absolute;
-  top: -1px;
-  right: -8px;
-  background-color: #4A494A;
-  color: #fff;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-family: quasimoda, sans-serif !important;
-  font-weight: 500;
-  line-height: 1;
-  z-index: 1003;
-  border: 1px solid #fff;
-  opacity: 0; /* Default to hidden */
-  visibility: hidden; /* Default to hidden */
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-.cart-count.has-items {
-  opacity: 1; /* Show when items exist */
-  visibility: visible; /* Show when items exist */
-}
-
-@media (max-width: 768px) {
-  .cart-count {
-    width: 18px;
-    height: 18px;
-    font-size: 10px;
-    top: -10px;
-    right: -10px;
-  }
+.cart-drawer-only .cart-icon {
+  display: none !important;
 }
 
 .cart-menu-background {
@@ -443,4 +381,13 @@ li.cart-item {
   .cart-buttons .button {
       padding: 18px 20px;
   }
+  
+  .cart-slide-menu {
+  top: auto;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: min(78vh, 700px);
+  border-radius: 20px 20px 0 0;
+}
 }

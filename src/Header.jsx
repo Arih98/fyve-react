@@ -1,5 +1,6 @@
 import { useMobileMenuController } from './hooks/useMobileMenuController';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
+import { CartContext } from './CartContext';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
@@ -26,6 +27,13 @@ const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
+  const { cartItems } = useContext(CartContext);
+  const bagIconButtonRef = useRef(null);
+  const bagCountRef = useRef(null);
+    const totalBagQuantity = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems]
+  );
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -40,6 +48,83 @@ const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/ass
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+
+useEffect(() => {
+  const handleCartItemAdded = (e) => {
+    const bagEl = bagIconButtonRef.current;
+    const startRect = e.detail?.startRect;
+    const imageSrc = e.detail?.image;
+
+    if (!bagEl || !startRect || !imageSrc) return;
+
+    const bagRect = bagEl.getBoundingClientRect();
+    const flyingImage = document.createElement('img');
+
+    flyingImage.src = imageSrc;
+    flyingImage.className = 'flying-cart-image';
+    flyingImage.style.position = 'fixed';
+    flyingImage.style.top = `${startRect.top}px`;
+    flyingImage.style.left = `${startRect.left}px`;
+    flyingImage.style.width = `${startRect.width}px`;
+    flyingImage.style.height = `${startRect.height}px`;
+    flyingImage.style.objectFit = 'cover';
+    flyingImage.style.pointerEvents = 'none';
+    flyingImage.style.zIndex = '100000';
+    flyingImage.style.borderRadius = '0px';
+    flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
+    document.body.appendChild(flyingImage);
+
+    const targetSize = 24;
+    const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
+    const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
+
+    gsap.to(flyingImage, {
+      top: targetTop,
+      left: targetLeft,
+      width: targetSize,
+      height: targetSize,
+      opacity: 0.2,
+      scale: 0.2,
+      duration: 0.75,
+      ease: 'power3.inOut',
+      onComplete: () => {
+        flyingImage.remove();
+      }
+    });
+
+    gsap.fromTo(
+      bagEl,
+      { scale: 1 },
+      {
+        scale: 1.16,
+        duration: 0.18,
+        ease: 'power2.out',
+        yoyo: true,
+        repeat: 1,
+        delay: 0.42
+      }
+    );
+
+    if (bagCountRef.current) {
+      gsap.fromTo(
+        bagCountRef.current,
+        { scale: 0.7 },
+        {
+          scale: 1,
+          duration: 0.28,
+          ease: 'back.out(2.4)',
+          delay: 0.5
+        }
+      );
+    }
+  };
+
+  window.addEventListener('cart:item-added', handleCartItemAdded);
+
+  return () => {
+    window.removeEventListener('cart:item-added', handleCartItemAdded);
+  };
+}, []);
 
 useEffect(() => {
   let timeout;
@@ -385,9 +470,20 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       <img src={accountIconSrc} alt="Account" />
     </button>
 
-    <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-      <img src={bagIconSrc} alt="Bag" />
-    </button>
+    <button
+  className="mobile-nav-icon header-bag-button"
+  onClick={() => {
+    window.dispatchEvent(new CustomEvent('cart:toggle'));
+  }}
+  ref={bagIconButtonRef}
+>
+  <img src={bagIconSrc} alt="Bag" />
+  {totalBagQuantity > 0 && (
+    <span className="header-bag-count" ref={bagCountRef}>
+      {totalBagQuantity}
+    </span>
+  )}
+</button>
   </div>
 </>
 
