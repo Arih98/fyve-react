@@ -379,11 +379,9 @@ return (
             key={imageKey}
             className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
           >
-            <div
-              data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-              className="product-gallery-image-box"
-            >
-              <img
+            <div className="product-gallery-image-box">
+  <img
+    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
                 ref={el => {
                   if (idx === 0) {
                     mainImageRef.current = el;
