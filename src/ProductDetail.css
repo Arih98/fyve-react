@@ -581,13 +581,13 @@
   }
 
   .qty-btn {
-    width: 20px;
-    height: 20px;
-    font-size: 22px;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
   }
 
   .qty-value {
-    font-size: 13px;
+    font-size: 15px;
     min-width: 24px;
   }
 
@@ -635,7 +635,4 @@
   .related-product-price {
     font-size: 13px;
   }
-  .add-to-cart-button {
-  display: none;
-}
 }
