@@ -92,8 +92,32 @@ const handleCartItemAdded = (e) => {
   scale: 0.2,
   opacity: 1,
   duration: flightDuration,
-  ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  ease: 'power2.inOut',
   onComplete: () => {
+    gsap.fromTo(
+      bagEl,
+      { scale: 1 },
+      {
+        scale: 1.16,
+        duration: 0.18,
+        ease: 'power2.out',
+        yoyo: true,
+        repeat: 1
+      }
+    );
+
+    if (bagCountRef.current) {
+      gsap.fromTo(
+        bagCountRef.current,
+        { scale: 0.7 },
+        {
+          scale: 1,
+          duration: 0.28,
+          ease: 'back.out(2.4)'
+        }
+      );
+    }
+
     gsap.to(flyingImage, {
       opacity: 0,
       duration: 0.2,
@@ -104,33 +128,6 @@ const handleCartItemAdded = (e) => {
     });
   }
 });
-
-  gsap.fromTo(
-  bagEl,
-  { scale: 1 },
-  {
-    scale: 1.16,
-    duration: 0.18,
-    ease: 'power2.out',
-    yoyo: true,
-    repeat: 1,
-    delay: flightDuration + 0.08
-  }
-);
-
-  if (bagCountRef.current) {
-    gsap.fromTo(
-      bagCountRef.current,
-      { scale: 0.7 },
-      {
-        scale: 1,
-        duration: 0.28,
-        ease: 'back.out(2.4)',
-        delay: flightDuration + 0.08
-      }
-    );
-  }
-};
 
 useEffect(() => {
   window.addEventListener('cart:item-added', handleCartItemAdded);
