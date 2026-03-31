@@ -12,7 +12,6 @@ const Header = () => {
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');
   const [hideHeader, setHideHeader] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
-  const [pdpAddToBagLabel, setPdpAddToBagLabel] = useState('Add to Bag');
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
@@ -81,12 +80,6 @@ useEffect(() => {
   return () => window.removeEventListener('scroll', handleHeaderThemeScroll);
 }, [location.pathname]);
 
-useEffect(() => {
-  if (!isProductDetailPage) {
-    setPdpAddToBagLabel('Add to Bag');
-  }
-}, [isProductDetailPage]);
-
 
 useEffect(() => {
   if (isMobile) {
@@ -114,18 +107,6 @@ useEffect(() => {
   window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
 }, [isMobile, isMenuOpen]);
-
-useEffect(() => {
-  const handlePdpButtonLabel = e => {
-    setPdpAddToBagLabel(e.detail?.label || 'Add to Bag');
-  };
-
-  window.addEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
-
-  return () => {
-    window.removeEventListener('pdp:update-add-to-bag-label', handlePdpButtonLabel);
-  };
-}, []);
 
 useEffect(() => {
   const handleResize = () => {
@@ -386,60 +367,29 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isProductDetailPage && isMobile ? ' pdp-mobile-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
-  {(!isProductDetailPage || !isMobile) && (
   <>
-    <div className="header-logo mobile-hide-logo">
-      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
-    </div>
+  <div className="header-logo mobile-hide-logo">
+    <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+  </div>
 
-    <div className="mobile-nav-icons">
-      <button className="mobile-nav-icon" onClick={toggleSearch}>
-        <img src={searchIconSrc} alt="Search" />
-      </button>
+  <div className="mobile-nav-icons">
+    <button className="mobile-nav-icon" onClick={toggleSearch}>
+      <img src={searchIconSrc} alt="Search" />
+    </button>
 
-      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-        <img src={accountIconSrc} alt="Account" />
-      </button>
+    <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+      <img src={accountIconSrc} alt="Account" />
+    </button>
 
-      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-        <img src={bagIconSrc} alt="Bag" />
-      </button>
-    </div>
-  </>
-)}
-
-{isMobile && isProductDetailPage && !isMenuOpen && (
-  <button
-    type="button"
-    className="pdp-mobile-add-to-bag"
-    onClick={() => {
-      window.dispatchEvent(new CustomEvent('pdp:add-to-cart'));
-    }}
-  >
-    {pdpAddToBagLabel}
-  </button>
-)}
-
-
-  {isMobile && isProductDetailPage && isMenuOpen && (
-    <div className="mobile-nav-icons pdp-open-icons">
-      <button className="mobile-nav-icon" onClick={toggleSearch}>
-        <img src={searchIconSrc} alt="Search" />
-      </button>
-
-      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-        <img src={accountIconSrc} alt="Account" />
-      </button>
-
-      <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
-        <img src={bagIconSrc} alt="Bag" />
-      </button>
-    </div>
-  )}
+    <button className="mobile-nav-icon" onClick={() => navigate('/cart')}>
+      <img src={bagIconSrc} alt="Bag" />
+    </button>
+  </div>
+</>
 
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
     <div className="custom-search-inner">
