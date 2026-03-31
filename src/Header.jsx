@@ -90,8 +90,8 @@ const handleCartItemAdded = (e) => {
     height: targetSize,
     scale: 0.2,
     opacity: 1,
-    duration: 0.62,
-    ease: 'power3.inOut',
+    duration: 1.1,
+ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
     onComplete: () => {
       gsap.to(flyingImage, {
         opacity: 0,
