@@ -126,6 +126,7 @@ tl.to(flyingImage, {
   duration: flightDuration * 0.45,
   ease: 'power3.in'
 }, flightDuration * 0.55);
+};
 
 useEffect(() => {
   window.addEventListener('cart:item-added', handleCartItemAdded);
