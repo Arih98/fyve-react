@@ -82,40 +82,41 @@ const handleCartItemAdded = (e) => {
   const targetSize = 20;
   const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
   const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
+  const flightDuration = 1.1;
 
   gsap.to(flyingImage, {
-    top: targetTop,
-    left: targetLeft,
-    width: targetSize,
-    height: targetSize,
-    scale: 0.2,
-    opacity: 1,
-    duration: 1.1,
-ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
-    onComplete: () => {
-      gsap.to(flyingImage, {
-        opacity: 0,
-        duration: 0.12,
-        ease: 'power2.out',
-        onComplete: () => {
-          flyingImage.remove();
-        }
-      });
-    }
-  });
+  top: targetTop,
+  left: targetLeft,
+  width: targetSize,
+  height: targetSize,
+  scale: 0.2,
+  opacity: 1,
+  duration: flightDuration,
+  ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  onComplete: () => {
+    gsap.to(flyingImage, {
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.out',
+      onComplete: () => {
+        flyingImage.remove();
+      }
+    });
+  }
+});
 
   gsap.fromTo(
-    bagEl,
-    { scale: 1 },
-    {
-      scale: 1.16,
-      duration: 0.18,
-      ease: 'power2.out',
-      yoyo: true,
-      repeat: 1,
-      delay: 0.42
-    }
-  );
+  bagEl,
+  { scale: 1 },
+  {
+    scale: 1.16,
+    duration: 0.18,
+    ease: 'power2.out',
+    yoyo: true,
+    repeat: 1,
+    delay: flightDuration + 0.08
+  }
+);
 
   if (bagCountRef.current) {
     gsap.fromTo(
@@ -125,7 +126,7 @@ ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
         scale: 1,
         duration: 0.28,
         ease: 'back.out(2.4)',
-        delay: 0.5
+        delay: flightDuration + 0.08
       }
     );
   }
