@@ -51,75 +51,79 @@ const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/as
 
 useEffect(() => {
   const handleCartItemAdded = (e) => {
-    const bagEl = bagIconButtonRef.current;
-    const startRect = e.detail?.startRect;
-    const imageSrc = e.detail?.image;
+  const bagEl = bagIconButtonRef.current;
+  const startRect = e.detail?.startRect;
+  const sourceSelector = e.detail?.sourceSelector;
 
-    if (!bagEl || !startRect || !imageSrc) return;
+  if (!bagEl || !startRect) return;
 
-    const bagImgEl = bagEl.querySelector('img');
-    const bagRect = (bagImgEl || bagEl).getBoundingClientRect();
-    const flyingImage = document.createElement('img');
+  const sourceImageEl = sourceSelector ? document.querySelector(sourceSelector) : null;
+  const sourceBoxEl = sourceImageEl?.closest('.product-gallery-image-box');
+  const sourceNode = sourceBoxEl || sourceImageEl;
 
-    flyingImage.src = imageSrc;
-    flyingImage.className = 'flying-cart-image';
-    flyingImage.style.position = 'fixed';
-    flyingImage.style.top = `${startRect.top}px`;
-    flyingImage.style.left = `${startRect.left}px`;
-    flyingImage.style.width = `${startRect.width}px`;
-    flyingImage.style.height = `${startRect.height}px`;
-    flyingImage.style.objectFit = 'contain';
-    flyingImage.style.background = '#f7f7f7';
-    flyingImage.style.pointerEvents = 'none';
-    flyingImage.style.zIndex = '100000';
-    flyingImage.style.borderRadius = '0px';
-    flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
-    document.body.appendChild(flyingImage);
+  if (!sourceNode) return;
 
-    const targetSize = 24;
-    const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
-    const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
+  const bagImgEl = bagEl.querySelector('img');
+  const bagRect = (bagImgEl || bagEl).getBoundingClientRect();
 
-    gsap.to(flyingImage, {
-      top: targetTop,
-      left: targetLeft,
-      width: targetSize,
-      height: targetSize,
-      opacity: 0.2,
-      scale: 0.2,
-      duration: 0.75,
-      ease: 'power3.inOut',
-      onComplete: () => {
-        flyingImage.remove();
-      }
-    });
+  const flyingNode = sourceNode.cloneNode(true);
+  flyingNode.classList.add('flying-cart-clone');
+  flyingNode.style.position = 'fixed';
+  flyingNode.style.top = `${startRect.top}px`;
+  flyingNode.style.left = `${startRect.left}px`;
+  flyingNode.style.width = `${startRect.width}px`;
+  flyingNode.style.height = `${startRect.height}px`;
+  flyingNode.style.margin = '0';
+  flyingNode.style.pointerEvents = 'none';
+  flyingNode.style.zIndex = '100000';
+  flyingNode.style.transformOrigin = 'center center';
+  flyingNode.style.willChange = 'transform, top, left, width, height, opacity';
+  document.body.appendChild(flyingNode);
 
+  const targetSize = 24;
+  const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
+  const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
+
+  gsap.to(flyingNode, {
+    top: targetTop,
+    left: targetLeft,
+    width: targetSize,
+    height: targetSize,
+    opacity: 0.15,
+    scale: 0.2,
+    duration: 0.75,
+    ease: 'power3.inOut',
+    onComplete: () => {
+      flyingNode.remove();
+    }
+  });
+
+  gsap.fromTo(
+    bagEl,
+    { scale: 1 },
+    {
+      scale: 1.16,
+      duration: 0.18,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: 1,
+      delay: 0.42
+    }
+  );
+
+  if (bagCountRef.current) {
     gsap.fromTo(
-      bagEl,
-      { scale: 1 },
+      bagCountRef.current,
+      { scale: 0.7 },
       {
-        scale: 1.16,
-        duration: 0.18,
-        ease: 'power2.out',
-        yoyo: true,
-        repeat: 1,
-        delay: 0.42
+        scale: 1,
+        duration: 0.28,
+        ease: 'back.out(2.4)',
+        delay: 0.5
       }
     );
-
-    if (bagCountRef.current) {
-      gsap.fromTo(
-        bagCountRef.current,
-        { scale: 0.7 },
-        {
-          scale: 1,
-          duration: 0.28,
-          ease: 'back.out(2.4)',
-          delay: 0.5
-        }
-      );
-    }
-  };
+  }
+};
 
   window.addEventListener('cart:item-added', handleCartItemAdded);
 

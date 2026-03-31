@@ -244,10 +244,11 @@ name: current?.title || product?.title,
   const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
   const sourceRect = sourceImageEl?.getBoundingClientRect();
 
-  window.dispatchEvent(
+    window.dispatchEvent(
     new CustomEvent('cart:item-added', {
       detail: {
         image: newItem.image,
+        sourceSelector: '[data-pdp-primary-image="true"]',
         startRect: sourceRect
           ? {
               top: sourceRect.top,
