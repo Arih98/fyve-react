@@ -1,3 +1,35 @@
+.header-bag-button {
+  position: relative;
+  overflow: visible;
+}
+
+.header-bag-count {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #4A494A;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid #ffffff;
+  box-sizing: border-box;
+  z-index: 3;
+  transform-origin: center;
+}
+
+.flying-cart-image {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
 .page-wrapper {
   transition: transform 0.7s cubic-bezier(.4,0,.2,1);
   will-change: transform;

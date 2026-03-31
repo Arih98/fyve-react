@@ -6,7 +6,6 @@ import ProductDetail from './ProductDetail';
 import Header from './Header';
 import MobileTopHeader from './MobileTopHeader';
 import Admin from './Admin';
-import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
 import Account from './Account';
@@ -26,7 +25,6 @@ const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
-  const showCart = location.pathname !== '/admin';
   const showAnnouncementBar = location.pathname !== '/admin';
 
   return (
@@ -34,7 +32,6 @@ const Layout = () => {
       {showAnnouncementBar && <AnnouncementBar />}
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
-      {showCart && <Cart />}
       <div className={location.pathname === '/' ? '' : 'site-content'}>
         <LayoutGroup>
           <AnimatePresence initial={false} mode="wait">
