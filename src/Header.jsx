@@ -49,42 +49,39 @@ const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' 
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
 
-useEffect(() => {
-  const handleCartItemAdded = (e) => {
+const handleCartItemAdded = (e) => {
   const bagEl = bagIconButtonRef.current;
   const startRect = e.detail?.startRect;
   const sourceSelector = e.detail?.sourceSelector;
 
-  if (!bagEl || !startRect) return;
+  if (!bagEl || !startRect || !sourceSelector) return;
 
-  const sourceImageEl = sourceSelector ? document.querySelector(sourceSelector) : null;
-  const sourceBoxEl = sourceImageEl?.closest('.product-gallery-image-box');
-  const sourceNode = sourceBoxEl || sourceImageEl;
+  const sourceImageEl = document.querySelector(sourceSelector);
 
-  if (!sourceNode) return;
+  if (!sourceImageEl) return;
 
   const bagImgEl = bagEl.querySelector('img');
   const bagRect = (bagImgEl || bagEl).getBoundingClientRect();
 
-  const flyingNode = sourceNode.cloneNode(true);
-  flyingNode.classList.add('flying-cart-clone');
-  flyingNode.style.position = 'fixed';
-  flyingNode.style.top = `${startRect.top}px`;
-  flyingNode.style.left = `${startRect.left}px`;
-  flyingNode.style.width = `${startRect.width}px`;
-  flyingNode.style.height = `${startRect.height}px`;
-  flyingNode.style.margin = '0';
-  flyingNode.style.pointerEvents = 'none';
-  flyingNode.style.zIndex = '100000';
-  flyingNode.style.transformOrigin = 'center center';
-  flyingNode.style.willChange = 'transform, top, left, width, height, opacity';
-  document.body.appendChild(flyingNode);
+  const flyingImage = sourceImageEl.cloneNode(true);
+  flyingImage.classList.add('flying-cart-image');
+  flyingImage.style.position = 'fixed';
+  flyingImage.style.top = `${startRect.top}px`;
+  flyingImage.style.left = `${startRect.left}px`;
+  flyingImage.style.width = `${startRect.width}px`;
+  flyingImage.style.height = `${startRect.height}px`;
+  flyingImage.style.margin = '0';
+  flyingImage.style.pointerEvents = 'none';
+  flyingImage.style.zIndex = '100000';
+  flyingImage.style.transformOrigin = 'center center';
+  flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
+  document.body.appendChild(flyingImage);
 
-  const targetSize = 24;
+  const targetSize = 20;
   const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
   const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
 
-  gsap.to(flyingNode, {
+  gsap.to(flyingImage, {
     top: targetTop,
     left: targetLeft,
     width: targetSize,
@@ -94,7 +91,7 @@ useEffect(() => {
     duration: 0.75,
     ease: 'power3.inOut',
     onComplete: () => {
-      flyingNode.remove();
+      flyingImage.remove();
     }
   });
 
@@ -125,6 +122,7 @@ useEffect(() => {
   }
 };
 
+useEffect(() => {
   window.addEventListener('cart:item-added', handleCartItemAdded);
 
   return () => {

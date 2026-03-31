@@ -242,25 +242,23 @@ name: current?.title || product?.title,
   });
 
   const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
-const sourceBoxEl = sourceImageEl?.closest('.product-gallery-image-box');
-const sourceRect = (sourceBoxEl || sourceImageEl)?.getBoundingClientRect();
+const sourceRect = sourceImageEl?.getBoundingClientRect();
 
     window.dispatchEvent(
-    new CustomEvent('cart:item-added', {
-      detail: {
-        image: newItem.image,
-        sourceSelector: '[data-pdp-primary-image="true"]',
-        startRect: sourceRect
-          ? {
-              top: sourceRect.top,
-              left: sourceRect.left,
-              width: sourceRect.width,
-              height: sourceRect.height
-            }
-          : null
-      }
-    })
-  );
+  new CustomEvent('cart:item-added', {
+    detail: {
+      sourceSelector: '[data-pdp-primary-image="true"]',
+      startRect: sourceRect
+        ? {
+            top: sourceRect.top,
+            left: sourceRect.left,
+            width: sourceRect.width,
+            height: sourceRect.height
+          }
+        : null
+    }
+  })
+);
 
   setCartError(null);
 }, [
@@ -292,7 +290,7 @@ useEffect(() => {
 
   const logPdpMetrics = (source) => {
     const root = pdpDebugRef.current;
-    const header = document.querySelector('.mobile-header.first-header.pdp-mobile-header');
+    const header = document.querySelector('.mobile-header.first-header');
     if (!root || !header) return;
 
     const rootRect = root.getBoundingClientRect();
