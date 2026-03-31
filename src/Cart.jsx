@@ -96,13 +96,12 @@ const Cart = () => {
   };
 
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  
+
   return (
     <div className={`cart-slide-menu${isCartOpen ? ' active' : ''}`} ref={cartRef} style={{ opacity: 0, transform: 'translateX(100px)', pointerEvents: 'none' }}>
       <div className={`cart-icon${cartItems.length > 0 ? ' has-items' : ''}`} onClick={toggleCart} ref={cartIconRef}>
       <img src="/assets/FYVEDarkCartIcon.svg" alt="Cart Icon" />
-        <span className={`cart-count${totalQuantity > 0 ? ' has-items' : ''}`}>{totalQuantity}</span>
+        <span className={`cart-count${cartItems.length > 0 ? ' has-items' : ''}`}>{cartItems.length}</span>
       </div>
       <div className="cart-menu-background" ref={backgroundRef}></div>
       <div className="cart-menu-content" ref={cartContentRef}>

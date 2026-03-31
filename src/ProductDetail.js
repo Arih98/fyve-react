@@ -241,25 +241,6 @@ name: current?.title || product?.title,
     return [...prev, newItem];
   });
 
-  const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
-  const sourceRect = sourceImageEl?.getBoundingClientRect();
-
-  window.dispatchEvent(
-    new CustomEvent('cart:item-added', {
-      detail: {
-        image: newItem.image,
-        startRect: sourceRect
-          ? {
-              top: sourceRect.top,
-              left: sourceRect.left,
-              width: sourceRect.width,
-              height: sourceRect.height
-            }
-          : null
-      }
-    })
-  );
-
   setCartError(null);
 }, [
   current,
