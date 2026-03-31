@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { CartContext } from './CartContext';
 import './Cart.css';
@@ -109,7 +110,7 @@ const Cart = () => {
   <div
     className={`cart-slide-menu cart-drawer-only${isCartOpen ? ' active' : ''}`}
     ref={cartRef}
-    style={{ opacity: 0, pointerEvents: 'none' }}
+    style={{ opacity: 0, transform: 'translateX(100px)', pointerEvents: 'none' }}
   >
     <div className="cart-menu-background" ref={backgroundRef}></div>
     <div className="cart-menu-content" ref={cartContentRef}>
@@ -131,7 +132,7 @@ const Cart = () => {
                           <img src={item.image} alt={item.name} />
                         </div>
                         <div className="cart-item-details">
-                          <a href={`/product/${item.id}`} className="product-title">{item.name}</a>
+                          <Link to={`/product/${item.id}`} className="product-title">{item.name}</Link>
                           {item.size && (
                             <p className="variation variation-size">
                               <span className="variation-label">Size: </span>{item.size}
@@ -172,9 +173,9 @@ const Cart = () => {
       <div className="cart-footer">
         {cartItems.length > 0 && (
           <p className="cart-buttons">
-            <a href="/checkout" className="button">
-              Checkout <span className="cart-total-amount">${cartTotal.toFixed(2)}</span>
-            </a>
+            <Link to="/checkout" className="button">
+  Checkout <span className="cart-total-amount">${cartTotal.toFixed(2)}</span>
+</Link>
           </p>
         )}
       </div>

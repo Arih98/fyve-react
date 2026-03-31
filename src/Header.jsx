@@ -57,7 +57,8 @@ useEffect(() => {
 
     if (!bagEl || !startRect || !imageSrc) return;
 
-    const bagRect = bagEl.getBoundingClientRect();
+    const bagImgEl = bagEl.querySelector('img');
+    const bagRect = (bagImgEl || bagEl).getBoundingClientRect();
     const flyingImage = document.createElement('img');
 
     flyingImage.src = imageSrc;
@@ -67,7 +68,8 @@ useEffect(() => {
     flyingImage.style.left = `${startRect.left}px`;
     flyingImage.style.width = `${startRect.width}px`;
     flyingImage.style.height = `${startRect.height}px`;
-    flyingImage.style.objectFit = 'cover';
+    flyingImage.style.objectFit = 'contain';
+    flyingImage.style.background = '#f7f7f7';
     flyingImage.style.pointerEvents = 'none';
     flyingImage.style.zIndex = '100000';
     flyingImage.style.borderRadius = '0px';
