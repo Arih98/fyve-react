@@ -60,7 +60,12 @@ body.locked {
 }
 
 .flying-cart-image {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  display: block;
+  object-fit: cover;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 .mobile-header.first-header {

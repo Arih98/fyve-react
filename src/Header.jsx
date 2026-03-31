@@ -74,7 +74,11 @@ const handleCartItemAdded = (e) => {
   flyingImage.style.pointerEvents = 'none';
   flyingImage.style.zIndex = '100000';
   flyingImage.style.transformOrigin = 'center center';
-  flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
+  flyingImage.style.background = 'transparent';
+  flyingImage.style.boxShadow = 'none';
+  flyingImage.style.border = 'none';
+  flyingImage.style.outline = 'none';
+  flyingImage.style.opacity = '1';
   document.body.appendChild(flyingImage);
 
   const targetSize = 20;
@@ -86,12 +90,19 @@ const handleCartItemAdded = (e) => {
     left: targetLeft,
     width: targetSize,
     height: targetSize,
-    opacity: 0.15,
     scale: 0.2,
-    duration: 0.75,
+    opacity: 1,
+    duration: 0.62,
     ease: 'power3.inOut',
     onComplete: () => {
-      flyingImage.remove();
+      gsap.to(flyingImage, {
+        opacity: 0,
+        duration: 0.12,
+        ease: 'power2.out',
+        onComplete: () => {
+          flyingImage.remove();
+        }
+      });
     }
   });
 
