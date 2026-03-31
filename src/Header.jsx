@@ -92,6 +92,25 @@ const handleCartItemAdded = (e) => {
   scale: 0.2,
   opacity: 1,
   duration: flightDuration,
+  ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  onComplete: () => {
+    gsap.to(flyingImage, {
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.out',
+      onComplete: () => {
+        flyingImage.remove();
+      }
+    });
+  }
+});gsap.to(flyingImage, {
+  top: targetTop,
+  left: targetLeft,
+  width: targetSize,
+  height: targetSize,
+  scale: 0.2,
+  opacity: 1,
+  duration: flightDuration,
   ease: 'power2.inOut',
   onComplete: () => {
     gsap.fromTo(
