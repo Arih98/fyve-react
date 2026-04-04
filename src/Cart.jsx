@@ -141,10 +141,8 @@ const handleRemoveItem = (itemId, variationKey) => {
                     <li key={`${item.id}-${variationKey}`} className="cart-item" data-cart-key={item.id}>
                       <div className="cart-item-content cart-item-grid">
                         <div className="cart-item-image">
-  <div className="cart-item-image-inner">
-    <img src={item.image} alt={item.name} />
-  </div>
-</div>
+                          <img src={item.image} alt={item.name} />
+                        </div>
                         <div className="cart-item-details">
                           <Link to={`/product/${item.id}`} className="product-title">{item.name}</Link>
                           {item.size && (
