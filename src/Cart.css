@@ -161,7 +161,7 @@ li.cart-item {
   width: 110px;
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
-  background: transparent;
+  background: #f7f7f7;
   overflow: hidden;
 }
 
