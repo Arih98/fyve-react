@@ -29,9 +29,12 @@ const { cartItems } = useContext(CartContext);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
 const totalBagQuantity = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
-    [cartItems]
-  );
+  () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+  [cartItems]
+);
+const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
+const totalBagQuantityRef = useRef(totalBagQuantity);
+const isCartAddAnimatingRef = useRef(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -57,6 +60,8 @@ const handleCartItemAdded = (e) => {
   const sourceImageEl = document.querySelector(sourceSelector);
 
   if (!sourceImageEl) return;
+
+  isCartAddAnimatingRef.current = true;
 
   const bagImgEl = bagEl.querySelector('img');
   const bagRect = (bagImgEl || bagEl).getBoundingClientRect();
@@ -95,41 +100,57 @@ const handleCartItemAdded = (e) => {
     duration: flightDuration,
     ease: 'power2.inOut',
     onComplete: () => {
+  setDisplayedBagQuantity(totalBagQuantityRef.current);
+
+  requestAnimationFrame(() => {
+    gsap.fromTo(
+      bagEl,
+      { scale: 1 },
+      {
+        scale: 1.16,
+        duration: 0.18,
+        ease: 'power2.out',
+        yoyo: true,
+        repeat: 1
+      }
+    );
+
+    if (bagCountRef.current) {
       gsap.fromTo(
-        bagEl,
-        { scale: 1 },
+        bagCountRef.current,
+        { scale: 0.7 },
         {
-          scale: 1.16,
-          duration: 0.18,
-          ease: 'power2.out',
-          yoyo: true,
-          repeat: 1
+          scale: 1,
+          duration: 0.28,
+          ease: 'back.out(2.4)'
         }
       );
-
-      if (bagCountRef.current) {
-        gsap.fromTo(
-          bagCountRef.current,
-          { scale: 0.7 },
-          {
-            scale: 1,
-            duration: 0.28,
-            ease: 'back.out(2.4)'
-          }
-        );
-      }
-
-      gsap.to(flyingImage, {
-        opacity: 0,
-        duration: 0.2,
-        ease: 'power2.out',
-        onComplete: () => {
-          flyingImage.remove();
-        }
-      });
     }
   });
+
+  gsap.to(flyingImage, {
+    opacity: 0,
+    duration: 0.2,
+    ease: 'power2.out',
+    onComplete: () => {
+      flyingImage.remove();
+      isCartAddAnimatingRef.current = false;
+      setDisplayedBagQuantity(totalBagQuantityRef.current);
+    }
+  });
+}
+  });
 };
+
+useEffect(() => {
+  totalBagQuantityRef.current = totalBagQuantity;
+}, [totalBagQuantity]);
+
+useEffect(() => {
+  if (!isCartAddAnimatingRef.current || totalBagQuantity < displayedBagQuantity) {
+    setDisplayedBagQuantity(totalBagQuantity);
+  }
+}, [totalBagQuantity, displayedBagQuantity]);
 
 useEffect(() => {
   window.addEventListener('cart:item-added', handleCartItemAdded);
@@ -423,11 +444,11 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   ref={bagIconButtonRef}
 >
   <img src={bagIconSrc} alt="Bag" />
-  {totalBagQuantity > 0 && (
-    <span className="header-bag-count" ref={bagCountRef}>
-      {totalBagQuantity}
-    </span>
-  )}
+  {displayedBagQuantity > 0 && (
+  <span className="header-bag-count" ref={bagCountRef}>
+    {displayedBagQuantity}
+  </span>
+)}
 </button>
   </div>
 </>
