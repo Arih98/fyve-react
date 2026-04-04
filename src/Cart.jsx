@@ -191,7 +191,7 @@ const handleRemoveItem = (itemId, variationKey) => {
       <div className="cart-footer">
         {cartItems.length > 0 && (
           <p className="cart-buttons">
-            <Link to="/checkout" className="button">
+            <Link to="/checkout" className="button" onClick={closeCart}>
   Checkout <span className="cart-total-amount">${cartTotal.toFixed(2)}</span>
 </Link>
           </p>
