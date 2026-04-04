@@ -350,9 +350,15 @@ li.cart-item {
   }
 
   .cart-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
-    margin: 0;
     padding: 25px 40px calc(25px + env(safe-area-inset-bottom, 0)) 40px;
+    background: #fff;
+    z-index: 100001;
+    border-top: 1.5px solid #ececec;
   }
 
   .cart-item-details .product-title {
