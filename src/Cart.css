@@ -159,12 +159,17 @@ li.cart-item {
 .cart-item-image {
   grid-area: image;
   width: 110px;
+  aspect-ratio: 1 / 1;
   flex-shrink: 0;
+  background: #f7f7f7;
+  overflow: hidden;
 }
 
 .cart-item-image img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .cart-item-details {

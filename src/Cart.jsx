@@ -127,7 +127,7 @@ const handleRemoveItem = (itemId, variationKey) => {
     <div className="cart-menu-background" ref={backgroundRef}></div>
     <div className="cart-menu-content" ref={cartContentRef}>
       <div className="cart-menu-header">
-        <h2 className="cart-header-title">What's in your bag</h2>
+        <h2 className="cart-header-title">Your bag</h2>
         <div className="cart-close-button" onClick={toggleCart}>✕</div>
       </div>
       <div className="cart-items-wrapper">
