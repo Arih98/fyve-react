@@ -157,19 +157,25 @@ li.cart-item {
 }
 
 .cart-item-image {
-  grid-area: image;
   width: 110px;
   aspect-ratio: 1 / 1;
-  flex-shrink: 0;
-  background: transparent;
+  background: #f7f7f7;
   overflow: hidden;
+  position: relative;
 }
 
-.cart-item-image img {
+.cart-item-image-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120%;
+  height: 120%;
+}
+
+.cart-item-image-inner img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 .cart-item-details {
