@@ -159,14 +159,14 @@ li.cart-item {
 .cart-item-image {
   width: 110px;
   aspect-ratio: 1 / 1;
-  background: #f7f7f7;
+  background: transparent;
   overflow: hidden;
   position: relative;
 }
 
 .cart-item-image-inner {
   position: absolute;
-  top: 0;
+  top: -30%;
   left: 0;
   width: 120%;
   height: 120%;
