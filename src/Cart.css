@@ -141,7 +141,7 @@ li.cart-item {
   list-style-type: none !important;
   margin: 10px 0;
   font-size: 14px;
-  border-bottom: 1.5px solid #ececec;
+  border-bottom: none;
   margin-bottom: 25px;
 }
 
@@ -161,7 +161,7 @@ li.cart-item {
   width: 110px;
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
-  background: #f7f7f7;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -325,12 +325,12 @@ li.cart-item {
 
 @media (max-width: 768px) {
   .custom-cart-content {
-    padding: 0 30px 0 35px;
+    padding: 0 20px 0 20px;
     width: 100%;
   }
 
   .cart-menu-header {
-    padding: 25px 40px 15px 40px;
+    padding: 25px 20px 15px 20px;
     margin: 0;
     width: 100%;
   }
