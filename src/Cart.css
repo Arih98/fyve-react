@@ -151,8 +151,8 @@ li.cart-item {
   grid-template-areas: "image details";
   gap: 15px;
   padding-bottom: 20px;
-  align-items: stretch;
-  width: 100 % ;
+  align-items: start;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -163,6 +163,7 @@ li.cart-item {
   flex-shrink: 0;
   background: #f7f7f7;
   overflow: hidden;
+  align-self: start;
 }
 
 .cart-item-image img {
@@ -208,7 +209,7 @@ li.cart-item {
 
 .cart-item-details .variation-size,
 .cart-item-details .variation-color {
-  margin: 5px 0 0 0;
+  margin: 2px 0 0 0;
   font-family: quasimoda, sans-serif;
   font-size: 14px;
 }
