@@ -174,12 +174,12 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
                               {item.name}
                             </Link>
 
-                            {item.size && (
-                              <p className="variation variation-size">{item.size}</p>
-                            )}
-
                             {item.color && (
                               <p className="variation variation-color">{item.color}</p>
+                            )}
+
+                            {item.size && (
+                              <p className="variation variation-size">{item.size}</p>
                             )}
 
                             <div className="quantity-controls">
