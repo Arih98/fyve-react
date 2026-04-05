@@ -51,8 +51,6 @@
 }
 
 .cart-menu-header {
-  position: sticky;
-  top: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -66,7 +64,6 @@
   margin: 0;
   box-sizing: border-box;
   background-color: #fff;
-  z-index: 2;
 }
 
 .cart-header-title {

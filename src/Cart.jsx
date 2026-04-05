@@ -150,7 +150,6 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
       <div className="cart-menu-content" ref={cartContentRef}>
         <div className="cart-menu-header">
           <h2 className="cart-header-title">Your bag</h2>
-          <div className="cart-close-button" onClick={toggleCart}>✕</div>
         </div>
 
         <div className="cart-items-wrapper">
