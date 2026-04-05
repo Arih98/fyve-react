@@ -151,8 +151,8 @@ li.cart-item {
   grid-template-areas: "image details";
   gap: 15px;
   padding-bottom: 20px;
-  align-items: stretch;
-  width: 100 % ;
+  align-items: start;
+  width: 100%;
   box-sizing: border-box;
 }
 
