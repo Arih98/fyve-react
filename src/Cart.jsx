@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import gsap from 'gsap';
 import { CartContext } from './CartContext';
 import './Cart.css';
 
@@ -14,25 +13,11 @@ const Cart = () => {
   const isMobileRef = useRef(window.innerWidth <= 768);
 
   const animateCloseCart = () => {
-    gsap.to(cartContentRef.current, {
-      opacity: 0,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-
-    gsap.to(cartRef.current, {
-      x: 100,
-      opacity: 0,
-      duration: 0.45,
-      ease: 'power3.inOut',
-      onComplete: () => {
-        setIsCartOpen(false);
-        if (cartRef.current) {
-          cartRef.current.style.pointerEvents = 'none';
-        }
-      }
-    });
-  };
+  setIsCartOpen(false);
+  if (cartRef.current) {
+    cartRef.current.style.pointerEvents = 'none';
+  }
+};
 
   const closeCart = (skipHistoryBack = false) => {
     animateCloseCart();
@@ -50,37 +35,25 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
   }, [cartItems.length, isCartOpen]);
 
   useEffect(() => {
-    if (isCartOpen) {
-if (isMobileRef.current && !cartHistoryPushedRef.current) {
-  window.history.pushState({ cartOpen: true }, '');
-  cartHistoryPushedRef.current = true;
-}
-
-      if (cartRef.current) {
-        cartRef.current.style.pointerEvents = 'auto';
-      }
-
-      gsap.fromTo(
-        cartRef.current,
-        { x: 100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' }
-      );
-
-      gsap.fromTo(
-        cartContentRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: 'power2.out', delay: 0.12 }
-      );
+  if (isCartOpen) {
+    if (isMobileRef.current && !cartHistoryPushedRef.current) {
+      window.history.pushState({ cartOpen: true }, '');
+      cartHistoryPushedRef.current = true;
     }
-  }, [isCartOpen]);
+
+    if (cartRef.current) {
+      cartRef.current.style.pointerEvents = 'auto';
+    }
+  }
+}, [isCartOpen]);
 
   useEffect(() => {
     const handlePopState = () => {
-      if (isCartOpen) {
-        cartHistoryPushedRef.current = false;
-        animateCloseCart();
-      }
-    };
+  if (isMobileRef.current && isCartOpen) {
+    cartHistoryPushedRef.current = false;
+    animateCloseCart();
+  }
+};
 
     window.addEventListener('popstate', handlePopState);
 
@@ -171,7 +144,7 @@ if (isMobileRef.current && !cartHistoryPushedRef.current) {
     <div
       className={`cart-slide-menu cart-drawer-only${isCartOpen ? ' active' : ''}`}
       ref={cartRef}
-      style={{ opacity: 0, transform: 'translateX(100px)', pointerEvents: 'none' }}
+      style={{ pointerEvents: 'none' }}
     >
       <div className="cart-menu-background" ref={backgroundRef}></div>
       <div className="cart-menu-content" ref={cartContentRef}>

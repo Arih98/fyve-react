@@ -17,6 +17,7 @@
   pointer-events: auto;
   z-index: 99999;
   border: 0.8px solid #4A494A;
+  opacity: 1;
 }
 
 .cart-drawer-only .cart-icon {
@@ -42,7 +43,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  opacity: 0;
+  opacity: 1;
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: env(safe-area-inset-bottom, 0);
