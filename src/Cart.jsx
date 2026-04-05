@@ -175,7 +175,9 @@ const handleRemoveItem = (itemId, variationKey) => {
                           <div className="subtotal" data-price={item.price}>
                             ${(item.price * item.quantity).toFixed(2)}
                           </div>
-                          <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>Remove</button>
+                          <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>
+  <img src="/assets/RemoveIcon.svg" alt="Remove" />
+</button>
                         </div>
                       </div>
                     </li>
