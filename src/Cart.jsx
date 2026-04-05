@@ -198,13 +198,13 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
                                 readOnly
                               />
 
-                              <button
-                                className="quantity-plus"
-                                onClick={() => handleQuantityChange(item.id, variationKey, 1)}
-                                disabled={Number(item.quantity) >= Number(item.stockQuantity ?? Infinity)}
-                              >
-                                +
-                              </button>
+<button
+  className="quantity-plus"
+  onClick={() => handleQuantityChange(item.id, variationKey, 1)}
+>
+  <span className="plus-horizontal"></span>
+  <span className="plus-vertical"></span>
+</button>
                             </div>
 
                             <div className="subtotal" data-price={item.price}>
