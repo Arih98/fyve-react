@@ -286,7 +286,6 @@ li.cart-item {
   border: 0.5px solid #b7b7b7 !important;
   border-radius: 100%;
   cursor: pointer;
-  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,7 +299,7 @@ li.cart-item {
 
 .minus-line {
   width: 12px;
-  height: 2px;
+  height: 1px;
   background: #000;
   display: block;
 }
