@@ -177,7 +177,9 @@ li.cart-item {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 30% 40%;
   transform: scale(1.2);
+  display: block;
 }
 
 .cart-item-details {
@@ -198,11 +200,11 @@ li.cart-item {
   font-family: quasimoda, sans-serif;
   font-weight: 500;
   line-height: 1.4em;
-  max-width: 65%;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+
+  width: 100%;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cart-item-details .product-title:hover {
