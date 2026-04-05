@@ -148,7 +148,7 @@ li.cart-item {
   display: grid;
   grid-template-columns: var(--cart-image-size) minmax(0, 1fr);
   grid-template-areas: "image details";
-  gap: 15px;
+  gap: 0px;
   padding-bottom: 20px;
   align-items: start;
   width: 100%;
@@ -218,7 +218,7 @@ li.cart-item {
 }
 
 .cart-item-details .quantity-controls {
-  margin-top: auto;
+  margin-top: 10px;
   margin-bottom: 0;
   display: flex;
   align-items: center;
@@ -286,7 +286,7 @@ li.cart-item {
   border: 0.5px solid #b7b7b7 !important;
   border-radius: 100%;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
