@@ -419,57 +419,57 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !isCartPage ? ' home-transparent' : ''}`}
 >
-  {BurgerIcon}
-
-  <>
   {isCartPage ? (
-  <div className="cart-header-bar">
-    <div className="cart-header-left">
+    <div className="cart-header-bar">
+      <div className="cart-header-left">
+        {BurgerIcon}
+      </div>
+
+      <div className="cart-header-right">
+        <button
+          className="cart-header-checkout-button"
+          onClick={() => navigate('/checkout')}
+        >
+          Checkout
+        </button>
+      </div>
+    </div>
+  ) : (
+    <>
       {BurgerIcon}
-    </div>
 
-    <div className="cart-header-right">
-      <button
-        className="cart-header-checkout-button"
-        onClick={() => navigate('/checkout')}
-      >
-        Checkout
-      </button>
-    </div>
-  </div>
-) : (
-  <>
-    <div className="header-logo mobile-hide-logo">
-      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
-    </div>
+      <div className="header-logo mobile-hide-logo">
+        <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+      </div>
 
-    <div className="mobile-nav-icons">
-      <button className="mobile-nav-icon" onClick={toggleSearch}>
-        <img src={searchIconSrc} alt="Search" />
-      </button>
+      <div className="mobile-nav-icons">
+        <button className="mobile-nav-icon" onClick={toggleSearch}>
+          <img src={searchIconSrc} alt="Search" />
+        </button>
 
-      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-        <img src={accountIconSrc} alt="Account" />
-      </button>
+        <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+          <img src={accountIconSrc} alt="Account" />
+        </button>
 
-      <button
-        className="mobile-nav-icon header-bag-button"
-        onClick={() => navigate('/cart')}
-        ref={bagIconButtonRef}
-      >
-        <img src={bagIconSrc} alt="Bag" />
-        {displayedBagQuantity > 0 && (
-          <span className="header-bag-count" ref={bagCountRef}>
-            {displayedBagQuantity}
-          </span>
-        )}
-      </button>
-    </div>
-  </>
-)}
+        <button
+          className="mobile-nav-icon header-bag-button"
+          onClick={() => navigate('/cart')}
+          ref={bagIconButtonRef}
+        >
+          <img src={bagIconSrc} alt="Bag" />
+          {displayedBagQuantity > 0 && (
+            <span className="header-bag-count" ref={bagCountRef}>
+              {displayedBagQuantity}
+            </span>
+          )}
+        </button>
+      </div>
+    </>
+  )}
 
+  {!isCartPage && (
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
     <div className="custom-search-inner">
       <input
@@ -485,8 +485,8 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       <div className="custom-search-results"></div>
     </div>
   </div>
+)}
 </div>
-
 
       <div className={`mobile-menu${menuState === 'open' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
