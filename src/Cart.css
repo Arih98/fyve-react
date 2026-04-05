@@ -99,12 +99,11 @@
 .cart-items-wrapper {
   background: #fff;
   flex: 1 1 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
   width: 100%;
   padding: 20px 0;
   margin: 0;
+  min-height: 0;
 }
 
 .custom-cart-content {
@@ -394,6 +393,7 @@ li.cart-item {
     padding: 20px 0;
     margin: 0;
     min-height: 0;
+    padding-bottom: 120px;
   }
 
   .cart-footer {
