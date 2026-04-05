@@ -3,13 +3,13 @@
   top: 0;
   right: 0;
   width: 45vw;
-  height: 100vh;
+  height: 100dvh;
   border-radius: 0;
   overflow: hidden;
   z-index: 99999;
   transition: none;
   pointer-events: none;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-bottom: 0;
   opacity: 0;
 }
 
@@ -44,10 +44,9 @@
   display: flex;
   flex-direction: column;
   opacity: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  overflow: hidden;
   border-radius: 0;
+  min-height: 0;
 }
 
 .cart-menu-header {
@@ -98,11 +97,13 @@
 .cart-items-wrapper {
   background: #fff;
   flex: 1 1 auto;
-  overflow: visible;
+  overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
   padding: 20px 0;
   margin: 0;
   min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .custom-cart-content {
@@ -112,8 +113,8 @@
 }
 
 .cart-footer {
-  position: sticky;
-  bottom: env(safe-area-inset-bottom, 0);
+  position: relative;
+  bottom: auto;
   width: 100%;
   margin: 0;
   padding: 30px 30px calc(30px + env(safe-area-inset-bottom, 0)) 30px;
@@ -121,6 +122,7 @@
   z-index: 2;
   box-sizing: border-box;
   border-top: 1.5px solid #ececec;
+  flex-shrink: 0;
 }
 
 ul.cart-items {
@@ -388,24 +390,23 @@ li.cart-item {
     padding: 0 5px;
   }
 
-  .cart-items-wrapper {
-    padding: 20px 0;
-    margin: 0;
-    min-height: 0;
-    padding-bottom: 120px;
-  }
-
-  .cart-footer {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    padding: 25px 20px calc(25px + env(safe-area-inset-bottom, 0)) 20px;
-    background: #fff;
-    z-index: 100001;
-    border-top: 1.5px solid #ececec;
-  }
+.cart-items-wrapper {
+  padding: 20px 0;
+  margin: 0;
+  min-height: 0;
+}
+.cart-footer {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  padding: 25px 20px calc(25px + env(safe-area-inset-bottom, 0)) 20px;
+  background: #fff;
+  z-index: 2;
+  border-top: 1.5px solid #ececec;
+  flex-shrink: 0;
+}
 
   .cart-item-details .product-title {
     max-width: 170px;
