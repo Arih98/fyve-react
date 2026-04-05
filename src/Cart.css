@@ -374,7 +374,7 @@ li.cart-item {
     right: 0;
     bottom: 0;
     width: 100%;
-    padding: 25px 20px calc(25px + env(safe-area-inset-bottom, 0)) 40px;
+    padding: 25px 20px calc(25px + env(safe-area-inset-bottom, 0)) 20px;
     background: #fff;
     z-index: 100001;
     border-top: 1.5px solid #ececec;
