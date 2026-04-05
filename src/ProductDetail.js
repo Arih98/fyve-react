@@ -226,7 +226,7 @@ const isAddDisabled =
 
   const newItem = {
     id: itemId,
-    name: current?.title || product?.title,
+    name: product?.title || product?.name || '',
     price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
     quantity,
     image: displayImages[0] || '/api/Uploads/fallback-image.png',
