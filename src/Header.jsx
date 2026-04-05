@@ -16,6 +16,7 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
+const isCartPage = location.pathname === '/cart';
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -423,33 +424,51 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   {BurgerIcon}
 
   <>
-  <div className="header-logo mobile-hide-logo">
-    <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+  {isCartPage ? (
+  <div className="cart-header-bar">
+    <div className="cart-header-left">
+      {BurgerIcon}
+    </div>
+
+    <div className="cart-header-right">
+      <button
+        className="cart-header-checkout-button"
+        onClick={() => navigate('/checkout')}
+      >
+        Checkout
+      </button>
+    </div>
   </div>
+) : (
+  <>
+    <div className="header-logo mobile-hide-logo">
+      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+    </div>
 
-  <div className="mobile-nav-icons">
-    <button className="mobile-nav-icon" onClick={toggleSearch}>
-      <img src={searchIconSrc} alt="Search" />
-    </button>
+    <div className="mobile-nav-icons">
+      <button className="mobile-nav-icon" onClick={toggleSearch}>
+        <img src={searchIconSrc} alt="Search" />
+      </button>
 
-    <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-      <img src={accountIconSrc} alt="Account" />
-    </button>
+      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <img src={accountIconSrc} alt="Account" />
+      </button>
 
-    <button
-  className="mobile-nav-icon header-bag-button"
-  onClick={() => navigate('/cart')}
-  ref={bagIconButtonRef}
->
-  <img src={bagIconSrc} alt="Bag" />
-  {displayedBagQuantity > 0 && (
-  <span className="header-bag-count" ref={bagCountRef}>
-    {displayedBagQuantity}
-  </span>
+      <button
+        className="mobile-nav-icon header-bag-button"
+        onClick={() => navigate('/cart')}
+        ref={bagIconButtonRef}
+      >
+        <img src={bagIconSrc} alt="Bag" />
+        {displayedBagQuantity > 0 && (
+          <span className="header-bag-count" ref={bagCountRef}>
+            {displayedBagQuantity}
+          </span>
+        )}
+      </button>
+    </div>
+  </>
 )}
-</button>
-  </div>
-</>
 
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
     <div className="custom-search-inner">

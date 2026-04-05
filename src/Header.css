@@ -623,6 +623,34 @@ body.locked {
   display: none;
 }
 
+.cart-header-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cart-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.cart-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.cart-header-checkout-button {
+  background: none;
+  border: none;
+  font-family: quasimoda, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #4A494A;
+  cursor: pointer;
+  padding: 0;
+}
+
 @media (max-width: 768px) {
   .mobile-menu-logo {
   display: block;
