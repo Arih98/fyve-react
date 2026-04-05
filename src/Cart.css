@@ -298,6 +298,13 @@ li.cart-item {
   -moz-appearance: none;
 }
 
+.minus-line {
+  width: 12px;
+  height: 2px;
+  background: #000;
+  display: block;
+}
+
 .cart-buttons .button {
   display: flex !important;
   justify-content: space-between !important;
@@ -384,7 +391,6 @@ li.cart-item {
 
   .cart-item-details .quantity-controls .quantity-input {
     width: 20px;
-    height: 0;
     font-size: 13px;
   }
 

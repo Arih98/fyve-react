@@ -183,7 +183,12 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
                             )}
 
                             <div className="quantity-controls">
-                              <button className="quantity-minus" onClick={() => handleQuantityChange(item.id, variationKey, -1)}>-</button>
+                              <button
+  className="quantity-minus"
+  onClick={() => handleQuantityChange(item.id, variationKey, -1)}
+>
+  <span className="minus-line"></span>
+</button>
 
                               <input
                                 type="number"
