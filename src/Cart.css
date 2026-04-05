@@ -371,7 +371,8 @@ li.cart-item {
 
   .cart-item-details .product-title {
     max-width: 170px;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
     line-height: 1.5em;
   }
 
