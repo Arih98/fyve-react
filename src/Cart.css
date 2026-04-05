@@ -298,7 +298,7 @@ li.cart-item {
 }
 
 .minus-line {
-  width: 12px;
+  width: 20px;
   height: 1px;
   background: #000;
   display: block;
@@ -315,7 +315,7 @@ li.cart-item {
 }
 
 .plus-horizontal {
-  width: 18px;
+  width: 20px;
   height: 1px;
   top: 50%;
   left: 50%;
@@ -324,7 +324,7 @@ li.cart-item {
 
 .plus-vertical {
   width: 1px;
-  height: 18px;
+  height: 20px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
