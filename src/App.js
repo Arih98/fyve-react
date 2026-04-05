@@ -6,7 +6,6 @@ import ProductDetail from './ProductDetail';
 import Header from './Header';
 import MobileTopHeader from './MobileTopHeader';
 import Admin from './Admin';
-import Cart from './Cart';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
 import Account from './Account';
@@ -17,6 +16,7 @@ import './App.css';
 import './Header.css';
 import ScrollManager from './components/ScrollManager';
 import AnnouncementBar from './AnnouncementBar';
+import Cart from './Cart';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -26,7 +26,6 @@ const Layout = () => {
   const location = useLocation();
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
-  const showCart = location.pathname !== '/admin';
   const showAnnouncementBar = location.pathname !== '/admin';
 
   return (
@@ -34,7 +33,6 @@ const Layout = () => {
       {showAnnouncementBar && <AnnouncementBar />}
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
-      {showCart && <Cart />}
       <div className={location.pathname === '/' ? '' : 'site-content'}>
         <LayoutGroup>
           <AnimatePresence initial={false} mode="wait">
@@ -87,13 +85,6 @@ function AppContent() {
     };
   }, []);
 
-  useEffect(() => {
-    const handlePopState = () => {};
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
@@ -107,6 +98,7 @@ function AppContent() {
             <Route path="/product-category/:slug" element={<CategoryProducts />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/cart" element={<Cart />} />
           </Route>
         </Routes>
       </CartProvider>

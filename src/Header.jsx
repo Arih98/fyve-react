@@ -438,9 +438,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
 
     <button
   className="mobile-nav-icon header-bag-button"
-  onClick={() => {
-    window.dispatchEvent(new CustomEvent('cart:toggle'));
-  }}
+  onClick={() => navigate('/cart')}
   ref={bagIconButtonRef}
 >
   <img src={bagIconSrc} alt="Bag" />
