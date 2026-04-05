@@ -168,8 +168,6 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
     <img src={item.image} alt={item.name} />
   </div>
 </div>
-                            <img src={item.image} alt={item.name} />
-                          </div>
 
                           <div className="cart-item-details">
                             <Link to={`/product/${item.id}`} className="product-title" onClick={() => closeCart(true)}>
