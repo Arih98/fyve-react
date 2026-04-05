@@ -182,38 +182,40 @@ if (isMobileRef.current && !skipHistoryBack && cartHistoryPushedRef.current) {
                               <p className="variation variation-size">{item.size}</p>
                             )}
 
-                            <div className="quantity-controls">
-                              <button
-  className="quantity-minus"
-  onClick={() => handleQuantityChange(item.id, variationKey, -1)}
->
-  <span className="minus-line"></span>
-</button>
-
-                              <input
-                                type="number"
-                                className="quantity-input"
-                                value={item.quantity}
-                                min="1"
-                                readOnly
-                              />
-
-<button
-  className="quantity-plus"
-  onClick={() => handleQuantityChange(item.id, variationKey, 1)}
->
-  <span className="plus-horizontal"></span>
-  <span className="plus-vertical"></span>
-</button>
-                            </div>
-
                             <div className="subtotal" data-price={item.price}>
-                              ${(item.price * item.quantity).toFixed(2)}
-                            </div>
+  ${(item.price * item.quantity).toFixed(2)}
+</div>
 
-                            <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>
-                              <img src="/assets/RemoveIcon.svg" alt="Remove" />
-                            </button>
+<div className="cart-item-actions-row">
+  <div className="quantity-controls">
+    <button
+      className="quantity-minus"
+      onClick={() => handleQuantityChange(item.id, variationKey, -1)}
+    >
+      <span className="minus-line"></span>
+    </button>
+
+    <input
+      type="number"
+      className="quantity-input"
+      value={item.quantity}
+      min="1"
+      readOnly
+    />
+
+    <button
+      className="quantity-plus"
+      onClick={() => handleQuantityChange(item.id, variationKey, 1)}
+    >
+      <span className="plus-horizontal"></span>
+      <span className="plus-vertical"></span>
+    </button>
+  </div>
+
+  <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>
+    <img src="/assets/RemoveIcon.svg" alt="Remove" />
+  </button>
+</div>
                           </div>
                         </div>
                       </li>
