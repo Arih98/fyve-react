@@ -423,12 +423,12 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
   {useCartHeaderVariant ? (
-  <div className="mobile-header-layout is-cart-variant">
-    <div className="mobile-header-slot mobile-header-slot-left">
+  <div className="cart-header-mobile-layout">
+    <div className="cart-header-mobile-left">
       {BurgerIcon}
     </div>
 
-    <div className="mobile-header-slot mobile-header-slot-center">
+    <div className="cart-header-mobile-center">
       {cartItems.length > 0 && (
         <button
           className="cart-header-checkout-button"
@@ -439,13 +439,15 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       )}
     </div>
 
-    <div className="mobile-header-slot mobile-header-slot-right">
-      <div className="mobile-header-right-spacer"></div>
-    </div>
+    <div className="cart-header-mobile-right"></div>
   </div>
 ) : (
   <>
     {BurgerIcon}
+
+    <div className="header-logo mobile-hide-logo">
+      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+    </div>
 
     <div className="mobile-nav-icons">
       <button className="mobile-nav-icon" onClick={toggleSearch}>
@@ -472,7 +474,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   </>
 )}
 
-{!useCartHeaderVariant && (
+  {!useCartHeaderVariant && (
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
     <div className="custom-search-inner">
       <input
