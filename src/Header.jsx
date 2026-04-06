@@ -171,11 +171,9 @@ useEffect(() => {
     timeout = setTimeout(() => {
       setMenuVisualActive(true);
     }, 80);
-  } else if (menuState === 'closing') {
-    timeout = setTimeout(() => {
-      setMenuVisualActive(false);
-    }, 350);
-  } else if (!isMenuOpen) {
+} else if (menuState === 'closing') {
+  setMenuVisualActive(false);
+} else if (!isMenuOpen) {
     setMenuVisualActive(false);
   }
 
