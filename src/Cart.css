@@ -339,6 +339,7 @@ li.cart-item {
 
   .cart-page-title {
     font-size: 30px;
+    letter-spacing: -0.03em;
     margin: 0 0 20px;
   }
 
