@@ -949,7 +949,7 @@ body {
   align-items: center;
   justify-content: center;
   min-width: 0;
-  transform: translateX(-6px);
+  transform: translateX(-3px);
 }
 
   .mobile-header.first-header.cart-page-header .cart-header-mobile-left {
