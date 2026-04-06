@@ -976,5 +976,6 @@ body {
   .mobile-header.first-header.cart-page-header {
   --nav-top-padding: 11px;
   --nav-bottom-padding: 11px;
+  background-color: #ffffff;
 }
 }
