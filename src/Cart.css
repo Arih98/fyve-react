@@ -413,6 +413,11 @@ li.cart-item {
   text-decoration: none;
 }
 
+.variation-label {
+  margin-right: 6px;
+  opacity: 0.7;
+}
+
 @media (max-width: 1024px) {
   .cart-page-main {
     grid-template-columns: minmax(0, 1fr) 320px;

@@ -54,13 +54,17 @@ const Cart = ({ variant = 'page', onClose }) => {
                   {item.name}
                 </Link>
 
-                {item.color && (
-                  <p className="variation variation-color">{item.color}</p>
-                )}
+{item.color && (
+  <p className="variation variation-color">
+    <span className="variation-label">Color:</span> {item.color}
+  </p>
+)}
 
-                {item.size && (
-                  <p className="variation variation-size">{item.size}</p>
-                )}
+{item.size && (
+  <p className="variation variation-size">
+    <span className="variation-label">Size:</span> {item.size}
+  </p>
+)}
 
                 <div className="subtotal">
                   ${(item.price * item.quantity).toFixed(2)}
