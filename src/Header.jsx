@@ -275,7 +275,7 @@ useLayoutEffect(() => {
 
   window.addEventListener('resize', updateCartCheckoutPosition);
   return () => window.removeEventListener('resize', updateCartCheckoutPosition);
-}, [useCartHeaderVariant, isMobile, menuState]);
+}, [useCartHeaderVariant, isMobile, menuState, cartItems.length]);
 
 const handleToggleMenu = () => {
   toggleMenu();
