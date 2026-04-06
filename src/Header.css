@@ -639,9 +639,9 @@ body.locked {
   color: #fff;
   border: none;
   font-family: quasimoda, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  text-transform: uppercase;
+  text-transform: capitalize;
   cursor: pointer;
   box-sizing: border-box;
 }
