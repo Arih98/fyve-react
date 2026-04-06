@@ -623,32 +623,29 @@ body.locked {
   display: none;
 }
 
-.cart-header-bar {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cart-header-left {
-  display: flex;
-  align-items: center;
-}
-
-.cart-header-right {
-  display: flex;
-  align-items: center;
-}
-
 .cart-header-checkout-button {
-  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 126px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 50px;
+  background-color: #4A494A;
+  color: #fff;
   border: none;
   font-family: quasimoda, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: #4A494A;
+  text-transform: uppercase;
   cursor: pointer;
-  padding: 0;
+  box-sizing: border-box;
+}
+
+.cart-mobile-nav-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 @media (max-width: 768px) {
@@ -923,22 +920,33 @@ body {
     font-size: 13vw;
     line-height: 16vw;
   }
+}
 
-    .mobile-header.first-header.cart-page-header {
+@media (max-width: 768px) {
+  .mobile-header.first-header.cart-page-header {
+    grid-template-columns: auto 1fr auto !important;
+    column-gap: 0 !important;
+    justify-content: stretch !important;
+    align-items: center !important;
+  }
+
+  .mobile-header.first-header.cart-page-header .mobile-nav-icons.cart-mobile-nav-icons {
+  display: flex !important;
+  justify-content: flex-end;
+  align-items: center;
+  width: auto;
+}
+
+  .mobile-header.first-header.cart-page-header .header-logo.mobile-hide-logo {
     display: block !important;
-    padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-safe-padding) var(--nav-side-padding) !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    min-height: 1px;
   }
 
-  .mobile-header.first-header.cart-page-header .cart-header-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .mobile-header.first-header.cart-page-header .cart-header-left,
-  .mobile-header.first-header.cart-page-header .cart-header-right {
-    display: flex;
-    align-items: center;
+  .mobile-header.first-header.cart-page-header .cart-header-checkout-button {
+    height: 40px;
+    padding: 0 20px;
   }
 }

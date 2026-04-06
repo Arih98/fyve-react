@@ -397,7 +397,7 @@ const menuItems = [
   const BurgerIcon = (
   <button
     type="button"
-className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader ? ' is-white' : ''}`}    ref={burgerRef}
+className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !isCartPage ? ' is-white' : ''}`}    ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
@@ -421,55 +421,51 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   ref={headerRef}
   className={`mobile-header first-header${isCartPage ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !isCartPage ? ' home-transparent' : ''}`}
 >
-  {isCartPage ? (
-    <div className="cart-header-bar">
-      <div className="cart-header-left">
-        {BurgerIcon}
-      </div>
+  {BurgerIcon}
 
-      <div className="cart-header-right">
-{cartItems.length > 0 && (
-  <button
-    className="cart-header-checkout-button"
-    onClick={() => navigate('/checkout')}
-  >
-    Checkout
-  </button>
-)}
-      </div>
-    </div>
-  ) : (
+<div className="header-logo mobile-hide-logo">
+  {!isCartPage && (
+    <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+  )}
+</div>
+
+<div className={`mobile-nav-icons${isCartPage ? ' cart-mobile-nav-icons' : ''}`}>
+  {!isCartPage && (
     <>
-      {BurgerIcon}
+      <button className="mobile-nav-icon" onClick={toggleSearch}>
+        <img src={searchIconSrc} alt="Search" />
+      </button>
 
-      <div className="header-logo mobile-hide-logo">
-        <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
-      </div>
-
-      <div className="mobile-nav-icons">
-        <button className="mobile-nav-icon" onClick={toggleSearch}>
-          <img src={searchIconSrc} alt="Search" />
-        </button>
-
-        <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-          <img src={accountIconSrc} alt="Account" />
-        </button>
-
-        <button
-          className="mobile-nav-icon header-bag-button"
-          onClick={() => navigate('/cart')}
-          ref={bagIconButtonRef}
-        >
-          <img src={bagIconSrc} alt="Bag" />
-          {displayedBagQuantity > 0 && (
-            <span className="header-bag-count" ref={bagCountRef}>
-              {displayedBagQuantity}
-            </span>
-          )}
-        </button>
-      </div>
+      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <img src={accountIconSrc} alt="Account" />
+      </button>
     </>
   )}
+
+  {isCartPage ? (
+    cartItems.length > 0 && (
+      <button
+        className="cart-header-checkout-button"
+        onClick={() => navigate('/checkout')}
+      >
+        Checkout
+      </button>
+    )
+  ) : (
+    <button
+      className="mobile-nav-icon header-bag-button"
+      onClick={() => navigate('/cart')}
+      ref={bagIconButtonRef}
+    >
+      <img src={bagIconSrc} alt="Bag" />
+      {displayedBagQuantity > 0 && (
+        <span className="header-bag-count" ref={bagCountRef}>
+          {displayedBagQuantity}
+        </span>
+      )}
+    </button>
+  )}
+</div>
 
   {!isCartPage && (
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
