@@ -17,7 +17,7 @@ const Header = () => {
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
 const isCartPage = location.pathname === '/cart';
-const useCartHeaderVariant = isCartPage && !isMenuOpen;
+const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
