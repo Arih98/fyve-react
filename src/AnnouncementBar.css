@@ -52,6 +52,11 @@
 }
 
 @media (max-width: 768px) {
+
+    :root {
+    --announcement-height: 40px;
+  }
+  
   .announcement-group span {
     font-size: 12px;
     padding-right: 36px;
