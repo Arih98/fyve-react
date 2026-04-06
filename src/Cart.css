@@ -329,9 +329,6 @@ li.cart-item {
 }
 
 @media (max-width: 768px) {
-.announcement-bar {
-  background: #ffffff;
-}
 
   .cart-page-inner {
     padding: 40px 20px 40px;
