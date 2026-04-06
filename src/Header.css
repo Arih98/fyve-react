@@ -923,12 +923,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .mobile-header.first-header.cart-page-header {
-    grid-template-columns: auto 1fr auto !important;
-    column-gap: 0 !important;
-    justify-content: stretch !important;
-    align-items: center !important;
-  }
 
   .mobile-header.first-header.cart-page-header .mobile-nav-icons.cart-mobile-nav-icons {
   display: flex !important;
