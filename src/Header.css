@@ -923,20 +923,18 @@ body {
 }
 
 @media (max-width: 768px) {
-  .mobile-header.first-header.cart-page-header {
-    position: fixed;
-  }
-
   .mobile-header.first-header.cart-page-header .mobile-nav-icons.cart-mobile-nav-icons {
-    display: block !important;
-    width: 0;
-    justify-self: end;
+    display: flex !important;
+    grid-column: 2 / -1;
+    justify-self: stretch;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: static;
   }
 
   .mobile-header.first-header.cart-page-header .cart-header-checkout-button {
-    position: absolute;
-    left: calc(50% + (var(--nav-icon-size) / 4));
-    transform: translateX(-50%);
+    position: static;
     height: 40px;
     padding: 0 20px;
     white-space: nowrap;
