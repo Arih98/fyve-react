@@ -37,9 +37,6 @@ const totalBagQuantity = useMemo(
 const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
-const cartCheckoutButtonRef = useRef(null);
-const [cartCheckoutLeft, setCartCheckoutLeft] = useState(null);
-const cartHeaderLayoutRef = useRef(null);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -246,37 +243,6 @@ useEffect(() => {
   prevMenuStateRef.current = menuState;
 }, [menuState, isMobile, isHomePage, isScrolled, isSearchOpen]);
 
-useLayoutEffect(() => {
-  if (!useCartHeaderVariant || !isMobile) {
-    setCartCheckoutLeft(null);
-    return;
-  }
-
-  const updateCartCheckoutPosition = () => {
-  const layoutEl = cartHeaderLayoutRef.current;
-  const burgerEl = burgerRef.current;
-  const checkoutEl = cartCheckoutButtonRef.current;
-
-  if (!layoutEl || !burgerEl || !checkoutEl) return;
-
-  const layoutRect = layoutEl.getBoundingClientRect();
-  const burgerRect = burgerEl.getBoundingClientRect();
-  const checkoutRect = checkoutEl.getBoundingClientRect();
-
-  const burgerRightX = burgerRect.right - layoutRect.left;
-  const rightEdgeX = layoutRect.width;
-  const availableSpace = rightEdgeX - burgerRightX;
-  const buttonLeftX = burgerRightX + (availableSpace - checkoutRect.width) / 2;
-
-  setCartCheckoutLeft(buttonLeftX);
-};
-
-  updateCartCheckoutPosition();
-
-  window.addEventListener('resize', updateCartCheckoutPosition);
-  return () => window.removeEventListener('resize', updateCartCheckoutPosition);
-}, [useCartHeaderVariant, isMobile, menuState, cartItems.length]);
-
 const handleToggleMenu = () => {
   toggleMenu();
   if (isSearchOpen) setIsSearchOpen(false);
@@ -456,22 +422,22 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
   {useCartHeaderVariant ? (
-  <div className="cart-header-mobile-layout" ref={cartHeaderLayoutRef}>
-    <div className="cart-header-mobile-left">
-      {BurgerIcon}
-    </div>
+<div className="cart-header-mobile-layout">
+  <div className="cart-header-mobile-left">
+    {BurgerIcon}
+  </div>
 
-    {cartItems.length > 0 && (
+  {cartItems.length > 0 && (
+    <div className="cart-header-checkout-container">
       <button
-        ref={cartCheckoutButtonRef}
         className="cart-header-checkout-button cart-header-checkout-button-mobile"
         onClick={() => navigate('/checkout')}
-        style={cartCheckoutLeft !== null ? { left: `${cartCheckoutLeft}px` } : undefined}
       >
         Checkout
       </button>
-    )}
-  </div>
+    </div>
+  )}
+</div>
 ) : (
   <>
     {BurgerIcon}
