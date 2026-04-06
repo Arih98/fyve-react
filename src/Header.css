@@ -328,7 +328,7 @@ body.locked {
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: none;
 }
 
 .mobile-menu.active {
@@ -673,6 +673,27 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+  .mobile-menu.closing .menu-items > li {
+  transform: translateY(0);
+  clip-path: inset(0 0 0 0);
+  transition: none;
+  transition-delay: 0s;
+}
+
+  .mobile-menu .menu-background {
+  transform: none;
+  transition: none;
+}
+
+.mobile-menu.active .menu-background {
+  transform: none;
+}
+
+.mobile-menu.closing .menu-background {
+  transform: none;
+  transition: none;
+}
+
   .mobile-menu-logo {
   display: block;
 }
