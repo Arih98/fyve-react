@@ -923,18 +923,22 @@ body {
 }
 
 @media (max-width: 768px) {
+  .mobile-header.first-header.cart-page-header {
+    --burger-visual-width: 19px;
+  }
+
   .mobile-header.first-header.cart-page-header .mobile-nav-icons.cart-mobile-nav-icons {
-    display: flex !important;
-    grid-column: 2 / -1;
-    justify-self: stretch;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+    display: block !important;
     position: static;
+    width: auto;
+    justify-self: auto;
   }
 
   .mobile-header.first-header.cart-page-header .cart-header-checkout-button {
-    position: static;
+    position: absolute;
+    top: 50%;
+    left: calc(var(--nav-side-padding) + var(--burger-visual-width) + ((100% - (var(--nav-side-padding) * 2) - var(--burger-visual-width)) / 2));
+    transform: translate(-50%, -50%);
     height: 40px;
     padding: 0 20px;
     white-space: nowrap;
