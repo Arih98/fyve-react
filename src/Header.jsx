@@ -168,17 +168,27 @@ useEffect(() => {
   let timeout;
 
   if (menuState === 'open') {
-    timeout = setTimeout(() => {
+    if (isMobile) {
       setMenuVisualActive(true);
-    }, 80);
-} else if (menuState === 'closing') {
-  setMenuVisualActive(false);
-} else if (!isMenuOpen) {
+    } else {
+      timeout = setTimeout(() => {
+        setMenuVisualActive(true);
+      }, 80);
+    }
+  } else if (menuState === 'closing') {
+    if (isMobile) {
+      setMenuVisualActive(false);
+    } else {
+      timeout = setTimeout(() => {
+        setMenuVisualActive(false);
+      }, 350);
+    }
+  } else if (!isMenuOpen) {
     setMenuVisualActive(false);
   }
 
   return () => clearTimeout(timeout);
-}, [menuState, isMenuOpen]);
+}, [menuState, isMenuOpen, isMobile]);
 
 useEffect(() => {
   if (!isMenuOpen) {
