@@ -317,6 +317,10 @@ li.cart-item {
   transform: translate(-50%, -50%);
 }
 
+.cart-item-actions-row {
+  width: calc(100% + 90px);
+}
+
 @media (max-width: 1024px) {
   .cart-page-main {
     grid-template-columns: minmax(0, 1fr) 320px;
@@ -357,6 +361,10 @@ li.cart-item {
 
   .cart-item-details {
     padding-right: 70px;
+  }
+
+    .cart-item-actions-row {
+    width: calc(100% + 70px);
   }
 
   .cart-item-details .product-title {
