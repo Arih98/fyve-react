@@ -17,7 +17,6 @@ const Header = () => {
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
 const isCartPage = location.pathname === '/cart';
-const hideHeaderOnMobileCart = isMobile && isCartPage;
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
@@ -415,11 +414,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   </button>
 );
 
-if (hideHeaderOnMobileCart) {
-  return null;
-}
-  
-return (
+  return (
   <>
     
     <div
