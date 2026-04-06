@@ -56,4 +56,12 @@
     font-size: 12px;
     padding-right: 36px;
   }
+    .announcement-marquee {
+    animation: announcement-marquee 14s linear infinite;
+  }
+
+  .announcement-group span {
+    font-size: 12px;
+    padding-right: 36px;
+  }
 }
