@@ -422,53 +422,55 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   ref={headerRef}
   className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
-  <div className={`mobile-header-layout${useCartHeaderVariant ? ' is-cart-variant' : ''}`}>
-  <div className="mobile-header-slot mobile-header-slot-left">
-    {BurgerIcon}
-  </div>
+  {useCartHeaderVariant ? (
+  <div className="mobile-header-layout is-cart-variant">
+    <div className="mobile-header-slot mobile-header-slot-left">
+      {BurgerIcon}
+    </div>
 
-  <div className="mobile-header-slot mobile-header-slot-center">
-    {useCartHeaderVariant ? (
-      cartItems.length > 0 && (
+    <div className="mobile-header-slot mobile-header-slot-center">
+      {cartItems.length > 0 && (
         <button
           className="cart-header-checkout-button"
           onClick={() => navigate('/checkout')}
         >
           Checkout
         </button>
-      )
-) : null}
-  </div>
+      )}
+    </div>
 
-  <div className="mobile-header-slot mobile-header-slot-right">
-    {useCartHeaderVariant ? (
+    <div className="mobile-header-slot mobile-header-slot-right">
       <div className="mobile-header-right-spacer"></div>
-    ) : (
-      <div className="mobile-nav-icons">
-        <button className="mobile-nav-icon" onClick={toggleSearch}>
-          <img src={searchIconSrc} alt="Search" />
-        </button>
-
-        <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-          <img src={accountIconSrc} alt="Account" />
-        </button>
-
-        <button
-          className="mobile-nav-icon header-bag-button"
-          onClick={() => navigate('/cart')}
-          ref={bagIconButtonRef}
-        >
-          <img src={bagIconSrc} alt="Bag" />
-          {displayedBagQuantity > 0 && (
-            <span className="header-bag-count" ref={bagCountRef}>
-              {displayedBagQuantity}
-            </span>
-          )}
-        </button>
-      </div>
-    )}
+    </div>
   </div>
-</div>
+) : (
+  <>
+    {BurgerIcon}
+
+    <div className="mobile-nav-icons">
+      <button className="mobile-nav-icon" onClick={toggleSearch}>
+        <img src={searchIconSrc} alt="Search" />
+      </button>
+
+      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <img src={accountIconSrc} alt="Account" />
+      </button>
+
+      <button
+        className="mobile-nav-icon header-bag-button"
+        onClick={() => navigate('/cart')}
+        ref={bagIconButtonRef}
+      >
+        <img src={bagIconSrc} alt="Bag" />
+        {displayedBagQuantity > 0 && (
+          <span className="header-bag-count" ref={bagCountRef}>
+            {displayedBagQuantity}
+          </span>
+        )}
+      </button>
+    </div>
+  </>
+)}
 
 {!useCartHeaderVariant && (
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
