@@ -17,6 +17,7 @@ const Header = () => {
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
 const isCartPage = location.pathname === '/cart';
+const useCartHeaderVariant = isCartPage && !isMenuOpen;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -419,18 +420,18 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${isCartPage ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !isCartPage ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
 <div className="header-logo mobile-hide-logo">
-  {!isCartPage && (
+  {!useCartHeaderVariant && (
     <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
   )}
 </div>
 
-<div className={`mobile-nav-icons${isCartPage ? ' cart-mobile-nav-icons' : ''}`}>
-  {!isCartPage && (
+<div className={`mobile-nav-icons${useCartHeaderVariant ? ' cart-mobile-nav-icons' : ''}`}>
+  {!useCartHeaderVariant && (
     <>
       <button className="mobile-nav-icon" onClick={toggleSearch}>
         <img src={searchIconSrc} alt="Search" />
@@ -442,7 +443,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     </>
   )}
 
-  {isCartPage ? (
+  {useCartHeaderVariant ? (
     cartItems.length > 0 && (
       <button
         className="cart-header-checkout-button"
@@ -467,7 +468,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   )}
 </div>
 
-  {!isCartPage && (
+  {!useCartHeaderVariant && (
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
     <div className="custom-search-inner">
       <input
