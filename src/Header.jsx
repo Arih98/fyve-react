@@ -261,10 +261,9 @@ useLayoutEffect(() => {
 
     const layoutRect = layoutEl.getBoundingClientRect();
     const burgerRect = burgerEl.getBoundingClientRect();
-
-    const burgerCenterX = burgerRect.left - layoutRect.left + burgerRect.width / 2;
+    const burgerRightX = burgerRect.right - layoutRect.left;
     const rightEdgeX = layoutRect.width;
-    const targetCenterX = burgerCenterX + (rightEdgeX - burgerCenterX) / 2;
+    const targetCenterX = burgerRightX + (rightEdgeX - burgerRightX) / 2;
 
     setCartCheckoutLeft(targetCenterX);
   };
