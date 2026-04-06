@@ -253,20 +253,23 @@ useLayoutEffect(() => {
   }
 
   const updateCartCheckoutPosition = () => {
-    const layoutEl = cartHeaderLayoutRef.current;
-    const burgerEl = burgerRef.current;
-    const checkoutEl = cartCheckoutButtonRef.current;
+  const layoutEl = cartHeaderLayoutRef.current;
+  const burgerEl = burgerRef.current;
+  const checkoutEl = cartCheckoutButtonRef.current;
 
-    if (!layoutEl || !burgerEl || !checkoutEl) return;
+  if (!layoutEl || !burgerEl || !checkoutEl) return;
 
-    const layoutRect = layoutEl.getBoundingClientRect();
-    const burgerRect = burgerEl.getBoundingClientRect();
-    const burgerRightX = burgerRect.right - layoutRect.left;
-    const rightEdgeX = layoutRect.width;
-    const targetCenterX = burgerRightX + (rightEdgeX - burgerRightX) / 2;
+  const layoutRect = layoutEl.getBoundingClientRect();
+  const burgerRect = burgerEl.getBoundingClientRect();
+  const checkoutRect = checkoutEl.getBoundingClientRect();
 
-    setCartCheckoutLeft(targetCenterX);
-  };
+  const burgerRightX = burgerRect.right - layoutRect.left;
+  const rightEdgeX = layoutRect.width;
+  const availableSpace = rightEdgeX - burgerRightX;
+  const buttonLeftX = burgerRightX + (availableSpace - checkoutRect.width) / 2;
+
+  setCartCheckoutLeft(buttonLeftX);
+};
 
   updateCartCheckoutPosition();
 

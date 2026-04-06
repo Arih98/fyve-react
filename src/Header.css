@@ -631,7 +631,7 @@ body.locked {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 126px;
+  min-width: 210px;
   height: 40px;
   padding: 0 20px;
   border-radius: 50px;
@@ -943,12 +943,12 @@ body {
     justify-content: center;
   }
 
-  .mobile-header.first-header.cart-page-header .cart-header-checkout-button-mobile {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    height: 40px;
-    padding: 0 20px;
-    white-space: nowrap;
-  }
+.mobile-header.first-header.cart-page-header .cart-header-checkout-button-mobile {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
+  padding: 0 20px;
+  white-space: nowrap;
+}
 }
