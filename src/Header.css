@@ -972,4 +972,9 @@ body {
     padding: 0 20px;
     white-space: nowrap;
   }
+  
+  .mobile-header.first-header.cart-page-header {
+  --nav-top-padding: 8px;
+  --nav-bottom-padding: 8px;
+}
 }
