@@ -445,7 +445,7 @@ li.cart-item {
 
   .cart-page-main {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 0px;
   }
 
   .cart-page-summary {
