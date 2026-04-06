@@ -180,10 +180,6 @@ const Cart = ({ variant = 'page', onClose }) => {
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
 
-                <Link to="/checkout" className="button cart-checkout-button">
-                  <span>Checkout</span>
-                  <span className="cart-total-amount">${cartTotal.toFixed(2)}</span>
-                </Link>
               </div>
             </aside>
           </main>
