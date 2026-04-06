@@ -923,29 +923,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
-  .mobile-header.first-header.cart-page-header .mobile-nav-icons.cart-mobile-nav-icons {
-  display: flex !important;
-  justify-content: flex-end;
-  align-items: center;
-  width: auto;
-}
-
-  .mobile-header.first-header.cart-page-header .header-logo.mobile-hide-logo {
-    display: block !important;
-    width: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-    min-height: 1px;
-  }
-
-  .mobile-header.first-header.cart-page-header .cart-header-checkout-button {
-    height: 40px;
-    padding: 0 20px;
-  }
-}
-
-@media (max-width: 768px) {
   .mobile-header.first-header.cart-page-header {
     grid-template-columns: var(--nav-icon-size) 1fr !important;
     column-gap: 0 !important;
