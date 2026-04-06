@@ -321,6 +321,99 @@ li.cart-item {
   width: calc(100% + 90px);
 }
 
+.cart-panel {
+  width: 100%;
+  max-height: min(78vh, 760px);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.cart-panel-header {
+  padding: 24px 24px 18px;
+  border-bottom: 1px solid #ececec;
+  flex-shrink: 0;
+}
+
+.cart-panel-title {
+  margin: 0;
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: 30px;
+  font-weight: 500;
+  color: #4A494A;
+  line-height: 1;
+}
+
+.cart-panel-items {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 24px 24px 0;
+  min-height: 0;
+}
+
+.cart-panel-footer {
+  flex-shrink: 0;
+  padding: 20px 24px 24px;
+  border-top: 1px solid #ececec;
+  background: #fff;
+}
+
+.cart-panel-empty {
+  padding: 24px;
+}
+
+.cart-panel .cart-item-content.cart-item-grid {
+  --cart-image-size: 78px;
+  gap: 14px;
+  padding-bottom: 20px;
+}
+
+.cart-panel .cart-item-details {
+  padding-right: 78px;
+}
+
+.cart-panel .cart-item-actions-row {
+  width: calc(100% + 78px);
+}
+
+.cart-panel .cart-item-details .product-title {
+  font-size: 17px;
+  line-height: 1.3em;
+}
+
+.cart-panel .cart-item-details .subtotal,
+.cart-panel .cart-item-details .variation-size,
+.cart-panel .cart-item-details .variation-color,
+.cart-panel .cart-item-details .quantity-controls .quantity-input {
+  font-size: 13px;
+}
+
+.cart-panel .cart-item-details .quantity-controls button {
+  width: 28px;
+  height: 28px;
+}
+
+.cart-panel .cart-item-details .remove-item img {
+  width: 14px;
+  height: 14px;
+}
+
+.cart-panel-view-bag {
+  display: block;
+  margin-top: 14px;
+  text-align: center;
+  font-family: quasimoda, sans-serif;
+  font-size: 14px;
+  color: #4A494A;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.cart-panel-view-bag:hover {
+  color: #4A494A;
+  text-decoration: none;
+}
+
 @media (max-width: 1024px) {
   .cart-page-main {
     grid-template-columns: minmax(0, 1fr) 320px;
@@ -398,5 +491,11 @@ li.cart-item {
 
   .cart-checkout-button {
     padding: 15px 20px;
+  }
+}
+
+@media (min-width: 769px) {
+  .cart-page {
+    display: none;
   }
 }

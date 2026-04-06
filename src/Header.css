@@ -646,6 +646,32 @@ body.locked {
   box-sizing: border-box;
 }
 
+.header-bag-dropdown-wrap {
+  position: relative;
+}
+
+.desktop-cart-dropdown {
+  position: absolute;
+  top: calc(100% + 18px);
+  right: 0;
+  width: 460px;
+  background: #fff;
+  border: 1px solid #ececec;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  pointer-events: none;
+}
+
+.desktop-cart-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 @media (max-width: 768px) {
   .mobile-menu-logo {
   display: block;

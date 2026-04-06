@@ -4,7 +4,7 @@ import { CartContext } from './CartContext';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
-
+import Cart from './Cart';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -37,6 +37,8 @@ const totalBagQuantity = useMemo(
 const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
+const [isDesktopCartOpen, setIsDesktopCartOpen] = useState(false);
+const desktopCartRef = useRef(null);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -242,6 +244,28 @@ useEffect(() => {
   setDelayTransparentHeader(false);
   prevMenuStateRef.current = menuState;
 }, [menuState, isMobile, isHomePage, isScrolled, isSearchOpen]);
+
+useEffect(() => {
+  if (isMobile) {
+    setIsDesktopCartOpen(false);
+  }
+}, [isMobile]);
+
+useEffect(() => {
+  setIsDesktopCartOpen(false);
+}, [location.pathname]);
+
+useEffect(() => {
+  const handlePointerDown = (e) => {
+    if (!desktopCartRef.current) return;
+    if (!desktopCartRef.current.contains(e.target)) {
+      setIsDesktopCartOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handlePointerDown);
+  return () => document.removeEventListener('mousedown', handlePointerDown);
+}, []);
 
 const handleToggleMenu = () => {
   toggleMenu();
@@ -455,18 +479,32 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
         <img src={accountIconSrc} alt="Account" />
       </button>
 
-      <button
-        className="mobile-nav-icon header-bag-button"
-        onClick={() => navigate('/cart')}
-        ref={bagIconButtonRef}
-      >
-        <img src={bagIconSrc} alt="Bag" />
-        {displayedBagQuantity > 0 && (
-          <span className="header-bag-count" ref={bagCountRef}>
-            {displayedBagQuantity}
-          </span>
-        )}
-      </button>
+      <div className="header-bag-dropdown-wrap" ref={desktopCartRef}>
+  <button
+    className="mobile-nav-icon header-bag-button"
+    onClick={() => {
+      if (isMobile) {
+        navigate('/cart');
+      } else {
+        setIsDesktopCartOpen(v => !v);
+      }
+    }}
+    ref={bagIconButtonRef}
+  >
+    <img src={bagIconSrc} alt="Bag" />
+    {displayedBagQuantity > 0 && (
+      <span className="header-bag-count" ref={bagCountRef}>
+        {displayedBagQuantity}
+      </span>
+    )}
+  </button>
+
+  {!isMobile && (
+    <div className={`desktop-cart-dropdown${isDesktopCartOpen ? ' open' : ''}`}>
+      <Cart variant="panel" onClose={() => setIsDesktopCartOpen(false)} />
+    </div>
+  )}
+</div>
     </div>
   </>
 )}
