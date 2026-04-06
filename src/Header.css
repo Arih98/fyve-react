@@ -970,8 +970,8 @@ body {
   }
   
   .mobile-header.first-header.cart-page-header {
-  --nav-top-padding: 11px;
-  --nav-bottom-padding: 11px;
+  --nav-top-padding: 10px;
+  --nav-bottom-padding: 10px;
   background-color: #ffffff;
 }
 }
