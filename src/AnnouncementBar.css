@@ -53,7 +53,7 @@
 
 @media (max-width: 768px) {
   :root {
-    --announcement-height: 40px;
+    --announcement-height: 43px;
   }
 
 .announcement-bar.cart-style {
