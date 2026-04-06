@@ -427,9 +427,9 @@ li.cart-item {
   }
 
   .cart-page-title {
-    font-size: 30px;
+    font-size: 27px;
     letter-spacing: -0.03em;
-    margin: 0 0 20px;
+    margin: 0 0 25px;
   }
 
   .cart-page-main {
@@ -449,7 +449,7 @@ li.cart-item {
 
   .cart-item-content.cart-item-grid {
     --cart-image-size: 60px;
-    gap: 10px;
+    gap: 15px;
     padding-bottom: 20px;
   }
 
