@@ -39,6 +39,7 @@ const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
 const cartCheckoutButtonRef = useRef(null);
 const [cartCheckoutLeft, setCartCheckoutLeft] = useState(null);
+const cartHeaderLayoutRef = useRef(null);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -252,20 +253,18 @@ useLayoutEffect(() => {
   }
 
   const updateCartCheckoutPosition = () => {
-    const headerEl = headerRef.current;
+    const layoutEl = cartHeaderLayoutRef.current;
     const burgerEl = burgerRef.current;
     const checkoutEl = cartCheckoutButtonRef.current;
 
-    if (!headerEl || !burgerEl || !checkoutEl) return;
+    if (!layoutEl || !burgerEl || !checkoutEl) return;
 
-    const headerRect = headerEl.getBoundingClientRect();
+    const layoutRect = layoutEl.getBoundingClientRect();
     const burgerRect = burgerEl.getBoundingClientRect();
-    const headerStyles = window.getComputedStyle(headerEl);
-    const rightPadding = parseFloat(headerStyles.paddingRight) || 0;
 
-    const burgerCenterX = burgerRect.left - headerRect.left + burgerRect.width / 2;
-    const rightInnerEdgeX = headerRect.width - rightPadding;
-    const targetCenterX = burgerCenterX + (rightInnerEdgeX - burgerCenterX) / 2;
+    const burgerCenterX = burgerRect.left - layoutRect.left + burgerRect.width / 2;
+    const rightEdgeX = layoutRect.width;
+    const targetCenterX = burgerCenterX + (rightEdgeX - burgerCenterX) / 2;
 
     setCartCheckoutLeft(targetCenterX);
   };
@@ -455,7 +454,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
   {useCartHeaderVariant ? (
-  <div className="cart-header-mobile-layout">
+  <div className="cart-header-mobile-layout" ref={cartHeaderLayoutRef}>
     <div className="cart-header-mobile-left">
       {BurgerIcon}
     </div>
