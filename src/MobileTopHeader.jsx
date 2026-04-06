@@ -1,9 +1,15 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './MobileTopHeader.css';
 
 const MobileTopHeader = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isCartPage = location.pathname === '/cart';
+
+  if (isCartPage) {
+    return null;
+  }
 
   return (
     <div className="mobile-top-header">
