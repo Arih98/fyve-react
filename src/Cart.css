@@ -186,10 +186,17 @@ li.cart-item {
 
 .cart-item-details .variation-size,
 .cart-item-details .variation-color {
-  margin: 2px 0 0 0;
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   color: #4A494A;
+}
+
+.cart-item-details .variation-color {
+  margin-top: 2px;
+}
+
+.cart-item-details .variation-size {
+  margin-top: 1px;
 }
 
 .cart-item-actions-row {
@@ -414,7 +421,7 @@ li.cart-item {
 }
 
 .variation-label {
-  margin-right: 3px;
+  margin-right: 1px;
 }
 
 @media (max-width: 1024px) {
