@@ -423,7 +423,7 @@ li.cart-item {
 @media (max-width: 768px) {
 
   .cart-page-inner {
-    padding: 40px 20px 40px;
+    padding: 25px 20px 25px;
   }
 
   .cart-page-title {
