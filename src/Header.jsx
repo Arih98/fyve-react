@@ -437,11 +437,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
           Checkout
         </button>
       )
-    ) : (
-      <div className="header-logo mobile-hide-logo">
-        <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
-      </div>
-    )}
+) : null}
   </div>
 
   <div className="mobile-header-slot mobile-header-slot-right">
