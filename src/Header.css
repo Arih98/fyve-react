@@ -949,7 +949,7 @@ body {
   align-items: center;
   justify-content: center;
   min-width: 0;
-  transform: translateX(-3px);
+  transform: translateX(0px);
 }
 
   .mobile-header.first-header.cart-page-header .cart-header-mobile-left {
@@ -966,9 +966,9 @@ body {
   }
 
   .mobile-header.first-header.cart-page-header .cart-header-checkout-button-mobile {
-    width: 250px;
-    min-width: 250px;
-    height: 51px;
+    width: 255px;
+    min-width: 255px;
+    height: 52px;
     padding: 0 20px;
     white-space: nowrap;
   }
