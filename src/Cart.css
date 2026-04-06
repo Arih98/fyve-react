@@ -126,7 +126,6 @@ li.cart-item {
   align-items: start;
   width: 100%;
   box-sizing: border-box;
-  border-bottom: 1px solid #ececec;
 }
 
 .cart-item-image {
