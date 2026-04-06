@@ -921,6 +921,15 @@ body {
   transform: none;
 }
 
+.mobile-menu.closing .menu-content {
+  transform: none;
+  transition: none;
+}
+
+.mobile-menu.active .menu-items > li {
+  transition-delay: 0s !important;
+}
+
 .menu-columns {
   grid-template-columns: 1fr;
   min-height: 100%;
