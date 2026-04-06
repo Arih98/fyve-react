@@ -924,4 +924,21 @@ body {
     line-height: 16vw;
   }
 
+    .mobile-header.first-header.cart-page-header {
+    display: block !important;
+    padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-safe-padding) var(--nav-side-padding) !important;
+  }
+
+  .mobile-header.first-header.cart-page-header .cart-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .mobile-header.first-header.cart-page-header .cart-header-left,
+  .mobile-header.first-header.cart-page-header .cart-header-right {
+    display: flex;
+    align-items: center;
+  }
 }

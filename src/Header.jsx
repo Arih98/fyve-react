@@ -419,7 +419,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !isCartPage ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${isCartPage ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !isCartPage ? ' home-transparent' : ''}`}
 >
   {isCartPage ? (
     <div className="cart-header-bar">
@@ -428,12 +428,14 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       </div>
 
       <div className="cart-header-right">
-        <button
-          className="cart-header-checkout-button"
-          onClick={() => navigate('/checkout')}
-        >
-          Checkout
-        </button>
+{cartItems.length > 0 && (
+  <button
+    className="cart-header-checkout-button"
+    onClick={() => navigate('/checkout')}
+  >
+    Checkout
+  </button>
+)}
       </div>
     </div>
   ) : (
