@@ -57,7 +57,7 @@
     padding-right: 36px;
   }
     .announcement-marquee {
-    animation: announcement-marquee 12s linear infinite;
+    animation: announcement-marquee 10s linear infinite;
   }
 
   .announcement-group span {
