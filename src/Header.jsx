@@ -1,5 +1,5 @@
 import { useMobileMenuController } from './hooks/useMobileMenuController';
-import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useContext, useMemo } from 'react';
 import { CartContext } from './CartContext';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
@@ -37,6 +37,8 @@ const totalBagQuantity = useMemo(
 const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
+const cartCheckoutButtonRef = useRef(null);
+const [cartCheckoutLeft, setCartCheckoutLeft] = useState(null);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -243,6 +245,36 @@ useEffect(() => {
   prevMenuStateRef.current = menuState;
 }, [menuState, isMobile, isHomePage, isScrolled, isSearchOpen]);
 
+useLayoutEffect(() => {
+  if (!useCartHeaderVariant || !isMobile) {
+    setCartCheckoutLeft(null);
+    return;
+  }
+
+  const updateCartCheckoutPosition = () => {
+    const headerEl = headerRef.current;
+    const burgerEl = burgerRef.current;
+    const checkoutEl = cartCheckoutButtonRef.current;
+
+    if (!headerEl || !burgerEl || !checkoutEl) return;
+
+    const headerRect = headerEl.getBoundingClientRect();
+    const burgerRect = burgerEl.getBoundingClientRect();
+    const headerStyles = window.getComputedStyle(headerEl);
+    const rightPadding = parseFloat(headerStyles.paddingRight) || 0;
+
+    const burgerCenterX = burgerRect.left - headerRect.left + burgerRect.width / 2;
+    const rightInnerEdgeX = headerRect.width - rightPadding;
+    const targetCenterX = burgerCenterX + (rightInnerEdgeX - burgerCenterX) / 2;
+
+    setCartCheckoutLeft(targetCenterX);
+  };
+
+  updateCartCheckoutPosition();
+
+  window.addEventListener('resize', updateCartCheckoutPosition);
+  return () => window.removeEventListener('resize', updateCartCheckoutPosition);
+}, [useCartHeaderVariant, isMobile, menuState]);
 
 const handleToggleMenu = () => {
   toggleMenu();
@@ -428,18 +460,16 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       {BurgerIcon}
     </div>
 
-    <div className="cart-header-mobile-center">
-      {cartItems.length > 0 && (
-        <button
-          className="cart-header-checkout-button"
-          onClick={() => navigate('/checkout')}
-        >
-          Checkout
-        </button>
-      )}
-    </div>
-
-    <div className="cart-header-mobile-right"></div>
+    {cartItems.length > 0 && (
+      <button
+        ref={cartCheckoutButtonRef}
+        className="cart-header-checkout-button cart-header-checkout-button-mobile"
+        onClick={() => navigate('/checkout')}
+        style={cartCheckoutLeft !== null ? { left: `${cartCheckoutLeft}px` } : undefined}
+      >
+        Checkout
+      </button>
+    )}
   </div>
 ) : (
   <>
