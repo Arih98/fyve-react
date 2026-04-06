@@ -924,10 +924,6 @@ body {
   display: none;
 }
 
-.cart-header-mobile-layout {
-  display: none;
-}
-
 @media (max-width: 768px) {
   .mobile-header.first-header.cart-page-header {
     display: flex !important;
