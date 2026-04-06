@@ -1,5 +1,5 @@
 import { useMobileMenuController } from './hooks/useMobileMenuController';
-import React, { useState, useEffect, useLayoutEffect, useRef, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { CartContext } from './CartContext';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';

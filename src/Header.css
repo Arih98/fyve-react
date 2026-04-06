@@ -936,12 +936,13 @@ body {
     position: relative;
   }
 
-  .mobile-header.first-header.cart-page-header .cart-header-mobile-left {
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.mobile-header.first-header.cart-page-header .cart-header-mobile-left {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
 
   .mobile-header.first-header.cart-page-header .cart-header-checkout-container {
   position: absolute;
