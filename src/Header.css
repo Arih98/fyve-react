@@ -613,6 +613,10 @@ body.locked {
   transition: transform 0.3s ease;
 }
 
+.cart-header-mobile-layout {
+  display: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .menu-items li a:hover::after {
     transform: scaleX(1);
@@ -640,12 +644,6 @@ body.locked {
   text-transform: uppercase;
   cursor: pointer;
   box-sizing: border-box;
-}
-
-.cart-mobile-nav-icons {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
 }
 
 @media (max-width: 768px) {
@@ -924,21 +922,37 @@ body {
 
 @media (max-width: 768px) {
   .mobile-header.first-header.cart-page-header {
-    --burger-visual-width: 19px;
+    display: block !important;
   }
 
-  .mobile-header.first-header.cart-page-header .mobile-nav-icons.cart-mobile-nav-icons {
-    display: block !important;
-    position: static;
-    width: auto;
-    justify-self: auto;
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-layout {
+    display: grid;
+    grid-template-columns: var(--nav-icon-size) 1fr var(--nav-icon-size);
+    align-items: center;
+    width: 100%;
+  }
+
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-left,
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-center,
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-left {
+    justify-content: flex-start;
+  }
+
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-center {
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .mobile-header.first-header.cart-page-header .cart-header-mobile-right {
+    justify-content: flex-end;
   }
 
   .mobile-header.first-header.cart-page-header .cart-header-checkout-button {
-    position: absolute;
-    top: 50%;
-    left: calc(var(--nav-side-padding) + var(--burger-visual-width) + ((100% - (var(--nav-side-padding) * 2) - var(--burger-visual-width)) / 2));
-    transform: translate(-50%, -50%);
     height: 40px;
     padding: 0 20px;
     white-space: nowrap;

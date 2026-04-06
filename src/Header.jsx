@@ -422,17 +422,34 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   ref={headerRef}
   className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
-  {BurgerIcon}
+  {useCartHeaderVariant ? (
+  <div className="cart-header-mobile-layout">
+    <div className="cart-header-mobile-left">
+      {BurgerIcon}
+    </div>
 
-<div className="header-logo mobile-hide-logo">
-  {!useCartHeaderVariant && (
-    <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
-  )}
-</div>
+    <div className="cart-header-mobile-center">
+      {cartItems.length > 0 && (
+        <button
+          className="cart-header-checkout-button"
+          onClick={() => navigate('/checkout')}
+        >
+          Checkout
+        </button>
+      )}
+    </div>
 
-<div className={`mobile-nav-icons${useCartHeaderVariant ? ' cart-mobile-nav-icons' : ''}`}>
-  {!useCartHeaderVariant && (
-    <>
+    <div className="cart-header-mobile-right"></div>
+  </div>
+) : (
+  <>
+    {BurgerIcon}
+
+    <div className="header-logo mobile-hide-logo">
+      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+    </div>
+
+    <div className="mobile-nav-icons">
       <button className="mobile-nav-icon" onClick={toggleSearch}>
         <img src={searchIconSrc} alt="Search" />
       </button>
@@ -440,33 +457,22 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
         <img src={accountIconSrc} alt="Account" />
       </button>
-    </>
-  )}
 
-  {useCartHeaderVariant ? (
-    cartItems.length > 0 && (
       <button
-        className="cart-header-checkout-button"
-        onClick={() => navigate('/checkout')}
+        className="mobile-nav-icon header-bag-button"
+        onClick={() => navigate('/cart')}
+        ref={bagIconButtonRef}
       >
-        Checkout
+        <img src={bagIconSrc} alt="Bag" />
+        {displayedBagQuantity > 0 && (
+          <span className="header-bag-count" ref={bagCountRef}>
+            {displayedBagQuantity}
+          </span>
+        )}
       </button>
-    )
-  ) : (
-    <button
-      className="mobile-nav-icon header-bag-button"
-      onClick={() => navigate('/cart')}
-      ref={bagIconButtonRef}
-    >
-      <img src={bagIconSrc} alt="Bag" />
-      {displayedBagQuantity > 0 && (
-        <span className="header-bag-count" ref={bagCountRef}>
-          {displayedBagQuantity}
-        </span>
-      )}
-    </button>
-  )}
-</div>
+    </div>
+  </>
+)}
 
   {!useCartHeaderVariant && (
   <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
