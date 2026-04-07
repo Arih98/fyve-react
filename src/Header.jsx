@@ -18,7 +18,6 @@ const Header = () => {
 const location = useLocation();
 const isCartPage = location.pathname === '/cart';
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen;
-const cartBackTarget = location.state?.from || '/';
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -272,10 +271,6 @@ useEffect(() => {
   return () => document.removeEventListener('mousedown', handlePointerDown);
 }, []);
 
-const handleCloseCart = () => {
-  navigate(cartBackTarget);
-};
-
 const handleToggleMenu = () => {
   toggleMenu();
   if (isSearchOpen) setIsSearchOpen(false);
@@ -427,20 +422,6 @@ const menuItems = [
   { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
 ];
 
-const CartCloseButton = (
-  <button
-    type="button"
-    className={`cart-close-button${hideHeader ? ' hide-header' : ''}`}
-    onClick={handleCloseCart}
-    aria-label="Close cart"
-  >
-    <svg width="19" height="19" viewBox="0 0 19 19">
-      <line x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
-      <line x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
-    </svg>
-  </button>
-);
-
   const BurgerIcon = (
   <button
     type="button"
@@ -470,9 +451,9 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
 >
   {useCartHeaderVariant ? (
 <div className="cart-header-mobile-layout">
-<div className="cart-header-mobile-left">
-  {CartCloseButton}
-</div>
+  <div className="cart-header-mobile-left">
+    {BurgerIcon}
+  </div>
 
   {cartItems.length > 0 && (
     <div className="cart-header-checkout-container">
@@ -506,15 +487,11 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   <button
     className="mobile-nav-icon header-bag-button"
     onClick={() => {
-if (isMobile) {
-  navigate('/cart', {
-    state: {
-      from: `${location.pathname}${location.search}${location.hash}`
-    }
-  });
-} else {
-  setIsDesktopCartOpen(v => !v);
-}
+      if (isMobile) {
+        navigate('/cart');
+      } else {
+        setIsDesktopCartOpen(v => !v);
+      }
     }}
     ref={bagIconButtonRef}
   >
