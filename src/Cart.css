@@ -427,12 +427,7 @@ li.cart-item {
 .cart-item-details .quantity-controls button:disabled {
   opacity: 0.35;
   cursor: default;
-}
-
-.cart-item-details .quantity-controls button:disabled .minus-line,
-.cart-item-details .quantity-controls button:disabled .plus-horizontal,
-.cart-item-details .quantity-controls button:disabled .plus-vertical {
-  opacity: 0.35;
+  border-color: rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 1024px) {
