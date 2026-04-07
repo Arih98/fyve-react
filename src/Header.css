@@ -38,12 +38,12 @@ body.locked {
 
 .header-bag-count {
   position: absolute;
-  top: -7px;
-  right: -7px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
+  top: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
   background: #4A494A;
   color: #ffffff;
   display: flex;
@@ -53,10 +53,14 @@ body.locked {
   font-size: 11px;
   font-weight: 500;
   line-height: 1;
-  border: 1px solid #ffffff;
   box-sizing: border-box;
   z-index: 3;
   transform-origin: center;
+}
+
+.mobile-header.first-header.home-transparent .header-bag-count {
+  background: #ffffff;
+  color: #4A494A;
 }
 
 .flying-cart-image {
