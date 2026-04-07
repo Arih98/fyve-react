@@ -678,6 +678,14 @@ body.locked {
 
 @media (max-width: 768px) {
 
+    .mobile-header.first-header.menu-open {
+    background-color: #F1DBD1;
+  }
+
+  .mobile-header.first-header.menu-open.home-transparent {
+    background-color: #F1DBD1;
+  }
+
   .mobile-menu.active .menu-items > li:nth-child(1) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0s; }
 .mobile-menu.active .menu-items > li:nth-child(2) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.05s; }
 .mobile-menu.active .menu-items > li:nth-child(3) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.1s; }
