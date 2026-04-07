@@ -741,8 +741,8 @@ body.locked {
 }
 
 .mobile-menu.closing .menu-background {
-  transform: none;
-  transition: none;
+    transform: translateY(-100%);
+    transition: transform 0.75s ease;
 }
 
   .mobile-menu-logo {
