@@ -38,8 +38,8 @@ body.locked {
 
 .header-bag-count {
   position: absolute;
-  top: -1px;
-  right: -1px;
+  top: -7px;
+  right: -7px;
   width: 20px;
   height: 20px;
   padding: 0;
@@ -677,6 +677,28 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+
+  .header-bag-count {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 50%;
+  background: #4A494A;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  box-sizing: border-box;
+  z-index: 3;
+  transform-origin: center;
+}
 
   .mobile-header.first-header {
   background-color: #FFFFFF;
