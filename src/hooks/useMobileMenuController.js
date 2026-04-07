@@ -22,9 +22,9 @@ export function useMobileMenuController() {
   useEffect(() => {
     if (menuState !== 'closing') return;
 
-const timeout = setTimeout(() => {
-  setMenuState('closed');
-}, 1200);
+    const timeout = setTimeout(() => {
+      setMenuState('closed');
+    }, 750);
 
     return () => {
       clearTimeout(timeout);

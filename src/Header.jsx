@@ -171,15 +171,15 @@ useEffect(() => {
     timeout = setTimeout(() => {
       setMenuVisualActive(true);
     }, 80);
-} else if (menuState === 'closing') {
-  if (isMobile) {
-    setMenuVisualActive(false);
-  } else {
-    timeout = setTimeout(() => {
+  } else if (menuState === 'closing') {
+    if (isMobile) {
       setMenuVisualActive(false);
-    }, 1200);
-  }
-} else if (!isMenuOpen) {
+    } else {
+      timeout = setTimeout(() => {
+        setMenuVisualActive(false);
+      }, 350);
+    }
+  } else if (!isMenuOpen) {
     setMenuVisualActive(false);
   }
 
