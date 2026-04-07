@@ -275,8 +275,8 @@ li.cart-item {
   width: 30px;
   height: 30px;
   background-color: transparent !important;
-  color: #000 !important;
-  border: 1px solid #000000 !important;
+  color: #000;
+  border: 1px solid currentColor;
   border-radius: 100%;
   cursor: pointer;
   display: flex;
@@ -286,14 +286,12 @@ li.cart-item {
   padding: 0;
   margin: 0;
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 .minus-line {
   width: 16px;
   height: 1px;
-  background: #000;
+  background: currentColor;
   display: block;
 }
 
@@ -304,7 +302,7 @@ li.cart-item {
 .plus-horizontal,
 .plus-vertical {
   position: absolute;
-  background: #000;
+  background: currentColor;
 }
 
 .plus-horizontal {
@@ -425,7 +423,8 @@ li.cart-item {
 }
 
 .cart-item-details .quantity-controls button:disabled {
-  opacity: 0.35;
+  color: rgba(0, 0, 0, 0.3);
+  border-color: currentColor;
   cursor: default;
 }
 
