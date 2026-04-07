@@ -15,7 +15,11 @@ export function useMobileMenuController() {
     }
 
     if (!isMenuOpen && menuState === 'open') {
-      setMenuState('closing');
+      if (window.innerWidth <= 768) {
+        setMenuState('closed');
+      } else {
+        setMenuState('closing');
+      }
     }
   }, [isMenuOpen, menuState]);
 
@@ -58,6 +62,7 @@ export function useMobileMenuController() {
 
     if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
       setIsAnimating(true);
+      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
       gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
       gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
       gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
@@ -73,6 +78,7 @@ export function useMobileMenuController() {
       });
     } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
       setIsAnimating(true);
+      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
       gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
       gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
       gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
@@ -84,6 +90,11 @@ export function useMobileMenuController() {
         delay: 1.1,
         onComplete: () => setIsAnimating(false)
       });
+    } else if (menuState === 'closed' && prevMenuStateRef.current !== 'closed') {
+      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
+      gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
+      gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
+      setIsAnimating(false);
     }
 
     prevMenuStateRef.current = menuState;
@@ -98,6 +109,11 @@ export function useMobileMenuController() {
   }, [isMenuOpen]);
 
   const toggleMenu = () => {
+    if (window.innerWidth <= 768) {
+      setIsMenuOpen(v => !v);
+      return;
+    }
+
     if (isAnimating || menuState === 'closing') return;
     setIsMenuOpen(v => !v);
   };
