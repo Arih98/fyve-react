@@ -678,7 +678,7 @@ body.locked {
 
 @media (max-width: 768px) {
 
-    .mobile-header.first-header.menu-open {
+  .mobile-header.first-header.menu-open {
     background-color: #F1DBD1;
   }
 
