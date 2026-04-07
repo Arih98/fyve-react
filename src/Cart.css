@@ -425,8 +425,9 @@ li.cart-item {
 }
 
 .cart-item-details .quantity-controls button:disabled {
-  opacity: 0.3;
+  opacity: 0.35;
   cursor: default;
+  background-color: #f7f7f7 !important;
 }
 
 @media (max-width: 1024px) {
