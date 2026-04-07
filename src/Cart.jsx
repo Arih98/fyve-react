@@ -33,6 +33,7 @@ const Cart = ({ variant = 'page', onClose }) => {
   };
 
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const isPanel = variant === 'panel';
 
   const cartItemsMarkup = (
@@ -114,7 +115,7 @@ const Cart = ({ variant = 'page', onClose }) => {
         <div className="cart-panel-header">
           <h2 className="cart-panel-title">
             <span>Your bag</span>
-            {cartItems.length > 0 && <span className="cart-page-count"> ({cartItems.length})</span>}
+            {cartItemCount > 0 && <span className="cart-page-count"> ({cartItemCount})</span>}
           </h2>
         </div>
 
@@ -159,7 +160,7 @@ const Cart = ({ variant = 'page', onClose }) => {
       <div className="cart-page-inner">
         <h1 className="cart-page-title">
           <span>Your bag</span>
-          {cartItems.length > 0 && <span className="cart-page-count"> ({cartItems.length})</span>}
+          {cartItemCount > 0 && <span className="cart-page-count"> ({cartItemCount})</span>}
         </h1>
 
         {cartItems.length > 0 ? (
