@@ -1099,9 +1099,10 @@ body {
     white-space: nowrap;
   }
   
-  .mobile-header.first-header.cart-page-header {
+.mobile-header.first-header.cart-page-header {
   --nav-top-padding: 10px;
   --nav-bottom-padding: 10px;
+  --nav-side-padding: 12px;
   background-color: #ffffff;
 }
 }
