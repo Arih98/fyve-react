@@ -4,6 +4,12 @@
   transition-delay: 0.111s;
 }
 
+.page-wrapper.menu-open {
+  transform: none;
+  transition-delay: 0s;
+  pointer-events: none;
+}
+
 body {
   margin: 0;
   overflow-x: hidden;
@@ -671,6 +677,12 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+
+  .page-wrapper.menu-open {
+  transform: translateY(80vh) scale(0.96);
+  transition-delay: 0s;
+  pointer-events: none;
+}
 
   .mobile-header.first-header.menu-open {
     background-color: #F1DBD1;
