@@ -425,9 +425,15 @@ li.cart-item {
 }
 
 .cart-item-details .quantity-controls button:disabled {
-  opacity: 0.2;
   cursor: default;
-  background-color: #f0f0f0 !important;
+  background-color: #f7f7f7 !important;
+  border-color: rgba(0, 0, 0, 0.35);
+}
+
+.cart-item-details .quantity-controls button:disabled .minus-line,
+.cart-item-details .quantity-controls button:disabled .plus-horizontal,
+.cart-item-details .quantity-controls button:disabled .plus-vertical {
+  background: rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 1024px) {
