@@ -1,6 +1,3 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
-import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
@@ -11,7 +8,6 @@ const ProductsPage = () => {
   const navigate = useNavigate();
   const navigationType = useNavigationType();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { isMenuOpen } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
@@ -167,7 +163,7 @@ if (!targetProduct) {
   if (loading) {
     return (
       <div className="products-container">
-        <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+        <div className="page-wrapper">
 
           <div className="products-grid">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -191,7 +187,7 @@ if (!targetProduct) {
 
   return (
     <div className="products-container">
-      <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+      <div className="page-wrapper">
 
         <ProductGrid
           products={currentProducts}
