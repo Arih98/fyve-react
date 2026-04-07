@@ -912,7 +912,7 @@ body.locked {
 
 .mobile-menu-logo {
   position: absolute;
-  top: 32px;
+  top: 9px;
   left: 50%;
   transform: translate(-50%, 0);
   z-index: 5;
@@ -921,7 +921,7 @@ body.locked {
 }
 
 .mobile-menu-logo img {
-  height: 50px;
+  height: 45px;
   width: auto;
   cursor: pointer;
 }
