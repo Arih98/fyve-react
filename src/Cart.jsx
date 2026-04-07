@@ -7,22 +7,23 @@ const Cart = ({ variant = 'page', onClose }) => {
   const { cartItems, setCartItems } = useContext(CartContext);
 
   const handleQuantityChange = (itemId, variationKey, delta) => {
-    setCartItems(prevItems =>
-      prevItems.map(item => {
-        if (!(item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey)) {
-          return item;
-        }
+  setCartItems(prevItems =>
+    prevItems.map(item => {
+      if (!(item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey)) {
+        return item;
+      }
 
-        const maxStock = Number(item.stockQuantity ?? Infinity);
-        const nextQuantity = item.quantity + delta;
+      const parsedStock = Number(item.stockQuantity);
+      const maxStock = Number.isFinite(parsedStock) && parsedStock > 0 ? parsedStock : Infinity;
+      const nextQuantity = item.quantity + delta;
 
-        return {
-          ...item,
-          quantity: Math.max(1, Math.min(maxStock, nextQuantity))
-        };
-      })
-    );
-  };
+      return {
+        ...item,
+        quantity: Math.max(1, Math.min(maxStock, nextQuantity))
+      };
+    })
+  );
+};
 
   const handleRemoveItem = (itemId, variationKey) => {
     setCartItems(prevItems =>
@@ -39,73 +40,79 @@ const Cart = ({ variant = 'page', onClose }) => {
   const cartItemsMarkup = (
     <ul className="cart-items">
       {cartItems.map(item => {
-        const variationKey = `${item.size || ''}-${item.color || ''}`;
+  const variationKey = `${item.size || ''}-${item.color || ''}`;
+  const maxStock = Number(item.stockQuantity);
+  const hasMaxStock = Number.isFinite(maxStock) && maxStock > 0;
+  const canDecrease = item.quantity > 1;
+  const canIncrease = !hasMaxStock || item.quantity < maxStock;
 
-        return (
-          <li key={`${item.id}-${variationKey}`} className="cart-item" data-cart-key={item.id}>
-            <div className="cart-item-content cart-item-grid">
-              <div className="cart-item-image">
-                <div className="cart-item-image-box">
-                  <img src={item.image} alt={item.name} />
-                </div>
-              </div>
+  return (
+    <li key={`${item.id}-${variationKey}`} className="cart-item" data-cart-key={item.id}>
+      <div className="cart-item-content cart-item-grid">
+        <div className="cart-item-image">
+          <div className="cart-item-image-box">
+            <img src={item.image} alt={item.name} />
+          </div>
+        </div>
 
-              <div className="cart-item-details">
-                <Link to={`/product/${item.id}`} className="product-title" onClick={onClose}>
-                  {item.name}
-                </Link>
+        <div className="cart-item-details">
+          <Link to={`/product/${item.id}`} className="product-title" onClick={onClose}>
+            {item.name}
+          </Link>
 
-{item.color && (
-  <p className="variation variation-color">
-    <span className="variation-label">Color:</span> {item.color}
-  </p>
-)}
+          {item.color && (
+            <p className="variation variation-color">
+              <span className="variation-label">Color:</span> {item.color}
+            </p>
+          )}
 
-{item.size && (
-  <p className="variation variation-size">
-    <span className="variation-label">Size:</span> {item.size}
-  </p>
-)}
+          {item.size && (
+            <p className="variation variation-size">
+              <span className="variation-label">Size:</span> {item.size}
+            </p>
+          )}
 
-                <div className="subtotal">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </div>
+          <div className="subtotal">
+            ${(item.price * item.quantity).toFixed(2)}
+          </div>
 
-                <div className="cart-item-actions-row">
-                  <div className="quantity-controls">
-                    <button
-                      className="quantity-minus"
-                      onClick={() => handleQuantityChange(item.id, variationKey, -1)}
-                    >
-                      <span className="minus-line"></span>
-                    </button>
+          <div className="cart-item-actions-row">
+            <div className="quantity-controls">
+              <button
+                className="quantity-minus"
+                onClick={() => handleQuantityChange(item.id, variationKey, -1)}
+                disabled={!canDecrease}
+              >
+                <span className="minus-line"></span>
+              </button>
 
-                    <input
-                      type="number"
-                      className="quantity-input"
-                      value={item.quantity}
-                      min="1"
-                      readOnly
-                    />
+              <input
+                type="number"
+                className="quantity-input"
+                value={item.quantity}
+                min="1"
+                readOnly
+              />
 
-                    <button
-                      className="quantity-plus"
-                      onClick={() => handleQuantityChange(item.id, variationKey, 1)}
-                    >
-                      <span className="plus-horizontal"></span>
-                      <span className="plus-vertical"></span>
-                    </button>
-                  </div>
-
-                  <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>
-                    <img src="/assets/RemoveIcon.svg" alt="Remove" />
-                  </button>
-                </div>
-              </div>
+              <button
+                className="quantity-plus"
+                onClick={() => handleQuantityChange(item.id, variationKey, 1)}
+                disabled={!canIncrease}
+              >
+                <span className="plus-horizontal"></span>
+                <span className="plus-vertical"></span>
+              </button>
             </div>
-          </li>
-        );
-      })}
+
+            <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>
+              <img src="/assets/RemoveIcon.svg" alt="Remove" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+})}
     </ul>
   );
 

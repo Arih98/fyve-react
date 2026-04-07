@@ -424,6 +424,17 @@ li.cart-item {
   margin-right: 1px;
 }
 
+.cart-item-details .quantity-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.cart-item-details .quantity-controls button:disabled .minus-line,
+.cart-item-details .quantity-controls button:disabled .plus-horizontal,
+.cart-item-details .quantity-controls button:disabled .plus-vertical {
+  opacity: 0.35;
+}
+
 @media (max-width: 1024px) {
   .cart-page-main {
     grid-template-columns: minmax(0, 1fr) 320px;
