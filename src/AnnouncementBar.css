@@ -51,14 +51,6 @@
   }
 }
 
-.announcement-bar.menu-open {
-  background: #f1dbd1;
-}
-
-.announcement-bar.cart-style.menu-open {
-  background: #f1dbd1;
-}
-
 @media (max-width: 768px) {
   :root {
     --announcement-height: 43px;

@@ -681,6 +681,28 @@ body.locked {
     transition: transform 0.75s ease;
 }
 
+.cart-close-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4A494A;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  line-height: 0;
+}
+
+.cart-close-button svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
 @media (max-width: 768px) {
 
   .header-bag-count {
