@@ -15,20 +15,18 @@ export function useMobileMenuController() {
     }
 
     if (!isMenuOpen && menuState === 'open') {
-      if (window.innerWidth <= 768) {
-        setMenuState('closed');
-      } else {
-        setMenuState('closing');
-      }
+      setMenuState('closing');
     }
   }, [isMenuOpen, menuState]);
 
   useEffect(() => {
     if (menuState !== 'closing') return;
 
+    const closeDuration = window.innerWidth <= 768 ? 220 : 750;
+
     const timeout = setTimeout(() => {
       setMenuState('closed');
-    }, 750);
+    }, closeDuration);
 
     return () => {
       clearTimeout(timeout);
@@ -60,38 +58,67 @@ export function useMobileMenuController() {
 
     if (!xLineLeft || !xLineRight) return;
 
+    gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
+
     if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
       setIsAnimating(true);
-      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
       gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
       gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-      gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-      gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-      gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-      gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
-      gsap.to(xLineRight, {
-        strokeDashoffset: 0,
-        duration: 0.3,
-        ease: 'power2.inOut',
-        delay: 1.3,
-        onComplete: () => setIsAnimating(false)
-      });
+
+      if (window.innerWidth <= 768) {
+        gsap.to(topLine, { scaleX: 0, duration: 0.14, ease: 'power2.inOut', delay: 0.04 });
+        gsap.to(middleLine, { scaleX: 0, duration: 0.14, ease: 'power2.inOut', delay: 0.11 });
+        gsap.to(bottomLine, { scaleX: 0, duration: 0.14, ease: 'power2.inOut', delay: 0.18 });
+        gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.14, ease: 'power2.inOut', delay: 0.25 });
+        gsap.to(xLineRight, {
+          strokeDashoffset: 0,
+          duration: 0.14,
+          ease: 'power2.inOut',
+          delay: 0.31,
+          onComplete: () => setIsAnimating(false)
+        });
+      } else {
+        gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+        gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+        gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+        gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
+        gsap.to(xLineRight, {
+          strokeDashoffset: 0,
+          duration: 0.3,
+          ease: 'power2.inOut',
+          delay: 1.3,
+          onComplete: () => setIsAnimating(false)
+        });
+      }
     } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
       setIsAnimating(true);
-      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
-      gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-      gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-      gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-      gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-      gsap.to(topLine, {
-        scaleX: 1,
-        duration: 0.3,
-        ease: 'power2.inOut',
-        delay: 1.1,
-        onComplete: () => setIsAnimating(false)
-      });
+
+      if (window.innerWidth <= 768) {
+        gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.12, ease: 'power2.inOut', delay: 0.0 });
+        gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.12, ease: 'power2.inOut', delay: 0.04 });
+        gsap.to(bottomLine, { scaleX: 1, duration: 0.12, ease: 'power2.inOut', delay: 0.08 });
+        gsap.to(middleLine, { scaleX: 1, duration: 0.12, ease: 'power2.inOut', delay: 0.12 });
+        gsap.to(topLine, {
+          scaleX: 1,
+          duration: 0.12,
+          ease: 'power2.inOut',
+          delay: 0.16,
+          onComplete: () => setIsAnimating(false)
+        });
+      } else {
+        gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
+        gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
+        gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
+        gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
+        gsap.to(topLine, {
+          scaleX: 1,
+          duration: 0.3,
+          ease: 'power2.inOut',
+          delay: 1.1,
+          onComplete: () => setIsAnimating(false)
+        });
+      }
     } else if (menuState === 'closed' && prevMenuStateRef.current !== 'closed') {
-      gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
       gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
       gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
       setIsAnimating(false);
@@ -109,12 +136,8 @@ export function useMobileMenuController() {
   }, [isMenuOpen]);
 
   const toggleMenu = () => {
-    if (window.innerWidth <= 768) {
-      setIsMenuOpen(v => !v);
-      return;
-    }
-
-    if (isAnimating || menuState === 'closing') return;
+    if (window.innerWidth > 768 && (isAnimating || menuState === 'closing')) return;
+    if (window.innerWidth <= 768 && menuState === 'closing') return;
     setIsMenuOpen(v => !v);
   };
 
