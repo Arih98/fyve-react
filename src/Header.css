@@ -580,12 +580,12 @@ body.locked {
   cursor: pointer;
 }
 
-.mobile-menu.active .menu-items > li:nth-child(1) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0s; }
-.mobile-menu.active .menu-items > li:nth-child(2) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.05s; }
-.mobile-menu.active .menu-items > li:nth-child(3) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.1s; }
-.mobile-menu.active .menu-items > li:nth-child(4) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.15s; }
-.mobile-menu.active .menu-items > li:nth-child(5) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.2s; }
-.mobile-menu.active .menu-items > li:nth-child(6) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.25s; }
+.mobile-menu.active .menu-items > li:nth-child(1) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.7s; }
+.mobile-menu.active .menu-items > li:nth-child(2) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.8s; }
+.mobile-menu.active .menu-items > li:nth-child(3) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.9s; }
+.mobile-menu.active .menu-items > li:nth-child(4) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 1.0s; }
+.mobile-menu.active .menu-items > li:nth-child(5) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 1.1s; }
+.mobile-menu.active .menu-items > li:nth-child(6) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 1.2s; }
 
 .menu-items li a {
   text-transform: uppercase;
@@ -673,6 +673,14 @@ body.locked {
 }
 
 @media (max-width: 768px) {
+
+  .mobile-menu.active .menu-items > li:nth-child(1) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0s; }
+.mobile-menu.active .menu-items > li:nth-child(2) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.05s; }
+.mobile-menu.active .menu-items > li:nth-child(3) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.1s; }
+.mobile-menu.active .menu-items > li:nth-child(4) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.15s; }
+.mobile-menu.active .menu-items > li:nth-child(5) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.2s; }
+.mobile-menu.active .menu-items > li:nth-child(6) { transform: translateY(0); clip-path: inset(0 0 0 0); transition-delay: 0.25s; }
+
   .mobile-menu.closing .menu-items > li {
   transform: translateY(0);
   clip-path: inset(0 0 0 0);
