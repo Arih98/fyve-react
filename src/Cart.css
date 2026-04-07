@@ -57,7 +57,7 @@
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   color: #4A494A;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .cart-summary-total {
@@ -276,7 +276,7 @@ li.cart-item {
   height: 30px;
   background-color: transparent !important;
   color: #000 !important;
-  border: 0.5px solid #b7b7b7 !important;
+  border: 0.9px solid #b7b7b7 !important;
   border-radius: 100%;
   cursor: pointer;
   display: flex;
