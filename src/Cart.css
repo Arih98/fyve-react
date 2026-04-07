@@ -276,7 +276,7 @@ li.cart-item {
   height: 30px;
   background-color: transparent !important;
   color: #000 !important;
-  border: 0.9px solid #b7b7b7 !important;
+  border: 0.9px solid #000000 !important;
   border-radius: 100%;
   cursor: pointer;
   display: flex;
