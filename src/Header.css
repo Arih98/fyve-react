@@ -676,6 +676,11 @@ body.locked {
   pointer-events: auto;
 }
 
+.mobile-menu.closing .menu-background {
+    transform: translateY(-100%);
+    transition: transform 0.75s ease;
+}
+
 @media (max-width: 768px) {
 
   .header-bag-count {
@@ -741,8 +746,8 @@ body.locked {
 }
 
 .mobile-menu.closing .menu-background {
-  transform: none!important;
-  transition: none!important;
+  transform: none;
+  transition: none;
 }
 
   .mobile-menu-logo {
