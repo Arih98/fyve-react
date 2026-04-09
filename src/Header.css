@@ -1070,8 +1070,8 @@ body {
   }
 
   .mobile-header.first-header.cart-page-header .cart-header-checkout-button-mobile {
-    width: 255px;
-    min-width: 255px;
+    width: 200px;
+    min-width: 200px;
     height: 50px;
     padding: 0 20px;
     white-space: nowrap;
