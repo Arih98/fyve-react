@@ -152,9 +152,6 @@ gsap.set('.fyve-image', {
 gsap.set('.fyve-image-clip', {
   clipPath: clipClosed
 });
-gsap.set('.fyve-image-container', {
-  width: intermediateWidth
-});
     gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
@@ -227,6 +224,10 @@ gsap.set('.fyve-image-container', {
 .to('.fyve-image-container', {
   width: '100vw',
   height: finalHeight,
+  duration: 0.8 * speed
+}, 'expandOut')
+.to('.fyve-image-reveal-shell', {
+  width: '100vw',
   duration: 0.8 * speed
 }, 'expandOut')
 .to('.fyve-image', {
