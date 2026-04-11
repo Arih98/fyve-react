@@ -68,7 +68,6 @@ const londonFadeDelay = animationDuration * 0.3;
   }, []);
 
   useEffect(() => {
-  hasAnimated.current = false;
   introDone.current = false;
 
   const speed = 1.35;
@@ -90,7 +89,7 @@ const londonFadeDelay = animationDuration * 0.3;
 
     if (hasAnimated.current) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
-      gsap.set('.fyve-image', { scale: 1 });
+      gsap.set('.fyve-image', { scale: 1, transformOrigin: 'center center' });
 gsap.set('.fyve-image-clip', {
   clipPath: 'inset(0% 0% 0% 0%)',
   WebkitClipPath: 'inset(0% 0% 0% 0%)'
@@ -126,7 +125,7 @@ gsap.set('.fyve-image-clip', {
   clipPath: 'inset(50% 50% 50% 50%)',
   WebkitClipPath: 'inset(50% 50% 50% 50%)'
 });
-gsap.set('.fyve-image-container', { width: intermediateWidth });
+gsap.set('.fyve-image-container', { width: intermediateWidth, height: isMobile ? '50vw' : '14vw' });
     gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
