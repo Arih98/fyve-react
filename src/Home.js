@@ -77,8 +77,8 @@ const londonFadeDelay = animationDuration * 0.3;
     const isMobile = window.innerWidth <= 768;
     const finalHeight = isMobile ? '100svh' : '100vh';
     const fyveTextY = -1.11;
-    const londonX = 1.3;
-    const londonY = isMobile ? 12 : 5;
+const londonX = 0;
+const londonY = isMobile ? 8.8 : 4.2;
     const fyveMoveX = isMobile ? '-5px' : '-0.4vw';
     const fyveMoveXEnd = isMobile ? '5px' : '0.4vw';
     const londonMoveX = isMobile ? '-55px' : '-8.9vw';
@@ -87,15 +87,13 @@ const londonFadeDelay = animationDuration * 0.3;
     const announcementBarEl = document.querySelector('.announcement-bar');
     const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0;
 
-    const clipStart = isMobile
-      ? 'inset(42% 35% 38% 35%)'
-      : 'inset(43% 41% 43% 41%)';
+const clipStart = 'inset(49% 49% 49% 49%)';
 
-    const clipMid = isMobile
-      ? 'inset(18% 0% 18% 0%)'
-      : 'inset(0% 0% 0% 0%)';
+const clipMid = isMobile
+  ? 'inset(0% 0% 0% 0%)'
+  : 'inset(0% 0% 0% 0%)';
 
-    const imageScaleStart = isMobile ? 0.42 : 0.3;
+    const imageScaleStart = isMobile ? 0.34 : 0.24;
 
     if (hasAnimated.current) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
@@ -110,11 +108,13 @@ const londonFadeDelay = animationDuration * 0.3;
         clipPath: clipMid
       });
 
-      gsap.set('.fyve-image', {
-        scale: 1,
-        transformOrigin: 'center center',
-        visibility: 'visible'
-      });
+gsap.set('.fyve-image', {
+  xPercent: -50,
+  yPercent: -50,
+  scale: 1,
+  transformOrigin: 'center center',
+  visibility: 'visible'
+});
 
       gsap.set('.london-mask', {
         xPercent: -50,
@@ -177,11 +177,13 @@ const londonFadeDelay = animationDuration * 0.3;
       clipPath: clipStart
     });
 
-    gsap.set('.fyve-image', {
-      scale: imageScaleStart,
-      transformOrigin: 'center center',
-      visibility: 'visible'
-    });
+gsap.set('.fyve-image', {
+  xPercent: -50,
+  yPercent: -50,
+  scale: imageScaleStart,
+  transformOrigin: 'center center',
+  visibility: 'visible'
+});
 
     gsap.set('.london-mask', {
       xPercent: -50,
