@@ -94,6 +94,13 @@ const imageScaleMid = isMobile ? 1.02 : 1.04;
 
     if (hasAnimated.current) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
+gsap.set('.fyve-image-container', {
+  width: '100vw',
+  height: finalHeight
+});
+gsap.set('.fyve-image-reveal-shell', {
+  width: '100vw'
+});
 gsap.set('.fyve-image', {
   visibility: 'visible',
   xPercent: -50,
@@ -101,12 +108,13 @@ gsap.set('.fyve-image', {
   scale: 1,
   transformOrigin: 'center center'
 });
-gsap.set('.fyve-image-clip', { clipPath: clipOpen });
+gsap.set('.fyve-image-clip', {
+  clipPath: clipOpen
+});
       gsap.set('.fyve-letter', { y: 0 });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
       gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-      gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
       gsap.set('.london-mask', {
         xPercent: -50,
         yPercent: -50,
@@ -128,6 +136,12 @@ gsap.set('.fyve-image-clip', { clipPath: clipOpen });
     }
 
     gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
+gsap.set('.fyve-image-container', {
+  width: 0
+});
+gsap.set('.fyve-image-reveal-shell', {
+  width: intermediateWidth
+});
 gsap.set('.fyve-image', {
   visibility: 'visible',
   xPercent: -50,
@@ -135,7 +149,9 @@ gsap.set('.fyve-image', {
   scale: imageScaleStart,
   transformOrigin: 'center center'
 });
-gsap.set('.fyve-image-clip', { clipPath: clipClosed });
+gsap.set('.fyve-image-clip', {
+  clipPath: clipClosed
+});
 gsap.set('.fyve-image-container', {
   width: intermediateWidth
 });
@@ -180,7 +196,11 @@ gsap.set('.fyve-image-container', {
       .addLabel('splitOpen', 1 * speed)
       .to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
       .to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
-      .to('.fyve-image-clip', {
+.to('.fyve-image-container', {
+  width: intermediateWidth,
+  duration: 0.8 * speed
+}, 'splitOpen+=0.2')
+.to('.fyve-image-clip', {
   clipPath: clipOpen,
   duration: 0.8 * speed,
   ease: 'expo.inOut'
@@ -352,11 +372,13 @@ useEffect(() => {
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
 <div className="fyve-image-container">
-  <div className="fyve-image-clip">
-    <picture>
-      <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-      <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-    </picture>
+  <div className="fyve-image-reveal-shell">
+    <div className="fyve-image-clip">
+      <picture>
+        <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+        <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+      </picture>
+    </div>
   </div>
 </div>
           <div className="fyve-text">

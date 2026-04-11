@@ -111,8 +111,18 @@
   height: 14vw;
   width: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   z-index: 1;
+}
+
+.fyve-image-reveal-shell {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 18vw;
+  height: 100%;
+  transform: translateX(-50%);
+  overflow: hidden;
 }
 
 .fyve-image-clip {
@@ -438,6 +448,11 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
 
 .fyve-image-container {
   height: 50vw;
+}
+
+.fyve-image-reveal-shell {
+  width: 28vw;
+  height: 100%;
 }
 
 .fyve-image-clip {
