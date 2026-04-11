@@ -77,7 +77,7 @@ const londonFadeDelay = animationDuration * 0.3;
     const isMobile = window.innerWidth <= 768;
     const finalHeight = isMobile ? '100svh' : '100vh';
     const intermediateWidth = isMobile ? '28vw' : '18vw';
-    const clipClosed = 'inset(49% 49% 49% 49%)';
+const clipClosed = 'inset(50% 50% 50% 50%)';
 const clipOpen = 'inset(0% 0% 0% 0%)';
 const imageScaleStart = isMobile ? 0.42 : 0.3;
 const imageScaleMid = isMobile ? 1.02 : 1.04;
@@ -136,6 +136,9 @@ gsap.set('.fyve-image', {
   transformOrigin: 'center center'
 });
 gsap.set('.fyve-image-clip', { clipPath: clipClosed });
+gsap.set('.fyve-image-container', {
+  width: intermediateWidth
+});
     gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
@@ -177,8 +180,7 @@ gsap.set('.fyve-image-clip', { clipPath: clipClosed });
       .addLabel('splitOpen', 1 * speed)
       .to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
       .to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
-      .to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed }, 'splitOpen+=0.2')
-.to('.fyve-image-clip', {
+      .to('.fyve-image-clip', {
   clipPath: clipOpen,
   duration: 0.8 * speed,
   ease: 'expo.inOut'
