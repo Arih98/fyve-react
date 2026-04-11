@@ -6,6 +6,59 @@
   font-display: swap;
 }
 
+.fyve-preloader-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 2;
+  will-change: clip-path;
+}
+
+.fyve-preloader-image {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.fyve-preloader-image picture,
+.fyve-preloader-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.fyve-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fyve-preloader-lines {
+  position: relative;
+  overflow: hidden;
+}
+
+.line {
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  will-change: transform;
+}
+
+.fyve-london-group {
+  visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
 .home-mobile-top-logo {
   display: none;
 }
@@ -77,7 +130,7 @@
   align-items: center;
   flex-direction: row;
   gap: 0;
-  z-index: 1;
+  z-index: 3;
   transform: translate(-50%, -50%);
 }
 
@@ -99,6 +152,16 @@
   z-index: 2;
 }
 
+.fyve-text-left,
+.fyve-text-right {
+  will-change: transform;
+}
+
+.fyve-text-left .fyve-preloader-lines,
+.fyve-text-right .fyve-preloader-lines {
+  display: block;
+}
+
 .fyve-letter {
   display: inline-block;
 }
@@ -109,10 +172,12 @@
 
 .fyve-image-container {
   height: 14vw;
-  width: 0;
+  width: 18vw;
   position: relative;
   overflow: hidden;
   z-index: 1;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .fyve-image {
@@ -139,19 +204,6 @@
   right: 0;
 }
 
-.london-mask {
-  visibility: hidden;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 0;
-  z-index: 1;
-}
-
 .london-text {
   font-family: "Quasimoda", sans-serif;
   font-weight: 700 !important;
@@ -167,6 +219,11 @@
   overflow: hidden;
   flex: 0 1 auto;
   text-align: center;
+}
+
+.london-text-left,
+.london-text-right {
+  will-change: transform;
 }
 
 .london-letter {
@@ -405,9 +462,14 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
   height: calc(100svh - var(--home-announcement-offset, 0px));
 }
 
-  .fyve-image-container {
-    height: 50vw;
-  }
+.fyve-image-container {
+  width: 28vw;
+  height: 50vw;
+}
+
+.fyve-preloader-container {
+  z-index: 2;
+}
 
   .fyve-image {
     position: absolute;
