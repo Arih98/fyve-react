@@ -176,14 +176,17 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
-  opacity: 0;
-  pointer-events: none;
+  clip-path: inset(43% 41% 43% 41%);
+  will-change: clip-path;
 }
 
 .fyve-image {
   width: 100vw;
   height: 100%;
   object-fit: cover;
+  transform: scale(0.3);
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .mask-left,
@@ -465,20 +468,23 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
 .fyve-image-container {
   width: 28vw;
   height: 50vw;
+  clip-path: inset(42% 35% 38% 35%);
 }
 
 .fyve-preloader-container {
   z-index: 2;
 }
 
-  .fyve-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+.fyve-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(0.42);
+  transform-origin: center center;
+}
 
   .fyve-text {
     font-size: 25vw;
