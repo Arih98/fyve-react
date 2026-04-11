@@ -458,11 +458,6 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
   height: 50vw;
 }
 
-.fyve-image-reveal-shell {
-  width: 28vw;
-  height: 100%;
-}
-
 .fyve-image-clip {
   clip-path: inset(50% 50% 50% 50%);
 }

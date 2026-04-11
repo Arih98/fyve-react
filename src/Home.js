@@ -103,8 +103,6 @@ gsap.set('.fyve-image-reveal-shell', {
 });
 gsap.set('.fyve-image', {
   visibility: 'visible',
-  xPercent: -50,
-  yPercent: -50,
   scale: 1,
   transformOrigin: 'center center'
 });
@@ -144,8 +142,6 @@ gsap.set('.fyve-image-reveal-shell', {
 });
 gsap.set('.fyve-image', {
   visibility: 'visible',
-  xPercent: -50,
-  yPercent: -50,
   scale: imageScaleStart,
   transformOrigin: 'center center'
 });
@@ -228,6 +224,7 @@ gsap.set('.fyve-image-clip', {
 }, 'expandOut')
 .to('.fyve-image-reveal-shell', {
   width: '100vw',
+  height: finalHeight,
   duration: 0.8 * speed
 }, 'expandOut')
 .to('.fyve-image', {
