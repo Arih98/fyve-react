@@ -99,7 +99,8 @@ gsap.set('.fyve-image-container', {
   height: finalHeight
 });
 gsap.set('.fyve-image-reveal-shell', {
-  width: '100vw'
+  width: '100vw',
+  height: finalHeight
 });
 gsap.set('.fyve-image', {
   visibility: 'visible',
