@@ -68,6 +68,7 @@ const londonFadeDelay = animationDuration * 0.3;
   }, []);
 
   useEffect(() => {
+  hasAnimated.current = false;
   introDone.current = false;
 
   const speed = 1.35;
@@ -89,23 +90,14 @@ const londonFadeDelay = animationDuration * 0.3;
 
     if (hasAnimated.current) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
-      gsap.set('.fyve-image', { scale: 1, transformOrigin: 'center center' });
-gsap.set('.fyve-image-clip', {
-  clipPath: 'inset(0% 0% 0% 0%)',
-  WebkitClipPath: 'inset(0% 0% 0% 0%)'
-});
+      gsap.set('.fyve-image', { visibility: 'visible' });
+      gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
+      gsap.set('.mask-right', { x: '100%', transformOrigin: 'right center' });
       gsap.set('.fyve-letter', { y: 0 });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
       gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-      gsap.set('.fyve-image-container', {
-  width: '100vw',
-  height: finalHeight,
-  top: '50%',
-  left: '50%',
-  xPercent: -50,
-  yPercent: -50
-});
+      gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
       gsap.set('.london-mask', {
         xPercent: -50,
         yPercent: -50,
@@ -127,12 +119,9 @@ gsap.set('.fyve-image-clip', {
     }
 
     gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
-    gsap.set('.fyve-image', { scale: 0.35, transformOrigin: 'center center' });
-gsap.set('.fyve-image-clip', {
-  clipPath: 'inset(50% 50% 50% 50%)',
-  WebkitClipPath: 'inset(50% 50% 50% 50%)'
-});
-gsap.set('.fyve-image-container', { width: intermediateWidth, height: isMobile ? '50vw' : '14vw' });
+    gsap.set('.fyve-image', { visibility: 'visible' });
+    gsap.set('.mask-left', { x: '0%', transformOrigin: 'left center' });
+    gsap.set('.mask-right', { x: '0%', transformOrigin: 'right center' });
     gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
@@ -172,21 +161,13 @@ gsap.set('.fyve-image-container', { width: intermediateWidth, height: isMobile ?
       .fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3 * speed }, 'lettersIn+=0.35')
 
       .addLabel('splitOpen', 1 * speed)
-.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
-.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
-.to('.fyve-image-clip', {
-  clipPath: 'inset(0% 0% 0% 0%)',
-  WebkitClipPath: 'inset(0% 0% 0% 0%)',
-  duration: 0.8 * speed,
-  ease: 'expo.inOut'
-}, 'splitOpen+=0.2')
-.to('.fyve-image', {
-  scale: 1.02,
-  duration: 0.8 * speed,
-  ease: 'expo.inOut'
-}, 'splitOpen+=0.2')
-.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8 * speed }, 'splitOpen+=0.2')
-.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8 * speed }, 'splitOpen+=0.2')
+      .to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
+      .to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
+      .to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed }, 'splitOpen+=0.2')
+      .to('.mask-left', { x: '-100%', duration: 0.8 * speed }, 'splitOpen+=0.2')
+      .to('.mask-right', { x: '100%', duration: 0.8 * speed }, 'splitOpen+=0.2')
+      .to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8 * speed }, 'splitOpen+=0.2')
+      .to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8 * speed }, 'splitOpen+=0.2')
 
       .addLabel('expandOut', 2 * speed)
       .to('.fyve-text:first-child', {
@@ -199,21 +180,11 @@ gsap.set('.fyve-image-container', { width: intermediateWidth, height: isMobile ?
         duration: 0.8 * speed,
         onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' })
       }, 'expandOut')
-.to('.fyve-image-container', {
-  width: '100vw',
-  height: finalHeight,
-  top: '50%',
-  left: '50%',
-  xPercent: -50,
-  yPercent: -50,
-  duration: 0.8 * speed
-}, 'expandOut')
-      .to('.fyve-image', {
-  scale: 1,
-  duration: 0.8 * speed,
-  ease: 'expo.inOut'
-}, 'expandOut')
-
+      .to('.fyve-image-container', {
+        width: '100vw',
+        height: finalHeight,
+        duration: 0.8 * speed
+      }, 'expandOut')
       .to('.london-mask .london-text:first-child', {
         x: '-135vw',
         duration: 0.95 * speed,
@@ -348,23 +319,19 @@ useEffect(() => {
   <div className="fyve-animation-stage">
       <div className="fyve-brand-layer">
         <div className="fyve-mask">
-  <div className="fyve-image-container">
-    <div className="fyve-image-clip">
-      <picture>
-        <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-        <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-      </picture>
-    </div>
-  </div>
+          <div className="fyve-text">
+            {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+          </div>
+          <div className="fyve-image-container">
+            <picture> <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" /> <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" /> </picture>
 
-  <div className="fyve-text">
-    {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
-  </div>
-
-  <div className="fyve-text">
-    {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
-  </div>
-</div>
+            <div className="mask-left"></div>
+            <div className="mask-right"></div>
+          </div>
+          <div className="fyve-text">
+            {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
+          </div>
+        </div>
 
         <div className="london-mask">
           <div className="london-text">

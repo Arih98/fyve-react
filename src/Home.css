@@ -75,7 +75,6 @@
   left: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: row;
   gap: 0;
   z-index: 1;
@@ -109,79 +108,35 @@
 }
 
 .fyve-image-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 18vw;
   height: 14vw;
-  overflow: visible;
-  z-index: 1;
-  transform: translate(-50%, -50%);
-}
-
-.fyve-image-clip {
-  position: absolute;
-  inset: 0;
+  width: 0;
+  position: relative;
   overflow: hidden;
-  clip-path: inset(50% 50% 50% 50%);
-  -webkit-clip-path: inset(50% 50% 50% 50%);
-  will-change: clip-path;
-}
-
-.fyve-mask {
-  visibility: hidden;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 0;
   z-index: 1;
-  transform: translate(-50%, -50%);
-}
-
-.fyve-image-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 18vw;
-  height: 14vw;
-  overflow: visible;
-  z-index: 1;
-  transform: translate(-50%, -50%);
-}
-
-.fyve-image-clip {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  clip-path: inset(50% 50% 50% 50%);
-  -webkit-clip-path: inset(50% 50% 50% 50%);
-  will-change: clip-path;
-}
-
-.fyve-image-clip picture {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.fyve-image-clip img {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 .fyve-image {
-  width: 100%;
+  width: 100vw;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transform: scale(0.35);
-  transform-origin: center center;
-  will-change: transform;
+}
+
+.mask-left,
+.mask-right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #F1DBD1;
+  z-index: 1;
+}
+
+.mask-left {
+  left: 0;
+}
+
+.mask-right {
+  right: 0;
 }
 
 .london-mask {
@@ -450,10 +405,19 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
   height: calc(100svh - var(--home-announcement-offset, 0px));
 }
 
-.fyve-image-container {
-  width: 28vw;
-  height: 50vw;
-}
+  .fyve-image-container {
+    height: 50vw;
+  }
+
+  .fyve-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .fyve-text {
     font-size: 25vw;
   }
