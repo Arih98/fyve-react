@@ -98,7 +98,14 @@ gsap.set('.fyve-image-clip', {
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
       gsap.set('.fyve-text:last-child', { x: '100vw', visibility: 'hidden' });
-      gsap.set('.fyve-image-container', { width: '100vw', height: finalHeight });
+      gsap.set('.fyve-image-container', {
+  width: '100vw',
+  height: finalHeight,
+  top: '50%',
+  left: '50%',
+  xPercent: -50,
+  yPercent: -50
+});
       gsap.set('.london-mask', {
         xPercent: -50,
         yPercent: -50,
@@ -192,11 +199,15 @@ gsap.set('.fyve-image-container', { width: intermediateWidth, height: isMobile ?
         duration: 0.8 * speed,
         onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' })
       }, 'expandOut')
-      .to('.fyve-image-container', {
-        width: '100vw',
-        height: finalHeight,
-        duration: 0.8 * speed
-      }, 'expandOut')
+.to('.fyve-image-container', {
+  width: '100vw',
+  height: finalHeight,
+  top: '50%',
+  left: '50%',
+  xPercent: -50,
+  yPercent: -50,
+  duration: 0.8 * speed
+}, 'expandOut')
       .to('.fyve-image', {
   scale: 1,
   duration: 0.8 * speed,
@@ -337,21 +348,23 @@ useEffect(() => {
   <div className="fyve-animation-stage">
       <div className="fyve-brand-layer">
         <div className="fyve-mask">
-          <div className="fyve-text">
-            {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
-          </div>
-<div className="fyve-image-container">
-  <div className="fyve-image-clip">
-    <picture>
-      <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-      <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-    </picture>
+  <div className="fyve-image-container">
+    <div className="fyve-image-clip">
+      <picture>
+        <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+        <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+      </picture>
+    </div>
+  </div>
+
+  <div className="fyve-text">
+    {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+  </div>
+
+  <div className="fyve-text">
+    {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
   </div>
 </div>
-          <div className="fyve-text">
-            {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
-          </div>
-        </div>
 
         <div className="london-mask">
           <div className="london-text">

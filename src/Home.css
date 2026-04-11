@@ -75,6 +75,7 @@
   left: 50%;
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: row;
   gap: 0;
   z-index: 1;
@@ -108,12 +109,48 @@
 }
 
 .fyve-image-container {
-  height: 14vw;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 18vw;
-  position: relative;
+  height: 14vw;
   overflow: visible;
   z-index: 1;
-  flex: 0 0 auto;
+  transform: translate(-50%, -50%);
+}
+
+.fyve-image-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: inset(50% 50% 50% 50%);
+  -webkit-clip-path: inset(50% 50% 50% 50%);
+  will-change: clip-path;
+}
+
+.fyve-mask {
+  visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+}
+
+.fyve-image-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18vw;
+  height: 14vw;
+  overflow: visible;
+  z-index: 1;
+  transform: translate(-50%, -50%);
 }
 
 .fyve-image-clip {
