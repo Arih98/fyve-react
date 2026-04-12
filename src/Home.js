@@ -346,7 +346,7 @@ useEffect(() => {
 
     <div className="fyve-ui-layer">
       <div className="home-mobile-top-logo">
-        <img src="/assets/FYVE-White-Logo.png" alt="FYVE Logo" />
+        <img src="/assets/FYVE-White-Logo.svg" alt="FYVE Logo" />
       </div>
 
       <div className="lottie-container">
