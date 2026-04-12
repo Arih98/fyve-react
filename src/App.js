@@ -56,10 +56,13 @@ const Layout = () => {
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(() => location.pathname !== '/');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === '/') {
+    const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+    const shouldShowLoader = isProductDetailPage && location.state?.fromProductGrid;
+
+    if (!shouldShowLoader) {
       setIsLoading(false);
       return;
     }
@@ -71,7 +74,7 @@ function AppContent() {
     }, 1200);
 
     return () => clearTimeout(timer);
-  }, [location.pathname]);
+  }, [location.pathname, location.state?.fromProductGrid]);
 
   useEffect(() => {
     const originalScrollTo = window.scrollTo;
