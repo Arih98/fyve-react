@@ -12,7 +12,6 @@ import Account from './Account';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
-import { ProductsPageTransitionProvider, useProductsPageTransition } from './ProductsPageTransitionContext';
 import './App.css';
 import './Header.css';
 import ScrollManager from './components/ScrollManager';
@@ -21,26 +20,6 @@ import Cart from './Cart';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
-};
-
-const ProductsPageTransitionOverlay = () => {
-  const { transitionState } = useProductsPageTransition();
-
-  return (
-    <div className={`products-page-transition products-page-transition-${transitionState}`} aria-hidden={transitionState === 'idle'}>
-      <div className="products-page-transition-inner">
-        <img
-          src="/assets/FYVE-Dark-Logo.svg"
-          alt="FYVE Logo"
-          className="products-page-transition-logo"
-        />
-        <div className="products-page-transition-text">
-          <div className="products-page-transition-fyve">FYVE</div>
-          <div className="products-page-transition-london">LONDON</div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 const Layout = () => {
@@ -69,15 +48,12 @@ const Layout = () => {
           </AnimatePresence>
         </LayoutGroup>
       </div>
-      <ProductsPageTransitionOverlay />
     </div>
   );
 };
 
-function AppContentInner() {
+function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const { startProductsPageTransition } = useProductsPageTransition();
 
   useEffect(() => {
     const originalScrollTo = window.scrollTo;
@@ -109,39 +85,6 @@ function AppContentInner() {
     };
   }, []);
 
-  useEffect(() => {
-    const handleClickCapture = (event) => {
-      if (event.defaultPrevented) return;
-      if (event.button !== 0) return;
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-
-      const anchor = event.target.closest('a[href]');
-      if (!anchor) return;
-
-      const href = anchor.getAttribute('href');
-      if (!href) return;
-      if (href.startsWith('http')) return;
-      if (href.startsWith('mailto:')) return;
-      if (href.startsWith('tel:')) return;
-
-      const url = new URL(anchor.href, window.location.origin);
-      const nextPath = `${url.pathname}${url.search}${url.hash}`;
-      const currentPath = `${location.pathname}${location.search}${location.hash}`;
-
-      if (url.pathname !== '/products') return;
-      if (nextPath === currentPath) return;
-
-      event.preventDefault();
-      startProductsPageTransition(nextPath);
-    };
-
-    document.addEventListener('click', handleClickCapture, true);
-
-    return () => {
-      document.removeEventListener('click', handleClickCapture, true);
-    };
-  }, [location.pathname, location.search, location.hash, startProductsPageTransition]);
-
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
@@ -160,14 +103,6 @@ function AppContentInner() {
         </Routes>
       </CartProvider>
     </MenuContext.Provider>
-  );
-}
-
-function AppContent() {
-  return (
-    <ProductsPageTransitionProvider>
-      <AppContentInner />
-    </ProductsPageTransitionProvider>
   );
 }
 
