@@ -97,10 +97,9 @@ export function useMobileMenuController() {
     }
   }, [isMenuOpen]);
 
-  const toggleMenu = () => {
-    if (isAnimating || menuState === 'closing') return;
-    setIsMenuOpen(v => !v);
-  };
+const toggleMenu = () => {
+  setIsMenuOpen(v => !v);
+};
 
   return {
     isMenuOpen,
