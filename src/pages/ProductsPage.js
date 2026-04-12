@@ -15,10 +15,15 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
-  const clickLockRef = useRef(false);
+const clickLockRef = useRef(false);
 
   const selectedCategory = searchParams.get('category') || '';
-  const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
+
+  const { data: products, loading, error, meta } = useProducts({
+    page: 1,
+    perPage: 12,
+    category: selectedCategory
+  });
 
   const [visibleCount, setVisibleCount] = useState(() => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
@@ -29,25 +34,6 @@ const ProductsPage = () => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
     setVisibleCount(saved ? Number(saved) : productsPerPage);
   }, [selectedCategory]);
-
-  useEffect(() => {
-    sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
-  }, [visibleCount, selectedCategory]);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const queryPage = isMobile ? 1 : currentPage;
-  const queryPerPage = isMobile ? visibleCount : productsPerPage;
-
-  const { data: products, loading, error, meta } = useProducts({
-    page: queryPage,
-    perPage: queryPerPage,
-    category: selectedCategory
-  });
 
   useEffect(() => {
     if (!isMobile) return;
@@ -85,6 +71,18 @@ const ProductsPage = () => {
     };
   }, [isMobile, navigationType, loading, products.length, visibleCount, selectedCategory]);
 
+  useEffect(() => {
+    sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
+  }, [visibleCount, selectedCategory]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
+
   const display = products.map((product) => ({
     ...product,
     displayId: product.displayId || product.id,
@@ -102,14 +100,19 @@ const ProductsPage = () => {
   }));
 
   const handleProductClick = (item) => {
-    if (clickLockRef.current) return;
-    clickLockRef.current = true;
-
+  if (clickLockRef.current) return;
+  clickLockRef.current = true;
     const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
         ? item.gallery[0]
         : placeholderImage;
+
+const targetProduct = products.find((p) => p.id === item.parentId);
+if (!targetProduct) {
+  clickLockRef.current = false;
+  return;
+}
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
@@ -137,6 +140,7 @@ const ProductsPage = () => {
 
     navigate(targetPath, {
       state: {
+        product: targetProduct,
         initialColor: item.selectedColor,
         transitionSourceDisplayId: item.displayId,
         transitionSourceSrc: sourceSrc,
@@ -145,11 +149,13 @@ const ProductsPage = () => {
     });
   };
 
-  const currentProducts = display;
+  const currentProducts = isMobile
+    ? display.slice(0, visibleCount)
+    : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
   const totalPages = isMobile
     ? 1
-    : Math.max(1, meta?.totalPages || 1);
+    : Math.max(1, meta?.totalPages || Math.ceil(display.length / productsPerPage));
 
   const handlePageChange = (page) => {
     const next = new URLSearchParams(searchParams);
@@ -162,17 +168,18 @@ const ProductsPage = () => {
     return (
       <div className="products-container">
         <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+
           <div className="products-grid">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="product-card skeleton-card">
-                <div className="product-image-frame skeleton-image-frame">
-                  <div className="product-image-wrapper skeleton-image"></div>
-                </div>
-                <div className="product-info">
-                  <div className="skeleton-text skeleton-title"></div>
-                  <div className="skeleton-text skeleton-price"></div>
-                </div>
-              </div>
+<div key={i} className="product-card skeleton-card">
+  <div className="product-image-frame skeleton-image-frame">
+    <div className="product-image-wrapper skeleton-image"></div>
+  </div>
+  <div className="product-info">
+    <div className="skeleton-text skeleton-title"></div>
+    <div className="skeleton-text skeleton-price"></div>
+  </div>
+</div>
             ))}
           </div>
         </div>
@@ -185,6 +192,7 @@ const ProductsPage = () => {
   return (
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+
         <ProductGrid
           products={currentProducts}
           onProductClick={handleProductClick}
@@ -192,7 +200,7 @@ const ProductsPage = () => {
           placeholderImage={placeholderImage}
         />
 
-        {isMobile && meta?.total && visibleCount < meta.total && (
+        {isMobile && visibleCount < display.length && (
           <div className="show-more-wrapper">
             <button
               className="show-more-button"
