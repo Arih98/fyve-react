@@ -96,9 +96,9 @@ useEffect(() => {
   }, [isMenuOpen]);
 
   useEffect(() => {
-  if (!isMenuOpen) return;
-
-  window.history.pushState({ menuOpen: true }, '');
+  if (isMenuOpen) {
+    window.history.pushState({ menuOpen: true }, '');
+  }
 
   const handlePopState = (e) => {
     if (isMenuOpen) {
