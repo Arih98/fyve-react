@@ -168,7 +168,7 @@ const navigate = useNavigate();
   <button
     className="cart-empty-continue"
     type="button"
-    onClick={() => navigate('/products')}
+    onClick={() => navigate('/products?category=ss26')}
   >
     <span className="cart-empty-continue-text">Continue shopping</span>
   </button>
@@ -220,7 +220,7 @@ const navigate = useNavigate();
   <button
     className="cart-empty-continue"
     type="button"
-    onClick={() => navigate('/products')}
+    onClick={() => navigate('/products?category=ss26')}
   >
     <span className="cart-empty-continue-text">Continue shopping</span>
   </button>
