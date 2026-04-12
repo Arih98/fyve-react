@@ -5,6 +5,7 @@ import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 import Cart from './Cart';
+import { MenuContext } from './MenuContext';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
 const { cartItems } = useContext(CartContext);
+const { openProductsLoader } = useContext(MenuContext);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
 const totalBagQuantity = useMemo(
@@ -422,6 +424,18 @@ const menuItems = [
   { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
 ];
 
+const handleMenuNavigation = (path) => {
+  setOpenSubmenuId(null);
+  setIsMenuOpen(false);
+
+  if (path.startsWith('/products')) {
+    openProductsLoader(path);
+    return;
+  }
+
+  navigate(path);
+};
+
   const BurgerIcon = (
   <button
     type="button"
@@ -598,32 +612,32 @@ onMouseLeave={() => {
     >
       <ul className="submenu-inner">
         {item.children.map(child => (
-          <li key={child.id} className="submenu-item">
-            <NavLink
-              to={child.path}
-              onClick={() => {
-                setOpenSubmenuId(null);
-                setIsMenuOpen(false);
-              }}
-            >
-              {child.name}
-            </NavLink>
-          </li>
-        ))}
+  <li key={child.id} className="submenu-item">
+    <NavLink
+      to={child.path}
+      onClick={(e) => {
+        e.preventDefault();
+        handleMenuNavigation(child.path);
+      }}
+    >
+      {child.name}
+    </NavLink>
+  </li>
+))}
       </ul>
     </div>
   </>
 ) : (
   <NavLink
-    to={item.path}
-    onMouseEnter={() => handleMenuImageChange(item.id)}
-    onClick={() => {
-      setOpenSubmenuId(null);
-      setIsMenuOpen(false);
-    }}
-  >
-    {item.name}
-  </NavLink>
+  to={item.path}
+  onMouseEnter={() => handleMenuImageChange(item.id)}
+  onClick={(e) => {
+    e.preventDefault();
+    handleMenuNavigation(item.path);
+  }}
+>
+  {item.name}
+</NavLink>
 )}
     </li>
   );

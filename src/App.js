@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetail from './ProductDetail';
@@ -20,6 +20,24 @@ import Cart from './Cart';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
+};
+
+const ProductsRouteLoader = ({ isActive }) => {
+  if (!isActive) return null;
+
+  return (
+    <div className="products-route-loader">
+      <div className="products-route-loader-inner">
+        <img
+          src="/assets/FYVE-Dark-Logo.svg"
+          alt="FYVE"
+          className="products-route-loader-logo"
+        />
+        <div className="products-route-loader-text fyve">FYVE</div>
+        <div className="products-route-loader-text london">LONDON</div>
+      </div>
+    </div>
+  );
 };
 
 const Layout = () => {
@@ -54,6 +72,9 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProductsLoaderActive, setIsProductsLoaderActive] = useState(false);
+  const navigate = useNavigate();
+  const loaderTimerRef = useRef(null);
 
   useEffect(() => {
     const originalScrollTo = window.scrollTo;
@@ -85,8 +106,36 @@ function AppContent() {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (loaderTimerRef.current) {
+        clearTimeout(loaderTimerRef.current);
+      }
+    };
+  }, []);
+
+  const openProductsLoader = useCallback((target) => {
+    if (loaderTimerRef.current) {
+      clearTimeout(loaderTimerRef.current);
+    }
+
+    setIsProductsLoaderActive(true);
+    navigate(target);
+
+    loaderTimerRef.current = setTimeout(() => {
+      setIsProductsLoaderActive(false);
+    }, 1500);
+  }, [navigate]);
+
   return (
-    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+    <MenuContext.Provider
+      value={{
+        isMenuOpen,
+        setIsMenuOpen,
+        openProductsLoader,
+        isProductsLoaderActive
+      }}
+    >
       <CartProvider>
         <ScrollManager />
         <Routes>
@@ -101,6 +150,7 @@ function AppContent() {
             <Route path="/cart" element={<Cart />} />
           </Route>
         </Routes>
+        <ProductsRouteLoader isActive={isProductsLoaderActive} />
       </CartProvider>
     </MenuContext.Provider>
   );
