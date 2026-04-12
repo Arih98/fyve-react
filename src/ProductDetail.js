@@ -431,15 +431,18 @@ return (
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
       <h1 className="product-title">{displayTitle}</h1>
 
-      <p
-        className="product-variation-description"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
-      />
-
-      <p
-        className="product-description"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || product.shortDescription || '') }}
-      />
+            {displayDescription && (
+        <p
+          className={
+            effectiveVariation?.description ||
+            effectiveVariation?.shortDescription ||
+            effectiveVariation?.short_description
+              ? 'product-variation-description'
+              : 'product-description'
+          }
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+        />
+      )}
 
       {product.product_type === 'variable' && (
         <div className="product-attributes">
