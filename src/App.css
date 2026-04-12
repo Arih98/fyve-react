@@ -69,6 +69,115 @@ body::-webkit-scrollbar {
   padding-top: calc(var(--announcement-height) + var(--desktop-header-height));
 }
 
+body.products-transition-lock {
+  overflow: hidden;
+}
+
+.products-page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  will-change: clip-path;
+}
+
+.products-page-transition-idle {
+  clip-path: inset(0 0 100% 0);
+}
+
+.products-page-transition-enter {
+  pointer-events: auto;
+  animation: productsPageTransitionEnter 0.9s cubic-bezier(.77, 0, .175, 1) forwards;
+}
+
+.products-page-transition-hold {
+  pointer-events: auto;
+  clip-path: inset(0 0 0 0);
+}
+
+.products-page-transition-exit {
+  pointer-events: auto;
+  animation: productsPageTransitionExit 1s cubic-bezier(.77, 0, .175, 1) forwards;
+}
+
+.products-page-transition-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 24px;
+}
+
+.products-page-transition-logo {
+  width: 110px;
+  height: auto;
+  display: block;
+}
+
+.products-page-transition-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.products-page-transition-fyve,
+.products-page-transition-london {
+  font-family: quasimoda, sans-serif;
+  color: #424447;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.products-page-transition-fyve {
+  font-size: 20px;
+}
+
+.products-page-transition-london {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+@keyframes productsPageTransitionEnter {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes productsPageTransitionExit {
+  0% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .products-page-transition-logo {
+    width: 90px;
+  }
+
+  .products-page-transition-fyve {
+    font-size: 17px;
+  }
+
+  .products-page-transition-london {
+    font-size: 10px;
+    margin-top: 6px;
+  }
+}
+
 @media (max-width: 768px) {
   .site-content {
     padding-top: var(--announcement-height);

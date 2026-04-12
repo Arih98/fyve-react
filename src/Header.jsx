@@ -5,9 +5,11 @@ import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 import Cart from './Cart';
+import { useProductsPageTransition } from './ProductsPageTransitionContext';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { startProductsPageTransition } = useProductsPageTransition();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');

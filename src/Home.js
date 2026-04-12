@@ -1,5 +1,6 @@
 // Home.js
 import React, { useEffect, useRef } from 'react';
+import { useProductsPageTransition } from './ProductsPageTransitionContext';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
@@ -13,6 +14,7 @@ const Home = () => {
 const lottieRef = useRef();
 const heroRef = useRef(null);
 const hasAnimated = useRef(false);
+const { startProductsPageTransition } = useProductsPageTransition();
 const introDone = useRef(false);
 const hasSetHomeIntroPlayed = useRef(false);
 const [inViewRef, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
@@ -390,10 +392,14 @@ useEffect(() => {
       Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
     </p>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button">
-      Shop Collection
-      <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
-    </a>
+<button
+  type="button"
+  className="section1-shop-button"
+  onClick={() => startProductsPageTransition('/products?category=ss26')}
+>
+  Shop Collection
+  <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
+</button>
   </div>
 </div>
 
@@ -435,10 +441,14 @@ useEffect(() => {
         Playfully Refined.
       </div>
 
-      <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button section2-shop-button">
-        Shop Collection
-        <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
-      </a>
+<button
+  type="button"
+  className="section1-shop-button section2-shop-button"
+  onClick={() => startProductsPageTransition('/products?category=ss26')}
+>
+  Shop Collection
+  <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
+</button>
     </div>
   </div>
 </div>
