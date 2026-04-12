@@ -536,38 +536,36 @@ return (
       {cartError && <p className="cart-error">{cartError}</p>}
 
       <div className="quantity-selector">
-        <label className="quantity-label">Quantity</label>
-        <div className="quantity-controls">
-          <div className="quantity-controls pdp-quantity-controls">
-  <button
-    onClick={decreaseQuantity}
-    className="quantity-minus"
-    disabled={quantity <= 1}
-    type="button"
-  >
-    <span className="minus-line"></span>
-  </button>
+  <label className="quantity-label">Quantity</label>
+  <div className="quantity-controls pdp-quantity-controls">
+    <button
+      onClick={decreaseQuantity}
+      className="quantity-minus"
+      disabled={quantity <= 1}
+      type="button"
+    >
+      <span className="minus-line"></span>
+    </button>
 
-  <input
-    type="number"
-    className="quantity-input"
-    value={quantity}
-    min="1"
-    readOnly
-  />
+    <input
+      type="number"
+      className="quantity-input"
+      value={quantity}
+      min="1"
+      readOnly
+    />
 
-  <button
-    onClick={() => increaseQuantity(remainingStockForSelection)}
-    className="quantity-plus"
-    disabled={remainingStockForSelection !== null && quantity >= remainingStockForSelection}
-    type="button"
-  >
-    <span className="plus-horizontal"></span>
-    <span className="plus-vertical"></span>
-  </button>
+    <button
+      onClick={() => increaseQuantity(remainingStockForSelection)}
+      className="quantity-plus"
+      disabled={remainingStockForSelection !== null && quantity >= remainingStockForSelection}
+      type="button"
+    >
+      <span className="plus-horizontal"></span>
+      <span className="plus-vertical"></span>
+    </button>
+  </div>
 </div>
-        </div>
-      </div>
 
       <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
   <span className="add-to-cart-text">{addToCartLabel}</span>
