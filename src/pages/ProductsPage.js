@@ -32,14 +32,22 @@ const ProductsPage = () => {
     return saved ? Number(saved) : productsPerPage;
   });
 
-  useEffect(() => {
-    if (loading) {
-      setIsProductsRouteLoading(true);
-      return;
-    }
+useEffect(() => {
+  let active = true;
 
-    setIsProductsRouteLoading(false);
-  }, [loading, setIsProductsRouteLoading]);
+  setIsProductsRouteLoading(true);
+
+  const timer = setTimeout(() => {
+    if (active) {
+      setIsProductsRouteLoading(false);
+    }
+  }, 900);
+
+  return () => {
+    active = false;
+    clearTimeout(timer);
+  };
+}, [setIsProductsRouteLoading]);
 
   useEffect(() => {
     return () => {
