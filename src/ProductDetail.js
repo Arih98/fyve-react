@@ -253,8 +253,10 @@ const remainingStockForSelection =
     ? null
     : Math.max(0, Number(availableStock) - existingQuantityInCart);
 
-const isAddDisabled =
+const isOutOfStock =
   remainingStockForSelection !== null && remainingStockForSelection <= 0;
+
+const isAddDisabled = isOutOfStock;
 
   const handleAddToCart = useCallback(() => {
   const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
@@ -350,7 +352,6 @@ const isAddDisabled =
   setCartItems
 ]);
 
-const isOutOfStock = remainingStockForSelection !== null && remainingStockForSelection <= 0;
 const currentTotalPrice = (Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2);
 const addToCartLabel = isOutOfStock ? 'Out of Stock' : 'Add to Cart';
 const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : `Add to Bag • $${currentTotalPrice}`;
@@ -652,7 +653,7 @@ return (
     <div className="product-description-accordion-inner">
       <div className="accordion-description-content">
         <p>
-          You can return your item(s) within 7 days of delivery. There will be an $8 charge to process your return, and we will provide you with a prepaid shipping label to make the process as smooth as possible.
+          You can return your item(s) within 7 days of delivery. There will be an $8 charge to process your return, and we'll provide you with a prepaid shipping label to make the process as smooth as possible.
         </p>
         <p>
           Please note, your return must be marked as posted within 7 calendar days from being delivered. Any returns received which do not meet our returns criteria will not be eligible for a refund.
