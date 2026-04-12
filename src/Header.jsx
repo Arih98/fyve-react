@@ -49,7 +49,7 @@ const shouldBeTransparentHomeHeader =
 const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
   !delayTransparentHeader;
-const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.png' : '/assets/FYVE-Dark-Logo.png';
+const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.svg' : '/assets/FYVE-Dark-Logo.svg';
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
@@ -538,7 +538,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
         <div className="menu-content">
 
   <div className="mobile-menu-logo">
-    <img src="/assets/FYVE-Dark-Logo.png" alt="FYVE Logo" onClick={() => navigate('/')} />
+    <img src="/assets/FYVE-Dark-Logo.svg" alt="FYVE Logo" onClick={() => navigate('/')} />
   </div>
 
   <div className="menu-columns">
