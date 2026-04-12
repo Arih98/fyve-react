@@ -458,17 +458,28 @@ li.cart-item {
 }
 
 .cart-empty-continue {
-  border: 1px solid #000;
-  background: transparent;
-  border-radius: 50px;
-  padding: 12px 20px;
-  cursor: pointer;
-  font-family: quasimoda, sans-serif;
-  font-size: 14px;
-  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
+  height: 3rem;
+  padding: 0 1.5rem;
+  max-width: 100%;
+
+  border-radius: 2.5rem;
+  border: 1px solid #4a494a;
+  background-color: #4a494a;
+
+  font-family: quasimoda, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .cart-empty-continue-text {
