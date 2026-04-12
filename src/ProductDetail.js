@@ -536,17 +536,34 @@ return (
       <div className="quantity-selector">
         <label className="quantity-label">QTY</label>
         <div className="quantity-controls">
-          <button onClick={decreaseQuantity} className="qty-btn minus" disabled={quantity <= 1}>
-            <span className="qty-symbol">-</span>
-          </button>
-          <span className="qty-value">{quantity}</span>
-          <button
-  onClick={() => increaseQuantity(remainingStockForSelection)}
-  className="qty-btn plus"
-  disabled={remainingStockForSelection !== null && quantity >= remainingStockForSelection}
->
-            <span className="qty-symbol">+</span>
-          </button>
+          <div className="quantity-controls pdp-quantity-controls">
+  <button
+    onClick={decreaseQuantity}
+    className="quantity-minus"
+    disabled={quantity <= 1}
+    type="button"
+  >
+    <span className="minus-line"></span>
+  </button>
+
+  <input
+    type="number"
+    className="quantity-input"
+    value={quantity}
+    min="1"
+    readOnly
+  />
+
+  <button
+    onClick={() => increaseQuantity(remainingStockForSelection)}
+    className="quantity-plus"
+    disabled={remainingStockForSelection !== null && quantity >= remainingStockForSelection}
+    type="button"
+  >
+    <span className="plus-horizontal"></span>
+    <span className="plus-vertical"></span>
+  </button>
+</div>
         </div>
       </div>
 

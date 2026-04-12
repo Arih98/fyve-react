@@ -351,49 +351,90 @@
   margin-bottom: 10px;
 }
 
-.quantity-controls {
+.quantity-controls.pdp-quantity-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
 }
 
-.quantity-label {
-  font-family: 'Quasimoda', sans-serif;
-  font-weight: 700;
-  font-size: 1em;
-  color: #4a494a;
-}
-
-.qty-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #dfdfdf;
+.quantity-controls.pdp-quantity-controls .quantity-input {
   border: none;
+  width: 40px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  background-color: transparent;
+  outline: none;
+  color: #4A494A;
+  font-family: quasimoda, sans-serif;
+}
+
+.quantity-controls.pdp-quantity-controls .quantity-input::-webkit-inner-spin-button,
+.quantity-controls.pdp-quantity-controls .quantity-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantity-controls.pdp-quantity-controls button {
+  width: 30px;
+  height: 30px;
+  background-color: transparent !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  border-radius: 100%;
   cursor: pointer;
-  font-size: 20px;
-  font-weight: 300;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s ease;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
-.qty-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.quantity-controls.pdp-quantity-controls button:disabled {
+  opacity: 0.2;
+  cursor: default;
+  background-color: #dedede !important;
 }
 
-.qty-symbol {
-  line-height: 1;
+.quantity-controls.pdp-quantity-controls .quantity-plus {
+  position: relative;
 }
 
-.qty-value {
-  font-family: 'Quasimoda', sans-serif;
-  font-size: 16px;
-  color: #4a494a;
-  min-width: 20px;
-  text-align: center;
+.quantity-controls.pdp-quantity-controls .minus-line {
+  width: 16px;
+  height: 1px;
+  background: #000;
+  display: block;
+}
+
+.quantity-controls.pdp-quantity-controls .plus-horizontal,
+.quantity-controls.pdp-quantity-controls .plus-vertical {
+  position: absolute;
+  background: #000;
+}
+
+.quantity-controls.pdp-quantity-controls .plus-horizontal {
+  width: 20px;
+  height: 1px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.quantity-controls.pdp-quantity-controls .plus-vertical {
+  width: 1px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .product-description-accordion {
@@ -647,25 +688,15 @@
     font-size: 12px;
   }
 
-  .quantity-selector {
-    margin-top: 18px;
-    margin-bottom: 14px;
-  }
+.quantity-controls.pdp-quantity-controls button {
+  width: 50px;
+  height: 50px;
+}
 
-  .quantity-controls {
-    gap: 12px;
-  }
-
-  .qty-btn {
-    width: 24px;
-    height: 24px;
-    font-size: 20px;
-  }
-
-  .qty-value {
-    font-size: 15px;
-    min-width: 24px;
-  }
+.quantity-controls.pdp-quantity-controls .quantity-input {
+  width: 20px;
+  font-size: 13px;
+}
 
   .add-to-cart-button {
     margin-top: 20px;
