@@ -11,6 +11,7 @@ import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
+import gsap from 'gsap';
 
 
 const ProductDetail = () => {
@@ -25,6 +26,8 @@ const ProductDetail = () => {
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+  const descriptionPanelRef = useRef(null);
+  const descriptionIconRef = useRef(null);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
 
@@ -33,6 +36,55 @@ const ProductDetail = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useLayoutEffect(() => {
+  const panel = descriptionPanelRef.current;
+  const icon = descriptionIconRef.current;
+
+  if (!panel || !icon) return;
+
+  gsap.killTweensOf(panel);
+  gsap.killTweensOf(icon);
+
+  if (isDescriptionOpen) {
+    gsap.set(panel, { height: 'auto' });
+    const targetHeight = panel.offsetHeight;
+    gsap.fromTo(
+      panel,
+      { height: 0, opacity: 0 },
+      {
+        height: targetHeight,
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.set(panel, { height: 'auto' });
+        }
+      }
+    );
+    gsap.to(icon, {
+      rotate: 45,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+  } else {
+    gsap.to(panel, {
+      height: 0,
+      opacity: 0,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+    gsap.to(icon, {
+      rotate: 0,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+  }
+}, [isDescriptionOpen, displayDescription]);
+
+useEffect(() => {
+  setIsDescriptionOpen(false);
+}, [current?.sku, product?.id]);
 
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
@@ -502,21 +554,28 @@ return (
         <span className="add-to-cart-text">Add to Cart</span>
         <span className="add-to-cart-price">${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}</span>
       </button>
-            <div className={`product-description-accordion ${isDescriptionOpen ? 'open' : ''}`}>
+            <div className="product-description-accordion">
   <button
     type="button"
     className="product-description-accordion-toggle"
     onClick={() => setIsDescriptionOpen(prev => !prev)}
     aria-expanded={isDescriptionOpen}
   >
-    <span className="product-description-accordion-title">Description</span>
-    <span className="product-description-accordion-icon" aria-hidden="true">
+    <span className="product-description-accordion-title">Materials</span>
+    <span
+      ref={descriptionIconRef}
+      className="product-description-accordion-icon"
+      aria-hidden="true"
+    >
       <span />
       <span />
     </span>
   </button>
 
-  <div className={`product-description-accordion-panel ${isDescriptionOpen ? 'open' : ''}`}>
+  <div
+    ref={descriptionPanelRef}
+    className="product-description-accordion-panel"
+  >
     <div className="product-description-accordion-inner">
       <div
         className={

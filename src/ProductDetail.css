@@ -449,20 +449,10 @@
   transform: translate(-50%, -50%) rotate(90deg);
 }
 
-.product-description-accordion.open .product-description-accordion-icon {
-  transform: rotate(45deg);
-}
-
 .product-description-accordion-panel {
-  max-height: 0;
-  overflow: hidden;
+  height: 0;
   opacity: 0;
-  transition: max-height 0.45s ease, opacity 0.25s ease;
-}
-
-.product-description-accordion-panel.open {
-  max-height: 500px;
-  opacity: 1;
+  overflow: hidden;
 }
 
 .product-description-accordion-inner {
