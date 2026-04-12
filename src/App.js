@@ -17,7 +17,6 @@ import './Header.css';
 import ScrollManager from './components/ScrollManager';
 import AnnouncementBar from './AnnouncementBar';
 import Cart from './Cart';
-import Loader from './Loader';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -55,26 +54,6 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const [showProductsLoader, setShowProductsLoader] = useState(false);
-  const [productsLoaderDone, setProductsLoaderDone] = useState(() => location.pathname !== '/products');
-
-  useEffect(() => {
-    if (location.pathname === '/products') {
-      setShowProductsLoader(true);
-      setProductsLoaderDone(false);
-
-      const timer = setTimeout(() => {
-        setShowProductsLoader(false);
-        setProductsLoaderDone(true);
-      }, 1200);
-
-      return () => clearTimeout(timer);
-    }
-
-    setShowProductsLoader(false);
-    setProductsLoaderDone(true);
-  }, [location.pathname]);
 
   useEffect(() => {
     const originalScrollTo = window.scrollTo;
@@ -107,30 +86,23 @@ function AppContent() {
   }, []);
 
   return (
-    <>
-      {showProductsLoader && <Loader />}
-
-      <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
-        <CartProvider>
-          <ScrollManager />
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route
-                path="/products"
-                element={productsLoaderDone ? <ProductsPage /> : null}
-              />
-              <Route path="/product/:id" element={<ProductDetailWrapper />} />
-              <Route path="/product-category/:slug" element={<CategoryProducts />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/cart" element={<Cart />} />
-            </Route>
-          </Routes>
-        </CartProvider>
-      </MenuContext.Provider>
-    </>
+    <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+      <CartProvider>
+        <ScrollManager />
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/product/:id" element={<ProductDetailWrapper />} />
+            <Route path="/product-category/:slug" element={<CategoryProducts />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/cart" element={<Cart />} />
+          </Route>
+        </Routes>
+      </CartProvider>
+    </MenuContext.Provider>
   );
 }
 

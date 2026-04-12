@@ -11,7 +11,7 @@ const ProductsPage = () => {
   const navigate = useNavigate();
   const navigationType = useNavigationType();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { isMenuOpen } = useContext(MenuContext);
+  const { isMenuOpen, setShowProductsLoader } = useContext(MenuContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
@@ -24,6 +24,14 @@ const clickLockRef = useRef(false);
     perPage: 200,
     category: selectedCategory
   });
+
+useEffect(() => {
+  if (!loading) {
+    requestAnimationFrame(() => {
+      setShowProductsLoader(false);
+    });
+  }
+}, [loading, setShowProductsLoader]);
 
   const [visibleCount, setVisibleCount] = useState(() => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
