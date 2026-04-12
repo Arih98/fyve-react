@@ -534,7 +534,7 @@ return (
       {cartError && <p className="cart-error">{cartError}</p>}
 
       <div className="quantity-selector">
-        <label className="quantity-label">Quanity</label>
+        <label className="quantity-label">Quantity</label>
         <div className="quantity-controls">
           <div className="quantity-controls pdp-quantity-controls">
   <button
