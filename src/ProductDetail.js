@@ -314,6 +314,38 @@ useEffect(() => {
   };
 }, [handleAddToCart]);
 
+useEffect(() => {
+  if (!product) return;
+
+  const selectedColor =
+    selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || null;
+
+  const recentlyViewedItem = {
+    id: current?.id || product.id,
+    parentId: product.id,
+    title: displayTitle,
+    price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
+    image: displayImages[0] || product?.thumbnail || '/api/Uploads/fallback-image.png',
+    selectedColor,
+    gallery: displayImages,
+    product,
+    path: `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`
+  };
+
+  const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+  const filtered = existing.filter(item => item.path !== recentlyViewedItem.path);
+  const next = [recentlyViewedItem, ...filtered].slice(0, 8);
+
+  localStorage.setItem('recentlyViewedProducts', JSON.stringify(next));
+}, [
+  product,
+  current,
+  displayImages,
+  displayTitle,
+  selectedAttributes,
+  isColorAttribute
+]);
+
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;

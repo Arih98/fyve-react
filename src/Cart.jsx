@@ -1,11 +1,20 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from './CartContext';
+import { startProductImageTransition } from './utils/productImageTransition';
 import './Cart.css';
-import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ variant = 'page', onClose }) => {
+  const recentlyViewedImageRefs = useRef(new Map());
+const placeholderImage = '/api/Uploads/fallback-image.png';
   const { cartItems, setCartItems } = useContext(CartContext);
+  const navigate = useNavigate();
+  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
+
+  useEffect(() => {
+  const stored = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+  setRecentlyViewedProducts(stored);
+}, []);
 
   const handleQuantityChange = (itemId, variationKey, delta) => {
   setCartItems(prevItems =>
@@ -25,8 +34,6 @@ const Cart = ({ variant = 'page', onClose }) => {
     })
   );
 };
-
-const navigate = useNavigate();
 
   const handleRemoveItem = (itemId, variationKey) => {
     setCartItems(prevItems =>
@@ -119,6 +126,71 @@ const navigate = useNavigate();
     </ul>
   );
 
+  const handleRecentlyViewedClick = (item) => {
+  const sourceEl = recentlyViewedImageRefs.current.get(item.path);
+  const sourceSrc = item.image || placeholderImage;
+  const isMobileViewport = window.innerWidth <= 768;
+
+  if (sourceEl) {
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 1 : 999999
+    });
+  }
+
+  navigate(item.path, {
+    state: {
+      product: item.product,
+      initialColor: item.selectedColor,
+      transitionSourceDisplayId: item.path,
+      transitionSourceSrc: sourceSrc,
+      fromProductGrid: true
+    }
+  });
+};
+
+  const recentlyViewedMarkup = recentlyViewedProducts.length > 0 && (
+  <section className="cart-recently-viewed" aria-label="Products you recently viewed">
+    <h3 className="cart-recently-viewed-title">Products you recently viewed</h3>
+
+    <div className="cart-recently-viewed-carousel">
+      {recentlyViewedProducts.map((item) => (
+        <button
+          key={item.path}
+          type="button"
+          className="cart-recently-viewed-card"
+          onClick={() => handleRecentlyViewedClick(item)}
+        >
+          <div className="cart-recently-viewed-image-wrap">
+<img
+  ref={el => {
+    if (el) {
+      recentlyViewedImageRefs.current.set(item.path, el);
+    } else {
+      recentlyViewedImageRefs.current.delete(item.path);
+    }
+  }}
+  src={item.image}
+  alt={item.title}
+  className="cart-recently-viewed-image"
+  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+/>
+          </div>
+
+          <div className="cart-recently-viewed-info">
+            <p className="cart-recently-viewed-name">{item.title}</p>
+            <p className="cart-recently-viewed-price">${Number(item.price || 0).toFixed(2)}</p>
+          </div>
+        </button>
+      ))}
+    </div>
+  </section>
+);
+
   if (isPanel) {
     return (
       <div className="cart-panel">
@@ -158,22 +230,24 @@ const navigate = useNavigate();
           </>
         ) : (
   <div className="cart-panel-empty">
-    <div className="cart-empty-state">
-  <div className="cart-empty-icon-wrapper">
-    <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+  <div className="cart-empty-state">
+    <div className="cart-empty-icon-wrapper">
+      <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+    </div>
+
+    <p className="cart-empty">Your bag is empty</p>
+
+    <button
+      className="cart-empty-continue"
+      type="button"
+      onClick={() => navigate('/products?category=ss26')}
+    >
+      <span className="cart-empty-continue-text">Continue shopping</span>
+    </button>
+
+    {recentlyViewedMarkup}
   </div>
-
-  <p className="cart-empty">Your bag is empty</p>
-
-  <button
-    className="cart-empty-continue"
-    type="button"
-    onClick={() => navigate('/products?category=ss26')}
-  >
-    <span className="cart-empty-continue-text">Continue shopping</span>
-  </button>
 </div>
-  </div>
 )}
       </div>
     );
@@ -210,22 +284,24 @@ const navigate = useNavigate();
           </main>
         ) : (
           <div className="cart-page-empty">
-<div className="cart-empty-state">
-  <div className="cart-empty-icon-wrapper">
-    <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+  <div className="cart-empty-state">
+    <div className="cart-empty-icon-wrapper">
+      <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+    </div>
+
+    <p className="cart-empty">Your bag is empty</p>
+
+    <button
+      className="cart-empty-continue"
+      type="button"
+      onClick={() => navigate('/products?category=ss26')}
+    >
+      <span className="cart-empty-continue-text">Continue shopping</span>
+    </button>
+
+    {recentlyViewedMarkup}
   </div>
-
-  <p className="cart-empty">Your bag is empty</p>
-
-  <button
-    className="cart-empty-continue"
-    type="button"
-    onClick={() => navigate('/products?category=ss26')}
-  >
-    <span className="cart-empty-continue-text">Continue shopping</span>
-  </button>
 </div>
-          </div>
         )}
       </div>
     </div>
