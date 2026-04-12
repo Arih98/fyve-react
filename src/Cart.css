@@ -101,8 +101,11 @@
 }
 
 .cart-empty {
-  margin: 0;
-  font-size: 16px;
+  font-size: clamp(1rem, .94rem + .26vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.5;
+  margin-top: 1rem;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
 }
@@ -464,7 +467,7 @@ li.cart-item {
 
 @media (max-width: 768px) {
 
-    .cart-page-empty {
+  .cart-page-empty {
     display: flex;
     justify-content: center;
     padding-top: 20px;
