@@ -26,7 +26,7 @@ useEffect(() => {
     const viewport = recentlyViewedViewportRef.current;
     if (!viewport) return;
 
-    const step = 136;
+    const step = 152;
     const visibleCount = Math.max(1, Math.floor(viewport.clientWidth / step));
     const maxIndex = Math.max(0, recentlyViewedProducts.length - visibleCount);
 
@@ -213,7 +213,7 @@ if (deltaX <= -threshold) {
 >
   <div
     className="cart-recently-viewed-track"
-    style={{ transform: `translateX(calc(${recentlyViewedIndex} * -136px))` }}
+    style={{ transform: `translateX(calc(${recentlyViewedIndex} * -152px))` }}
   >
     {recentlyViewedProducts.map((item) => (
       <button
