@@ -28,6 +28,9 @@ const ProductDetail = () => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const descriptionPanelRef = useRef(null);
   const descriptionIconRef = useRef(null);
+  const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
+  const deliveryPanelRef = useRef(null);
+  const deliveryIconRef = useRef(null);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
 
@@ -147,52 +150,57 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
   : (product?.description || product?.shortDescription || '');
 
   useLayoutEffect(() => {
-  const panel = descriptionPanelRef.current;
-  const icon = descriptionIconRef.current;
+  const animateAccordion = (isOpen, panel, icon) => {
+    if (!panel || !icon) return;
 
-  if (!panel || !icon) return;
+    gsap.killTweensOf(panel);
+    gsap.killTweensOf(icon);
 
-  gsap.killTweensOf(panel);
-  gsap.killTweensOf(icon);
+    if (isOpen) {
+      gsap.set(panel, { height: 'auto' });
+      const targetHeight = panel.offsetHeight;
 
-  if (isDescriptionOpen) {
-    gsap.set(panel, { height: 'auto' });
-    const targetHeight = panel.offsetHeight;
-    gsap.fromTo(
-      panel,
-      { height: 0, opacity: 0 },
-      {
-        height: targetHeight,
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power2.out',
-        onComplete: () => {
-          gsap.set(panel, { height: 'auto' });
+      gsap.fromTo(
+        panel,
+        { height: 0, opacity: 0 },
+        {
+          height: targetHeight,
+          opacity: 1,
+          duration: 0.45,
+          ease: 'power2.out',
+          onComplete: () => gsap.set(panel, { height: 'auto' })
         }
-      }
-    );
-    gsap.to(icon, {
-      rotate: 45,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-  } else {
-    gsap.to(panel, {
-      height: 0,
-      opacity: 0,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-    gsap.to(icon, {
-      rotate: 0,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-  }
-}, [isDescriptionOpen, displayDescription]);
+      );
+
+      gsap.to(icon, {
+        rotate: 45,
+        duration: 0.35,
+        ease: 'power2.out'
+      });
+    } else {
+      gsap.to(panel, {
+        height: 0,
+        opacity: 0,
+        duration: 0.35,
+        ease: 'power2.out'
+      });
+
+      gsap.to(icon, {
+        rotate: 0,
+        duration: 0.35,
+        ease: 'power2.out'
+      });
+    }
+  };
+
+  animateAccordion(isDescriptionOpen, descriptionPanelRef.current, descriptionIconRef.current);
+  animateAccordion(isDeliveryOpen, deliveryPanelRef.current, deliveryIconRef.current);
+
+}, [isDescriptionOpen, isDeliveryOpen, displayDescription]);
 
 useEffect(() => {
   setIsDescriptionOpen(false);
+  setIsDeliveryOpen(false);
 }, [current?.sku, product?.id]);
 
   useEffect(() => {
@@ -581,7 +589,10 @@ return (
   <button
     type="button"
     className="product-description-accordion-toggle"
-    onClick={() => setIsDescriptionOpen(prev => !prev)}
+    onClick={() => {
+  setIsDescriptionOpen(prev => !prev);
+  setIsDeliveryOpen(false);
+}}
     aria-expanded={isDescriptionOpen}
   >
     <span className="product-description-accordion-title">Materials</span>
@@ -610,6 +621,43 @@ return (
         }
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription || '') }}
       />
+    </div>
+  </div>
+</div>
+<div className="product-description-accordion">
+  <button
+    type="button"
+    className="product-description-accordion-toggle"
+    onClick={() => {
+  setIsDeliveryOpen(prev => !prev);
+  setIsDescriptionOpen(false);
+}}
+    aria-expanded={isDeliveryOpen}
+  >
+    <span className="product-description-accordion-title">Delivery and Returns</span>
+    <span
+      ref={deliveryIconRef}
+      className="product-description-accordion-icon"
+      aria-hidden="true"
+    >
+      <span />
+      <span />
+    </span>
+  </button>
+
+  <div
+    ref={deliveryPanelRef}
+    className="product-description-accordion-panel"
+  >
+    <div className="product-description-accordion-inner">
+      <div className="accordion-description-content">
+        <p>
+          You can return your item(s) within 7 days of delivery. There will be an $8 charge to process your return, and we will provide you with a prepaid shipping label to make the process as smooth as possible.
+        </p>
+        <p>
+          Please note, your return must be marked as posted within 7 calendar days from being delivered. Any returns received which do not meet our returns criteria will not be eligible for a refund.
+        </p>
+      </div>
     </div>
   </div>
 </div>
