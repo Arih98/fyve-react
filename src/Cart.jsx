@@ -13,7 +13,6 @@ const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
 const [recentlyViewedIndex, setRecentlyViewedIndex] = useState(0);
 const recentlyViewedTouchStartX = useRef(0);
 const recentlyViewedTouchDeltaX = useRef(0);
-const recentlyViewedViewportRef = useRef(null);
 const [recentlyViewedMaxIndex, setRecentlyViewedMaxIndex] = useState(0);
 
   useEffect(() => {
@@ -199,7 +198,6 @@ if (deltaX <= -threshold) {
     <h3 className="cart-recently-viewed-title">Products you recently viewed</h3>
 
 <div
-  ref={recentlyViewedViewportRef}
   className="cart-recently-viewed-carousel"
   onTouchStart={handleRecentlyViewedTouchStart}
   onTouchMove={handleRecentlyViewedTouchMove}
