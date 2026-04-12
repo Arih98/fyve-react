@@ -333,7 +333,13 @@ useEffect(() => {
   };
 
 const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-const filtered = existing.filter(item => String(item.parentId) !== String(recentlyViewedItem.parentId));
+const filtered = existing.filter(
+  item =>
+    !(
+      String(item.parentId) === String(recentlyViewedItem.parentId) &&
+      String(item.selectedColor || '') === String(recentlyViewedItem.selectedColor || '')
+    )
+);
 const next = [recentlyViewedItem, ...filtered].slice(0, 8);
 
   localStorage.setItem('recentlyViewedProducts', JSON.stringify(next));
