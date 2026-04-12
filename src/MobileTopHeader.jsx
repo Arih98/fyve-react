@@ -14,7 +14,7 @@ const MobileTopHeader = () => {
   return (
     <div className="mobile-top-header">
       <img
-        src="/assets/FYVE-Dark-Logo.png"
+        src="/assets/FYVE-Dark-Logo.svg"
         alt="FYVE Logo"
         className="mobile-top-header-logo"
         onClick={() => navigate('/')}
