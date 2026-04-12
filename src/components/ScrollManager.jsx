@@ -14,78 +14,61 @@ export default function ScrollManager() {
   }, []);
 
   useEffect(() => {
-  const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-  const pageKey = isProductDetailPage
-    ? location.pathname
-    : `${location.pathname}${location.search}`;
+    const pageKey = `${location.pathname}${location.search}`;
 
-  const saveScroll = () => {
-    scrollPositions.set(pageKey, window.scrollY || 0);
-  };
+    const saveScroll = () => {
+      scrollPositions.set(pageKey, window.scrollY || 0);
+    };
 
-  window.addEventListener('scroll', saveScroll, { passive: true });
+    window.addEventListener('scroll', saveScroll, { passive: true });
 
-  return () => {
-    saveScroll();
-    window.removeEventListener('scroll', saveScroll);
-  };
-}, [location.pathname, location.search]);
+    return () => {
+      saveScroll();
+      window.removeEventListener('scroll', saveScroll);
+    };
+  }, [location.pathname, location.search]);
 
     useEffect(() => {
-  const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-  const pageKey = isProductDetailPage
-    ? location.pathname
-    : `${location.pathname}${location.search}`;
+    const pageKey = `${location.pathname}${location.search}`;
 
-  if (location.pathname === '/') {
-    window.scrollTo(0, 0);
-
-    requestAnimationFrame(() => {
+    if (location.pathname === '/') {
       window.scrollTo(0, 0);
 
       requestAnimationFrame(() => {
         window.scrollTo(0, 0);
 
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           window.scrollTo(0, 0);
-        }, 300);
+
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 300);
+        });
       });
-    });
 
-    return;
-  }
-
-  if (navigationType === 'POP') {
-    const isMobileProductsPage =
-      location.pathname === '/products' && window.innerWidth <= 768;
-
-    if (isMobileProductsPage) {
       return;
     }
 
-    const savedY = scrollPositions.get(pageKey) ?? 0;
-    window.scrollTo(0, savedY);
-    return;
-  }
+    if (navigationType === 'POP') {
+      const isMobileProductsPage =
+        location.pathname === '/products' && window.innerWidth <= 768;
 
-  if (isProductDetailPage && location.state?.fromProductGrid) {
+      if (isMobileProductsPage) {
+        return;
+      }
+
+      const savedY = scrollPositions.get(pageKey) ?? 0;
+      window.scrollTo(0, savedY);
+      return;
+    }
+
+        if (location.state?.fromProductGrid) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
     window.scrollTo(0, 0);
-    return;
-  }
-
-  if (isProductDetailPage) {
-    return;
-  }
-
-  if (location.state?.fromProductGrid) {
-    window.scrollTo(0, 0);
-    return;
-  }
-
-  window.scrollTo(0, 0);
-}, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
-
-
+  }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 
   return null;
 }
