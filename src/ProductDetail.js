@@ -316,11 +316,17 @@ useEffect(() => {
 
 useEffect(() => {
   if (!product) return;
+  if (product.product_type === 'variable' && !effectiveVariation) return;
 
   const selectedColor =
-    selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || null;
+    selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
+
+  if (product.product_type === 'variable' && !selectedColor) return;
+
+  const storageKey = `${product.id}__${selectedColor.toLowerCase()}`;
 
   const recentlyViewedItem = {
+    storageKey,
     id: current?.id || product.id,
     parentId: product.id,
     title: displayTitle,
@@ -332,20 +338,15 @@ useEffect(() => {
     path: `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`
   };
 
-const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-const filtered = existing.filter(
-  item =>
-    !(
-      String(item.parentId) === String(recentlyViewedItem.parentId) &&
-      String(item.selectedColor || '') === String(recentlyViewedItem.selectedColor || '')
-    )
-);
-const next = [recentlyViewedItem, ...filtered].slice(0, 8);
+  const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+  const filtered = existing.filter(item => item.storageKey !== storageKey);
+  const next = [recentlyViewedItem, ...filtered].slice(0, 8);
 
   localStorage.setItem('recentlyViewedProducts', JSON.stringify(next));
 }, [
   product,
   current,
+  effectiveVariation,
   displayImages,
   displayTitle,
   selectedAttributes,
