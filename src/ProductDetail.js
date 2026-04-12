@@ -37,55 +37,6 @@ const ProductDetail = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useLayoutEffect(() => {
-  const panel = descriptionPanelRef.current;
-  const icon = descriptionIconRef.current;
-
-  if (!panel || !icon) return;
-
-  gsap.killTweensOf(panel);
-  gsap.killTweensOf(icon);
-
-  if (isDescriptionOpen) {
-    gsap.set(panel, { height: 'auto' });
-    const targetHeight = panel.offsetHeight;
-    gsap.fromTo(
-      panel,
-      { height: 0, opacity: 0 },
-      {
-        height: targetHeight,
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power2.out',
-        onComplete: () => {
-          gsap.set(panel, { height: 'auto' });
-        }
-      }
-    );
-    gsap.to(icon, {
-      rotate: 45,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-  } else {
-    gsap.to(panel, {
-      height: 0,
-      opacity: 0,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-    gsap.to(icon, {
-      rotate: 0,
-      duration: 0.35,
-      ease: 'power2.out'
-    });
-  }
-}, [isDescriptionOpen, displayDescription]);
-
-useEffect(() => {
-  setIsDescriptionOpen(false);
-}, [current?.sku, product?.id]);
-
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
   const { product: loadedProduct, loading, error } = useProduct(resolvedProductId);
@@ -194,6 +145,55 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
   const displayDescription = product?.product_type === 'variable'
   ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
   : (product?.description || product?.shortDescription || '');
+
+  useLayoutEffect(() => {
+  const panel = descriptionPanelRef.current;
+  const icon = descriptionIconRef.current;
+
+  if (!panel || !icon) return;
+
+  gsap.killTweensOf(panel);
+  gsap.killTweensOf(icon);
+
+  if (isDescriptionOpen) {
+    gsap.set(panel, { height: 'auto' });
+    const targetHeight = panel.offsetHeight;
+    gsap.fromTo(
+      panel,
+      { height: 0, opacity: 0 },
+      {
+        height: targetHeight,
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.set(panel, { height: 'auto' });
+        }
+      }
+    );
+    gsap.to(icon, {
+      rotate: 45,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+  } else {
+    gsap.to(panel, {
+      height: 0,
+      opacity: 0,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+    gsap.to(icon, {
+      rotate: 0,
+      duration: 0.35,
+      ease: 'power2.out'
+    });
+  }
+}, [isDescriptionOpen, displayDescription]);
+
+useEffect(() => {
+  setIsDescriptionOpen(false);
+}, [current?.sku, product?.id]);
 
   useEffect(() => {
   if (!location.state?.fromProductGrid) {
