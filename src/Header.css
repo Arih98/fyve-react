@@ -200,6 +200,7 @@ body.locked {
 .header-logo {
   height: 50px;
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   justify-self: center;
