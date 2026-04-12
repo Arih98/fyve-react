@@ -23,17 +23,7 @@ const [recentlyViewedMaxIndex, setRecentlyViewedMaxIndex] = useState(0);
 
 useEffect(() => {
   const updateRecentlyViewedBounds = () => {
-    const viewport = recentlyViewedViewportRef.current;
-    if (!viewport) return;
-
-    const viewportWidth = viewport.clientWidth;
-    const cardWidth = 144;
-    const gap = 8;
-    const step = cardWidth + gap;
-    const trackWidth = (recentlyViewedProducts.length * step) - gap;
-    const maxTranslate = Math.max(0, trackWidth - viewportWidth);
-    const maxIndex = Math.max(0, Math.floor(maxTranslate / step));
-
+    const maxIndex = Math.max(0, recentlyViewedProducts.length - 1);
     setRecentlyViewedMaxIndex(maxIndex);
     setRecentlyViewedIndex(prev => Math.min(prev, maxIndex));
   };
@@ -216,7 +206,7 @@ const getRecentlyViewedTranslateX = () => {
   const maxTranslate = Math.max(0, trackWidth - viewportWidth);
 
   if (recentlyViewedIndex <= 0) return 0;
-  if (recentlyViewedIndex >= recentlyViewedMaxIndex) return maxTranslate;
+  if (recentlyViewedIndex >= recentlyViewedProducts.length - 1) return maxTranslate;
 
   const centeredOffset = (viewportWidth - cardWidth) / 2;
   const rawTranslate = (recentlyViewedIndex * step) - centeredOffset;
