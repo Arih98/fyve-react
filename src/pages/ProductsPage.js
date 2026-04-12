@@ -21,7 +21,7 @@ const clickLockRef = useRef(false);
 
   const { data: products, loading, error, meta } = useProducts({
     page: 1,
-    perPage: 12,
+    perPage: 200,
     category: selectedCategory
   });
 
