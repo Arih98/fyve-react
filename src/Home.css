@@ -276,6 +276,14 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
   display: inline-flex;
   align-items: center;
   gap: 0.8vw;
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.section1-shop-button:focus {
+  outline: none;
 }
 
 .section1-shop-button img {
