@@ -454,13 +454,15 @@
 }
 
 .product-description-accordion-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s ease;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.45s ease, opacity 0.25s ease;
 }
 
 .product-description-accordion-panel.open {
-  grid-template-rows: 1fr;
+  max-height: 500px;
+  opacity: 1;
 }
 
 .product-description-accordion-inner {
