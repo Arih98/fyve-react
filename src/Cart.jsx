@@ -13,6 +13,8 @@ const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
 const [recentlyViewedIndex, setRecentlyViewedIndex] = useState(0);
 const recentlyViewedTouchStartX = useRef(0);
 const recentlyViewedTouchDeltaX = useRef(0);
+const recentlyViewedViewportRef = useRef(null);
+const [recentlyViewedMaxIndex, setRecentlyViewedMaxIndex] = useState(0);
 
   useEffect(() => {
   const stored = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
@@ -20,9 +22,22 @@ const recentlyViewedTouchDeltaX = useRef(0);
 }, []);
 
 useEffect(() => {
-  setRecentlyViewedIndex((prev) =>
-    Math.max(0, Math.min(prev, Math.max(0, recentlyViewedProducts.length - 1)))
-  );
+  const updateRecentlyViewedBounds = () => {
+    const viewport = recentlyViewedViewportRef.current;
+    if (!viewport) return;
+
+    const step = 160;
+    const visibleCount = Math.max(1, Math.floor(viewport.clientWidth / step));
+    const maxIndex = Math.max(0, recentlyViewedProducts.length - visibleCount);
+
+    setRecentlyViewedMaxIndex(maxIndex);
+    setRecentlyViewedIndex(prev => Math.min(prev, maxIndex));
+  };
+
+  updateRecentlyViewedBounds();
+  window.addEventListener('resize', updateRecentlyViewedBounds);
+
+  return () => window.removeEventListener('resize', updateRecentlyViewedBounds);
 }, [recentlyViewedProducts.length]);
 
   const handleQuantityChange = (itemId, variationKey, delta) => {
@@ -175,13 +190,11 @@ const handleRecentlyViewedTouchEnd = () => {
   const threshold = 50;
   const deltaX = recentlyViewedTouchDeltaX.current;
 
-  if (deltaX <= -threshold) {
-    setRecentlyViewedIndex((prev) =>
-      Math.min(prev + 1, Math.max(0, recentlyViewedProducts.length - 1))
-    );
-  } else if (deltaX >= threshold) {
-    setRecentlyViewedIndex((prev) => Math.max(prev - 1, 0));
-  }
+if (deltaX <= -threshold) {
+  setRecentlyViewedIndex((prev) => Math.min(prev + 1, recentlyViewedMaxIndex));
+} else if (deltaX >= threshold) {
+  setRecentlyViewedIndex((prev) => Math.max(prev - 1, 0));
+}
 
   recentlyViewedTouchStartX.current = 0;
   recentlyViewedTouchDeltaX.current = 0;
@@ -191,7 +204,8 @@ const handleRecentlyViewedTouchEnd = () => {
   <section className="cart-recently-viewed" aria-label="Products you recently viewed">
     <h3 className="cart-recently-viewed-title">Products you recently viewed</h3>
 
-    <div
+<div
+  ref={recentlyViewedViewportRef}
   className="cart-recently-viewed-carousel"
   onTouchStart={handleRecentlyViewedTouchStart}
   onTouchMove={handleRecentlyViewedTouchMove}
