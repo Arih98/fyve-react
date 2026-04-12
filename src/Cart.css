@@ -552,7 +552,7 @@ li.cart-item {
 }
 
 .cart-recently-viewed-name {
-  margin: 0 0 4px;
+  margin: 0 8px 4px;
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -565,6 +565,8 @@ li.cart-item {
 
 .cart-recently-viewed-price {
   margin: 0;
+  margin-right: 8px;
+  margin-left: 8px;
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   color: #4A494A;
