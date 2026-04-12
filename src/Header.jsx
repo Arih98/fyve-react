@@ -16,8 +16,9 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const { isMenuOpen, setIsMenuOpen, menuState, burgerRef, toggleMenu } = useMobileMenuController();
 const location = useLocation();
+const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
-const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen;
+const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -27,7 +28,6 @@ const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
-const { cartItems } = useContext(CartContext);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
 const totalBagQuantity = useMemo(
