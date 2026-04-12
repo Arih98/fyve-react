@@ -523,6 +523,7 @@ li.cart-item {
 .cart-recently-viewed-card {
   flex: 0 0 152px;
   width: 152px;
+  height: 230px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -554,11 +555,13 @@ li.cart-item {
 
 .cart-recently-viewed-info {
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .cart-recently-viewed-name {
   margin: 0 0 4px;
-  min-height: calc(1.3em * 2);
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -568,6 +571,7 @@ li.cart-item {
 
 .cart-recently-viewed-price {
   margin: 0;
+  margin-top: auto;
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   color: #4A494A;
