@@ -346,8 +346,12 @@ useEffect(() => {
 
     <div className="fyve-ui-layer">
       <div className="home-mobile-top-logo">
-        <img src="/assets/FYVE-White-Logo.svg" alt="FYVE Logo" />
-      </div>
+  <img
+    src="/assets/FYVE-White-Logo.svg"
+    alt="FYVE Logo"
+    style={{ width: '140px', height: 'auto', display: 'block' }}
+  />
+</div>
 
       <div className="lottie-container">
   <div className="lottie-animation-wrap">
