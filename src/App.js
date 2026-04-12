@@ -115,9 +115,10 @@ useEffect(() => {
           </Route>
         </Routes>
       </CartProvider>
-    </MenuContext.Provider>
-  </>
-);
+      </MenuContext.Provider>
+    </>
+  );
+}
 
 const App = () => {
   return <AppContent />;
