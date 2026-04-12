@@ -155,7 +155,7 @@ const Cart = ({ variant = 'page', onClose }) => {
           </>
         ) : (
           <div className="cart-panel-empty">
-            <p className="cart-empty">There are currently no items in your bag.</p>
+            <p className="cart-empty">Your bag is empty</p>
           </div>
         )}
       </div>
@@ -193,7 +193,7 @@ const Cart = ({ variant = 'page', onClose }) => {
           </main>
         ) : (
           <div className="cart-page-empty">
-            <p className="cart-empty">There are currently no items in your bag.</p>
+            <p className="cart-empty">Your bag is empty</p>
           </div>
         )}
       </div>
