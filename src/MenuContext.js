@@ -1,8 +1,2 @@
 import { createContext } from 'react';
-
-export const MenuContext = createContext({
-  isMenuOpen: false,
-  setIsMenuOpen: () => {},
-  openProductsLoader: () => {},
-  isProductsLoaderActive: false
-});
+export const MenuContext = createContext({ isMenuOpen: false, setIsMenuOpen: () => {} });
