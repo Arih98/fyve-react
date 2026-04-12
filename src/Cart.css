@@ -510,11 +510,12 @@ li.cart-item {
   width: 100%;
   overflow: hidden;
   touch-action: pan-y;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
 
 .cart-recently-viewed-track {
   display: flex;
-  gap: 8px;
   transition: transform 0.35s cubic-bezier(.22,.61,.36,1);
   will-change: transform;
 }
@@ -525,7 +526,7 @@ li.cart-item {
   background: none;
   border: none;
   padding: 0;
-  margin: 0;
+  margin-right: 8px;
   text-align: left;
   cursor: pointer;
   appearance: none;
