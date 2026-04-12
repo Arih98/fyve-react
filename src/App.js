@@ -17,6 +17,7 @@ import './Header.css';
 import ScrollManager from './components/ScrollManager';
 import AnnouncementBar from './AnnouncementBar';
 import Cart from './Cart';
+import Loader from './Loader';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -54,6 +55,15 @@ const Layout = () => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setIsLoading(false);
+  }, 1200);
+
+  return () => clearTimeout(timer);
+}, []);
 
   useEffect(() => {
     const originalScrollTo = window.scrollTo;
@@ -86,6 +96,9 @@ function AppContent() {
   }, []);
 
   return (
+  <>
+    {isLoading && <Loader />}
+
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
         <ScrollManager />
@@ -103,8 +116,8 @@ function AppContent() {
         </Routes>
       </CartProvider>
     </MenuContext.Provider>
-  );
-}
+  </>
+);
 
 const App = () => {
   return <AppContent />;
