@@ -24,6 +24,7 @@ const ProductDetail = () => {
   const galleryRefs = useRef(new Map());
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
 
@@ -431,19 +432,6 @@ return (
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
       <h1 className="product-title">{displayTitle}</h1>
 
-            {displayDescription && (
-        <p
-          className={
-            effectiveVariation?.description ||
-            effectiveVariation?.shortDescription ||
-            effectiveVariation?.short_description
-              ? 'product-variation-description'
-              : 'product-description'
-          }
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
-        />
-      )}
-
       {product.product_type === 'variable' && (
         <div className="product-attributes">
           {attributeNames.map(attrName => {
@@ -514,6 +502,35 @@ return (
         <span className="add-to-cart-text">Add to Cart</span>
         <span className="add-to-cart-price">${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}</span>
       </button>
+            {displayDescription && (
+        <div className={`product-description-accordion ${isDescriptionOpen ? 'open' : ''}`}>
+          <button
+            type="button"
+            className="product-description-accordion-toggle"
+            onClick={() => setIsDescriptionOpen(prev => !prev)}
+            aria-expanded={isDescriptionOpen}
+          >
+            <span className="product-description-accordion-title">Description</span>
+            <span className="product-description-accordion-icon" aria-hidden="true">
+              <span />
+              <span />
+            </span>
+          </button>
+
+          <div className={`product-description-accordion-panel ${isDescriptionOpen ? 'open' : ''}`}>
+            <div
+              className={
+                effectiveVariation?.description ||
+                effectiveVariation?.shortDescription ||
+                effectiveVariation?.short_description
+                  ? 'product-variation-description accordion-description-content'
+                  : 'product-description accordion-description-content'
+              }
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   </motion.div>
 )}
