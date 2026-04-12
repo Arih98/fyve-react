@@ -5,16 +5,25 @@ import { startProductImageTransition } from './utils/productImageTransition';
 import './Cart.css';
 
 const Cart = ({ variant = 'page', onClose }) => {
-  const recentlyViewedImageRefs = useRef(new Map());
+const recentlyViewedImageRefs = useRef(new Map());
 const placeholderImage = '/api/Uploads/fallback-image.png';
-  const { cartItems, setCartItems } = useContext(CartContext);
-  const navigate = useNavigate();
-  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
+const { cartItems, setCartItems } = useContext(CartContext);
+const navigate = useNavigate();
+const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
+const [recentlyViewedIndex, setRecentlyViewedIndex] = useState(0);
+const recentlyViewedTouchStartX = useRef(0);
+const recentlyViewedTouchDeltaX = useRef(0);
 
   useEffect(() => {
   const stored = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
   setRecentlyViewedProducts(stored);
 }, []);
+
+useEffect(() => {
+  setRecentlyViewedIndex((prev) =>
+    Math.max(0, Math.min(prev, Math.max(0, recentlyViewedProducts.length - 1)))
+  );
+}, [recentlyViewedProducts.length]);
 
   const handleQuantityChange = (itemId, variationKey, delta) => {
   setCartItems(prevItems =>
@@ -153,41 +162,76 @@ const placeholderImage = '/api/Uploads/fallback-image.png';
   });
 };
 
+const handleRecentlyViewedTouchStart = (e) => {
+  recentlyViewedTouchStartX.current = e.touches[0].clientX;
+  recentlyViewedTouchDeltaX.current = 0;
+};
+
+const handleRecentlyViewedTouchMove = (e) => {
+  recentlyViewedTouchDeltaX.current = e.touches[0].clientX - recentlyViewedTouchStartX.current;
+};
+
+const handleRecentlyViewedTouchEnd = () => {
+  const threshold = 50;
+  const deltaX = recentlyViewedTouchDeltaX.current;
+
+  if (deltaX <= -threshold) {
+    setRecentlyViewedIndex((prev) =>
+      Math.min(prev + 1, Math.max(0, recentlyViewedProducts.length - 1))
+    );
+  } else if (deltaX >= threshold) {
+    setRecentlyViewedIndex((prev) => Math.max(prev - 1, 0));
+  }
+
+  recentlyViewedTouchStartX.current = 0;
+  recentlyViewedTouchDeltaX.current = 0;
+};
+
   const recentlyViewedMarkup = recentlyViewedProducts.length > 0 && (
   <section className="cart-recently-viewed" aria-label="Products you recently viewed">
     <h3 className="cart-recently-viewed-title">Products you recently viewed</h3>
 
-    <div className="cart-recently-viewed-carousel">
-      {recentlyViewedProducts.map((item) => (
-        <button
-          key={item.path}
-          type="button"
-          className="cart-recently-viewed-card"
-          onClick={() => handleRecentlyViewedClick(item)}
-        >
-          <div className="cart-recently-viewed-image-wrap">
-<img
-  ref={el => {
-    if (el) {
-      recentlyViewedImageRefs.current.set(item.path, el);
-    } else {
-      recentlyViewedImageRefs.current.delete(item.path);
-    }
-  }}
-  src={item.image}
-  alt={item.title}
-  className="cart-recently-viewed-image"
-  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-/>
-          </div>
+    <div
+  className="cart-recently-viewed-carousel"
+  onTouchStart={handleRecentlyViewedTouchStart}
+  onTouchMove={handleRecentlyViewedTouchMove}
+  onTouchEnd={handleRecentlyViewedTouchEnd}
+>
+  <div
+    className="cart-recently-viewed-track"
+    style={{ transform: `translateX(calc(${recentlyViewedIndex} * -160px))` }}
+  >
+    {recentlyViewedProducts.map((item) => (
+      <button
+        key={item.path}
+        type="button"
+        className="cart-recently-viewed-card"
+        onClick={() => handleRecentlyViewedClick(item)}
+      >
+        <div className="cart-recently-viewed-image-wrap">
+          <img
+            ref={el => {
+              if (el) {
+                recentlyViewedImageRefs.current.set(item.path, el);
+              } else {
+                recentlyViewedImageRefs.current.delete(item.path);
+              }
+            }}
+            src={item.image}
+            alt={item.title}
+            className="cart-recently-viewed-image"
+            onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+          />
+        </div>
 
-          <div className="cart-recently-viewed-info">
-            <p className="cart-recently-viewed-name">{item.title}</p>
-            <p className="cart-recently-viewed-price">${Number(item.price || 0).toFixed(2)}</p>
-          </div>
-        </button>
-      ))}
-    </div>
+        <div className="cart-recently-viewed-info">
+          <p className="cart-recently-viewed-name">{item.title}</p>
+          <p className="cart-recently-viewed-price">${Number(item.price || 0).toFixed(2)}</p>
+        </div>
+      </button>
+    ))}
+  </div>
+</div>
   </section>
 );
 

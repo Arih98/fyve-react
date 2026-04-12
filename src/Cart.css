@@ -507,29 +507,16 @@ li.cart-item {
 }
 
 .cart-recently-viewed-carousel {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.cart-recently-viewed-track {
   display: flex;
   gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-
-  scroll-snap-type: x mandatory;
-}
-
-.cart-recently-viewed-card {
-  flex: 0 0 152px;
-  width: 152px;
-
-  scroll-snap-align: start;
-}
-
-.cart-recently-viewed-carousel {
-  scroll-behavior: smooth;
-}
-
-.cart-recently-viewed-carousel::-webkit-scrollbar {
-  display: none;
+  transition: transform 0.35s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
 }
 
 .cart-recently-viewed-card {
@@ -577,9 +564,7 @@ li.cart-item {
 }
 
 .cart-recently-viewed-price {
-  margin: 0;
-  margin-right: 8px;
-  margin-left: 8px;
+  margin: 0 8px;
   font-family: quasimoda, sans-serif;
   font-size: 14px;
   color: #4A494A;
