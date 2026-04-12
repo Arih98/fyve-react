@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
+import { ProductsRouteLoaderContext } from '../ProductsRouteLoaderContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
@@ -12,10 +13,11 @@ const ProductsPage = () => {
   const navigationType = useNavigationType();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMenuOpen } = useContext(MenuContext);
+  const { setIsProductsRouteLoading } = useContext(ProductsRouteLoaderContext);
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
-const clickLockRef = useRef(false);
+  const clickLockRef = useRef(false);
 
   const selectedCategory = searchParams.get('category') || '';
 
@@ -29,6 +31,21 @@ const clickLockRef = useRef(false);
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
     return saved ? Number(saved) : productsPerPage;
   });
+
+  useEffect(() => {
+    if (loading) {
+      setIsProductsRouteLoading(true);
+      return;
+    }
+
+    setIsProductsRouteLoading(false);
+  }, [loading, setIsProductsRouteLoading]);
+
+  useEffect(() => {
+    return () => {
+      setIsProductsRouteLoading(false);
+    };
+  }, [setIsProductsRouteLoading]);
 
   useEffect(() => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
@@ -100,19 +117,20 @@ const clickLockRef = useRef(false);
   }));
 
   const handleProductClick = (item) => {
-  if (clickLockRef.current) return;
-  clickLockRef.current = true;
+    if (clickLockRef.current) return;
+    clickLockRef.current = true;
+
     const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
         ? item.gallery[0]
         : placeholderImage;
 
-const targetProduct = products.find((p) => p.id === item.parentId);
-if (!targetProduct) {
-  clickLockRef.current = false;
-  return;
-}
+    const targetProduct = products.find((p) => p.id === item.parentId);
+    if (!targetProduct) {
+      clickLockRef.current = false;
+      return;
+    }
 
     const colorQuery = item.selectedColor
       ? `?color=${encodeURIComponent(item.selectedColor)}`
@@ -164,35 +182,11 @@ if (!targetProduct) {
     window.scrollTo(0, 0);
   };
 
-  if (loading) {
-    return (
-      <div className="products-container">
-        <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-
-          <div className="products-grid">
-            {Array.from({ length: 12 }).map((_, i) => (
-<div key={i} className="product-card skeleton-card">
-  <div className="product-image-frame skeleton-image-frame">
-    <div className="product-image-wrapper skeleton-image"></div>
-  </div>
-  <div className="product-info">
-    <div className="skeleton-text skeleton-title"></div>
-    <div className="skeleton-text skeleton-price"></div>
-  </div>
-</div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
 
   return (
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-
         <ProductGrid
           products={currentProducts}
           onProductClick={handleProductClick}

@@ -1,5 +1,6 @@
 // Home.js
 import React, { useEffect, useRef } from 'react';
+import { useProductsNavigation } from './hooks/useProductsNavigation';
 import { gsap } from 'gsap';
 import Lottie from 'lottie-react';
 import { useInView } from 'react-intersection-observer';
@@ -10,6 +11,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(Observer, ScrollTrigger);
 
 const Home = () => {
+const goToProducts = useProductsNavigation();
 const lottieRef = useRef();
 const heroRef = useRef(null);
 const hasAnimated = useRef(false);
@@ -390,10 +392,14 @@ useEffect(() => {
       Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
     </p>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button">
-      Shop Collection
-      <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
-    </a>
+    <button
+  type="button"
+  className="section1-shop-button"
+  onClick={() => goToProducts('/products?category=ss26')}
+>
+  Shop Collection
+  <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
+</button>
   </div>
 </div>
 
@@ -435,10 +441,14 @@ useEffect(() => {
         Playfully Refined.
       </div>
 
-      <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button section2-shop-button">
-        Shop Collection
-        <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
-      </a>
+      <button
+  type="button"
+  className="section1-shop-button section2-shop-button"
+  onClick={() => goToProducts('/products?category=ss26')}
+>
+  Shop Collection
+  <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
+</button>
     </div>
   </div>
 </div>
