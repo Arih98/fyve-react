@@ -155,7 +155,12 @@ const Cart = ({ variant = 'page', onClose }) => {
           </>
         ) : (
           <div className="cart-panel-empty">
-            <p className="cart-empty">Your bag is empty</p>
+            <div className="cart-empty-state">
+  <p className="cart-empty">Your bag is empty</p>
+  <div className="cart-empty-icon-wrapper">
+    <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+  </div>
+</div>
           </div>
         )}
       </div>
@@ -193,7 +198,12 @@ const Cart = ({ variant = 'page', onClose }) => {
           </main>
         ) : (
           <div className="cart-page-empty">
-            <p className="cart-empty">Your bag is empty</p>
+            <div className="cart-empty-state">
+  <p className="cart-empty">Your bag is empty</p>
+  <div className="cart-empty-icon-wrapper">
+    <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+  </div>
+</div>
           </div>
         )}
       </div>
