@@ -422,7 +422,7 @@
 }
 
 .quantity-controls.pdp-quantity-controls .plus-horizontal {
-  width: 20px;
+  width: 15px;
   height: 1px;
   top: 50%;
   left: 50%;
@@ -431,7 +431,7 @@
 
 .quantity-controls.pdp-quantity-controls .plus-vertical {
   width: 1px;
-  height: 20px;
+  height: 15px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -689,8 +689,8 @@
   }
 
 .quantity-controls.pdp-quantity-controls button {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
 }
 
 .quantity-controls.pdp-quantity-controls .quantity-input {
