@@ -567,11 +567,11 @@ return (
   </div>
 </div>
 
-      <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
-  <span className="add-to-cart-text">{addToCartLabel}</span>
-  {!isOutOfStock && (
-    <span className="add-to-cart-price">${currentTotalPrice}</span>
-  )}
+      <button
+  onClick={handleAddToCart}
+  disabled={isAddDisabled}
+  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+>
 </button>
             <div className="product-description-accordion">
   <button

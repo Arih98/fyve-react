@@ -512,6 +512,10 @@
   margin-bottom: 0;
 }
 
+.add-to-cart-button.out-of-stock {
+  justify-content: center;
+}
+
 @media (max-width: 768px) {
 .product-detail-container {
   flex-direction: column;
