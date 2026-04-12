@@ -13,6 +13,7 @@ const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
 const [recentlyViewedIndex, setRecentlyViewedIndex] = useState(0);
 const recentlyViewedTouchStartX = useRef(0);
 const recentlyViewedTouchDeltaX = useRef(0);
+const recentlyViewedViewportRef = useRef(null);
 const [recentlyViewedMaxIndex, setRecentlyViewedMaxIndex] = useState(0);
 
   useEffect(() => {
@@ -22,7 +23,16 @@ const [recentlyViewedMaxIndex, setRecentlyViewedMaxIndex] = useState(0);
 
 useEffect(() => {
   const updateRecentlyViewedBounds = () => {
-    const maxIndex = Math.max(0, recentlyViewedProducts.length - 1);
+    const viewport = recentlyViewedViewportRef.current;
+    if (!viewport) return;
+
+    const viewportWidth = viewport.clientWidth;
+    const cardWidth = 144;
+    const gap = 8;
+    const step = cardWidth + gap;
+    const maxTranslate = Math.max(0, (recentlyViewedProducts.length * step) - gap - viewportWidth);
+    const maxIndex = Math.ceil(maxTranslate / step);
+
     setRecentlyViewedMaxIndex(maxIndex);
     setRecentlyViewedIndex(prev => Math.min(prev, maxIndex));
   };
@@ -193,11 +203,31 @@ if (deltaX <= -threshold) {
   recentlyViewedTouchDeltaX.current = 0;
 };
 
+const getRecentlyViewedTranslateX = () => {
+  const viewport = recentlyViewedViewportRef.current;
+  if (!viewport) return 0;
+
+  const viewportWidth = viewport.clientWidth;
+  const cardWidth = 144;
+  const gap = 8;
+  const step = cardWidth + gap;
+  const trackWidth = (recentlyViewedProducts.length * step) - gap;
+  const maxTranslate = Math.max(0, trackWidth - viewportWidth);
+
+  if (recentlyViewedIndex === 0) return 0;
+
+  const centeredOffset = (viewportWidth - cardWidth) / 2;
+  const rawTranslate = (recentlyViewedIndex * step) - centeredOffset;
+
+  return Math.max(0, Math.min(rawTranslate, maxTranslate));
+};
+
   const recentlyViewedMarkup = recentlyViewedProducts.length > 0 && (
   <section className="cart-recently-viewed" aria-label="Products you recently viewed">
     <h3 className="cart-recently-viewed-title">Products you recently viewed</h3>
 
 <div
+  ref={recentlyViewedViewportRef}
   className="cart-recently-viewed-carousel"
   onTouchStart={handleRecentlyViewedTouchStart}
   onTouchMove={handleRecentlyViewedTouchMove}
@@ -206,7 +236,7 @@ if (deltaX <= -threshold) {
   <div
     className="cart-recently-viewed-track"
 style={{
-  transform: `translateX(calc(${recentlyViewedIndex} * -152px + 16px))`
+  transform: `translateX(-${getRecentlyViewedTranslateX()}px)`
 }}
   >
     {recentlyViewedProducts.map((item) => (

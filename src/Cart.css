@@ -510,7 +510,6 @@ li.cart-item {
   width: 100%;
   overflow: hidden;
   touch-action: pan-y;
-  padding: 0 16px;
   box-sizing: border-box;
 }
 
