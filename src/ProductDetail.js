@@ -518,17 +518,19 @@ return (
           </button>
 
           <div className={`product-description-accordion-panel ${isDescriptionOpen ? 'open' : ''}`}>
-            <div
-              className={
-                effectiveVariation?.description ||
-                effectiveVariation?.shortDescription ||
-                effectiveVariation?.short_description
-                  ? 'product-variation-description accordion-description-content'
-                  : 'product-description accordion-description-content'
-              }
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
-            />
-          </div>
+  <div className="product-description-accordion-inner">
+    <div
+      className={
+        effectiveVariation?.description ||
+        effectiveVariation?.shortDescription ||
+        effectiveVariation?.short_description
+          ? 'product-variation-description accordion-description-content'
+          : 'product-description accordion-description-content'
+      }
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription) }}
+    />
+  </div>
+</div>
         </div>
       )}
     </div>

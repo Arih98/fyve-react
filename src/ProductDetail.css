@@ -463,7 +463,7 @@
   grid-template-rows: 1fr;
 }
 
-.product-description-accordion-panel > * {
+.product-description-accordion-inner {
   overflow: hidden;
 }
 
