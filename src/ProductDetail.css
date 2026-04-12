@@ -398,7 +398,7 @@
 
 .product-description-accordion {
   width: 100%;
-  border-top: 1px solid #d9d4cc;
+  border-bottom: 1px solid #d9d4cc;
   margin-top: 24px;
 }
 
