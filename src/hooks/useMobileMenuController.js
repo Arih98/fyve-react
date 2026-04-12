@@ -95,6 +95,24 @@ useEffect(() => {
     }
   }, [isMenuOpen]);
 
+  useEffect(() => {
+  if (!isMenuOpen) return;
+
+  window.history.pushState({ menuOpen: true }, '');
+
+  const handlePopState = (e) => {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  window.addEventListener('popstate', handlePopState);
+
+  return () => {
+    window.removeEventListener('popstate', handlePopState);
+  };
+}, [isMenuOpen]);
+
 const toggleMenu = () => {
   setIsMenuOpen(v => !v);
 };
