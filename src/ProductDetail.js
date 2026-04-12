@@ -332,9 +332,9 @@ useEffect(() => {
     path: `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`
   };
 
-  const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-  const filtered = existing.filter(item => item.path !== recentlyViewedItem.path);
-  const next = [recentlyViewedItem, ...filtered].slice(0, 8);
+const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+const filtered = existing.filter(item => String(item.parentId) !== String(recentlyViewedItem.parentId));
+const next = [recentlyViewedItem, ...filtered].slice(0, 8);
 
   localStorage.setItem('recentlyViewedProducts', JSON.stringify(next));
 }, [
