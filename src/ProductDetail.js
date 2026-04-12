@@ -323,7 +323,7 @@ useEffect(() => {
 
   if (product.product_type === 'variable' && !selectedColor) return;
 
-  const storageKey = `${product.id}__${selectedColor.toLowerCase()}`;
+  const storageKey = `${product.id}__${String(selectedColor || '').toLowerCase()}`;
 
   const recentlyViewedItem = {
     storageKey,
