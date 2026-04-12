@@ -246,7 +246,7 @@ const remainingStockForSelection =
     : Math.max(0, Number(availableStock) - existingQuantityInCart);
 
 const isAddDisabled =
-  remainingStockForSelection !== null && remainingStockForSelection < quantity;
+  remainingStockForSelection !== null && remainingStockForSelection <= 0;
 
   const handleAddToCart = useCallback(() => {
   const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
@@ -342,8 +342,10 @@ const isAddDisabled =
   setCartItems
 ]);
 
+const isOutOfStock = remainingStockForSelection !== null && remainingStockForSelection <= 0;
 const currentTotalPrice = (Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2);
-const pdpMobileButtonLabel = `Add to Bag • $${currentTotalPrice}`;
+const addToCartLabel = isOutOfStock ? 'Out of Stock' : 'Add to Cart';
+const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : `Add to Bag • $${currentTotalPrice}`;
 
 useEffect(() => {
   window.dispatchEvent(
@@ -568,9 +570,11 @@ return (
       </div>
 
       <button onClick={handleAddToCart} disabled={isAddDisabled} className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''}`}>
-        <span className="add-to-cart-text">Add to Cart</span>
-        <span className="add-to-cart-price">${(Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2)}</span>
-      </button>
+  <span className="add-to-cart-text">{addToCartLabel}</span>
+  {!isOutOfStock && (
+    <span className="add-to-cart-price">${currentTotalPrice}</span>
+  )}
+</button>
             <div className="product-description-accordion">
   <button
     type="button"
