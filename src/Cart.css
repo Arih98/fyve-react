@@ -534,6 +534,10 @@ li.cart-item {
   -moz-appearance: none;
 }
 
+.cart-recently-viewed-card:last-child {
+  margin-right: 0;
+}
+
 .cart-recently-viewed-image-wrap {
   width: 100%;
   aspect-ratio: 1 / 1;
