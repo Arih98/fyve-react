@@ -8,6 +8,7 @@ export function useMobileMenuController() {
   const [isAnimating, setIsAnimating] = useState(false);
   const burgerRef = useRef(null);
   const prevMenuStateRef = useRef('closed');
+  const iconTimelineRef = useRef(null);
 
   useEffect(() => {
     if (isMenuOpen && menuState !== 'open') {
@@ -32,16 +33,6 @@ export function useMobileMenuController() {
   }, [menuState]);
 
   useEffect(() => {
-    if (!burgerRef.current) return;
-    const xSvg = burgerRef.current.querySelector('.x-svg');
-    if (!xSvg) return;
-    const xLineLeft = xSvg.querySelector('.x-line.left');
-    const xLineRight = xSvg.querySelector('.x-line.right');
-    if (!xLineLeft || !xLineRight) return;
-    gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
-  }, []);
-
-  useEffect(() => {
   if (!burgerRef.current) return;
 
   const topLine = burgerRef.current.querySelector('.hamburger-line.top');
@@ -56,49 +47,42 @@ export function useMobileMenuController() {
 
   if (!xLineLeft || !xLineRight) return;
 
-  gsap.killTweensOf([topLine, middleLine, bottomLine, xLineLeft, xLineRight]);
+  gsap.set([topLine, middleLine, bottomLine], { scaleX: 1 });
+  gsap.set([xLineLeft, xLineRight], { strokeDashoffset: 44 });
 
-  if (menuState === 'open' && prevMenuStateRef.current !== 'open') {
-    setIsAnimating(true);
+  const tl = gsap.timeline({ paused: true });
 
-    gsap.set(topLine, { scaleX: 1 });
-    gsap.set(middleLine, { scaleX: 1 });
-    gsap.set(bottomLine, { scaleX: 1 });
-    gsap.set(xLineLeft, { strokeDashoffset: 44 });
-    gsap.set(xLineRight, { strokeDashoffset: 44 });
+  tl.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut' }, 0.2)
+    .to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut' }, 0.5)
+    .to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut' }, 0.8)
+    .to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut' }, 1.1)
+    .to(xLineRight, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut' }, 1.3);
 
-    gsap.to(topLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-    gsap.to(middleLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-    gsap.to(bottomLine, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-    gsap.to(xLineLeft, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.inOut', delay: 1.1 });
-    gsap.to(xLineRight, {
-      strokeDashoffset: 0,
-      duration: 0.3,
-      ease: 'power2.inOut',
-      delay: 1.3,
-      onComplete: () => setIsAnimating(false)
-    });
-  } else if (menuState === 'closing' && prevMenuStateRef.current !== 'closing') {
-    setIsAnimating(true);
+  iconTimelineRef.current = tl;
 
-    gsap.set(topLine, { scaleX: 0 });
-    gsap.set(middleLine, { scaleX: 0 });
-    gsap.set(bottomLine, { scaleX: 0 });
-    gsap.set(xLineLeft, { strokeDashoffset: 0 });
-    gsap.set(xLineRight, { strokeDashoffset: 0 });
+  return () => {
+    tl.kill();
+    iconTimelineRef.current = null;
+  };
+}, []);
 
-    gsap.to(xLineRight, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.0 });
-    gsap.to(xLineLeft, { strokeDashoffset: 44, duration: 0.3, ease: 'power2.inOut', delay: 0.2 });
-    gsap.to(bottomLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.5 });
-    gsap.to(middleLine, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', delay: 0.8 });
-    gsap.to(topLine, {
-      scaleX: 1,
-      duration: 0.3,
-      ease: 'power2.inOut',
-      delay: 1.1,
-      onComplete: () => setIsAnimating(false)
-    });
+useEffect(() => {
+  const tl = iconTimelineRef.current;
+  if (!tl) return;
+
+  setIsAnimating(true);
+
+  if (menuState === 'open') {
+    tl.timeScale(1).play();
+  } else if (menuState === 'closing' || menuState === 'closed') {
+    tl.timeScale(1).reverse();
   }
+
+  const onComplete = () => setIsAnimating(false);
+  const onReverseComplete = () => setIsAnimating(false);
+
+  tl.eventCallback('onComplete', onComplete);
+  tl.eventCallback('onReverseComplete', onReverseComplete);
 
   prevMenuStateRef.current = menuState;
 }, [menuState]);
