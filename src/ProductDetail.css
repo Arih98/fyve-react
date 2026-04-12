@@ -641,7 +641,10 @@
 
   .attribute-label,
   .quantity-label {
-    font-size: 0.95em;
+  font-size: 0.95em;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 1em;
+  font-weight: 700;
   }
 
 .color-options {
