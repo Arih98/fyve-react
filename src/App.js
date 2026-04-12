@@ -56,25 +56,25 @@ const Layout = () => {
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [showProductsLoader, setShowProductsLoader] = useState(false);
+  const [productsLoaderDone, setProductsLoaderDone] = useState(() => location.pathname !== '/products');
 
   useEffect(() => {
-    const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-    const shouldShowLoader = isProductDetailPage && location.state?.fromProductGrid;
+    if (location.pathname === '/products') {
+      setShowProductsLoader(true);
+      setProductsLoaderDone(false);
 
-    if (!shouldShowLoader) {
-      setIsLoading(false);
-      return;
+      const timer = setTimeout(() => {
+        setShowProductsLoader(false);
+        setProductsLoaderDone(true);
+      }, 1200);
+
+      return () => clearTimeout(timer);
     }
 
-    setIsLoading(true);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, [location.pathname, location.state?.fromProductGrid]);
+    setShowProductsLoader(false);
+    setProductsLoaderDone(true);
+  }, [location.pathname]);
 
   useEffect(() => {
     const originalScrollTo = window.scrollTo;
@@ -108,7 +108,7 @@ function AppContent() {
 
   return (
     <>
-      {isLoading && <Loader />}
+      {showProductsLoader && <Loader />}
 
       <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
         <CartProvider>
@@ -117,7 +117,10 @@ function AppContent() {
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/products" element={<ProductsPage />} />
+              <Route
+                path="/products"
+                element={productsLoaderDone ? <ProductsPage /> : null}
+              />
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
               <Route path="/product-category/:slug" element={<CategoryProducts />} />
               <Route path="/checkout" element={<Checkout />} />
