@@ -14,6 +14,7 @@ const lottieRef = useRef();
 const heroRef = useRef(null);
 const hasAnimated = useRef(false);
 const introDone = useRef(false);
+const hasSetHomeIntroPlayed = useRef(false);
 const [inViewRef, inView] = useInView({ triggerOnce: false, threshold: 0.5 });
 const setHeroViewportRef = (node) => {
   heroRef.current = node;
@@ -68,6 +69,15 @@ const londonFadeDelay = animationDuration * 0.3;
   }, []);
 
   useEffect(() => {
+  const navEntry = performance.getEntriesByType('navigation')[0];
+  const isReload = navEntry?.type === 'reload';
+
+  if (isReload) {
+    sessionStorage.removeItem('homeIntroPlayed');
+  }
+
+  const shouldSkipIntro = sessionStorage.getItem('homeIntroPlayed') === 'true';
+
   hasAnimated.current = false;
   introDone.current = false;
 
@@ -88,7 +98,7 @@ const londonFadeDelay = animationDuration * 0.3;
     const announcementBarEl = document.querySelector('.announcement-bar');
     const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0;
 
-    if (hasAnimated.current) {
+    if (shouldSkipIntro) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
       gsap.set('.fyve-image', { visibility: 'visible' });
       gsap.set('.mask-left', { x: '-100%', transformOrigin: 'left center' });
@@ -153,6 +163,10 @@ const londonFadeDelay = animationDuration * 0.3;
       defaults: { ease: 'expo.inOut' },
       onComplete: () => {
         introDone.current = true;
+        if (!hasSetHomeIntroPlayed.current) {
+          sessionStorage.setItem('homeIntroPlayed', 'true');
+          hasSetHomeIntroPlayed.current = true;
+        }
       }
     });
 
@@ -202,7 +216,7 @@ const londonFadeDelay = animationDuration * 0.3;
       .to(document.documentElement, {
         '--home-announcement-offset': `${announcementHeight}px`,
         duration: 0.9 * speed
-      }, 'uiReveal')
+      }, 'uiReveal');
 
     if (announcementBarEl) {
       if (isMobile) {
@@ -229,19 +243,18 @@ const londonFadeDelay = animationDuration * 0.3;
       opacity: 1,
       duration: 0.5 * speed
     }, 'uiReveal+=0.45')
-
-    .addLabel('lottieIn', 2.8 * speed)
-    .to('.lottie-container', {
-      autoAlpha: 1,
-      duration: 0.8 * speed,
-      onStart: () => {
-        lottieRef.current?.play();
-      }
-    }, 'lottieIn')
-    .to('.london-below', {
-      opacity: 1,
-      duration: 0.5 * speed
-    }, `lottieIn+=${londonFadeDelay / 1000}`);
+      .addLabel('lottieIn', 2.8 * speed)
+      .to('.lottie-container', {
+        autoAlpha: 1,
+        duration: 0.8 * speed,
+        onStart: () => {
+          lottieRef.current?.play();
+        }
+      }, 'lottieIn')
+      .to('.london-below', {
+        opacity: 1,
+        duration: 0.5 * speed
+      }, `lottieIn+=${londonFadeDelay / 1000}`);
   }, heroRef);
 
   requestAnimationFrame(() => {
@@ -249,7 +262,7 @@ const londonFadeDelay = animationDuration * 0.3;
     setTimeout(() => ScrollTrigger.refresh(), 250);
   });
 
-  hasAnimated.current = true;
+  hasAnimated.current = !shouldSkipIntro;
 
   return () => {
     ctx.revert();
