@@ -508,7 +508,6 @@ li.cart-item {
 
 .cart-recently-viewed-carousel {
   display: flex;
-  align-items: flex-start;
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 6px;
@@ -523,10 +522,6 @@ li.cart-item {
 .cart-recently-viewed-card {
   flex: 0 0 152px;
   width: 152px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  align-self: flex-start;
   background: none;
   border: none;
   padding: 0;
