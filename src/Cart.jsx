@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from './CartContext';
 import './Cart.css';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ variant = 'page', onClose }) => {
   const { cartItems, setCartItems } = useContext(CartContext);
@@ -24,6 +25,8 @@ const Cart = ({ variant = 'page', onClose }) => {
     })
   );
 };
+
+const navigate = useNavigate();
 
   const handleRemoveItem = (itemId, variationKey) => {
     setCartItems(prevItems =>
@@ -156,11 +159,20 @@ const Cart = ({ variant = 'page', onClose }) => {
         ) : (
   <div className="cart-panel-empty">
     <div className="cart-empty-state">
-      <div className="cart-empty-icon-wrapper">
-        <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
-      </div>
-      <p className="cart-empty">Your bag is empty</p>
-    </div>
+  <div className="cart-empty-icon-wrapper">
+    <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
+  </div>
+
+  <p className="cart-empty">Your bag is empty</p>
+
+  <button
+    className="cart-empty-continue"
+    type="button"
+    onClick={() => navigate('/products')}
+  >
+    <span className="cart-empty-continue-text">Continue shopping</span>
+  </button>
+</div>
   </div>
 )}
       </div>
@@ -202,7 +214,16 @@ const Cart = ({ variant = 'page', onClose }) => {
   <div className="cart-empty-icon-wrapper">
     <img src="/assets/EmptyBag.svg" alt="" className="cart-empty-icon" />
   </div>
+
   <p className="cart-empty">Your bag is empty</p>
+
+  <button
+    className="cart-empty-continue"
+    type="button"
+    onClick={() => navigate('/products')}
+  >
+    <span className="cart-empty-continue-text">Continue shopping</span>
+  </button>
 </div>
           </div>
         )}
