@@ -513,6 +513,19 @@ li.cart-item {
   padding-bottom: 6px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+
+  scroll-snap-type: x mandatory;
+}
+
+.cart-recently-viewed-card {
+  flex: 0 0 152px;
+  width: 152px;
+
+  scroll-snap-align: start;
+}
+
+.cart-recently-viewed-carousel {
+  scroll-behavior: smooth;
 }
 
 .cart-recently-viewed-carousel::-webkit-scrollbar {
