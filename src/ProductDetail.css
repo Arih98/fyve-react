@@ -456,6 +456,7 @@
 }
 
 .product-description-accordion-title {
+  font-family: quasimoda, sans-serif;
   font-size: 14px;
   line-height: 1;
   letter-spacing: 0.04em;
@@ -501,6 +502,7 @@
 }
 
 .accordion-description-content {
+  font-family: 'Quasimoda', sans-serif;
   padding: 0 0 18px 0;
 }
 
