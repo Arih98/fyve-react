@@ -48,16 +48,21 @@ const swipeRef = useRef({
     midpoint: { x: 0, y: 0 }
   });
 
-  const tapRef = useRef({
-    lastTapTime: 0
-  });
+const tapRef = useRef({
+  lastTapTime: 0,
+  lastTapX: 0,
+  lastTapY: 0,
+  suppressUntil: 0
+});
 
-  const resetTransform = () => {
-    setScale(1);
-    setTranslate({ x: 0, y: 0 });
-    pointerStateRef.current.isDragging = false;
-    pinchStateRef.current.isPinching = false;
-  };
+const resetTransform = () => {
+  setScale(1);
+  setTranslate({ x: 0, y: 0 });
+  pointerStateRef.current.isDragging = false;
+  pinchStateRef.current.isPinching = false;
+  tapRef.current.suppressUntil = Date.now() + 250;
+  clearTapState();
+};
 
   const clampTranslate = (nextScale, nextTranslate) => {
     const stage = stageRef.current;
@@ -105,14 +110,16 @@ const swipeRef = useRef({
     setTranslate(clamped);
   };
 
-  const toggleZoomAtPoint = (clientX, clientY) => {
-    if (scale > 1) {
-      resetTransform();
-      return;
-    }
+const toggleZoomAtPoint = (clientX, clientY) => {
+  if (scale > 1) {
+    resetTransform();
+    return;
+  }
 
-    updateScaleAtPoint(2.5, clientX, clientY);
-  };
+  updateScaleAtPoint(2.5, clientX, clientY);
+  tapRef.current.suppressUntil = Date.now() + 250;
+  clearTapState();
+};
 
   const goToIndex = (nextIndex) => {
     const clampedIndex = clamp(nextIndex, 0, images.length - 1);
@@ -247,6 +254,12 @@ const swipeRef = useRef({
     toggleZoomAtPoint(e.clientX, e.clientY);
   };
 
+  const clearTapState = () => {
+  tapRef.current.lastTapTime = 0;
+  tapRef.current.lastTapX = 0;
+  tapRef.current.lastTapY = 0;
+};
+
   const handleTouchStart = (e) => {
   if (e.touches.length === 2) {
     const [touchA, touchB] = e.touches;
@@ -259,12 +272,18 @@ const swipeRef = useRef({
       midpoint: getMidpoint(touchA, touchB)
     };
     setIsInteracting(true);
+    clearTapState();
     return;
   }
 
   if (e.touches.length !== 1) return;
 
   const touch = e.touches[0];
+  const now = Date.now();
+
+  if (now < tapRef.current.suppressUntil) {
+    return;
+  }
 
   swipeRef.current = {
     startX: touch.clientX,
@@ -272,16 +291,23 @@ const swipeRef = useRef({
     isSwiping: scale === 1
   };
 
-  const now = Date.now();
   const timeSinceLastTap = now - tapRef.current.lastTapTime;
+  const moveX = Math.abs(touch.clientX - tapRef.current.lastTapX);
+  const moveY = Math.abs(touch.clientY - tapRef.current.lastTapY);
+  const isCloseToLastTap = moveX < 30 && moveY < 30;
 
-  if (timeSinceLastTap < DOUBLE_TAP_DELAY) {
+  if (
+    tapRef.current.lastTapTime &&
+    timeSinceLastTap < DOUBLE_TAP_DELAY &&
+    isCloseToLastTap
+  ) {
     toggleZoomAtPoint(touch.clientX, touch.clientY);
-    tapRef.current.lastTapTime = 0;
     return;
   }
 
   tapRef.current.lastTapTime = now;
+  tapRef.current.lastTapX = touch.clientX;
+  tapRef.current.lastTapY = touch.clientY;
 
   if (scale > 1) {
     pointerStateRef.current = {
@@ -360,15 +386,15 @@ if (scale === 1 && swipeRef.current.isSwiping) {
 };
 
   const handleTouchEnd = () => {
-    pointerStateRef.current.isDragging = false;
-    pinchStateRef.current.isPinching = false;
-    setIsInteracting(false);
+  pointerStateRef.current.isDragging = false;
+  pinchStateRef.current.isPinching = false;
+  setIsInteracting(false);
 
-    if (scale <= 1) {
-      setTranslate({ x: 0, y: 0 });
-      setScale(1);
-    }
-  };
+  if (scale <= 1) {
+    setTranslate({ x: 0, y: 0 });
+    setScale(1);
+  }
+};
 
   if (!isOpen || !images.length) return null;
 
