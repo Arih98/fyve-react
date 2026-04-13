@@ -393,26 +393,6 @@ if (scale === 1 && swipeRef.current.isSwiping) {
           ×
         </button>
 
-        <button
-  type="button"
-  className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
-  onClick={goPrev}
-  disabled={currentIndex <= 0}
-  aria-label="Previous image"
->
-  <img src="/assets/Next&PrevArrows.svg" alt="" />
-</button>
-
-<button
-  type="button"
-  className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-next"
-  onClick={goNext}
-  disabled={currentIndex >= images.length - 1}
-  aria-label="Next image"
->
-  <img src="/assets/Next&PrevArrows.svg" alt="" />
-</button>
-
         <div
           ref={stageRef}
           className={`fyve-fullscreen-gallery-stage ${scale > 1 ? 'is-zoomed' : ''} ${isInteracting ? 'is-interacting' : ''}`}
@@ -446,6 +426,39 @@ if (scale === 1 && swipeRef.current.isSwiping) {
             />
           </div>
         </div>
+
+        <div className="fyve-fullscreen-gallery-controls">
+  <div className="fyve-fullscreen-gallery-nav-group">
+    <button
+      type="button"
+      className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
+      onClick={goPrev}
+      disabled={currentIndex <= 0}
+      aria-label="Previous image"
+    >
+      <img src="/assets/Next&PrevArrows.svg" alt="" />
+    </button>
+
+    <button
+      type="button"
+      className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-next"
+      onClick={goNext}
+      disabled={currentIndex >= images.length - 1}
+      aria-label="Next image"
+    >
+      <img src="/assets/Next&PrevArrows.svg" alt="" />
+    </button>
+  </div>
+
+  {images.length > 1 && (
+    <div className="fyve-fullscreen-gallery-progress">
+      <div
+        className="fyve-fullscreen-gallery-progress-bar"
+        style={{ width: `${((currentIndex + 1) / images.length) * 100}%` }}
+      />
+    </div>
+  )}
+</div>
 
       </div>
     </div>

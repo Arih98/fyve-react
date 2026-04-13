@@ -34,9 +34,7 @@
 
 
 .fyve-fullscreen-gallery-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
   z-index: 40;
   width: 48px;
   height: 48px;
@@ -47,6 +45,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  flex: 0 0 auto;
 }
 
 .fyve-fullscreen-gallery-nav img {
@@ -61,14 +60,6 @@
 .fyve-fullscreen-gallery-nav:disabled {
   opacity: 0.3;
   cursor: default;
-}
-
-.fyve-fullscreen-gallery-nav-prev {
-  left: 20px;
-}
-
-.fyve-fullscreen-gallery-nav-next {
-  right: 20px;
 }
 
 .fyve-fullscreen-gallery-stage {
@@ -117,6 +108,37 @@
   pointer-events: none;
 }
 
+.fyve-fullscreen-gallery-controls {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fyve-fullscreen-gallery-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fyve-fullscreen-gallery-progress {
+  width: 120px;
+  height: 3px;
+  background: #d9d9d9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fyve-fullscreen-gallery-progress-bar {
+  height: 100%;
+  background: #4a494a;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
 @media (max-width: 768px) {
 
   .fyve-fullscreen-gallery-close {
@@ -131,4 +153,23 @@
     max-width: 100vw;
     max-height: 100vh;
   }
+
+  .fyve-fullscreen-gallery-controls {
+  right: 12px;
+  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  gap: 12px;
+}
+
+.fyve-fullscreen-gallery-nav-group {
+  gap: 8px;
+}
+
+.fyve-fullscreen-gallery-nav {
+  width: 44px;
+  height: 44px;
+}
+
+.fyve-fullscreen-gallery-progress {
+  width: 72px;
+}
 }
