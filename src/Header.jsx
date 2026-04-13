@@ -276,6 +276,16 @@ const handleToggleMenu = () => {
   if (isSearchOpen) setIsSearchOpen(false);
 };
 
+const handleLogoClick = () => {
+  navigate('/');
+
+  if (isMenuOpen) {
+    requestAnimationFrame(() => {
+      setIsMenuOpen(false);
+    });
+  }
+};
+
 const handleBagClick = () => {
   if (isMobile) {
     navigate('/cart');
@@ -548,7 +558,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
         <div className="menu-content">
 
   <div className="mobile-menu-logo">
-    <img src="/assets/FYVE-Dark-Logo.svg" alt="FYVE Logo" onClick={() => navigate('/')} />
+    <img src="/assets/FYVE-Dark-Logo.svg" alt="FYVE Logo" onClick={handleLogoClick} />
   </div>
 
   <div className="menu-columns">
