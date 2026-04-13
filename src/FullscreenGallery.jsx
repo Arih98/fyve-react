@@ -138,14 +138,14 @@ const toggleZoomAtPoint = (clientX, clientY) => {
     goToIndex(currentIndex + 1);
   };
 
-  const closeGallery = useCallback(() => {
+const closeGallery = useCallback(() => {
   if (window.history.state?.fyveFullscreenGallery) {
     window.history.back();
     return;
   }
 
-  onClose();
-}, [onClose]);
+  onCloseRef.current();
+}, []);
 
   useEffect(() => {
     if (!isOpen) return;
