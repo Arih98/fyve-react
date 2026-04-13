@@ -280,9 +280,9 @@ const handleLogoClick = () => {
   navigate('/');
 
   if (isMenuOpen) {
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       setIsMenuOpen(false);
-    });
+    }, 60);
   }
 };
 
