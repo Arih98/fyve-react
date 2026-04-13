@@ -1039,13 +1039,14 @@ body {
   --nav-bottom-padding: 10px;
   background-color: #ffffff;
   display: grid !important;
-  grid-template-columns: var(--nav-icon-size) 1fr;
-  column-gap: 28px;
+  grid-template-columns: repeat(4, var(--nav-icon-size));
+  column-gap: var(--nav-icon-gap);
   justify-content: center;
   align-items: center;
 }
 
 .mobile-header.first-header.cart-page-header .cart-header-mobile-layout {
+  grid-column: 2 / 5;
   display: flex;
   align-items: center;
   justify-content: center;
