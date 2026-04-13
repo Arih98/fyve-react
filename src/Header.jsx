@@ -278,10 +278,14 @@ const handleToggleMenu = () => {
 
 const handleBagClick = () => {
   if (isMobile) {
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
     navigate('/cart');
+
+    if (isMenuOpen) {
+      requestAnimationFrame(() => {
+        setIsMenuOpen(false);
+      });
+    }
+
     return;
   }
 
