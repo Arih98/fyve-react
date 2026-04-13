@@ -147,8 +147,8 @@
   .fyve-fullscreen-gallery-close {
     top: calc(env(safe-area-inset-top) + 12px);
     right: 12px;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     font-size: 28px;
   }
 
@@ -170,8 +170,8 @@
 }
 
 .fyve-fullscreen-gallery-nav {
-  width: 44px;
-  height: 44px;
+  width: 48x;
+  height: 48px;
 }
 
 .fyve-fullscreen-gallery-progress {
