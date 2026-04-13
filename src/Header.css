@@ -1065,7 +1065,7 @@ body {
 .mobile-header.first-header.cart-page-header .cart-header-checkout-button-mobile {
   width: 160px;
   min-width: 0;
-  max-width: 160px;
+  max-width: 200px;
   height: 50px;
   padding: 0 12px;
   white-space: nowrap;
