@@ -110,17 +110,20 @@
 
 .fyve-fullscreen-gallery-controls {
   position: absolute;
-  right: 20px;
+  left: 50%;
   bottom: 20px;
+  transform: translateX(-50%);
   z-index: 40;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .fyve-fullscreen-gallery-nav-group {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -154,10 +157,12 @@
     max-height: 100vh;
   }
 
-  .fyve-fullscreen-gallery-controls {
-  right: 12px;
+.fyve-fullscreen-gallery-controls {
+  left: 50%;
+  right: auto;
   bottom: calc(env(safe-area-inset-bottom) + 12px);
-  gap: 12px;
+  transform: translateX(-50%);
+  gap: 10px;
 }
 
 .fyve-fullscreen-gallery-nav-group {
