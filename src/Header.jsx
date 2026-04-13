@@ -475,81 +475,77 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
   ref={headerRef}
   className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
 >
+  {BurgerIcon}
+
   {useCartHeaderVariant ? (
-<div className="cart-header-mobile-layout">
-  <div className="cart-header-mobile-left">
-    {BurgerIcon}
-  </div>
-
-  {cartItems.length > 0 && (
-    <div className="cart-header-checkout-container">
-      <button
-        className="cart-header-checkout-button cart-header-checkout-button-mobile"
-        onClick={() => navigate('/checkout')}
-      >
-        Checkout
-      </button>
+    <div className="cart-header-mobile-layout">
+      {cartItems.length > 0 && (
+        <div className="cart-header-checkout-container">
+          <button
+            className="cart-header-checkout-button cart-header-checkout-button-mobile"
+            onClick={() => navigate('/checkout')}
+          >
+            Checkout
+          </button>
+        </div>
+      )}
     </div>
+  ) : (
+    <>
+      <div className="header-logo mobile-hide-logo">
+        <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
+      </div>
+
+      <div className="mobile-nav-icons">
+        <button className="mobile-nav-icon" onClick={toggleSearch}>
+          <img src={searchIconSrc} alt="Search" />
+        </button>
+
+        <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+          <img src={accountIconSrc} alt="Account" />
+        </button>
+
+        <div className="header-bag-dropdown-wrap" ref={desktopCartRef}>
+          <button
+            className="mobile-nav-icon header-bag-button"
+            onClick={handleBagClick}
+            ref={bagIconButtonRef}
+          >
+            <img src={bagIconSrc} alt="Bag" />
+            {displayedBagQuantity > 0 && (
+              <span className="header-bag-count" ref={bagCountRef}>
+                {displayedBagQuantity}
+              </span>
+            )}
+          </button>
+
+          {!isMobile && (
+            <div className={`desktop-cart-dropdown${isDesktopCartOpen ? ' open' : ''}`}>
+              <Cart variant="panel" onClose={() => setIsDesktopCartOpen(false)} />
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   )}
-</div>
-) : (
-  <>
-    {BurgerIcon}
-
-    <div className="header-logo mobile-hide-logo">
-      <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
-    </div>
-
-    <div className="mobile-nav-icons">
-      <button className="mobile-nav-icon" onClick={toggleSearch}>
-        <img src={searchIconSrc} alt="Search" />
-      </button>
-
-      <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
-        <img src={accountIconSrc} alt="Account" />
-      </button>
-
-      <div className="header-bag-dropdown-wrap" ref={desktopCartRef}>
-<button
-  className="mobile-nav-icon header-bag-button"
-  onClick={handleBagClick}
-  ref={bagIconButtonRef}
->
-    <img src={bagIconSrc} alt="Bag" />
-    {displayedBagQuantity > 0 && (
-      <span className="header-bag-count" ref={bagCountRef}>
-        {displayedBagQuantity}
-      </span>
-    )}
-  </button>
-
-  {!isMobile && (
-    <div className={`desktop-cart-dropdown${isDesktopCartOpen ? ' open' : ''}`}>
-      <Cart variant="panel" onClose={() => setIsDesktopCartOpen(false)} />
-    </div>
-  )}
-</div>
-    </div>
-  </>
-)}
 
   {!useCartHeaderVariant && (
-  <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
-    <div className="custom-search-inner">
-      <input
-        type="text"
-        className="custom-search-input"
-        placeholder="Little Trendsetters: Uncover Your Child's Style"
-        value={searchQuery}
-        onChange={handleSearch}
-      />
-      <button className="custom-search-close" onClick={toggleSearch}>
-        <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
-      </button>
-      <div className="custom-search-results"></div>
+    <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
+      <div className="custom-search-inner">
+        <input
+          type="text"
+          className="custom-search-input"
+          placeholder="Little Trendsetters: Uncover Your Child's Style"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+        <button className="custom-search-close" onClick={toggleSearch}>
+          <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
+        </button>
+        <div className="custom-search-results"></div>
+      </div>
     </div>
-  </div>
-)}
+  )}
 </div>
 
       <div
