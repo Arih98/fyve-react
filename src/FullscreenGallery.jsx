@@ -23,6 +23,9 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = useState(false);
+
+  const shouldSkipHistoryBackRef = useRef(false);
+
 const swipeRef = useRef({
   startX: 0,
   startY: 0,
@@ -156,10 +159,10 @@ const toggleZoomAtPoint = (clientX, clientY) => {
     if (!isOpen) return;
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-        return;
-      }
+if (e.key === 'Escape') {
+  closeGallery();
+  return;
+}
 
       if (e.key === 'ArrowLeft' && scale === 1) {
         goPrev();
@@ -198,7 +201,43 @@ const toggleZoomAtPoint = (clientX, clientY) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, scale, currentIndex, images.length, onClose, translate]);
+  }, [isOpen, scale, currentIndex, images.length, translate, closeGallery]);
+
+  useEffect(() => {
+  if (!isOpen) return;
+
+  shouldSkipHistoryBackRef.current = false;
+
+  const galleryHistoryState = {
+    fyveFullscreenGallery: true
+  };
+
+  window.history.pushState(galleryHistoryState, '');
+
+  const handlePopState = () => {
+    shouldSkipHistoryBackRef.current = true;
+    onClose();
+  };
+
+  window.addEventListener('popstate', handlePopState);
+
+  return () => {
+    window.removeEventListener('popstate', handlePopState);
+
+    if (!shouldSkipHistoryBackRef.current && window.history.state?.fyveFullscreenGallery) {
+      window.history.back();
+    }
+  };
+}, [isOpen, onClose]);
+
+const closeGallery = () => {
+  if (window.history.state?.fyveFullscreenGallery) {
+    window.history.back();
+    return;
+  }
+
+  onClose();
+};
 
   const handleWheel = (e) => {
     e.preventDefault();
@@ -397,7 +436,7 @@ if (scale === 1 && swipeRef.current.isSwiping) {
   return (
     <div
       className="fyve-fullscreen-gallery-overlay"
-      onClick={scale === 1 ? onClose : undefined}
+      onClick={scale === 1 ? closeGallery : undefined}
       role="dialog"
       aria-modal="true"
       aria-label="Product image gallery"
@@ -409,7 +448,7 @@ if (scale === 1 && swipeRef.current.isSwiping) {
         <button
           type="button"
           className="fyve-fullscreen-gallery-close"
-          onClick={onClose}
+          onClick={closeGallery}
           aria-label="Close gallery"
         >
           ×
