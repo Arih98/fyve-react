@@ -149,7 +149,7 @@
     right: 12px;
     width: 40px;
     height: 40px;
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .fyve-fullscreen-gallery-image {
@@ -170,8 +170,8 @@
 }
 
 .fyve-fullscreen-gallery-nav {
-  width: 48x;
-  height: 48px;
+  width: 47px;
+  height: 47px;
 }
 
 .fyve-fullscreen-gallery-progress {
