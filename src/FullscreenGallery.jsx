@@ -407,7 +407,7 @@ if (scale === 1 && swipeRef.current.isSwiping) {
   disabled={currentIndex <= 0}
   aria-label="Previous image"
 >
-  <img src="/assets/NextPrevArrows.svg" alt="" />
+  <img src="/assets/Next&PrevArrows.svg" alt="" />
 </button>
 
 <button
@@ -417,7 +417,7 @@ if (scale === 1 && swipeRef.current.isSwiping) {
   disabled={currentIndex >= images.length - 1}
   aria-label="Next image"
 >
-  <img src="/assets/NextPrevArrows.svg" alt="" />
+  <img src="/assets/Next&PrevArrows.svg" alt="" />
 </button>
 
         <div
