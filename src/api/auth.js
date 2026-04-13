@@ -8,12 +8,18 @@ export async function getCurrentUser() {
   });
 
   console.log('[API] /me status:', response.status);
+  console.log('[API] /me content-type:', response.headers.get('content-type'));
 
-  const data = await response.json();
+  const rawText = await response.text();
 
-  console.log('[API] /me data:', data);
+  console.log('[API] /me raw response:', rawText.slice(0, 500));
 
-  return data;
+  try {
+    return JSON.parse(rawText);
+  } catch (err) {
+    console.error('[API] /me JSON parse failed');
+    throw err;
+  }
 }
 
 export async function loginUser({ email, password }) {
@@ -29,12 +35,18 @@ export async function loginUser({ email, password }) {
   });
 
   console.log('[API] /login status:', response.status);
+  console.log('[API] /login content-type:', response.headers.get('content-type'));
 
-  const data = await response.json();
+  const rawText = await response.text();
 
-  console.log('[API] /login data:', data);
+  console.log('[API] /login raw response:', rawText.slice(0, 500));
 
-  return data;
+  try {
+    return JSON.parse(rawText);
+  } catch (err) {
+    console.error('[API] /login JSON parse failed');
+    throw err;
+  }
 }
 
 export async function registerUser({ firstName, lastName, email, password }) {
@@ -55,12 +67,18 @@ export async function registerUser({ firstName, lastName, email, password }) {
   });
 
   console.log('[API] /register status:', response.status);
+  console.log('[API] /register content-type:', response.headers.get('content-type'));
 
-  const data = await response.json();
+  const rawText = await response.text();
 
-  console.log('[API] /register data:', data);
+  console.log('[API] /register raw response:', rawText.slice(0, 500));
 
-  return data;
+  try {
+    return JSON.parse(rawText);
+  } catch (err) {
+    console.error('[API] /register JSON parse failed');
+    throw err;
+  }
 }
 
 export async function logoutUser() {
@@ -72,10 +90,16 @@ export async function logoutUser() {
   });
 
   console.log('[API] /logout status:', response.status);
+  console.log('[API] /logout content-type:', response.headers.get('content-type'));
 
-  const data = await response.json();
+  const rawText = await response.text();
 
-  console.log('[API] /logout data:', data);
+  console.log('[API] /logout raw response:', rawText.slice(0, 500));
 
-  return data;
+  try {
+    return JSON.parse(rawText);
+  } catch (err) {
+    console.error('[API] /logout JSON parse failed');
+    throw err;
+  }
 }
