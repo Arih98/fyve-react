@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './FullscreenGallery.css';
 
 const MIN_SCALE = 1;
@@ -138,6 +138,15 @@ const toggleZoomAtPoint = (clientX, clientY) => {
     goToIndex(currentIndex + 1);
   };
 
+  const closeGallery = useCallback(() => {
+  if (window.history.state?.fyveFullscreenGallery) {
+    window.history.back();
+    return;
+  }
+
+  onClose();
+}, [onClose]);
+
   useEffect(() => {
     if (!isOpen) return;
     setCurrentIndex(initialIndex);
@@ -229,15 +238,6 @@ if (e.key === 'Escape') {
     }
   };
 }, [isOpen, onClose]);
-
-const closeGallery = () => {
-  if (window.history.state?.fyveFullscreenGallery) {
-    window.history.back();
-    return;
-  }
-
-  onClose();
-};
 
   const handleWheel = (e) => {
     e.preventDefault();
