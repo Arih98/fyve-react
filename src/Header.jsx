@@ -18,7 +18,11 @@ const Header = () => {
 const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
-const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
+const useCartHeaderVariant =
+  isMobile &&
+  isCartPage &&
+  cartItems.length > 0 &&
+  menuState === 'closed';
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
