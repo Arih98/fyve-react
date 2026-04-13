@@ -9,8 +9,12 @@ import Admin from './Admin';
 import CategoryProducts from './CategoryProducts';
 import Checkout from './Checkout';
 import Account from './Account';
+import Login from './Login';
+import Signup from './Signup';
 import { MenuContext } from './MenuContext';
 import { CartProvider } from './CartContext';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import './App.css';
 import './Header.css';
@@ -88,19 +92,30 @@ function AppContent() {
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
-        <ScrollManager />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/product/:id" element={<ProductDetailWrapper />} />
-            <Route path="/product-category/:slug" element={<CategoryProducts />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/cart" element={<Cart />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <ScrollManager />
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/product/:id" element={<ProductDetailWrapper />} />
+              <Route path="/product-category/:slug" element={<CategoryProducts />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route
+                path="/account"
+                element={
+                  <ProtectedRoute>
+                    <Account />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/cart" element={<Cart />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </CartProvider>
     </MenuContext.Provider>
   );
