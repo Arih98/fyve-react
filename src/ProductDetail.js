@@ -33,6 +33,10 @@ const ProductDetail = () => {
   const deliveryIconRef = useRef(null);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+  const [viewerImageIndex, setViewerImageIndex] = useState(0);
+  const galleryTouchStartRef = useRef({ x: 0, y: 0 });
+  const galleryWasDraggingRef = useRef(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -115,7 +119,7 @@ const availableStock = availableStockRaw === null ? null : Number(availableStock
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
   const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
-const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
+  const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
 
 useEffect(() => {
   if (!location.state?.fromProductGrid) {
@@ -228,15 +232,56 @@ const handleMobileGalleryScroll = () => {
   const el = mobileGalleryRef.current;
   if (!el) return;
 
-  const slideWidth = el.clientWidth;
+  const firstSlide = el.children[0];
+  if (!firstSlide) return;
+
+  const slideWidth = firstSlide.getBoundingClientRect().width;
   if (!slideWidth) return;
 
-const nextIndex = Math.min(
-  displayImages.length - 1,
-  Math.max(0, Math.round(el.scrollLeft / slideWidth))
-);
-setActiveImageIndex(nextIndex);
+  const nextIndex = Math.min(
+    displayImages.length - 1,
+    Math.max(0, Math.round(el.scrollLeft / slideWidth))
+  );
+
+  setActiveImageIndex(nextIndex);
 };
+
+useEffect(() => {
+  const el = mobileGalleryRef.current;
+  if (!el || !isMobile) return;
+
+  let scrollTimeout;
+
+  const snapToNearestSlide = () => {
+    const firstSlide = el.children[0];
+    if (!firstSlide) return;
+
+    const slideWidth = firstSlide.getBoundingClientRect().width;
+    if (!slideWidth) return;
+
+    const nextIndex = Math.round(el.scrollLeft / slideWidth);
+    const clampedIndex = Math.max(0, Math.min(displayImages.length - 1, nextIndex));
+
+    el.scrollTo({
+      left: clampedIndex * slideWidth,
+      behavior: 'smooth'
+    });
+
+    setActiveImageIndex(clampedIndex);
+  };
+
+  const handleScroll = () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(snapToNearestSlide, 80);
+  };
+
+  el.addEventListener('scroll', handleScroll, { passive: true });
+
+  return () => {
+    clearTimeout(scrollTimeout);
+    el.removeEventListener('scroll', handleScroll);
+  };
+}, [isMobile, displayImages.length, current?.sku, product?.id]);
 
 const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
 const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
@@ -379,6 +424,17 @@ useEffect(() => {
 }, [handleAddToCart]);
 
 useEffect(() => {
+  if (!isImageViewerOpen) return;
+
+  const previousOverflow = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
+
+  return () => {
+    document.body.style.overflow = previousOverflow;
+  };
+}, [isImageViewerOpen]);
+
+useEffect(() => {
   if (!product) return;
   if (product.product_type === 'variable' && !effectiveVariation) return;
 
@@ -417,6 +473,43 @@ useEffect(() => {
   isColorAttribute
 ]);
 
+const openImageViewer = (index) => {
+  setViewerImageIndex(index);
+  setIsImageViewerOpen(true);
+};
+
+const closeImageViewer = () => {
+  setIsImageViewerOpen(false);
+};
+
+const handleGalleryTouchStart = (e) => {
+  const touch = e.touches[0];
+  galleryTouchStartRef.current = {
+    x: touch.clientX,
+    y: touch.clientY
+  };
+  galleryWasDraggingRef.current = false;
+};
+
+const handleGalleryTouchMove = (e) => {
+  const touch = e.touches[0];
+  const deltaX = Math.abs(touch.clientX - galleryTouchStartRef.current.x);
+  const deltaY = Math.abs(touch.clientY - galleryTouchStartRef.current.y);
+
+  if (deltaX > 8 || deltaY > 8) {
+    galleryWasDraggingRef.current = true;
+  }
+};
+
+const handleGalleryImageClick = (idx) => {
+  if (galleryWasDraggingRef.current) {
+    galleryWasDraggingRef.current = false;
+    return;
+  }
+
+  openImageViewer(idx);
+};
+
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -428,22 +521,25 @@ return (
       <motion.div className="product-detail-container">
         <div className="images-container">
   <div className="product-image-gallery">
-    <div
-      ref={mobileGalleryRef}
-      className="product-image-gallery-track"
-      onScroll={handleMobileGalleryScroll}
-    >
+<div
+  ref={mobileGalleryRef}
+  className="product-image-gallery-track"
+  onScroll={handleMobileGalleryScroll}
+  onTouchStart={handleGalleryTouchStart}
+  onTouchMove={handleGalleryTouchMove}
+>
       {displayImages.map((img, idx) => {
         const imageKey = `${current?.sku || product.id}-${idx}`;
 
         return (
           <div
-            ref={el => {
-              galleryRefs.current.set(imageKey, el);
-            }}
-            key={imageKey}
-            className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-          >
+  ref={el => {
+    galleryRefs.current.set(imageKey, el);
+  }}
+  key={imageKey}
+  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+  onClick={() => handleGalleryImageClick(idx)}
+>
             <div className="product-gallery-image-box">
   <img
     data-pdp-primary-image={idx === 0 ? 'true' : undefined}
@@ -690,6 +786,35 @@ return (
         </div>
       )}
     </div>
+    {isImageViewerOpen && (
+  <div className="image-viewer-overlay" onClick={closeImageViewer}>
+<button
+  type="button"
+  className="image-viewer-close"
+  onClick={(e) => {
+    e.stopPropagation();
+    closeImageViewer();
+  }}
+  aria-label="Close image viewer"
+>
+  ×
+</button>
+
+    <div
+      className="image-viewer-stage"
+      onClick={e => e.stopPropagation()}
+    >
+      <div className="image-viewer-scroll">
+        <img
+          src={displayImages[viewerImageIndex]}
+          alt={`${displayTitle} ${viewerImageIndex + 1}`}
+          className="image-viewer-image"
+          onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+        />
+      </div>
+    </div>
+  </div>
+)}
   </>
 );
 };
