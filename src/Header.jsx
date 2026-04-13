@@ -276,6 +276,18 @@ const handleToggleMenu = () => {
   if (isSearchOpen) setIsSearchOpen(false);
 };
 
+const handleBagClick = () => {
+  if (isMobile) {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+    navigate('/cart');
+    return;
+  }
+
+  setIsDesktopCartOpen(v => !v);
+};
+
   const toggleSearch = () => {
     setIsSearchOpen(v => !v);
     if (isMenuOpen) setIsMenuOpen(false);
@@ -484,17 +496,11 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
       </button>
 
       <div className="header-bag-dropdown-wrap" ref={desktopCartRef}>
-  <button
-    className="mobile-nav-icon header-bag-button"
-    onClick={() => {
-      if (isMobile) {
-        navigate('/cart');
-      } else {
-        setIsDesktopCartOpen(v => !v);
-      }
-    }}
-    ref={bagIconButtonRef}
-  >
+<button
+  className="mobile-nav-icon header-bag-button"
+  onClick={handleBagClick}
+  ref={bagIconButtonRef}
+>
     <img src={bagIconSrc} alt="Bag" />
     {displayedBagQuantity > 0 && (
       <span className="header-bag-count" ref={bagCountRef}>
