@@ -280,7 +280,7 @@ useEffect(() => {
   }, 40);
 
   return () => clearTimeout(timeout);
-}, [location.pathname, location.search, isMenuOpen, isMobile, setIsMenuOpen]);
+}, [location.pathname, location.search, location.hash, isMenuOpen, isMobile, setIsMenuOpen]);
 
 const handleToggleMenu = () => {
   toggleMenu();
