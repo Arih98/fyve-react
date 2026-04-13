@@ -23,6 +23,11 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = useState(false);
+const swipeRef = useRef({
+  startX: 0,
+  startY: 0,
+  isSwiping: false
+});
 
   const stageRef = useRef(null);
   const imageRef = useRef(null);
@@ -98,13 +103,6 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
     const clamped = clampTranslate(nextScale, nextTranslate);
     setScale(nextScale);
     setTranslate(clamped);
-  };
-
-  const zoomInAtCenter = () => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const rect = stage.getBoundingClientRect();
-    updateScaleAtPoint(2.5, rect.left + rect.width / 2, rect.top + rect.height / 2);
   };
 
   const toggleZoomAtPoint = (clientX, clientY) => {
@@ -250,88 +248,116 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   };
 
   const handleTouchStart = (e) => {
-    if (e.touches.length === 2) {
-      const [touchA, touchB] = e.touches;
-      pinchStateRef.current = {
-        isPinching: true,
-        startDistance: getDistance(touchA, touchB),
-        startScale: scale,
-        startTranslateX: translate.x,
-        startTranslateY: translate.y,
-        midpoint: getMidpoint(touchA, touchB)
-      };
-      setIsInteracting(true);
-      return;
-    }
+  if (e.touches.length === 2) {
+    const [touchA, touchB] = e.touches;
+    pinchStateRef.current = {
+      isPinching: true,
+      startDistance: getDistance(touchA, touchB),
+      startScale: scale,
+      startTranslateX: translate.x,
+      startTranslateY: translate.y,
+      midpoint: getMidpoint(touchA, touchB)
+    };
+    setIsInteracting(true);
+    return;
+  }
 
-    if (e.touches.length !== 1) return;
+  if (e.touches.length !== 1) return;
 
-    const touch = e.touches[0];
-    const now = Date.now();
-    const timeSinceLastTap = now - tapRef.current.lastTapTime;
+  const touch = e.touches[0];
 
-    if (timeSinceLastTap < DOUBLE_TAP_DELAY) {
-      toggleZoomAtPoint(touch.clientX, touch.clientY);
-      tapRef.current.lastTapTime = 0;
-      return;
-    }
-
-    tapRef.current.lastTapTime = now;
-
-    if (scale > 1) {
-      pointerStateRef.current = {
-        isDragging: true,
-        startX: touch.clientX,
-        startY: touch.clientY,
-        originX: translate.x,
-        originY: translate.y
-      };
-      setIsInteracting(true);
-    }
+  swipeRef.current = {
+    startX: touch.clientX,
+    startY: touch.clientY,
+    isSwiping: scale === 1
   };
+
+  const now = Date.now();
+  const timeSinceLastTap = now - tapRef.current.lastTapTime;
+
+  if (timeSinceLastTap < DOUBLE_TAP_DELAY) {
+    toggleZoomAtPoint(touch.clientX, touch.clientY);
+    tapRef.current.lastTapTime = 0;
+    return;
+  }
+
+  tapRef.current.lastTapTime = now;
+
+  if (scale > 1) {
+    pointerStateRef.current = {
+      isDragging: true,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      originX: translate.x,
+      originY: translate.y
+    };
+    setIsInteracting(true);
+  }
+};
 
   const handleTouchMove = (e) => {
-    if (e.touches.length === 2 && pinchStateRef.current.isPinching) {
-      e.preventDefault();
-
-      const [touchA, touchB] = e.touches;
-      const nextDistance = getDistance(touchA, touchB);
-      const nextScale = clamp(
-        pinchStateRef.current.startScale * (nextDistance / pinchStateRef.current.startDistance),
-        MIN_SCALE,
-        MAX_SCALE
-      );
-
-      const midpoint = getMidpoint(touchA, touchB);
-      const deltaMidX = midpoint.x - pinchStateRef.current.midpoint.x;
-      const deltaMidY = midpoint.y - pinchStateRef.current.midpoint.y;
-
-      const nextTranslate = {
-        x: pinchStateRef.current.startTranslateX + deltaMidX,
-        y: pinchStateRef.current.startTranslateY + deltaMidY
-      };
-
-      setScale(nextScale);
-      setTranslate(clampTranslate(nextScale, nextTranslate));
-      return;
-    }
-
-    if (e.touches.length !== 1) return;
-    if (!pointerStateRef.current.isDragging || scale <= 1) return;
-
+  if (e.touches.length === 2 && pinchStateRef.current.isPinching) {
     e.preventDefault();
 
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - pointerStateRef.current.startX;
-    const deltaY = touch.clientY - pointerStateRef.current.startY;
+    const [touchA, touchB] = e.touches;
+    const nextDistance = getDistance(touchA, touchB);
+    const nextScale = clamp(
+      pinchStateRef.current.startScale * (nextDistance / pinchStateRef.current.startDistance),
+      MIN_SCALE,
+      MAX_SCALE
+    );
+
+    const midpoint = getMidpoint(touchA, touchB);
+    const deltaMidX = midpoint.x - pinchStateRef.current.midpoint.x;
+    const deltaMidY = midpoint.y - pinchStateRef.current.midpoint.y;
 
     const nextTranslate = {
-      x: pointerStateRef.current.originX + deltaX,
-      y: pointerStateRef.current.originY + deltaY
+      x: pinchStateRef.current.startTranslateX + deltaMidX,
+      y: pinchStateRef.current.startTranslateY + deltaMidY
     };
 
-    setTranslate(clampTranslate(scale, nextTranslate));
+    setScale(nextScale);
+    setTranslate(clampTranslate(nextScale, nextTranslate));
+    return;
+  }
+
+  if (e.touches.length !== 1) return;
+
+  const touch = e.touches[0];
+
+if (scale === 1 && swipeRef.current.isSwiping) {
+  const deltaX = touch.clientX - swipeRef.current.startX;
+  const deltaY = touch.clientY - swipeRef.current.startY;
+
+  if (Math.abs(deltaY) > Math.abs(deltaX)) {
+    swipeRef.current.isSwiping = false;
+    return;
+  }
+
+  if (Math.abs(deltaX) > 60) {
+    if (deltaX < 0) goNext();
+    else goPrev();
+
+    swipeRef.current.isSwiping = false;
+  }
+
+  return;
+}
+
+  if (!pointerStateRef.current.isDragging || scale <= 1) return;
+
+  e.preventDefault();
+
+  const deltaX = touch.clientX - pointerStateRef.current.startX;
+  const deltaY = touch.clientY - pointerStateRef.current.startY;
+
+  const nextTranslate = {
+    x: pointerStateRef.current.originX + deltaX,
+    y: pointerStateRef.current.originY + deltaY
   };
+
+  setTranslate(clampTranslate(scale, nextTranslate));
+};
 
   const handleTouchEnd = () => {
     pointerStateRef.current.isDragging = false;
@@ -374,67 +400,23 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
           <div className="fyve-fullscreen-gallery-title">{title}</div>
         </div>
 
-        <div className="fyve-fullscreen-gallery-actions">
-          <button
-            type="button"
-            className="fyve-fullscreen-gallery-action"
-            onClick={() => {
-              const stage = stageRef.current;
-              if (!stage) return;
-              const rect = stage.getBoundingClientRect();
-              updateScaleAtPoint(clamp(scale - 0.5, MIN_SCALE, MAX_SCALE), rect.left + rect.width / 2, rect.top + rect.height / 2);
-            }}
-            disabled={scale <= MIN_SCALE}
-            aria-label="Zoom out"
-          >
-            −
-          </button>
-
-          <button
-            type="button"
-            className="fyve-fullscreen-gallery-action"
-            onClick={() => {
-              const stage = stageRef.current;
-              if (!stage) return;
-              const rect = stage.getBoundingClientRect();
-              updateScaleAtPoint(clamp(scale + 0.5, MIN_SCALE, MAX_SCALE), rect.left + rect.width / 2, rect.top + rect.height / 2);
-            }}
-            disabled={scale >= MAX_SCALE}
-            aria-label="Zoom in"
-          >
-            +
-          </button>
-
-          <button
-            type="button"
-            className="fyve-fullscreen-gallery-action"
-            onClick={resetTransform}
-            disabled={scale === 1}
-            aria-label="Reset zoom"
-          >
-            Reset
-          </button>
-        </div>
-
         <button
-          type="button"
-          className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
-          onClick={goPrev}
-          disabled={currentIndex <= 0 || scale > 1}
-          aria-label="Previous image"
-        >
-          ‹
-        </button>
+  type="button"
+  className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
+  onClick={goPrev}
+  disabled={currentIndex <= 0}
+>
+  <img src="/assets/PrevArrow.svg" alt="Previous" />
+</button>
 
-        <button
-          type="button"
-          className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-next"
-          onClick={goNext}
-          disabled={currentIndex >= images.length - 1 || scale > 1}
-          aria-label="Next image"
-        >
-          ›
-        </button>
+<button
+  type="button"
+  className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-next"
+  onClick={goNext}
+  disabled={currentIndex >= images.length - 1}
+>
+  <img src="/assets/NextArrow.svg" alt="Next" />
+</button>
 
         <div
           ref={stageRef}
@@ -470,33 +452,6 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
           </div>
         </div>
 
-        <div className="fyve-fullscreen-gallery-bottombar">
-          <button
-            type="button"
-            className="fyve-fullscreen-gallery-bottom-button"
-            onClick={goPrev}
-            disabled={currentIndex <= 0 || scale > 1}
-          >
-            Prev
-          </button>
-
-          <button
-            type="button"
-            className="fyve-fullscreen-gallery-bottom-button"
-            onClick={scale > 1 ? resetTransform : zoomInAtCenter}
-          >
-            {scale > 1 ? 'Reset Zoom' : 'Zoom'}
-          </button>
-
-          <button
-            type="button"
-            className="fyve-fullscreen-gallery-bottom-button"
-            onClick={goNext}
-            disabled={currentIndex >= images.length - 1 || scale > 1}
-          >
-            Next
-          </button>
-        </div>
       </div>
     </div>
   );
