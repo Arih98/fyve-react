@@ -250,10 +250,6 @@ const toggleZoomAtPoint = (clientX, clientY) => {
     setIsInteracting(false);
   };
 
-  const handleDoubleClick = (e) => {
-    toggleZoomAtPoint(e.clientX, e.clientY);
-  };
-
   const clearTapState = () => {
   tapRef.current.lastTapTime = 0;
   tapRef.current.lastTapX = 0;
@@ -428,7 +424,6 @@ if (scale === 1 && swipeRef.current.isSwiping) {
           onPointerUp={endPointerInteraction}
           onPointerCancel={endPointerInteraction}
           onPointerLeave={endPointerInteraction}
-          onDoubleClick={handleDoubleClick}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
