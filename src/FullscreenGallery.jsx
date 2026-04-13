@@ -78,14 +78,42 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   };
 
   const emitDebugSnapshot = (label) => {
-    const snapshot = buildDebugSnapshot(label);
-    const serialized = JSON.stringify(snapshot);
+  const snapshot = buildDebugSnapshot(label);
 
-    if (debugPreviousSnapshotRef.current !== serialized) {
-      debugPreviousSnapshotRef.current = serialized;
-      console.log('[FYVE FULLSCREEN DEBUG]', snapshot);
-    }
+  const simplified = {
+    label: snapshot.label,
+    currentIndex: snapshot.currentIndex,
+    currentImage: snapshot.currentImage,
+    overlayRect: snapshot.overlayRect,
+    stageRect: snapshot.stageRect,
+    panzoomRect: snapshot.panzoomRect,
+    transformedImage: snapshot.transformedImage
+      ? {
+          className: snapshot.transformedImage.className,
+          src: snapshot.transformedImage.src,
+          inlineStyle: snapshot.transformedImage.inlineStyle,
+          computedTransform: snapshot.transformedImage.computedTransform,
+          computedTransformOrigin: snapshot.transformedImage.computedTransformOrigin,
+          rect: snapshot.transformedImage.rect
+        }
+      : null,
+    allImages: snapshot.allImages.map((img) => ({
+      className: img.className,
+      src: img.src,
+      inlineStyle: img.inlineStyle,
+      computedTransform: img.computedTransform,
+      computedTransformOrigin: img.computedTransformOrigin,
+      rect: img.rect
+    }))
   };
+
+  const serialized = JSON.stringify(simplified);
+
+  if (debugPreviousSnapshotRef.current !== serialized) {
+    debugPreviousSnapshotRef.current = serialized;
+    console.log('[FYVE FULLSCREEN DEBUG JSON]', JSON.stringify(simplified, null, 2));
+  }
+};
 
   useEffect(() => {
     if (!isOpen) return;
@@ -93,16 +121,27 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   }, [initialIndex, isOpen]);
 
   useEffect(() => {
-    window.__fyveFullscreenDump = () => {
-      const snapshot = buildDebugSnapshot('MANUAL_DUMP');
-      console.log('[FYVE FULLSCREEN DEBUG] MANUAL_DUMP', snapshot);
-      return snapshot;
+  window.__fyveFullscreenDump = () => {
+    const snapshot = buildDebugSnapshot('MANUAL_DUMP');
+    const simplified = {
+      label: snapshot.label,
+      currentIndex: snapshot.currentIndex,
+      currentImage: snapshot.currentImage,
+      overlayRect: snapshot.overlayRect,
+      stageRect: snapshot.stageRect,
+      panzoomRect: snapshot.panzoomRect,
+      transformedImage: snapshot.transformedImage,
+      allImages: snapshot.allImages
     };
 
-    return () => {
-      delete window.__fyveFullscreenDump;
-    };
-  }, [currentIndex, images, isOpen]);
+    console.log('[FYVE MANUAL DUMP]', JSON.stringify(simplified, null, 2));
+    return simplified;
+  };
+
+  return () => {
+    delete window.__fyveFullscreenDump;
+  };
+}, [currentIndex, images, isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -154,19 +193,49 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
     if (!isOpen) return;
 
     const handleTouchStart = (e) => {
-      const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
-      if (!shell || !shell.contains(e.target)) return;
+  const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
+  if (!shell || !shell.contains(e.target)) return;
 
-      console.log('[FYVE FULLSCREEN DEBUG] TOUCHSTART', {
-        touchesCount: e.touches.length,
-        touches: [...e.touches].map((t) => ({
-          x: Math.round(t.clientX),
-          y: Math.round(t.clientY)
-        }))
-      });
+  console.log('[FYVE TOUCHSTART]', JSON.stringify({
+    touchesCount: e.touches.length,
+    touches: [...e.touches].map((t) => ({
+      x: Math.round(t.clientX),
+      y: Math.round(t.clientY)
+    }))
+  }, null, 2));
 
-      emitDebugSnapshot('TOUCHSTART');
-    };
+  emitDebugSnapshot('TOUCHSTART');
+};
+
+const handleTouchMove = (e) => {
+  const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
+  if (!shell || !shell.contains(e.target)) return;
+
+  console.log('[FYVE TOUCHMOVE]', JSON.stringify({
+    touchesCount: e.touches.length,
+    touches: [...e.touches].map((t) => ({
+      x: Math.round(t.clientX),
+      y: Math.round(t.clientY)
+    }))
+  }, null, 2));
+
+  emitDebugSnapshot('TOUCHMOVE');
+};
+
+const handleTouchEnd = (e) => {
+  const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
+  if (!shell || !shell.contains(e.target)) return;
+
+  console.log('[FYVE TOUCHEND]', JSON.stringify({
+    touchesCount: e.touches.length,
+    touches: [...e.touches].map((t) => ({
+      x: Math.round(t.clientX),
+      y: Math.round(t.clientY)
+    }))
+  }, null, 2));
+
+  emitDebugSnapshot('TOUCHEND');
+};
 
     const handleTouchMove = (e) => {
       const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
