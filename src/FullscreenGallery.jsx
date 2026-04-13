@@ -25,36 +25,38 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
     if (!isOpen || !containerRef.current || !images.length) return;
 
     const instance = Carousel(
-  containerRef.current,
-  {
-    infinite: false,
-    center: true,
-    fill: false,
-    dragFree: false,
-    adaptiveHeight: false,
-    transition: 'slide',
-    Dots: false,
-    Navigation: false,
-    initialPage: initialIndex,
-    Zoomable: {
-      Panzoom: {
-        panOnlyZoomed: true,
-        bounds: true,
-        rubberband: false,
-        maxScale: 4
-      }
-    },
-    on: {
-      ready: (carousel) => {
-        setCurrentIndex(carousel.getPageIndex());
+      containerRef.current,
+      {
+        infinite: false,
+        center: true,
+        fill: false,
+        dragFree: false,
+        adaptiveHeight: false,
+        transition: 'slide',
+        Dots: false,
+        Navigation: false,
+        initialPage: initialIndex,
+        draggable: true,
+        Zoomable: {
+          Panzoom: {
+            panOnlyZoomed: true,
+            bounds: true,
+            rubberband: false,
+            maxScale: 4,
+            touch: true
+          }
+        },
+        on: {
+          ready: (carousel) => {
+            setCurrentIndex(carousel.getPageIndex());
+          },
+          change: (carousel) => {
+            setCurrentIndex(carousel.getPageIndex());
+          }
+        }
       },
-      change: (carousel) => {
-        setCurrentIndex(carousel.getPageIndex());
-      }
-    }
-  },
-  { Zoomable }
-).init();
+      { Zoomable }
+    ).init();
 
     instanceRef.current = instance;
 
@@ -72,6 +74,28 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
       instanceRef.current = null;
     };
   }, [images, initialIndex, isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const interval = setInterval(() => {
+      const selectedSlide = containerRef.current?.querySelector('.f-carousel__slide.is-selected');
+      const zoomedImage = selectedSlide?.querySelector('.f-panzoom__content');
+      if (!zoomedImage || !instanceRef.current) return;
+
+      const transform = getComputedStyle(zoomedImage).transform;
+      const isZoomed =
+        transform &&
+        transform !== 'none' &&
+        transform !== 'matrix(1, 0, 0, 1, 0, 0)';
+
+      instanceRef.current.setOptions({
+        draggable: !isZoomed
+      });
+    }, 120);
+
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -126,16 +150,18 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
         <div ref={containerRef} className="f-carousel fyve-fullscreen-gallery-carousel">
           {images.map((img, idx) => (
             <div className="f-carousel__slide fyve-fullscreen-gallery-slide" key={`${img}-${idx}`}>
-  <img
-    className="fyve-fullscreen-gallery-image"
-    src={img}
-    alt={`${title} ${idx + 1}`}
-    draggable="false"
-    onError={(e) => {
-      e.target.src = '/api/Uploads/fallback-image.png';
-    }}
-  />
-</div>
+              <div className="f-panzoom fyve-fullscreen-gallery-panzoom">
+                <img
+                  className="f-panzoom__content fyve-fullscreen-gallery-image"
+                  src={img}
+                  alt={`${title} ${idx + 1}`}
+                  draggable="false"
+                  onError={(e) => {
+                    e.target.src = '/api/Uploads/fallback-image.png';
+                  }}
+                />
+              </div>
+            </div>
           ))}
         </div>
       </div>
