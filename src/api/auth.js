@@ -1,4 +1,4 @@
-const API_BASE = 'https://dev.fyvelondon.com/wp-json/fyve-auth/v1';
+const API_BASE = 'https://fyvelondon.com/wp-json/fyve-auth/v1';
 
 export async function getCurrentUser() {
   console.log('[API] GET /me');
