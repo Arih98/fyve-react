@@ -78,6 +78,10 @@
   height: 20px;
 }
 
+.fyve-fullscreen-gallery-nav-prev img {
+  transform: rotate(180deg);
+}
+
 .fyve-fullscreen-gallery-nav:disabled {
   opacity: 0.3;
   cursor: default;

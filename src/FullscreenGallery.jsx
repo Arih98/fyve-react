@@ -405,8 +405,9 @@ if (scale === 1 && swipeRef.current.isSwiping) {
   className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
   onClick={goPrev}
   disabled={currentIndex <= 0}
+  aria-label="Previous image"
 >
-  <img src="/assets/PrevArrow.svg" alt="Previous" />
+  <img src="/assets/NextPrevArrows.svg" alt="" />
 </button>
 
 <button
@@ -414,8 +415,9 @@ if (scale === 1 && swipeRef.current.isSwiping) {
   className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-next"
   onClick={goNext}
   disabled={currentIndex >= images.length - 1}
+  aria-label="Next image"
 >
-  <img src="/assets/NextArrow.svg" alt="Next" />
+  <img src="/assets/NextPrevArrows.svg" alt="" />
 </button>
 
         <div
