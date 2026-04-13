@@ -16,7 +16,7 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
     const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
     const stage = document.querySelector('.fyve-fullscreen-gallery-stage');
     const panzoom = document.querySelector('.fyve-fullscreen-gallery-panzoom');
-    const allImages = [...document.querySelectorAll('.fyve-fullscreen-gallery-image, .f-panzoom__content')];
+    const allImages = [...document.querySelectorAll('.fyve-fullscreen-gallery-image')];
     const transformedImage =
       allImages.find((img) => getComputedStyle(img).transform !== 'none') ||
       allImages[0] ||
@@ -236,36 +236,6 @@ const handleTouchEnd = (e) => {
 
   emitDebugSnapshot('TOUCHEND');
 };
-
-    const handleTouchMove = (e) => {
-      const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
-      if (!shell || !shell.contains(e.target)) return;
-
-      console.log('[FYVE FULLSCREEN DEBUG] TOUCHMOVE', {
-        touchesCount: e.touches.length,
-        touches: [...e.touches].map((t) => ({
-          x: Math.round(t.clientX),
-          y: Math.round(t.clientY)
-        }))
-      });
-
-      emitDebugSnapshot('TOUCHMOVE');
-    };
-
-    const handleTouchEnd = (e) => {
-      const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
-      if (!shell || !shell.contains(e.target)) return;
-
-      console.log('[FYVE FULLSCREEN DEBUG] TOUCHEND', {
-        touchesCount: e.touches.length,
-        touches: [...e.touches].map((t) => ({
-          x: Math.round(t.clientX),
-          y: Math.round(t.clientY)
-        }))
-      });
-
-      emitDebugSnapshot('TOUCHEND');
-    };
 
     const handlePointerDown = (e) => {
       const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
