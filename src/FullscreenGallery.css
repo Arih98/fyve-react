@@ -160,9 +160,9 @@
 .fyve-fullscreen-gallery-controls {
   left: 50%;
   right: auto;
-  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  bottom: calc(env(safe-area-inset-bottom) + 40px);
   transform: translateX(-50%);
-  gap: 10px;
+  gap: 20px;
 }
 
 .fyve-fullscreen-gallery-nav-group {
