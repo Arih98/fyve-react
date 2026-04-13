@@ -393,13 +393,6 @@ if (scale === 1 && swipeRef.current.isSwiping) {
           ×
         </button>
 
-        <div className="fyve-fullscreen-gallery-topbar">
-          <div className="fyve-fullscreen-gallery-counter">
-            {`${currentIndex + 1}/${images.length}`}
-          </div>
-          <div className="fyve-fullscreen-gallery-title">{title}</div>
-        </div>
-
         <button
   type="button"
   className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
