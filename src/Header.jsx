@@ -18,11 +18,7 @@ const Header = () => {
 const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
-const useCartHeaderVariant =
-  isMobile &&
-  isCartPage &&
-  cartItems.length > 0 &&
-  menuState === 'closed';
+const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -557,7 +553,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
 </div>
 
       <div
-  className={`mobile-menu${menuState === 'open' || menuState === 'closing' ? ' active' : ''}${menuState === 'closing' ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
+  className={`mobile-menu${(menuState === 'open' || (!isMobile && menuState === 'closing')) ? ' active' : ''}${(!isMobile && menuState === 'closing') ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">
 
