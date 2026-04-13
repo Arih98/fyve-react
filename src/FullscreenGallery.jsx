@@ -23,7 +23,7 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = useState(false);
-
+  const onCloseRef = useRef(onClose);
   const shouldSkipHistoryBackRef = useRef(false);
 
 const swipeRef = useRef({
@@ -225,7 +225,7 @@ if (e.key === 'Escape') {
 
   const handlePopState = () => {
     shouldSkipHistoryBackRef.current = true;
-    onClose();
+    onCloseRef.current();
   };
 
   window.addEventListener('popstate', handlePopState);
@@ -237,7 +237,11 @@ if (e.key === 'Escape') {
       window.history.back();
     }
   };
-}, [isOpen, onClose]);
+}, [isOpen]);
+
+useEffect(() => {
+  onCloseRef.current = onClose;
+}, [onClose]);
 
   const handleWheel = (e) => {
     e.preventDefault();
