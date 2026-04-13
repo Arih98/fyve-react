@@ -1063,10 +1063,11 @@ body {
 }
 
 .mobile-header.first-header.cart-page-header .cart-header-checkout-button-mobile {
-  width: 100%;
-  max-width: 200px;
+  width: 160px;
+  max-width: 160px;
   height: 50px;
-  padding: 0 20px;
+  padding: 0 12px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 }
