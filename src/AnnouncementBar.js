@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
+import { MenuContext } from './MenuContext';
 import './AnnouncementBar.css';
 
 const items = Array(10).fill('FREE SHIPPING SITEWIDE');
 
 const AnnouncementBar = () => {
   const location = useLocation();
+  const { isMenuOpen } = useContext(MenuContext);
   const isCartPage = location.pathname === '/cart';
 
   return (
-    <div className={`announcement-bar ${isCartPage ? 'cart-style' : ''}`}>
+    <div className={`announcement-bar${isCartPage ? ' cart-style' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
       <div className="announcement-marquee">
         <div className="announcement-group">
           {items.map((item, index) => (
