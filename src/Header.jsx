@@ -271,6 +271,17 @@ useEffect(() => {
   return () => document.removeEventListener('mousedown', handlePointerDown);
 }, []);
 
+useEffect(() => {
+  if (!isMenuOpen) return;
+  if (!isMobile) return;
+
+  const timeout = setTimeout(() => {
+    setIsMenuOpen(false);
+  }, 40);
+
+  return () => clearTimeout(timeout);
+}, [location.pathname, location.search, isMenuOpen, isMobile, setIsMenuOpen]);
+
 const handleToggleMenu = () => {
   toggleMenu();
   if (isSearchOpen) setIsSearchOpen(false);
@@ -278,24 +289,11 @@ const handleToggleMenu = () => {
 
 const handleLogoClick = () => {
   navigate('/');
-
-  if (isMenuOpen) {
-    setTimeout(() => {
-      setIsMenuOpen(false);
-    }, 60);
-  }
 };
 
 const handleBagClick = () => {
   if (isMobile) {
     navigate('/cart');
-
-    if (isMenuOpen) {
-      requestAnimationFrame(() => {
-        setIsMenuOpen(false);
-      });
-    }
-
     return;
   }
 
@@ -623,9 +621,6 @@ onMouseLeave={() => {
   to={child.path}
   onClick={() => {
     setOpenSubmenuId(null);
-    requestAnimationFrame(() => {
-      setIsMenuOpen(false);
-    });
   }}
 >
   {child.name}
@@ -640,9 +635,6 @@ onMouseLeave={() => {
   to={item.path}
   onClick={() => {
     setOpenSubmenuId(null);
-    requestAnimationFrame(() => {
-      setIsMenuOpen(false);
-    });
   }}
 >
   {item.name}
