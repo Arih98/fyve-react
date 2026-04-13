@@ -302,15 +302,6 @@ const handleBagClick = () => {
   setIsDesktopCartOpen(v => !v);
 };
 
-const handleBagClick = () => {
-  if (isMobile) {
-    navigate('/cart');
-    return;
-  }
-
-  setIsDesktopCartOpen(v => !v);
-};
-
   const toggleSearch = () => {
     setIsSearchOpen(v => !v);
     if (isMenuOpen) setIsMenuOpen(false);
