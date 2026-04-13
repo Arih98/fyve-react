@@ -774,7 +774,7 @@ body.locked {
   box-sizing: border-box;
   transform: translateY(0) !important;
   display: grid !important;
-  grid-template-columns: repeat(4, var(--nav-icon-size));
+  grid-template-columns: var(--nav-icon-size) 1fr;
   column-gap: var(--nav-icon-gap);
   justify-content: center;
   align-items: center;
