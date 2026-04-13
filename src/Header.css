@@ -1052,6 +1052,7 @@ body {
   justify-content: center;
   min-width: 0;
   width: 100%;
+  transform: translateX(-10px);
 }
 
 .mobile-header.first-header.cart-page-header .cart-header-checkout-container {
