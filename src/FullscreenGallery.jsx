@@ -1,17 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Panzoom } from '@fancyapps/ui/dist/panzoom/panzoom.js';
-import '@fancyapps/ui/dist/panzoom/panzoom.css';
+import { Carousel } from '@fancyapps/ui/dist/carousel/';
+import { Zoomable } from '@fancyapps/ui/dist/carousel/carousel.zoomable.js';
+import '@fancyapps/ui/dist/carousel/carousel.css';
+import '@fancyapps/ui/dist/carousel/carousel.zoomable.css';
 import './FullscreenGallery.css';
 
 const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose }) => {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const panzoomRef = useRef(null);
   const containerRef = useRef(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    setCurrentIndex(initialIndex);
-  }, [initialIndex, isOpen]);
+  const instanceRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -25,51 +22,82 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen || !containerRef.current) return;
+    if (!isOpen || !containerRef.current || !images.length) return;
 
-    if (panzoomRef.current) {
-      panzoomRef.current.destroy();
-      panzoomRef.current = null;
-    }
+    const instance = Carousel(
+      containerRef.current,
+      {
+        infinite: false,
+        center: true,
+        fill: false,
+        dragFree: false,
+        adaptiveHeight: false,
+        transition: 'slide',
+        Dots: false,
+        Navigation: false,
+        initialPage: initialIndex,
+        draggable: true,
+        Zoomable: {
+          Panzoom: {
+            panOnlyZoomed: true,
+            bounds: true,
+            rubberband: false,
+            maxScale: 4,
+            touch: true
+          }
+        },
+        on: {
+          ready: (carousel) => {
+            setCurrentIndex(carousel.getPageIndex());
+          },
+          change: (carousel) => {
+            setCurrentIndex(carousel.getPageIndex());
+          }
+        }
+      },
+      { Zoomable }
+    ).init();
 
-    const instance = Panzoom(containerRef.current, {
-      bounds: true,
-      rubberband: false,
-      maxScale: 4,
-      panOnlyZoomed: true
-    }).init();
-
-    panzoomRef.current = instance;
-
-    return () => {
-      instance.destroy();
-      if (panzoomRef.current === instance) {
-        panzoomRef.current = null;
-      }
-    };
-  }, [isOpen, currentIndex]);
-
-  useEffect(() => {
-    if (!isOpen) return;
+    instanceRef.current = instance;
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') {
-        setCurrentIndex((prev) => Math.max(0, prev - 1));
-      }
-      if (e.key === 'ArrowRight') {
-        setCurrentIndex((prev) => Math.min(images.length - 1, prev + 1));
-      }
+      if (e.key === 'ArrowLeft') instance.prev();
+      if (e.key === 'ArrowRight') instance.next();
     };
 
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      instance.destroy();
+      instanceRef.current = null;
     };
-  }, [images.length, isOpen, onClose]);
+  }, [images, initialIndex, isOpen, onClose]);
 
-  if (!isOpen || !images.length) return null;
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const interval = setInterval(() => {
+      const selectedSlide = containerRef.current?.querySelector('.f-carousel__slide.is-selected');
+      const zoomedImage = selectedSlide?.querySelector('.f-panzoom__content');
+      if (!zoomedImage || !instanceRef.current) return;
+
+      const transform = getComputedStyle(zoomedImage).transform;
+      const isZoomed =
+        transform &&
+        transform !== 'none' &&
+        transform !== 'matrix(1, 0, 0, 1, 0, 0)';
+
+      instanceRef.current.setOptions({
+        draggable: !isZoomed
+      });
+    }, 120);
+
+    return () => clearInterval(interval);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -94,7 +122,7 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
 
         <div className="fyve-fullscreen-gallery-topbar">
           <div className="fyve-fullscreen-gallery-counter">
-            {`${currentIndex + 1}/${images.length}`}
+            {images.length ? `${currentIndex + 1}/${images.length}` : '0/0'}
           </div>
           <div className="fyve-fullscreen-gallery-title">{title}</div>
         </div>
@@ -102,7 +130,7 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
         <button
           type="button"
           className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-prev"
-          onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
+          onClick={() => instanceRef.current?.prev()}
           disabled={currentIndex <= 0}
           aria-label="Previous image"
         >
@@ -112,26 +140,29 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
         <button
           type="button"
           className="fyve-fullscreen-gallery-nav fyve-fullscreen-gallery-nav-next"
-          onClick={() => setCurrentIndex((prev) => Math.min(images.length - 1, prev + 1))}
+          onClick={() => instanceRef.current?.next()}
           disabled={currentIndex >= images.length - 1}
           aria-label="Next image"
         >
           ›
         </button>
 
-        <div className="fyve-fullscreen-gallery-stage">
-          <div ref={containerRef} className="f-panzoom fyve-fullscreen-gallery-panzoom">
-            <img
-              key={images[currentIndex]}
-              className="f-panzoom__content fyve-fullscreen-gallery-image"
-              src={images[currentIndex]}
-              alt={`${title} ${currentIndex + 1}`}
-              draggable="false"
-              onError={(e) => {
-                e.target.src = '/api/Uploads/fallback-image.png';
-              }}
-            />
-          </div>
+        <div ref={containerRef} className="f-carousel fyve-fullscreen-gallery-carousel">
+          {images.map((img, idx) => (
+            <div className="f-carousel__slide fyve-fullscreen-gallery-slide" key={`${img}-${idx}`}>
+              <div className="f-panzoom fyve-fullscreen-gallery-panzoom">
+                <img
+                  className="f-panzoom__content fyve-fullscreen-gallery-image"
+                  src={img}
+                  alt={`${title} ${idx + 1}`}
+                  draggable="false"
+                  onError={(e) => {
+                    e.target.src = '/api/Uploads/fallback-image.png';
+                  }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
