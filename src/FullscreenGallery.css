@@ -19,10 +19,10 @@
   z-index: 40;
   width: 48px;
   height: 48px;
-  border: none;
+  border: 1px solid #4a494a;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+  background: #fff;
+  color: #4a494a;
   font-size: 32px;
   line-height: 1;
   display: flex;
@@ -40,7 +40,7 @@
   z-index: 40;
   width: 48px;
   height: 48px;
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid #4a494a;
   border-radius: 999px;
   background: #fff;
   display: flex;
