@@ -619,31 +619,34 @@ onMouseLeave={() => {
       <ul className="submenu-inner">
         {item.children.map(child => (
           <li key={child.id} className="submenu-item">
-            <NavLink
-              to={child.path}
-              onClick={() => {
-                setOpenSubmenuId(null);
-                setIsMenuOpen(false);
-              }}
-            >
-              {child.name}
-            </NavLink>
+<NavLink
+  to={child.path}
+  onClick={() => {
+    setOpenSubmenuId(null);
+    requestAnimationFrame(() => {
+      setIsMenuOpen(false);
+    });
+  }}
+>
+  {child.name}
+</NavLink>
           </li>
         ))}
       </ul>
     </div>
   </>
 ) : (
-  <NavLink
-    to={item.path}
-    onMouseEnter={() => handleMenuImageChange(item.id)}
-    onClick={() => {
-      setOpenSubmenuId(null);
+<NavLink
+  to={item.path}
+  onClick={() => {
+    setOpenSubmenuId(null);
+    requestAnimationFrame(() => {
       setIsMenuOpen(false);
-    }}
-  >
-    {item.name}
-  </NavLink>
+    });
+  }}
+>
+  {item.name}
+</NavLink>
 )}
     </li>
   );
