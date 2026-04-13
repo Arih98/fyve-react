@@ -41,9 +41,7 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
         panOnlyZoomed: true,
         bounds: true,
         rubberband: false,
-        pinchToZoom: true,
-        maxScale: 4,
-        lockAxis: false
+        maxScale: 4
       }
     },
     on: {
@@ -128,19 +126,15 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
         <div ref={containerRef} className="f-carousel fyve-fullscreen-gallery-carousel">
           {images.map((img, idx) => (
             <div className="f-carousel__slide fyve-fullscreen-gallery-slide" key={`${img}-${idx}`}>
-  <div className="f-panzoom fyve-fullscreen-gallery-panzoom">
-    <div className="fyve-fullscreen-gallery-image-frame">
-      <img
-        className="f-panzoom__content fyve-fullscreen-gallery-image"
-        src={img}
-        alt={`${title} ${idx + 1}`}
-        draggable="false"
-        onError={(e) => {
-          e.target.src = '/api/Uploads/fallback-image.png';
-        }}
-      />
-    </div>
-  </div>
+  <img
+    className="fyve-fullscreen-gallery-image"
+    src={img}
+    alt={`${title} ${idx + 1}`}
+    draggable="false"
+    onError={(e) => {
+      e.target.src = '/api/Uploads/fallback-image.png';
+    }}
+  />
 </div>
           ))}
         </div>
