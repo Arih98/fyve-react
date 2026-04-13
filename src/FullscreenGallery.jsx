@@ -162,15 +162,19 @@ const FullscreenGallery = ({ images, initialIndex = 0, isOpen, title, onClose })
     }, 150);
 
     debugMutationObserverRef.current = new MutationObserver(() => {
-      emitDebugSnapshot('MUTATION');
-    });
+  emitDebugSnapshot('MUTATION');
+});
 
-    debugMutationObserverRef.current.observe(document.body, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: ['style', 'class', 'src']
-    });
+const shell = document.querySelector('.fyve-fullscreen-gallery-shell');
+
+if (shell) {
+  debugMutationObserverRef.current.observe(shell, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ['style', 'class', 'src']
+  });
+}
 
     return () => {
       document.body.style.overflow = previousOverflow;
