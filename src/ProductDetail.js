@@ -12,6 +12,7 @@ import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
 import gsap from 'gsap';
+import FullscreenGallery from './FullscreenGallery';
 
 
 const ProductDetail = () => {
@@ -424,17 +425,6 @@ useEffect(() => {
 }, [handleAddToCart]);
 
 useEffect(() => {
-  if (!isImageViewerOpen) return;
-
-  const previousOverflow = document.body.style.overflow;
-  document.body.style.overflow = 'hidden';
-
-  return () => {
-    document.body.style.overflow = previousOverflow;
-  };
-}, [isImageViewerOpen]);
-
-useEffect(() => {
   if (!product) return;
   if (product.product_type === 'variable' && !effectiveVariation) return;
 
@@ -786,35 +776,15 @@ return (
         </div>
       )}
     </div>
-    {isImageViewerOpen && (
-  <div className="image-viewer-overlay" onClick={closeImageViewer}>
-<button
-  type="button"
-  className="image-viewer-close"
-  onClick={(e) => {
-    e.stopPropagation();
-    closeImageViewer();
-  }}
-  aria-label="Close image viewer"
->
-  ×
-</button>
 
-    <div
-      className="image-viewer-stage"
-      onClick={e => e.stopPropagation()}
-    >
-      <div className="image-viewer-scroll">
-        <img
-          src={displayImages[viewerImageIndex]}
-          alt={`${displayTitle} ${viewerImageIndex + 1}`}
-          className="image-viewer-image"
-          onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-        />
-      </div>
-    </div>
-  </div>
-)}
+<FullscreenGallery
+  images={displayImages}
+  initialIndex={viewerImageIndex}
+  isOpen={isImageViewerOpen}
+  title={displayTitle}
+  onClose={closeImageViewer}
+/>
+
   </>
 );
 };
