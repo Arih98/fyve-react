@@ -37,20 +37,20 @@ export function CartProvider({ children }) {
     refreshCart().catch(() => {})
   }, [refreshCart])
 
-  const addItem = useCallback(async (payload) => {
-    setLoading(true)
-    setError('')
-    try {
-      const data = await addStoreCartItem(payload)
-      setCart(data)
-      return data
-    } catch (err) {
-      setError(err.message || 'Failed to add item')
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+const addItem = useCallback(async (payload) => {
+  setLoading(true)
+  setError('')
+  try {
+    const item = await addStoreCartItem(payload)
+    await refreshCart({ silent: true })
+    return item
+  } catch (err) {
+    setError(err.message || 'Failed to add item')
+    throw err
+  } finally {
+    setLoading(false)
+  }
+}, [refreshCart])
 
   const updateItemQuantity = useCallback(async (key, quantity) => {
     setLoading(true)
