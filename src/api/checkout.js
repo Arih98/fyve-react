@@ -25,9 +25,9 @@ export function selectShippingRate(packageId, rateId) {
   })
 }
 
-export function createCheckoutOrder(payload) {
-  return apiRequest('/fyve-checkout/v1/create-order', {
-    method: 'POST',
+export function updateCheckoutDraft(payload) {
+  return apiRequest('/wc/store/v1/checkout?__experimental_calc_totals=true', {
+    method: 'PUT',
     body: JSON.stringify(payload)
   })
 }

@@ -4,7 +4,9 @@ import {
   getCheckoutPrefill,
   getCheckoutData,
   updateCheckoutCustomer,
-  selectShippingRate
+  selectShippingRate,
+  updateCheckoutDraft,
+  createRevolutOrder
 } from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
@@ -62,6 +64,12 @@ export default function Checkout() {
   const [checkoutData, setCheckoutData] = useState(null)
   const [shippingRatesLoading, setShippingRatesLoading] = useState(false)
   const [selectedShippingRate, setSelectedShippingRate] = useState('')
+  const [orderNote, setOrderNote] = useState('')
+  const [draftOrderId, setDraftOrderId] = useState(null)
+  const [draftOrderKey, setDraftOrderKey] = useState('')
+  const [paymentStep, setPaymentStep] = useState(false)
+  const [paymentLoading, setPaymentLoading] = useState(false)
+  const [revolutPublicId, setRevolutPublicId] = useState('')
 
   useEffect(() => {
   if (!cartItems?.length) return
@@ -123,9 +131,12 @@ if (!billingReady || !shippingReady) return
       await refreshCart({ silent: true })
       const nextCheckoutData = await getCheckoutData().catch(() => null)
 
-      if (nextCheckoutData) {
-        setCheckoutData(nextCheckoutData)
-      }
+if (nextCheckoutData) {
+  setCheckoutData(nextCheckoutData)
+  setDraftOrderId(nextCheckoutData.order_id || null)
+  setDraftOrderKey(nextCheckoutData.order_key || '')
+}
+
     } catch (err) {
       console.error(err)
     } finally {
@@ -154,11 +165,13 @@ if (!billingReady || !shippingReady) return
 
       const checkoutResponse = await getCheckoutData().catch(() => null)
 
+      if (!active) return
+
       if (checkoutResponse) {
   setCheckoutData(checkoutResponse)
+  setDraftOrderId(checkoutResponse.order_id || null)
+  setDraftOrderKey(checkoutResponse.order_key || '')
 }
-
-      if (!active) return
 
       if (prefillData && !hasPrefilledRef.current) {
         const prefill = prefillData.prefill || prefillData
@@ -197,6 +210,28 @@ if (hasShippingPrefill) {
     active = false
   }
 }, [])
+
+useEffect(() => {
+  if (!draftOrderId) return
+
+  const timeout = setTimeout(async () => {
+    try {
+      const nextCheckoutData = await updateCheckoutDraft({
+        order_notes: orderNote
+      })
+
+      if (nextCheckoutData) {
+        setCheckoutData(nextCheckoutData)
+        setDraftOrderId(nextCheckoutData.order_id || null)
+        setDraftOrderKey(nextCheckoutData.order_key || '')
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }, 400)
+
+  return () => clearTimeout(timeout)
+}, [draftOrderId, orderNote])
 
 if (loading || cartLoading) {
   return <div>Loading checkout...</div>
@@ -381,7 +416,15 @@ if (loading || cartLoading) {
             />
           </section>
         )}
-      </div>
+      <section className="checkout-section">
+  <h2>Order note</h2>
+  <textarea
+    placeholder="Add a note to your order"
+    value={orderNote}
+    onChange={(e) => setOrderNote(e.target.value)}
+  />
+</section>
+</div>
 
       <aside className="checkout-sidebar">
   <section className="checkout-section">
@@ -439,6 +482,35 @@ if (loading || cartLoading) {
     <span>Total</span>
     <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
   </div>
+<button
+  type="button"
+  onClick={async () => {
+    try {
+      setPaymentLoading(true)
+      setError('')
+
+      const latestCheckout = await getCheckoutData()
+      setCheckoutData(latestCheckout)
+      setDraftOrderId(latestCheckout.order_id || null)
+      setDraftOrderKey(latestCheckout.order_key || '')
+
+      setPaymentStep(true)
+    } catch (err) {
+      setError(err.message || 'Failed to prepare payment')
+    } finally {
+      setPaymentLoading(false)
+    }
+  }}
+  disabled={paymentLoading}
+>
+  {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
+</button>
+{paymentStep && (
+  <section className="checkout-section checkout-payment-section">
+    <h2>Payment</h2>
+    <div id="revolut-checkout-container"></div>
+  </section>
+)}
 </div>
   </section>
 </aside>
