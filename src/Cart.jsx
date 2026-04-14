@@ -13,6 +13,7 @@ const {
   cartItems,
   cartCount,
   cartTotal,
+  loading,
   updateItemQuantity,
   removeItem
 } = useContext(CartContext);
@@ -74,13 +75,13 @@ const handleRemoveItem = async (itemKey) => {
       const itemTotal = formatWooMoney(item.totals?.line_total, item.totals)
 
 const variationColor = item.variation?.find((attr) => {
-  const label = String(attr.attribute || '').toLowerCase()
-  return label.includes('color') || label.includes('colour')
+  const label = String(attr.attribute || attr.name || '').toLowerCase()
+  return label.includes('color') || label.includes('colour') || label.includes('pa_color') || label.includes('pa_colour')
 })
 
 const variationSize = item.variation?.find((attr) => {
-  const label = String(attr.attribute || '').toLowerCase()
-  return label.includes('size')
+  const label = String(attr.attribute || attr.name || '').toLowerCase()
+  return label.includes('size') || label.includes('pa_size')
 })
       return (
         <li key={item.key} className="cart-item" data-cart-key={item.key}>
@@ -96,18 +97,17 @@ const variationSize = item.variation?.find((attr) => {
   {item.name}
 </Link>
 
-              {variationColor && (
-                <p className="variation variation-color">
-                  <span className="variation-label">{variationColor.attribute}:</span> {variationColor.value}
-                </p>
-              )}
+{variationColor && (
+  <p className="variation variation-color">
+    <span className="variation-label">Color:</span> {variationColor.value}
+  </p>
+)}
 
-              {variationSize && (
-                <p className="variation variation-size">
-                  <span className="variation-label">{variationSize.attribute}:</span> {variationSize.value}
-                </p>
-              )}
-
+{variationSize && (
+  <p className="variation variation-size">
+    <span className="variation-label">Size:</span> {variationSize.value}
+  </p>
+)}
               <div className="subtotal">
                 {itemTotal}
               </div>

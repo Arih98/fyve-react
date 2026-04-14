@@ -48,46 +48,44 @@ export function CartProvider({ children }) {
   }, [])
 
   const updateItemQuantity = useCallback(async (key, quantity) => {
-    setLoading(true)
-    setError('')
-    try {
-      const item = await updateStoreCartItem(key, quantity)
-      setCart((prev) => {
-        if (!prev) return prev
+  setCart((prev) => {
+    if (!prev) return prev
 
-        const nextItems = (prev.items || []).map((existing) =>
-          existing.key === key ? item : existing
-        )
-
-        return {
-          ...prev,
-          items: nextItems
-        }
-      })
-
-      return item
-    } catch (err) {
-      setError(err.message || 'Failed to update quantity')
-      throw err
-    } finally {
-      setLoading(false)
-      refreshCart().catch(() => {})
+    return {
+      ...prev,
+      items: prev.items.map((item) =>
+        item.key === key ? { ...item, quantity } : item
+      )
     }
-  }, [refreshCart])
+  })
+
+  try {
+    await updateStoreCartItem(key, quantity)
+    await refreshCart()
+  } catch (err) {
+    await refreshCart()
+    throw err
+  }
+}, [refreshCart])
 
   const removeItem = useCallback(async (key) => {
-    setLoading(true)
-    setError('')
-    try {
-      await removeStoreCartItem(key)
-      await refreshCart()
-    } catch (err) {
-      setError(err.message || 'Failed to remove item')
-      throw err
-    } finally {
-      setLoading(false)
+  setCart((prev) => {
+    if (!prev) return prev
+
+    return {
+      ...prev,
+      items: prev.items.filter((item) => item.key !== key)
     }
-  }, [refreshCart])
+  })
+
+  try {
+    await removeStoreCartItem(key)
+    await refreshCart()
+  } catch (err) {
+    await refreshCart()
+    throw err
+  }
+}, [refreshCart])
 
   const value = useMemo(() => {
     const items = cart?.items || []
