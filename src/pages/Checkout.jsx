@@ -505,13 +505,14 @@ if (loading || cartLoading) {
 >
   {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
 </button>
+</div>
+
 {paymentStep && (
   <section className="checkout-section checkout-payment-section">
     <h2>Payment</h2>
     <div id="revolut-checkout-container"></div>
   </section>
 )}
-</div>
   </section>
 </aside>
     </div>
