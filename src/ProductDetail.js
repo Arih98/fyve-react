@@ -38,7 +38,6 @@ const ProductDetail = () => {
   const [viewerImageIndex, setViewerImageIndex] = useState(0);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -308,17 +307,33 @@ const isOutOfStock =
 const isAddDisabled = isOutOfStock;
 
   const handleAddToCart = useCallback(async () => {
-  if (!product || !current || isAddingToCart) return;
+  if (!product || !current) return;
 
   try {
-    setIsAddingToCart(true);
-
     const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
 
     const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
     const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
 
     const currentItemId = current?.id || product?.id;
+
+    const existingCartItem = cartItems.find((item) => item.id === currentItemId);
+    const existingQuantityInCart = existingCartItem?.quantity || 0;
+    const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
+
+    if (freshStock > 0 && remainingStock <= 0) {
+      setCartError('No more stock available for this selection');
+      return;
+    }
+
+    if (freshStock > 0 && quantity > remainingStock) {
+      setCartError(
+        remainingStock === 1
+          ? 'Only 1 more available'
+          : `Only ${remainingStock} more available`
+      );
+      return;
+    }
 
     const variationPayload =
       Array.isArray(current?.attributes) && current.attributes.length
@@ -357,8 +372,6 @@ const isAddDisabled = isOutOfStock;
   } catch (err) {
     console.error(err);
     setCartError('Failed to add to cart');
-  } finally {
-    setIsAddingToCart(false);
   }
 }, [
   product,
@@ -367,13 +380,13 @@ const isAddDisabled = isOutOfStock;
   selectedAttributes,
   isSizeAttribute,
   isColorAttribute,
-  addItem,
-  isAddingToCart
+  cartItems,
+  addItem
 ]);
 
 const currentTotalPrice = (Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2);
-const addToCartLabel = isOutOfStock ? 'Out of Stock' : isAddingToCart ? 'Adding...' : 'Add to Cart';
-const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : isAddingToCart ? 'Adding...' : `Add to Bag • $${currentTotalPrice}`;
+const addToCartLabel = isOutOfStock ? 'Out of Stock' : 'Add to Cart';
+const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : `Add to Bag • $${currentTotalPrice}`;
 
 useEffect(() => {
   window.dispatchEvent(
@@ -637,8 +650,8 @@ return (
 
 <button
   onClick={handleAddToCart}
-  disabled={isAddDisabled || isAddingToCart}
-  className={`add-to-cart-button ${isAddDisabled || isAddingToCart ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+  disabled={isAddDisabled}
+  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
   {!isOutOfStock && (
