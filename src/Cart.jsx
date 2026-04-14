@@ -7,7 +7,14 @@ import './Cart.css';
 const Cart = ({ variant = 'page', onClose }) => {
 const recentlyViewedImageRefs = useRef(new Map());
 const placeholderImage = '/api/Uploads/fallback-image.png';
-const { cartItems, setCartItems } = useContext(CartContext);
+const {
+  cart,
+  cartItems,
+  cartCount,
+  cartTotal,
+  updateItemQuantity,
+  removeItem
+} = useContext(CartContext);
 const navigate = useNavigate();
 const [recentlyViewedProducts, setRecentlyViewedProducts] = useState([]);
 const [recentlyViewedIndex, setRecentlyViewedIndex] = useState(0);
@@ -34,115 +41,98 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateRecentlyViewedBounds);
 }, [recentlyViewedProducts.length]);
 
-  const handleQuantityChange = (itemId, variationKey, delta) => {
-  setCartItems(prevItems =>
-    prevItems.map(item => {
-      if (!(item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey)) {
-        return item;
-      }
+  const handleQuantityChange = (itemKey, delta, currentQty) => {
+  const nextQty = Math.max(1, currentQty + delta)
+  updateItemQuantity(itemKey, nextQty)
+}
 
-      const parsedStock = Number(item.stockQuantity);
-      const maxStock = Number.isFinite(parsedStock) && parsedStock > 0 ? parsedStock : Infinity;
-      const nextQuantity = item.quantity + delta;
+  const handleRemoveItem = (itemKey) => {
+  removeItem(itemKey)
+}
 
-      return {
-        ...item,
-        quantity: Math.max(1, Math.min(maxStock, nextQuantity))
-      };
-    })
-  );
-};
-
-  const handleRemoveItem = (itemId, variationKey) => {
-    setCartItems(prevItems =>
-      prevItems.filter(
-        item => !(item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey)
-      )
-    );
-  };
-
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const isPanel = variant === 'panel';
 
   const cartItemsMarkup = (
-    <ul className="cart-items">
-      {cartItems.map(item => {
-  const variationKey = `${item.size || ''}-${item.color || ''}`;
-  const maxStock = Number(item.stockQuantity);
-  const hasMaxStock = Number.isFinite(maxStock) && maxStock > 0;
-  const canDecrease = item.quantity > 1;
-  const canIncrease = !hasMaxStock || item.quantity < maxStock;
+  <ul className="cart-items">
+    {cartItems.map((item) => {
+      const canDecrease = item.quantity > 1
+      const imageSrc =
+        item.images?.[0]?.thumbnail ||
+        item.images?.[0]?.src ||
+        '/api/Uploads/fallback-image.png'
 
-  return (
-    <li key={`${item.id}-${variationKey}`} className="cart-item" data-cart-key={item.id}>
-      <div className="cart-item-content cart-item-grid">
-        <div className="cart-item-image">
-          <div className="cart-item-image-box">
-            <img src={item.image} alt={item.name} />
-          </div>
-        </div>
+      const productId = item.id
+      const itemTotal =
+        item.totals?.line_total
+          ? `£${(Number(item.totals.line_total) / 100).toFixed(2)}`
+          : ''
 
-        <div className="cart-item-details">
-          <Link to={`/product/${item.id}`} className="product-title" onClick={onClose}>
-            {item.name}
-          </Link>
-
-          {item.color && (
-            <p className="variation variation-color">
-              <span className="variation-label">Color:</span> {item.color}
-            </p>
-          )}
-
-          {item.size && (
-            <p className="variation variation-size">
-              <span className="variation-label">Size:</span> {item.size}
-            </p>
-          )}
-
-          <div className="subtotal">
-            ${(item.price * item.quantity).toFixed(2)}
-          </div>
-
-          <div className="cart-item-actions-row">
-            <div className="quantity-controls">
-              <button
-                className="quantity-minus"
-                onClick={() => handleQuantityChange(item.id, variationKey, -1)}
-                disabled={!canDecrease}
-              >
-                <span className="minus-line"></span>
-              </button>
-
-              <input
-                type="number"
-                className="quantity-input"
-                value={item.quantity}
-                min="1"
-                readOnly
-              />
-
-              <button
-                className="quantity-plus"
-                onClick={() => handleQuantityChange(item.id, variationKey, 1)}
-                disabled={!canIncrease}
-              >
-                <span className="plus-horizontal"></span>
-                <span className="plus-vertical"></span>
-              </button>
+      return (
+        <li key={item.key} className="cart-item" data-cart-key={item.key}>
+          <div className="cart-item-content cart-item-grid">
+            <div className="cart-item-image">
+              <div className="cart-item-image-box">
+                <img src={imageSrc} alt={item.name} />
+              </div>
             </div>
 
-            <button className="remove-item" onClick={() => handleRemoveItem(item.id, variationKey)}>
-              <img src="/assets/RemoveIcon.svg" alt="Remove" />
-            </button>
+            <div className="cart-item-details">
+              <Link to={`/product/${productId}`} className="product-title" onClick={onClose}>
+                {item.name}
+              </Link>
+
+              {item.variation?.length > 0 && (
+                <div className="cart-item-variations">
+                  {item.variation.map((attr) => (
+                    <p key={`${item.key}-${attr.attribute}`} className="variation">
+                      <span className="variation-label">{attr.attribute}:</span> {attr.value}
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              <div className="subtotal">
+                {itemTotal}
+              </div>
+
+              <div className="cart-item-actions-row">
+                <div className="quantity-controls">
+                  <button
+                    className="quantity-minus"
+                    onClick={() => handleQuantityChange(item.key, -1, item.quantity)}
+                    disabled={!canDecrease}
+                  >
+                    <span className="minus-line"></span>
+                  </button>
+
+                  <input
+                    type="number"
+                    className="quantity-input"
+                    value={item.quantity}
+                    min="1"
+                    readOnly
+                  />
+
+                  <button
+                    className="quantity-plus"
+                    onClick={() => handleQuantityChange(item.key, 1, item.quantity)}
+                  >
+                    <span className="plus-horizontal"></span>
+                    <span className="plus-vertical"></span>
+                  </button>
+                </div>
+
+                <button className="remove-item" onClick={() => handleRemoveItem(item.key)}>
+                  <img src="/assets/RemoveIcon.svg" alt="Remove" />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </li>
-  );
-})}
-    </ul>
-  );
+        </li>
+      )
+    })}
+  </ul>
+)
 
   const handleRecentlyViewedClick = (item) => {
   const sourceEl = recentlyViewedImageRefs.current.get(item.path);
@@ -271,7 +261,7 @@ style={{
         <div className="cart-panel-header">
           <h2 className="cart-panel-title">
             <span>Your bag</span>
-            {cartItemCount > 0 && <span className="cart-page-count"> ({cartItemCount})</span>}
+            {cartCount > 0 && <span className="cart-page-count"> ({cartCount})</span>}
           </h2>
         </div>
 
@@ -289,12 +279,12 @@ style={{
 
               <div className="cart-summary-row cart-summary-total">
                 <span>Total</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>£{(Number(cartTotal) / 100).toFixed(2)}</span>
               </div>
 
               <Link to="/checkout" className="button cart-checkout-button" onClick={onClose}>
                 <span>Checkout</span>
-                <span className="cart-total-amount">${cartTotal.toFixed(2)}</span>
+                <span className="cart-total-amount">£{(Number(cartTotal) / 100).toFixed(2)}</span>
               </Link>
 
               <Link to="/cart" className="cart-panel-view-bag" onClick={onClose}>
@@ -332,7 +322,7 @@ style={{
       <div className="cart-page-inner">
         <h1 className="cart-page-title">
           <span>Your bag</span>
-          {cartItemCount > 0 && <span className="cart-page-count"> ({cartItemCount})</span>}
+          {cartCount > 0 && <span className="cart-page-count"> ({cartCount})</span>}
         </h1>
 
         {cartItems.length > 0 ? (
@@ -350,7 +340,7 @@ style={{
 
                 <div className="cart-summary-row cart-summary-total">
                   <span>Total</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>£{(Number(cartTotal) / 100).toFixed(2)}</span>
                 </div>
 
               </div>
