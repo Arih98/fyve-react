@@ -99,13 +99,13 @@ const variationSize = item.variation?.find((attr) => {
 
 {variationColor && (
   <p className="variation variation-color">
-    <span className="variation-label">Color:</span> {variationColor.value}
+    <span className="variation-label">Color:</span> {variationColor.value || variationColor.display || ''}
   </p>
 )}
 
 {variationSize && (
   <p className="variation variation-size">
-    <span className="variation-label">Size:</span> {variationSize.value}
+    <span className="variation-label">Size:</span> {variationSize.value || variationSize.display || ''}
   </p>
 )}
               <div className="subtotal">
@@ -115,10 +115,10 @@ const variationSize = item.variation?.find((attr) => {
               <div className="cart-item-actions-row">
                 <div className="quantity-controls">
                   <button
-                    className="quantity-minus"
-                    onClick={() => handleQuantityChange(item.key, -1, item.quantity)}
-                    disabled={!canDecrease}
-                  >
+  className="quantity-minus"
+  onClick={() => handleQuantityChange(item.key, -1, item.quantity)}
+  disabled={!canDecrease || loading}
+>
                     <span className="minus-line"></span>
                   </button>
 
@@ -131,15 +131,16 @@ const variationSize = item.variation?.find((attr) => {
                   />
 
                   <button
-                    className="quantity-plus"
-                    onClick={() => handleQuantityChange(item.key, 1, item.quantity)}
-                  >
+  className="quantity-plus"
+  onClick={() => handleQuantityChange(item.key, 1, item.quantity)}
+  disabled={loading}
+>
                     <span className="plus-horizontal"></span>
                     <span className="plus-vertical"></span>
                   </button>
                 </div>
 
-                <button className="remove-item" onClick={() => handleRemoveItem(item.key)}>
+                <button className="remove-item" onClick={() => handleRemoveItem(item.key)} disabled={loading}>
                   <img src="/assets/RemoveIcon.svg" alt="Remove" />
                 </button>
               </div>

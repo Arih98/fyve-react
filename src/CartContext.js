@@ -13,9 +13,12 @@ export function CartProvider({ children }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const refreshCart = useCallback(async () => {
-    setLoading(true)
-    setError('')
+  const refreshCart = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) {
+      setLoading(true)
+      setError('')
+    }
+
     try {
       const data = await getStoreCart()
       setCart(data)
@@ -24,7 +27,9 @@ export function CartProvider({ children }) {
       setError(err.message || 'Failed to load cart')
       throw err
     } finally {
-      setLoading(false)
+      if (!silent) {
+        setLoading(false)
+      }
     }
   }, [])
 
@@ -48,44 +53,56 @@ export function CartProvider({ children }) {
   }, [])
 
   const updateItemQuantity = useCallback(async (key, quantity) => {
-  setCart((prev) => {
-    if (!prev) return prev
+    setLoading(true)
+    setError('')
 
-    return {
-      ...prev,
-      items: prev.items.map((item) =>
-        item.key === key ? { ...item, quantity } : item
-      )
+    setCart((prev) => {
+      if (!prev) return prev
+
+      return {
+        ...prev,
+        items: prev.items.map((item) =>
+          item.key === key ? { ...item, quantity } : item
+        )
+      }
+    })
+
+    try {
+      await updateStoreCartItem(key, quantity)
+      await refreshCart({ silent: true })
+    } catch (err) {
+      setError(err.message || 'Failed to update quantity')
+      await refreshCart({ silent: true })
+      throw err
+    } finally {
+      setLoading(false)
     }
-  })
-
-  try {
-    await updateStoreCartItem(key, quantity)
-    await refreshCart()
-  } catch (err) {
-    await refreshCart()
-    throw err
-  }
-}, [refreshCart])
+  }, [refreshCart])
 
   const removeItem = useCallback(async (key) => {
-  setCart((prev) => {
-    if (!prev) return prev
+    setLoading(true)
+    setError('')
 
-    return {
-      ...prev,
-      items: prev.items.filter((item) => item.key !== key)
+    setCart((prev) => {
+      if (!prev) return prev
+
+      return {
+        ...prev,
+        items: prev.items.filter((item) => item.key !== key)
+      }
+    })
+
+    try {
+      await removeStoreCartItem(key)
+      await refreshCart({ silent: true })
+    } catch (err) {
+      setError(err.message || 'Failed to remove item')
+      await refreshCart({ silent: true })
+      throw err
+    } finally {
+      setLoading(false)
     }
-  })
-
-  try {
-    await removeStoreCartItem(key)
-    await refreshCart()
-  } catch (err) {
-    await refreshCart()
-    throw err
-  }
-}, [refreshCart])
+  }, [refreshCart])
 
   const value = useMemo(() => {
     const items = cart?.items || []
