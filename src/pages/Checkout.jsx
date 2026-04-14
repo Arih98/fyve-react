@@ -70,6 +70,11 @@ export default function Checkout() {
   const [paymentStep, setPaymentStep] = useState(false)
   const [paymentLoading, setPaymentLoading] = useState(false)
   const [revolutPublicId, setRevolutPublicId] = useState('')
+  const [merchantPublicKey, setMerchantPublicKey] = useState('')
+const [paymentCurrency, setPaymentCurrency] = useState('')
+const [paymentTotalAmount, setPaymentTotalAmount] = useState(0)
+const revolutContainerRef = useRef(null)
+const revolutInstanceRef = useRef(null)
 
   useEffect(() => {
   if (!cartItems?.length) return
@@ -210,6 +215,115 @@ if (hasShippingPrefill) {
     active = false
   }
 }, [])
+
+useEffect(() => {
+  if (!paymentStep || !merchantPublicKey || !revolutPublicId || !revolutContainerRef.current) {
+    return
+  }
+
+  let cancelled = false
+
+  const loadScript = () =>
+    new Promise((resolve, reject) => {
+      if (window.RevolutCheckout) {
+        resolve(window.RevolutCheckout)
+        return
+      }
+
+      const existing = document.querySelector('script[data-revolut-checkout="true"]')
+      if (existing) {
+        existing.addEventListener('load', () => resolve(window.RevolutCheckout))
+        existing.addEventListener('error', reject)
+        return
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://merchant.revolut.com/embed.js'
+      script.async = true
+      script.dataset.revolutCheckout = 'true'
+      script.onload = () => resolve(window.RevolutCheckout)
+      script.onerror = reject
+      document.body.appendChild(script)
+    })
+
+  const mountWidget = async () => {
+    try {
+      const RevolutCheckout = await loadScript()
+
+      if (cancelled || !revolutContainerRef.current) return
+
+      if (revolutInstanceRef.current?.destroy) {
+        revolutInstanceRef.current.destroy()
+        revolutInstanceRef.current = null
+      }
+
+      const instance = RevolutCheckout.payments({
+        publicToken: merchantPublicKey,
+        locale: 'en'
+      })
+
+      revolutInstanceRef.current = instance
+
+      const revolutPay = instance.revolutPay
+
+      revolutPay.mount(revolutContainerRef.current, {
+        currency: paymentCurrency,
+        totalAmount: paymentTotalAmount,
+        createOrder: () => {
+          return { publicId: revolutPublicId }
+        },
+        customer: {
+          email: contact.email,
+          phone: contact.phone,
+          name: `${billing.first_name} ${billing.last_name}`.trim()
+        },
+        mobileRedirectUrls: {
+          success: `${window.location.origin}/checkout/success`,
+          failure: `${window.location.origin}/checkout`,
+          cancel: `${window.location.origin}/checkout`
+        }
+      })
+
+      revolutPay.on('payment', (event) => {
+        switch (event.type) {
+          case 'success':
+            window.location.href = '/checkout/success'
+            break
+          case 'error':
+            setError(event?.error?.message || 'Payment failed')
+            break
+          case 'cancel':
+            break
+          default:
+            break
+        }
+      })
+    } catch (err) {
+      console.error(err)
+      setError('Failed to load payment widget')
+    }
+  }
+
+  mountWidget()
+
+  return () => {
+    cancelled = true
+    if (revolutInstanceRef.current?.destroy) {
+      revolutInstanceRef.current.destroy()
+      revolutInstanceRef.current = null
+    }
+  }
+}, [
+  paymentStep,
+  merchantPublicKey,
+  revolutPublicId,
+  paymentCurrency,
+  paymentTotalAmount,
+  contact.email,
+  contact.phone,
+  billing.first_name,
+  billing.last_name
+])
 
 useEffect(() => {
   if (!draftOrderId) return
@@ -485,30 +599,33 @@ if (loading || cartLoading) {
 <button
   type="button"
   onClick={async () => {
-    try {
-      setPaymentLoading(true)
-      setError('')
+  try {
+    setPaymentLoading(true)
+    setError('')
 
-      const latestCheckout = await getCheckoutData()
-      setCheckoutData(latestCheckout)
-      setDraftOrderId(latestCheckout.order_id || null)
-      setDraftOrderKey(latestCheckout.order_key || '')
+    const latestCheckout = await getCheckoutData()
+    setCheckoutData(latestCheckout)
+    setDraftOrderId(latestCheckout.order_id || null)
+    setDraftOrderKey(latestCheckout.order_key || '')
 
-      const revolutResult = await createRevolutOrder({
-        billing_email: contact.email,
-        billing_phone: contact.phone,
-        draft_order_id: latestCheckout.order_id || null,
-        draft_order_key: latestCheckout.order_key || ''
-      })
+    const revolutResult = await createRevolutOrder({
+      billing_email: contact.email,
+      billing_phone: contact.phone || '',
+      draft_order_id: latestCheckout.order_id || null,
+      draft_order_key: latestCheckout.order_key || ''
+    })
 
-      setRevolutPublicId(revolutResult.revolut_order_public_id || '')
-      setPaymentStep(true)
-    } catch (err) {
-      setError(err.message || 'Failed to prepare payment')
-    } finally {
-      setPaymentLoading(false)
-    }
-  }}
+    setRevolutPublicId(revolutResult.revolut_order_public_id || '')
+    setMerchantPublicKey(revolutResult.merchant_public_key || '')
+    setPaymentCurrency(revolutResult.currency || '')
+    setPaymentTotalAmount(revolutResult.total_amount || 0)
+    setPaymentStep(true)
+  } catch (err) {
+    setError(err.message || 'Failed to prepare payment')
+  } finally {
+    setPaymentLoading(false)
+  }
+}}
   disabled={paymentLoading}
 >
   {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
@@ -518,8 +635,7 @@ if (loading || cartLoading) {
 {paymentStep && (
   <section className="checkout-section">
     <h2>Payment</h2>
-    <div id="revolut-checkout-container"></div>
-    <p>Revolut order: {revolutPublicId}</p>
+    <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
   </section>
 )}
   </section>
