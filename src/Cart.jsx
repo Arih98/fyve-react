@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from './CartContext';
 import { startProductImageTransition } from './utils/productImageTransition';
 import './Cart.css';
+import { formatWooMoney, formatCurrency } from './utils/formatMoney';
 
 const Cart = ({ variant = 'page', onClose }) => {
 const recentlyViewedImageRefs = useRef(new Map());
 const placeholderImage = '/api/Uploads/fallback-image.png';
 const {
+  cart,
   cartItems,
   cartCount,
   cartTotal,
@@ -40,15 +42,23 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateRecentlyViewedBounds);
 }, [recentlyViewedProducts.length]);
 
-  const handleQuantityChange = (itemKey, delta, currentQty) => {
+const handleQuantityChange = async (itemKey, delta, currentQty) => {
   const nextQty = Math.max(1, currentQty + delta)
-  updateItemQuantity(itemKey, nextQty)
+
+  try {
+    await updateItemQuantity(itemKey, nextQty)
+  } catch (err) {
+    console.error(err)
+  }
 }
 
-  const handleRemoveItem = (itemKey) => {
-  removeItem(itemKey)
+const handleRemoveItem = async (itemKey) => {
+  try {
+    await removeItem(itemKey)
+  } catch (err) {
+    console.error(err)
+  }
 }
-
   const isPanel = variant === 'panel';
 
   const cartItemsMarkup = (
@@ -60,10 +70,8 @@ useEffect(() => {
         item.images?.[0]?.src ||
         '/api/Uploads/fallback-image.png'
 
-      const productLink = item.permalink || `/product/${item.id}`
-      const itemTotal = item.totals?.line_total
-        ? `£${(Number(item.totals.line_total) / 100).toFixed(2)}`
-        : '£0.00'
+      const productLink = `/product/${item.id}`
+      const itemTotal = formatWooMoney(item.totals?.line_total, item.totals)
 
 const variationColor = item.variation?.find((attr) => {
   const label = String(attr.attribute || '').toLowerCase()
@@ -255,7 +263,7 @@ style={{
 
         <div className="cart-recently-viewed-info">
           <p className="cart-recently-viewed-name">{item.title}</p>
-          <p className="cart-recently-viewed-price">${Number(item.price || 0).toFixed(2)}</p>
+          <p className="cart-recently-viewed-price">{formatCurrency(item.price)}</p>
         </div>
       </button>
     ))}
@@ -288,12 +296,12 @@ style={{
 
               <div className="cart-summary-row cart-summary-total">
                 <span>Total</span>
-                <span>£{(Number(cartTotal || 0) / 100).toFixed(2)}</span>
+                <span>{formatWooMoney(cartTotal, cart?.totals)}</span>
               </div>
 
               <Link to="/checkout" className="button cart-checkout-button" onClick={onClose}>
                 <span>Checkout</span>
-                <span className="cart-total-amount">£{(Number(cartTotal || 0) / 100).toFixed(2)}</span>
+                <span className="cart-total-amount">{formatWooMoney(cartTotal, cart?.totals)}</span>
               </Link>
 
               <Link to="/cart" className="cart-panel-view-bag" onClick={onClose}>
@@ -349,7 +357,7 @@ style={{
 
                 <div className="cart-summary-row cart-summary-total">
                   <span>Total</span>
-                  <span>£{(Number(cartTotal || 0) / 100).toFixed(2)}</span>
+                  <span>{formatWooMoney(cartTotal, cart?.totals)}</span>
                 </div>
 
               </div>
