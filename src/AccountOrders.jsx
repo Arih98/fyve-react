@@ -41,7 +41,7 @@ const AccountOrders = () => {
                 <h2>Order #{order.number}</h2>
                 <p><strong>Status:</strong> {order.status}</p>
                 <p><strong>Date:</strong> {order.date_created ? new Date(order.date_created).toLocaleDateString() : '-'}</p>
-                <p><strong>Total:</strong> {order.total}</p>
+                <p><strong>Total:</strong> {order.total_display}</p>
                 <p><strong>Items:</strong> {order.item_count}</p>
               </div>
             ))}
