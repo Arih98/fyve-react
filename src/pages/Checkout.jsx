@@ -291,10 +291,6 @@ if (loading || cartLoading) {
       <aside className="checkout-sidebar">
         <section className="checkout-section">
           <h2>Order summary</h2>
-
-          {!cartItems?.length ? (
-  <p>Your cart is empty.</p>
-) : (
   <>
     {cartItems.map((item) => {
       const imageSrc =
