@@ -292,38 +292,36 @@ if (loading || cartLoading) {
   <section className="checkout-section">
     <h2>Order summary</h2>
 
-    <>
-      {cartItems.map((item) => {
-        const imageSrc =
-          item.images?.[0]?.thumbnail ||
-          item.images?.[0]?.src ||
-          '/api/Uploads/fallback-image.png'
+    {cartItems.map((item) => {
+      const imageSrc =
+        item.images?.[0]?.thumbnail ||
+        item.images?.[0]?.src ||
+        '/api/Uploads/fallback-image.png'
 
-        return (
-          <div key={item.key} className="checkout-summary-item">
-            <div className="checkout-summary-item-main">
-              <img
-                src={imageSrc}
-                alt={item.name}
-                className="checkout-summary-item-image"
-              />
-              <div className="checkout-summary-item-info">
-                <div>{item.name}</div>
-                <div>Qty: {item.quantity}</div>
-              </div>
+      return (
+        <div key={item.key} className="checkout-summary-item">
+          <div className="checkout-summary-item-main">
+            <img
+              src={imageSrc}
+              alt={item.name}
+              className="checkout-summary-item-image"
+            />
+            <div className="checkout-summary-item-info">
+              <div>{item.name}</div>
+              <div>Qty: {item.quantity}</div>
             </div>
-
-            <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
           </div>
-        )
-      })}
 
-      <div className="checkout-summary-totals">
-        <div>Subtotal: {formatWooMoney(cart?.totals?.total_items, cart?.totals)}</div>
-        <div>Shipping: {formatWooMoney(cart?.totals?.total_shipping, cart?.totals)}</div>
-        <div>Total: {formatWooMoney(cart?.totals?.total_price, cart?.totals)}</div>
-      </div>
-    </>
+          <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
+        </div>
+      )
+    })}
+
+    <div className="checkout-summary-totals">
+      <div>Subtotal: {formatWooMoney(cart?.totals?.total_items, cart?.totals)}</div>
+      <div>Shipping: {formatWooMoney(cart?.totals?.total_shipping, cart?.totals)}</div>
+      <div>Total: {formatWooMoney(cart?.totals?.total_price, cart?.totals)}</div>
+    </div>
   </section>
 </aside>
     </div>
