@@ -318,9 +318,9 @@ if (loading || cartLoading) {
     })}
 
     <div className="checkout-summary-totals">
-      <div>Subtotal: {formatWooMoney(cart?.totals?.total_items, cart?.totals)}</div>
-      <div>Shipping: {formatWooMoney(cart?.totals?.total_shipping, cart?.totals)}</div>
-      <div>Total: {formatWooMoney(cart?.totals?.total_price, cart?.totals)}</div>
+<div>Subtotal: {cart?.totals ? formatWooMoney(cart.totals.total_items, cart.totals) : '—'}</div>
+<div>Shipping: {cart?.totals ? formatWooMoney(cart.totals.total_shipping, cart.totals) : '—'}</div>
+<div>Total: {cart?.totals ? formatWooMoney(cart.totals.total_price, cart.totals) : '—'}</div>
     </div>
   </section>
 </aside>
