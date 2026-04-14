@@ -13,3 +13,36 @@ export async function getOrders() {
 
   return data;
 }
+
+export async function getAddresses() {
+  const response = await fetch(`${ACCOUNT_API_BASE}/addresses`, {
+    credentials: 'include'
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to fetch addresses');
+  }
+
+  return data;
+}
+
+export async function updateAddresses(payload) {
+  const response = await fetch(`${ACCOUNT_API_BASE}/addresses`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to update addresses');
+  }
+
+  return data;
+}
