@@ -51,24 +51,26 @@ const ProductDetail = () => {
   const product = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
+  const selectedVariationIdFromApi = product?.selected_variation_id ? String(product.selected_variation_id) : '';
   const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
 const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
 const hideGalleryProgress = !showGalleryProgress;
 
-  const {
-    selectedAttributes,
-    currentVariation,
-    attributeNames,
-    handleAttributeChange,
-    getAvailableOptions,
-    isColorAttribute,
-    isSizeAttribute
-  } = useProductSelection({
-    product,
-    location,
-    searchParams,
-    initialColorValue
-  });
+const {
+  selectedAttributes,
+  currentVariation,
+  attributeNames,
+  handleAttributeChange,
+  getAvailableOptions,
+  isColorAttribute,
+  isSizeAttribute
+} = useProductSelection({
+  product,
+  location,
+  searchParams,
+  initialColorValue,
+  selectedVariationIdFromApi
+});
 
   const isVariableProduct = product?.product_type === 'variable';
 

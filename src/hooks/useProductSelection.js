@@ -5,7 +5,8 @@ export function useProductSelection({
   product,
   location,
   searchParams,
-  initialColorValue
+  initialColorValue,
+  selectedVariationIdFromApi
 }) {
   const navigate = useNavigate();
   const [selectedAttributes, setSelectedAttributes] = useState({});
@@ -38,39 +39,55 @@ return [
   }, [product]);
 
   useEffect(() => {
-    if (!product || product.product_type !== 'variable' || !product.variations?.length) {
-      setSelectedAttributes({});
-      setCurrentVariation(null);
-      return;
-    }
+  if (!product || product.product_type !== 'variable' || !product.variations?.length) {
+    setSelectedAttributes({});
+    setCurrentVariation(null);
+    return;
+  }
 
-    const initialVariation =
+  const normalizedInitialColor = String(initialColorValue || '').trim().toLowerCase();
+  const normalizedSelectedVariationId = String(selectedVariationIdFromApi || '').trim();
+
+  let initialVariation = null;
+
+  if (normalizedInitialColor) {
+    initialVariation =
       product.variations.find((v) => {
         const colorAttr = v.attributes.find((a) => isColorAttribute(a.attribute_name));
-        return colorAttr?.term_name?.trim().toLowerCase() === initialColorValue;
-      }) || product.variations[0];
+        return String(colorAttr?.term_name || '').trim().toLowerCase() === normalizedInitialColor;
+      }) || null;
+  }
 
-    const initialAttrs = {};
+  if (!initialVariation && normalizedSelectedVariationId) {
+    initialVariation =
+      product.variations.find((v) => String(v.id) === normalizedSelectedVariationId) || null;
+  }
 
-    initialVariation?.attributes.forEach((attr) => {
-      const termName = String(attr.term_name || '').trim();
-      if (termName && !termName.startsWith('Any')) {
-        initialAttrs[attr.attribute_name] = termName;
-      }
-    });
+  if (!initialVariation) {
+    initialVariation = product.variations[0] || null;
+  }
 
-    const colorKey =
-      Object.keys(initialAttrs).find(isColorAttribute) ||
-      initialVariation?.attributes?.find((attr) => isColorAttribute(attr.attribute_name))?.attribute_name ||
-      'Color';
+  const initialAttrs = {};
 
-    if (location.state?.initialColor && !initialAttrs[colorKey]) {
-      initialAttrs[colorKey] = location.state.initialColor;
+  initialVariation?.attributes.forEach((attr) => {
+    const termName = String(attr.term_name || '').trim();
+    if (termName && !termName.startsWith('Any')) {
+      initialAttrs[attr.attribute_name] = termName;
     }
+  });
 
-    setSelectedAttributes(initialAttrs);
-    setCurrentVariation(initialVariation);
-  }, [product, initialColorValue, location.state]);
+  const colorKey =
+    Object.keys(initialAttrs).find(isColorAttribute) ||
+    initialVariation?.attributes?.find((attr) => isColorAttribute(attr.attribute_name))?.attribute_name ||
+    'Color';
+
+  if (location.state?.initialColor && !initialAttrs[colorKey]) {
+    initialAttrs[colorKey] = location.state.initialColor;
+  }
+
+  setSelectedAttributes(initialAttrs);
+  setCurrentVariation(initialVariation);
+}, [product, initialColorValue, selectedVariationIdFromApi, location.state]);
 
   const getAvailableOptions = (attrName) => {
     if (!product?.variations?.length) return [];
