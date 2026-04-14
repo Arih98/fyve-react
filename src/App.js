@@ -27,6 +27,7 @@ import ForgotPassword from './ForgotPassword'
 import ResetPassword from './ResetPassword'
 import AccountOrderDetail from './AccountOrderDetail'
 import Checkout from './pages/Checkout'
+import CheckoutSuccess from './CheckoutSuccess'
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -150,6 +151,7 @@ function AppContent() {
     </ProtectedRoute>
   }
 />
+<Route path="/checkout/success" element={<CheckoutSuccess />} />
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/cart" element={<Cart />} />

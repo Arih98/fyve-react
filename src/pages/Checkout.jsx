@@ -287,7 +287,7 @@ useEffect(() => {
       revolutPay.on('payment', (event) => {
         switch (event.type) {
           case 'success':
-            window.location.href = '/checkout/success'
+            window.location.href = `/checkout/success?order_id=${draftOrderId}`
             break
           case 'error':
             setError(event?.error?.message || 'Payment failed')
