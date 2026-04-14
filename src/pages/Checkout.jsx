@@ -380,61 +380,6 @@ if (loading || cartLoading) {
             />
           </section>
         )}
-        <section className="checkout-section">
-  <h2>Shipping</h2>
-
-  {shippingRatesLoading ? (
-    <p>Updating shipping options...</p>
-  ) : !cart?.shipping_rates?.length ? (
-    <p>Enter your address to see shipping options.</p>
-  ) : (
-    cart.shipping_rates.map((shippingPackage, packageIndex) => (
-      <div key={shippingPackage.package_id || packageIndex}>
-        {(shippingPackage.shipping_rates || []).map((rate) => {
-  const rates = shippingPackage.shipping_rates || []
-  const checked = selectedShippingRate === rate.rate_id || rates.length === 1
-
-  if (rates.length === 1) {
-    return (
-      <div key={rate.rate_id} className="checkout-shipping-single-rate">
-        <span>{rate.name}</span>
-        <span>{formatWooMoney(rate.price, cart?.totals)}</span>
-      </div>
-    )
-  }
-
-  return (
-    <label key={rate.rate_id}>
-      <input
-        type="radio"
-        name={`shipping-rate-${packageIndex}`}
-        checked={checked}
-        onChange={async () => {
-          try {
-            setSelectedShippingRate(rate.rate_id)
-            setShippingRatesLoading(true)
-            await selectShippingRate(shippingPackage.package_id, rate.rate_id)
-            await refreshCart({ silent: true })
-            const nextCheckoutData = await getCheckoutData().catch(() => null)
-            if (nextCheckoutData) {
-              setCheckoutData(nextCheckoutData)
-            }
-          } catch (err) {
-            console.error(err)
-          } finally {
-            setShippingRatesLoading(false)
-          }
-        }}
-      />
-      <span>{rate.name}</span>
-      <span>{formatWooMoney(rate.price, cart?.totals)}</span>
-    </label>
-  )
-})}
-      </div>
-    ))
-  )}
-</section>
       </div>
 
       <aside className="checkout-sidebar">
@@ -467,10 +412,33 @@ if (loading || cartLoading) {
     })}
 
     <div className="checkout-summary-totals">
-      <div>Subtotal: {formatWooMoney(cart?.totals?.total_items, cart?.totals)}</div>
-      <div>Shipping: {formatWooMoney(cart?.totals?.total_shipping, cart?.totals)}</div>
-      <div>Total: {formatWooMoney(cart?.totals?.total_price, cart?.totals)}</div>
+  <div className="checkout-summary-row checkout-summary-coupon">
+    <span>Coupon code</span>
+    <button type="button" className="checkout-apply-button">Apply</button>
+  </div>
+
+  <div className="checkout-summary-row">
+    <span>Subtotal</span>
+    <span>{formatWooMoney(cart?.totals?.total_items, cart?.totals)}</span>
+  </div>
+
+  <div className="checkout-summary-row checkout-summary-shipment">
+    <span>Shipment</span>
+    <div className="checkout-summary-shipping-value">
+      {(cart?.shipping_rates?.[0]?.shipping_rates?.[0]?.name) || 'Free shipping'}
     </div>
+  </div>
+
+  <div className="checkout-summary-row">
+    <span>Tax</span>
+    <span>{formatWooMoney(cart?.totals?.total_tax, cart?.totals)}</span>
+  </div>
+
+  <div className="checkout-summary-row checkout-summary-total">
+    <span>Total</span>
+    <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
+  </div>
+</div>
   </section>
 </aside>
     </div>
