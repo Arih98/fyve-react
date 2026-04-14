@@ -1,4 +1,4 @@
-const API_BASE = 'https://yourwordpressdomain.com/wp-json'
+const API_BASE = 'https://fyvelondon.com/wp-json'
 
 export async function apiRequest(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
