@@ -16,7 +16,7 @@ import FullscreenGallery from './FullscreenGallery';
 
 
 const ProductDetail = () => {
-  const { cartItems, setCartItems } = useContext(CartContext);
+  const { cartItems, addItem } = useContext(CartContext);
   const location = useLocation();
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
@@ -306,98 +306,82 @@ const isOutOfStock =
 
 const isAddDisabled = isOutOfStock;
 
-  const handleAddToCart = useCallback(() => {
-  const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
+  const handleAddToCart = useCallback(async () => {
+  if (!product || !current) return;
 
-  const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
-  const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
-  const variationKey = `${sizeValue}-${colorValue}`;
-  const itemId = current?.id || product?.id;
+  try {
+    const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
 
-  const existingCartItem = cartItems.find(
-    item => item.id === itemId && `${item.size || ''}-${item.color || ''}` === variationKey
-  );
+    const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
+    const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
 
-  const existingQuantityInCart = existingCartItem?.quantity || 0;
-  const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
+    const currentItemId = current?.id || product?.id;
 
-  if (remainingStock <= 0) {
-    setCartError('No more stock available for this selection');
-    return;
-  }
+    const existingCartItem = cartItems.find((item) => item.id === currentItemId);
+    const existingQuantityInCart = existingCartItem?.quantity || 0;
+    const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
 
-  if (quantity > remainingStock) {
-    setCartError(
-      remainingStock === 1
-        ? 'Only 1 more available'
-        : `Only ${remainingStock} more available`
-    );
-    return;
-  }
-
-  const newItem = {
-    id: itemId,
-    name: product?.title || product?.name || '',
-    price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
-    quantity,
-    image: displayImages[0] || '/api/Uploads/fallback-image.png',
-    size: sizeValue,
-    color: colorValue,
-    stockQuantity: freshStock
-  };
-
-  setCartItems(prev => {
-    const existingIndex = prev.findIndex(
-      i => i.id === newItem.id && `${i.size || ''}-${i.color || ''}` === variationKey
-    );
-
-    if (existingIndex !== -1) {
-      const newPrev = [...prev];
-      const nextQuantity = Math.min(
-        freshStock,
-        newPrev[existingIndex].quantity + quantity
-      );
-      newPrev[existingIndex] = {
-        ...newPrev[existingIndex],
-        quantity: nextQuantity,
-        stockQuantity: freshStock
-      };
-      return newPrev;
+    if (freshStock > 0 && remainingStock <= 0) {
+      setCartError('No more stock available for this selection');
+      return;
     }
 
-    return [...prev, newItem];
-  });
+    if (freshStock > 0 && quantity > remainingStock) {
+      setCartError(
+        remainingStock === 1
+          ? 'Only 1 more available'
+          : `Only ${remainingStock} more available`
+      );
+      return;
+    }
 
-  const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
-  const sourceRect = sourceImageEl?.getBoundingClientRect();
+    const variationPayload =
+      Array.isArray(current?.attributes) && current.attributes.length
+        ? current.attributes.map((attr) => ({
+            attribute: attr.attribute_name,
+            value: attr.term_slug
+          }))
+        : [];
 
-  window.dispatchEvent(
-    new CustomEvent('cart:item-added', {
-      detail: {
-        sourceSelector: '[data-pdp-primary-image="true"]',
-        startRect: sourceRect
-          ? {
-              top: sourceRect.top,
-              left: sourceRect.left,
-              width: sourceRect.width,
-              height: sourceRect.height
-            }
-          : null
-      }
-    })
-  );
+    await addItem({
+      id: Number(currentItemId),
+      quantity,
+      variation: variationPayload
+    });
 
-  setCartError(null);
+    const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
+    const sourceRect = sourceImageEl?.getBoundingClientRect();
+
+    window.dispatchEvent(
+      new CustomEvent('cart:item-added', {
+        detail: {
+          sourceSelector: '[data-pdp-primary-image="true"]',
+          startRect: sourceRect
+            ? {
+                top: sourceRect.top,
+                left: sourceRect.left,
+                width: sourceRect.width,
+                height: sourceRect.height
+              }
+            : null
+        }
+      })
+    );
+
+    setCartError(null);
+  } catch (err) {
+    console.error(err);
+    setCartError('Failed to add to cart');
+  }
 }, [
-  current,
   product,
+  current,
   quantity,
-  displayImages,
   selectedAttributes,
   isSizeAttribute,
   isColorAttribute,
   cartItems,
-  setCartItems
+  addItem
 ]);
 
 const currentTotalPrice = (Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2);
