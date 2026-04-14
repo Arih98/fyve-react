@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { getCheckoutCart, getCheckoutPrefill } from '../api/checkout'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { CartContext } from '../CartContext'
+import { getCheckoutPrefill } from '../api/checkout'
+import { formatWooMoney } from '../utils/formatMoney'
 
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }
@@ -16,7 +18,6 @@ function mergeEmptyFields(current, incoming) {
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [cart, setCart] = useState(null)
 
   const [contact, setContact] = useState({
     email: '',
@@ -50,63 +51,55 @@ export default function Checkout() {
   })
 
   const hasPrefilledRef = useRef(false)
+  const { cart, cartItems, loading: cartLoading } = useContext(CartContext)
 
   useEffect(() => {
-    let active = true
+  let active = true
 
-    async function loadCheckout() {
-      try {
-        setLoading(true)
-        setError('')
+  async function loadCheckout() {
+    try {
+      setLoading(true)
+      setError('')
 
-        const [cartData, prefillData] = await Promise.allSettled([
-          getCheckoutCart(),
-          getCheckoutPrefill()
-        ])
+      const prefillData = await getCheckoutPrefill().catch(() => null)
 
-        if (!active) return
+      if (!active) return
 
-        if (cartData.status === 'fulfilled') {
-          setCart(cartData.value.cart || cartData.value)
-        } else {
-          throw new Error(cartData.reason?.message || 'Failed to load cart')
-        }
+      if (prefillData && !hasPrefilledRef.current) {
+        const prefill = prefillData.prefill || prefillData
 
-        if (prefillData.status === 'fulfilled' && !hasPrefilledRef.current) {
-          const prefill = prefillData.value.prefill || prefillData.value
+        setContact((prev) => ({
+          ...prev,
+          email: prev.email || prefill?.billing?.email || '',
+          phone: prev.phone || prefill?.billing?.phone || ''
+        }))
 
-          setContact((prev) => ({
-            ...prev,
-            email: prev.email || prefill?.billing?.email || '',
-            phone: prev.phone || prefill?.billing?.phone || ''
-          }))
+        setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
+        setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
 
-          setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
-          setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
-
-          hasPrefilledRef.current = true
-        }
-      } catch (err) {
-        if (active) {
-          setError(err.message || 'Failed to load checkout')
-        }
-      } finally {
-        if (active) {
-          setLoading(false)
-        }
+        hasPrefilledRef.current = true
+      }
+    } catch (err) {
+      if (active) {
+        setError(err.message || 'Failed to load checkout')
+      }
+    } finally {
+      if (active) {
+        setLoading(false)
       }
     }
-
-    loadCheckout()
-
-    return () => {
-      active = false
-    }
-  }, [])
-
-  if (loading) {
-    return <div>Loading checkout...</div>
   }
+
+  loadCheckout()
+
+  return () => {
+    active = false
+  }
+}, [])
+
+if (loading || cartLoading) {
+  return <div>Loading checkout...</div>
+}
 
   if (error) {
     return <div>{error}</div>
@@ -289,25 +282,42 @@ export default function Checkout() {
         <section className="checkout-section">
           <h2>Order summary</h2>
 
-          {!cart?.items?.length ? (
-            <p>Your cart is empty.</p>
-          ) : (
-            <>
-              {cart.items.map((item) => (
-                <div key={item.key || item.id} className="checkout-summary-item">
-                  <div>{item.name}</div>
-                  <div>Qty: {item.quantity}</div>
-                  <div>{item.total}</div>
-                </div>
-              ))}
+          {!cartItems?.length ? (
+  <p>Your cart is empty.</p>
+) : (
+  <>
+    {cartItems.map((item) => {
+      const imageSrc =
+        item.images?.[0]?.thumbnail ||
+        item.images?.[0]?.src ||
+        '/api/Uploads/fallback-image.png'
 
-              <div className="checkout-summary-totals">
-                <div>Subtotal: {cart.subtotal}</div>
-                <div>Shipping: {cart.shipping_total}</div>
-                <div>Total: {cart.total}</div>
-              </div>
-            </>
-          )}
+      return (
+        <div key={item.key} className="checkout-summary-item">
+          <div className="checkout-summary-item-main">
+            <img
+              src={imageSrc}
+              alt={item.name}
+              className="checkout-summary-item-image"
+            />
+            <div className="checkout-summary-item-info">
+              <div>{item.name}</div>
+              <div>Qty: {item.quantity}</div>
+            </div>
+          </div>
+
+          <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
+        </div>
+      )
+    })}
+
+    <div className="checkout-summary-totals">
+      <div>Subtotal: {formatWooMoney(cart?.totals?.total_items, cart?.totals)}</div>
+      <div>Shipping: {formatWooMoney(cart?.totals?.total_shipping, cart?.totals)}</div>
+      <div>Total: {formatWooMoney(cart?.totals?.total_price, cart?.totals)}</div>
+    </div>
+  </>
+)}
         </section>
       </aside>
     </div>
