@@ -7,6 +7,7 @@ import {
   selectShippingRate
 } from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
+import './Checkout.css'
 
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }

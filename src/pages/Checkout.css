@@ -1,0 +1,32 @@
+.checkout-summary-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.checkout-summary-shipment {
+  align-items: flex-start;
+}
+
+.checkout-summary-shipping-value {
+  text-align: right;
+}
+
+.checkout-summary-total {
+  padding-top: 12px;
+}
+
+.checkout-apply-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
