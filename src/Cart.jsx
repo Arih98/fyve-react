@@ -8,7 +8,6 @@ const Cart = ({ variant = 'page', onClose }) => {
 const recentlyViewedImageRefs = useRef(new Map());
 const placeholderImage = '/api/Uploads/fallback-image.png';
 const {
-  cart,
   cartItems,
   cartCount,
   cartTotal,
@@ -61,12 +60,20 @@ useEffect(() => {
         item.images?.[0]?.src ||
         '/api/Uploads/fallback-image.png'
 
-      const productId = item.id
-      const itemTotal =
-        item.totals?.line_total
-          ? `£${(Number(item.totals.line_total) / 100).toFixed(2)}`
-          : ''
+      const productLink = item.permalink || `/product/${item.id}`
+      const itemTotal = item.totals?.line_total
+        ? `£${(Number(item.totals.line_total) / 100).toFixed(2)}`
+        : '£0.00'
 
+const variationColor = item.variation?.find((attr) => {
+  const label = String(attr.attribute || '').toLowerCase()
+  return label.includes('color') || label.includes('colour')
+})
+
+const variationSize = item.variation?.find((attr) => {
+  const label = String(attr.attribute || '').toLowerCase()
+  return label.includes('size')
+})
       return (
         <li key={item.key} className="cart-item" data-cart-key={item.key}>
           <div className="cart-item-content cart-item-grid">
@@ -77,18 +84,20 @@ useEffect(() => {
             </div>
 
             <div className="cart-item-details">
-              <Link to={`/product/${productId}`} className="product-title" onClick={onClose}>
-                {item.name}
-              </Link>
+<Link to={productLink} className="product-title" onClick={onClose}>
+  {item.name}
+</Link>
 
-              {item.variation?.length > 0 && (
-                <div className="cart-item-variations">
-                  {item.variation.map((attr) => (
-                    <p key={`${item.key}-${attr.attribute}`} className="variation">
-                      <span className="variation-label">{attr.attribute}:</span> {attr.value}
-                    </p>
-                  ))}
-                </div>
+              {variationColor && (
+                <p className="variation variation-color">
+                  <span className="variation-label">{variationColor.attribute}:</span> {variationColor.value}
+                </p>
+              )}
+
+              {variationSize && (
+                <p className="variation variation-size">
+                  <span className="variation-label">{variationSize.attribute}:</span> {variationSize.value}
+                </p>
               )}
 
               <div className="subtotal">
@@ -279,12 +288,12 @@ style={{
 
               <div className="cart-summary-row cart-summary-total">
                 <span>Total</span>
-                <span>£{(Number(cartTotal) / 100).toFixed(2)}</span>
+                <span>£{(Number(cartTotal || 0) / 100).toFixed(2)}</span>
               </div>
 
               <Link to="/checkout" className="button cart-checkout-button" onClick={onClose}>
                 <span>Checkout</span>
-                <span className="cart-total-amount">£{(Number(cartTotal) / 100).toFixed(2)}</span>
+                <span className="cart-total-amount">£{(Number(cartTotal || 0) / 100).toFixed(2)}</span>
               </Link>
 
               <Link to="/cart" className="cart-panel-view-bag" onClick={onClose}>
@@ -340,7 +349,7 @@ style={{
 
                 <div className="cart-summary-row cart-summary-total">
                   <span>Total</span>
-                  <span>£{(Number(cartTotal) / 100).toFixed(2)}</span>
+                  <span>£{(Number(cartTotal || 0) / 100).toFixed(2)}</span>
                 </div>
 
               </div>
