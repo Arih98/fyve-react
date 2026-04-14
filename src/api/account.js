@@ -81,19 +81,15 @@ export async function updateAccountDetails(payload) {
 }
 
 export async function getOrderDetail(orderId) {
-  const res = await fetch(`https://yourwordpressdomain.com/wp-json/fyve-account/v1/orders/${orderId}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+  const response = await fetch(`${ACCOUNT_API_BASE}/orders/${orderId}`, {
+    credentials: 'include'
+  });
 
-  const data = await res.json()
+  const data = await response.json();
 
-  if (!res.ok || !data.success) {
-    throw new Error(data.message || 'Failed to load order')
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to fetch order');
   }
 
-  return data.order
+  return data.order;
 }
