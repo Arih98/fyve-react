@@ -77,6 +77,10 @@ const Login = () => {
         </form>
 
         <p className="account-auth-footer">
+          <Link to="/forgot-password">Forgot your password?</Link>
+        </p>
+
+        <p className="account-auth-footer">
           Don’t have an account? <Link to="/signup">Create one</Link>
         </p>
       </div>

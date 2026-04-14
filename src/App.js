@@ -24,6 +24,8 @@ import Cart from './Cart';
 import AccountOrders from './AccountOrders';
 import AccountAddresses from './AccountAddresses';
 import AccountDetails from './AccountDetails';
+import ForgotPassword from './ForgotPassword'
+import ResetPassword from './ResetPassword'
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -139,6 +141,8 @@ function AppContent() {
     </ProtectedRoute>
   }
 />
+<Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/cart" element={<Cart />} />
             </Route>
           </Routes>

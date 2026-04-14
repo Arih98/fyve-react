@@ -62,3 +62,41 @@ export async function logoutUser() {
 
   return response.json();
 }
+
+export async function forgotPassword(email) {
+  const res = await fetch('https://yourwordpressdomain.com/wp-json/fyve-auth/v1/forgot-password', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to send reset email')
+  }
+
+  return data
+}
+
+export async function resetPassword({ login, key, password }) {
+  const res = await fetch('https://yourwordpressdomain.com/wp-json/fyve-auth/v1/reset-password', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ login, key, password })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to reset password')
+  }
+
+  return data
+}
