@@ -73,7 +73,7 @@ body::-webkit-scrollbar {
 .account-page,
 .account-section-page {
   min-height: 100vh;
-  background: #f8f6f2;
+  background: #fff;
   padding: 140px 20px 60px;
 }
 
