@@ -1,6 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CartContext } from '../CartContext'
-import { getCheckoutPrefill } from '../api/checkout'
+import {
+  getCheckoutPrefill,
+  getCheckoutData,
+  updateCheckoutCustomer,
+  selectShippingRate
+} from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
 
 function mergeEmptyFields(current, incoming) {
@@ -51,7 +56,81 @@ export default function Checkout() {
   })
 
   const hasPrefilledRef = useRef(false)
-  const { cart, cartItems, loading: cartLoading } = useContext(CartContext)
+  const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
+
+  const [checkoutData, setCheckoutData] = useState(null)
+  const [shippingRatesLoading, setShippingRatesLoading] = useState(false)
+  const [selectedShippingRate, setSelectedShippingRate] = useState('')
+
+  useEffect(() => {
+  if (!cartItems?.length) return
+
+  const timeout = setTimeout(async () => {
+    try {
+      setShippingRatesLoading(true)
+
+      const payload = {
+        billing_address: {
+          first_name: billing.first_name,
+          last_name: billing.last_name,
+          company: billing.company,
+          address_1: billing.address_1,
+          address_2: billing.address_2,
+          city: billing.city,
+          state: billing.state,
+          postcode: billing.postcode,
+          country: billing.country,
+          email: contact.email,
+          phone: contact.phone
+        },
+        shipping_address: useSeparateShipping
+          ? {
+              first_name: shipping.first_name,
+              last_name: shipping.last_name,
+              company: shipping.company,
+              address_1: shipping.address_1,
+              address_2: shipping.address_2,
+              city: shipping.city,
+              state: shipping.state,
+              postcode: shipping.postcode,
+              country: shipping.country
+            }
+          : {
+              first_name: billing.first_name,
+              last_name: billing.last_name,
+              company: billing.company,
+              address_1: billing.address_1,
+              address_2: billing.address_2,
+              city: billing.city,
+              state: billing.state,
+              postcode: billing.postcode,
+              country: billing.country
+            }
+      }
+
+      await updateCheckoutCustomer(payload)
+      await refreshCart({ silent: true })
+      const nextCheckoutData = await getCheckoutData().catch(() => null)
+
+      if (nextCheckoutData) {
+        setCheckoutData(nextCheckoutData)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setShippingRatesLoading(false)
+    }
+  }, 400)
+
+  return () => clearTimeout(timeout)
+}, [
+  billing,
+  shipping,
+  contact,
+  useSeparateShipping,
+  cartItems,
+  refreshCart
+])
 
   useEffect(() => {
   let active = true
@@ -62,6 +141,12 @@ export default function Checkout() {
       setError('')
 
       const prefillData = await getCheckoutPrefill().catch(() => null)
+
+      const checkoutResponse = await getCheckoutData().catch(() => null)
+
+      if (checkoutResponse) {
+  setCheckoutData(checkoutResponse)
+}
 
       if (!active) return
 
@@ -286,6 +371,51 @@ if (loading || cartLoading) {
             />
           </section>
         )}
+        <section className="checkout-section">
+  <h2>Shipping</h2>
+
+  {shippingRatesLoading ? (
+    <p>Updating shipping options...</p>
+  ) : !cart?.shipping_rates?.length ? (
+    <p>Enter your address to see shipping options.</p>
+  ) : (
+    cart.shipping_rates.map((shippingPackage, packageIndex) => (
+      <div key={shippingPackage.package_id || packageIndex}>
+        {(shippingPackage.shipping_rates || []).map((rate) => {
+          const checked = selectedShippingRate === rate.rate_id
+
+          return (
+            <label key={rate.rate_id}>
+              <input
+                type="radio"
+                name={`shipping-rate-${packageIndex}`}
+                checked={checked}
+                onChange={async () => {
+                  try {
+                    setSelectedShippingRate(rate.rate_id)
+                    setShippingRatesLoading(true)
+                    await selectShippingRate(shippingPackage.package_id, rate.rate_id)
+                    await refreshCart({ silent: true })
+                    const nextCheckoutData = await getCheckoutData().catch(() => null)
+                    if (nextCheckoutData) {
+                      setCheckoutData(nextCheckoutData)
+                    }
+                  } catch (err) {
+                    console.error(err)
+                  } finally {
+                    setShippingRatesLoading(false)
+                  }
+                }}
+              />
+              <span>{rate.name}</span>
+              <span>{formatWooMoney(rate.price, cart?.totals)}</span>
+            </label>
+          )
+        })}
+      </div>
+    ))
+  )}
+</section>
       </div>
 
       <aside className="checkout-sidebar">
