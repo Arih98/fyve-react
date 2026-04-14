@@ -40,12 +40,43 @@ export function CartProvider({ children }) {
 const addItem = useCallback(async (payload) => {
   setLoading(true)
   setError('')
+
   try {
     const item = await addStoreCartItem(payload)
-    await refreshCart({ silent: true })
+
+    setCart((prev) => {
+      if (!prev) return prev
+
+      const existingItems = Array.isArray(prev.items) ? prev.items : []
+      const existingIndex = existingItems.findIndex((existing) => existing.key === item.key)
+
+      let nextItems
+
+      if (existingIndex !== -1) {
+        nextItems = [...existingItems]
+        nextItems[existingIndex] = item
+      } else {
+        nextItems = [...existingItems, item]
+      }
+
+      const addedQuantity = Number(item.quantity || 0)
+      const previousQuantity =
+        existingIndex !== -1 ? Number(existingItems[existingIndex]?.quantity || 0) : 0
+      const quantityDelta = Math.max(0, addedQuantity - previousQuantity)
+
+      return {
+        ...prev,
+        items: nextItems,
+        items_count: Number(prev.items_count || 0) + quantityDelta
+      }
+    })
+
+    refreshCart({ silent: true }).catch(() => {})
+
     return item
   } catch (err) {
     setError(err.message || 'Failed to add item')
+    await refreshCart({ silent: true }).catch(() => {})
     throw err
   } finally {
     setLoading(false)
