@@ -65,6 +65,16 @@ export default function Checkout() {
   useEffect(() => {
   if (!cartItems?.length) return
 
+  const billingReady =
+  billing.country.trim() &&
+  billing.postcode.trim()
+
+const shippingReady = useSeparateShipping
+  ? shipping.country.trim() && shipping.postcode.trim()
+  : billing.country.trim() && billing.postcode.trim()
+
+if (!billingReady || !shippingReady) return
+
   const timeout = setTimeout(async () => {
     try {
       setShippingRatesLoading(true)
@@ -128,7 +138,6 @@ export default function Checkout() {
   shipping,
   contact,
   useSeparateShipping,
-  cartItems,
   refreshCart
 ])
 
@@ -382,36 +391,46 @@ if (loading || cartLoading) {
     cart.shipping_rates.map((shippingPackage, packageIndex) => (
       <div key={shippingPackage.package_id || packageIndex}>
         {(shippingPackage.shipping_rates || []).map((rate) => {
-          const checked = selectedShippingRate === rate.rate_id
+  const rates = shippingPackage.shipping_rates || []
+  const checked = selectedShippingRate === rate.rate_id || rates.length === 1
 
-          return (
-            <label key={rate.rate_id}>
-              <input
-                type="radio"
-                name={`shipping-rate-${packageIndex}`}
-                checked={checked}
-                onChange={async () => {
-                  try {
-                    setSelectedShippingRate(rate.rate_id)
-                    setShippingRatesLoading(true)
-                    await selectShippingRate(shippingPackage.package_id, rate.rate_id)
-                    await refreshCart({ silent: true })
-                    const nextCheckoutData = await getCheckoutData().catch(() => null)
-                    if (nextCheckoutData) {
-                      setCheckoutData(nextCheckoutData)
-                    }
-                  } catch (err) {
-                    console.error(err)
-                  } finally {
-                    setShippingRatesLoading(false)
-                  }
-                }}
-              />
-              <span>{rate.name}</span>
-              <span>{formatWooMoney(rate.price, cart?.totals)}</span>
-            </label>
-          )
-        })}
+  if (rates.length === 1) {
+    return (
+      <div key={rate.rate_id} className="checkout-shipping-single-rate">
+        <span>{rate.name}</span>
+        <span>{formatWooMoney(rate.price, cart?.totals)}</span>
+      </div>
+    )
+  }
+
+  return (
+    <label key={rate.rate_id}>
+      <input
+        type="radio"
+        name={`shipping-rate-${packageIndex}`}
+        checked={checked}
+        onChange={async () => {
+          try {
+            setSelectedShippingRate(rate.rate_id)
+            setShippingRatesLoading(true)
+            await selectShippingRate(shippingPackage.package_id, rate.rate_id)
+            await refreshCart({ silent: true })
+            const nextCheckoutData = await getCheckoutData().catch(() => null)
+            if (nextCheckoutData) {
+              setCheckoutData(nextCheckoutData)
+            }
+          } catch (err) {
+            console.error(err)
+          } finally {
+            setShippingRatesLoading(false)
+          }
+        }}
+      />
+      <span>{rate.name}</span>
+      <span>{formatWooMoney(rate.price, cart?.totals)}</span>
+    </label>
+  )
+})}
       </div>
     ))
   )}
