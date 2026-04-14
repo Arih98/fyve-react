@@ -26,6 +26,7 @@ import AccountAddresses from './AccountAddresses';
 import AccountDetails from './AccountDetails';
 import ForgotPassword from './ForgotPassword'
 import ResetPassword from './ResetPassword'
+import AccountOrderDetail from './AccountOrderDetail'
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -138,6 +139,14 @@ function AppContent() {
   element={
     <ProtectedRoute>
       <AccountDetails />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/account/orders/:orderId"
+  element={
+    <ProtectedRoute>
+      <AccountOrderDetail />
     </ProtectedRoute>
   }
 />

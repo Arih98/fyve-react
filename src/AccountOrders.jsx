@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getOrders } from './api/account';
+import { Link } from 'react-router-dom';
 
 const AccountOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -43,6 +44,7 @@ const AccountOrders = () => {
                 <p><strong>Date:</strong> {order.date_created ? new Date(order.date_created).toLocaleDateString() : '-'}</p>
                 <p><strong>Total:</strong> {order.total_display}</p>
                 <p><strong>Items:</strong> {order.item_count}</p>
+                <Link to={`/account/orders/${order.id}`}>View Order</Link>
               </div>
             ))}
           </div>
