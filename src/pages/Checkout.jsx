@@ -257,10 +257,11 @@ useEffect(() => {
         revolutInstanceRef.current = null
       }
 
-      const instance = RevolutCheckout.payments({
-        publicToken: merchantPublicKey,
-        locale: 'en'
-      })
+const instance = RevolutCheckout.payments({
+  publicToken: merchantPublicKey,
+  mode: 'sandbox',
+  locale: 'en'
+})
 
       revolutInstanceRef.current = instance
 
