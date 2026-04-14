@@ -494,6 +494,14 @@ if (loading || cartLoading) {
       setDraftOrderId(latestCheckout.order_id || null)
       setDraftOrderKey(latestCheckout.order_key || '')
 
+      const revolutResult = await createRevolutOrder({
+        billing_email: contact.email,
+        billing_phone: contact.phone,
+        draft_order_id: latestCheckout.order_id || null,
+        draft_order_key: latestCheckout.order_key || ''
+      })
+
+      setRevolutPublicId(revolutResult.revolut_order_public_id || '')
       setPaymentStep(true)
     } catch (err) {
       setError(err.message || 'Failed to prepare payment')
@@ -508,9 +516,10 @@ if (loading || cartLoading) {
 </div>
 
 {paymentStep && (
-  <section className="checkout-section checkout-payment-section">
+  <section className="checkout-section">
     <h2>Payment</h2>
     <div id="revolut-checkout-container"></div>
+    <p>Revolut order: {revolutPublicId}</p>
   </section>
 )}
   </section>
