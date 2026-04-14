@@ -77,6 +77,12 @@ export default function Checkout() {
         setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
         setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
 
+        const hasShippingPrefill = Object.values(prefill?.shipping || {}).some(Boolean)
+
+if (hasShippingPrefill) {
+  setUseSeparateShipping(true)
+}
+
         hasPrefilledRef.current = true
       }
     } catch (err) {
@@ -104,6 +110,10 @@ if (loading || cartLoading) {
   if (error) {
     return <div>{error}</div>
   }
+
+  if (!cartItems?.length) {
+  return <div>Your cart is empty.</div>
+}
 
   return (
     <div className="checkout-page">
