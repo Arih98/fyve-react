@@ -1,7 +1,4 @@
-const API_BASE =
-  window.location.hostname === 'dev.fyvelondon.com'
-    ? 'https://dev.fyvelondon.com/wp-json'
-    : 'https://fyvelondon.com/wp-json'
+const API_BASE = 'https://fyvelondon.com/wp-json'
 
 const CART_TOKEN_KEY = 'woo_store_cart_token'
 
