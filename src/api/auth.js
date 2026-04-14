@@ -64,7 +64,7 @@ export async function logoutUser() {
 }
 
 export async function forgotPassword(email) {
-  const res = await fetch('https://yourwordpressdomain.com/wp-json/fyve-auth/v1/forgot-password', {
+  const response = await fetch(`${API_BASE}/forgot-password`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -73,9 +73,9 @@ export async function forgotPassword(email) {
     body: JSON.stringify({ email })
   })
 
-  const data = await res.json()
+  const data = await response.json()
 
-  if (!res.ok || !data.success) {
+  if (!response.ok || !data.success) {
     throw new Error(data.message || 'Failed to send reset email')
   }
 
@@ -83,7 +83,7 @@ export async function forgotPassword(email) {
 }
 
 export async function resetPassword({ login, key, password }) {
-  const res = await fetch('https://yourwordpressdomain.com/wp-json/fyve-auth/v1/reset-password', {
+  const response = await fetch(`${API_BASE}/reset-password`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -92,9 +92,9 @@ export async function resetPassword({ login, key, password }) {
     body: JSON.stringify({ login, key, password })
   })
 
-  const data = await res.json()
+  const data = await response.json()
 
-  if (!res.ok || !data.success) {
+  if (!response.ok || !data.success) {
     throw new Error(data.message || 'Failed to reset password')
   }
 
