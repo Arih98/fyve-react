@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getCheckoutOrderStatus } from './api/checkout'
-import { useContext } from 'react'
 import { CartContext } from './CartContext'
 
 export default function CheckoutSuccess() {
