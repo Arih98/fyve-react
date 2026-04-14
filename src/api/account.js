@@ -46,3 +46,36 @@ export async function updateAddresses(payload) {
 
   return data;
 }
+
+export async function getAccountDetails() {
+  const response = await fetch(`${ACCOUNT_API_BASE}/details`, {
+    credentials: 'include'
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to fetch account details');
+  }
+
+  return data;
+}
+
+export async function updateAccountDetails(payload) {
+  const response = await fetch(`${ACCOUNT_API_BASE}/details`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to update account details');
+  }
+
+  return data;
+}
