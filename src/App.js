@@ -7,7 +7,6 @@ import Header from './Header';
 import MobileTopHeader from './MobileTopHeader';
 import Admin from './Admin';
 import CategoryProducts from './CategoryProducts';
-import Checkout from './Checkout';
 import Account from './Account';
 import Login from './Login';
 import Signup from './Signup';
@@ -151,7 +150,6 @@ function AppContent() {
     </ProtectedRoute>
   }
 />
-<Route path="/checkout" element={<Checkout />} />
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/cart" element={<Cart />} />
