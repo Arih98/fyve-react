@@ -239,6 +239,14 @@ export default function Checkout() {
 
   const mountWidget = async () => {
     try {
+      console.log('REVOLUT INIT INPUTS', {
+        merchantPublicKey,
+        revolutPublicId,
+        paymentStep,
+        billingCountry: billing.country,
+        billingPostcode: billing.postcode
+      })
+
       if (revolutInstanceRef.current?.destroy) {
         revolutInstanceRef.current.destroy()
         revolutInstanceRef.current = null
@@ -250,6 +258,7 @@ export default function Checkout() {
         locale: 'en',
         target: revolutContainerRef.current,
         createOrder: async () => {
+          console.log('REVOLUT createOrder returning', revolutPublicId)
           return { publicId: revolutPublicId }
         },
         email: contact.email || undefined,
@@ -264,6 +273,7 @@ export default function Checkout() {
             }
           : undefined,
         onSuccess: ({ orderId }) => {
+          console.log('REVOLUT SUCCESS', orderId)
           window.location.href = `/checkout/success?order_id=${draftOrderId}&revolut_token=${encodeURIComponent(orderId)}`
         },
         onError: ({ error, orderId }) => {
@@ -271,7 +281,7 @@ export default function Checkout() {
           setError(error?.message || 'Payment failed')
         },
         onCancel: ({ orderId }) => {
-          console.log('REVOLUT CANCELLED', orderId)
+          console.log('REVOLUT CANCEL', orderId)
         }
       })
 
@@ -281,8 +291,10 @@ export default function Checkout() {
       }
 
       revolutInstanceRef.current = instance
+      console.log('REVOLUT widget mounted')
     } catch (err) {
-      console.error('REVOLUT INIT ERROR', err)
+      console.error('REVOLUT INIT ERROR FULL', err)
+      console.error('REVOLUT INIT ERROR JSON', JSON.stringify(err, Object.getOwnPropertyNames(err)))
       setError(err?.message || 'Failed to load payment widget')
     }
   }
