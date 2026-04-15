@@ -71,302 +71,297 @@ export default function Checkout() {
   const [paymentLoading, setPaymentLoading] = useState(false)
   const [revolutPublicId, setRevolutPublicId] = useState('')
   const [merchantPublicKey, setMerchantPublicKey] = useState('')
-const [paymentCurrency, setPaymentCurrency] = useState('')
-const [paymentTotalAmount, setPaymentTotalAmount] = useState(0)
-const revolutContainerRef = useRef(null)
-const revolutInstanceRef = useRef(null)
+  const [paymentCurrency, setPaymentCurrency] = useState('')
+  const [paymentTotalAmount, setPaymentTotalAmount] = useState(0)
+  const revolutContainerRef = useRef(null)
+  const revolutInstanceRef = useRef(null)
 
   useEffect(() => {
-  if (!cartItems?.length) return
+    if (!cartItems?.length) return
 
-  const billingReady =
-  billing.country.trim() &&
-  billing.postcode.trim()
+    const billingReady = billing.country.trim() && billing.postcode.trim()
 
-const shippingReady = useSeparateShipping
-  ? shipping.country.trim() && shipping.postcode.trim()
-  : billing.country.trim() && billing.postcode.trim()
+    const shippingReady = useSeparateShipping
+      ? shipping.country.trim() && shipping.postcode.trim()
+      : billing.country.trim() && billing.postcode.trim()
 
-if (!billingReady || !shippingReady) return
+    if (!billingReady || !shippingReady) return
 
-  const timeout = setTimeout(async () => {
-    try {
-      setShippingRatesLoading(true)
+    const timeout = setTimeout(async () => {
+      try {
+        setShippingRatesLoading(true)
 
-      const payload = {
-  billingAddress: {
-    first_name: billing.first_name,
-    last_name: billing.last_name,
-    company: billing.company,
-    address_1: billing.address_1,
-    address_2: billing.address_2,
-    city: billing.city,
-    state: billing.state,
-    postcode: billing.postcode,
-    country: billing.country,
-    email: contact.email,
-    phone: contact.phone
-  },
-  shippingAddress: useSeparateShipping
-    ? {
-        first_name: shipping.first_name,
-        last_name: shipping.last_name,
-        company: shipping.company,
-        address_1: shipping.address_1,
-        address_2: shipping.address_2,
-        city: shipping.city,
-        state: shipping.state,
-        postcode: shipping.postcode,
-        country: shipping.country
+        const payload = {
+          billingAddress: {
+            first_name: billing.first_name,
+            last_name: billing.last_name,
+            company: billing.company,
+            address_1: billing.address_1,
+            address_2: billing.address_2,
+            city: billing.city,
+            state: billing.state,
+            postcode: billing.postcode,
+            country: billing.country,
+            email: contact.email,
+            phone: contact.phone
+          },
+          shippingAddress: useSeparateShipping
+            ? {
+                first_name: shipping.first_name,
+                last_name: shipping.last_name,
+                company: shipping.company,
+                address_1: shipping.address_1,
+                address_2: shipping.address_2,
+                city: shipping.city,
+                state: shipping.state,
+                postcode: shipping.postcode,
+                country: shipping.country
+              }
+            : {
+                first_name: billing.first_name,
+                last_name: billing.last_name,
+                company: billing.company,
+                address_1: billing.address_1,
+                address_2: billing.address_2,
+                city: billing.city,
+                state: billing.state,
+                postcode: billing.postcode,
+                country: billing.country
+              }
+        }
+
+        await updateCheckoutCustomer(payload)
+        await refreshCart({ silent: true })
+        const nextCheckoutData = await getCheckoutData().catch(() => null)
+
+        if (nextCheckoutData) {
+          setCheckoutData(nextCheckoutData)
+          setDraftOrderId(nextCheckoutData.order_id || null)
+          setDraftOrderKey(nextCheckoutData.order_key || '')
+
+          const firstRate =
+            nextCheckoutData.shipping_rates?.[0]?.shipping_rates?.find((rate) => rate.selected) ||
+            nextCheckoutData.shipping_rates?.[0]?.shipping_rates?.[0]
+
+          if (firstRate?.rate_id) {
+            setSelectedShippingRate(firstRate.rate_id)
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setShippingRatesLoading(false)
       }
-    : {
-        first_name: billing.first_name,
-        last_name: billing.last_name,
-        company: billing.company,
-        address_1: billing.address_1,
-        address_2: billing.address_2,
-        city: billing.city,
-        state: billing.state,
-        postcode: billing.postcode,
-        country: billing.country
-      }
-}
+    }, 400)
 
-      await updateCheckoutCustomer(payload)
-      await refreshCart({ silent: true })
-      const nextCheckoutData = await getCheckoutData().catch(() => null)
-
-if (nextCheckoutData) {
-  setCheckoutData(nextCheckoutData)
-  setDraftOrderId(nextCheckoutData.order_id || null)
-  setDraftOrderKey(nextCheckoutData.order_key || '')
-}
-
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setShippingRatesLoading(false)
-    }
-  }, 400)
-
-  return () => clearTimeout(timeout)
-}, [
-  billing,
-  shipping,
-  contact,
-  useSeparateShipping,
-  refreshCart
-])
+    return () => clearTimeout(timeout)
+  }, [
+    billing,
+    shipping,
+    contact,
+    useSeparateShipping,
+    refreshCart,
+    cartItems
+  ])
 
   useEffect(() => {
-  let active = true
+    let active = true
 
-  async function loadCheckout() {
-    try {
-      setLoading(true)
-      setError('')
+    async function loadCheckout() {
+      try {
+        setLoading(true)
+        setError('')
 
-      const prefillData = await getCheckoutPrefill().catch(() => null)
+        const prefillData = await getCheckoutPrefill().catch(() => null)
+        const checkoutResponse = await getCheckoutData().catch(() => null)
 
-      const checkoutResponse = await getCheckoutData().catch(() => null)
+        if (!active) return
 
-      if (!active) return
+        if (checkoutResponse) {
+          setCheckoutData(checkoutResponse)
+          setDraftOrderId(checkoutResponse.order_id || null)
+          setDraftOrderKey(checkoutResponse.order_key || '')
 
-      if (checkoutResponse) {
-  setCheckoutData(checkoutResponse)
-  setDraftOrderId(checkoutResponse.order_id || null)
-  setDraftOrderKey(checkoutResponse.order_key || '')
-}
+          const firstRate =
+            checkoutResponse.shipping_rates?.[0]?.shipping_rates?.find((rate) => rate.selected) ||
+            checkoutResponse.shipping_rates?.[0]?.shipping_rates?.[0]
 
-      if (prefillData && !hasPrefilledRef.current) {
-        const prefill = prefillData.prefill || prefillData
+          if (firstRate?.rate_id) {
+            setSelectedShippingRate(firstRate.rate_id)
+          }
+        }
 
-        setContact((prev) => ({
-          ...prev,
-          email: prev.email || prefill?.billing?.email || '',
-          phone: prev.phone || prefill?.billing?.phone || ''
-        }))
+        if (prefillData && !hasPrefilledRef.current) {
+          const prefill = prefillData.prefill || prefillData
 
-        setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
-        setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
+          setContact((prev) => ({
+            ...prev,
+            email: prev.email || prefill?.billing?.email || '',
+            phone: prev.phone || prefill?.billing?.phone || ''
+          }))
 
-        const hasShippingPrefill = Object.values(prefill?.shipping || {}).some(Boolean)
+          setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
+          setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
 
-if (hasShippingPrefill) {
-  setUseSeparateShipping(true)
-}
+          const hasShippingPrefill = Object.values(prefill?.shipping || {}).some(Boolean)
 
-        hasPrefilledRef.current = true
-      }
-    } catch (err) {
-      if (active) {
-        setError(err.message || 'Failed to load checkout')
-      }
-    } finally {
-      if (active) {
-        setLoading(false)
+          if (hasShippingPrefill) {
+            setUseSeparateShipping(true)
+          }
+
+          hasPrefilledRef.current = true
+        }
+      } catch (err) {
+        if (active) {
+          setError(err.message || 'Failed to load checkout')
+        }
+      } finally {
+        if (active) {
+          setLoading(false)
+        }
       }
     }
-  }
 
-  loadCheckout()
+    loadCheckout()
 
-  return () => {
-    active = false
-  }
-}, [])
+    return () => {
+      active = false
+    }
+  }, [])
 
-useEffect(() => {
-  if (!paymentStep || !merchantPublicKey || !revolutPublicId || !revolutContainerRef.current) {
-    return
-  }
+  useEffect(() => {
+    if (!paymentStep || !merchantPublicKey || !revolutPublicId || !revolutContainerRef.current) {
+      return
+    }
 
-  let cancelled = false
+    let cancelled = false
 
-  const loadScript = () =>
-    new Promise((resolve, reject) => {
-      if (window.RevolutCheckout) {
-        resolve(window.RevolutCheckout)
-        return
+    const loadScript = () =>
+      new Promise((resolve, reject) => {
+        if (window.RevolutCheckout) {
+          resolve(window.RevolutCheckout)
+          return
+        }
+
+        const existing = document.querySelector('script[data-revolut-checkout="true"]')
+        if (existing) {
+          existing.addEventListener('load', () => resolve(window.RevolutCheckout))
+          existing.addEventListener('error', reject)
+          return
+        }
+
+        const script = document.createElement('script')
+        script.src = 'https://merchant.revolut.com/embed.js'
+        script.async = true
+        script.dataset.revolutCheckout = 'true'
+        script.onload = () => resolve(window.RevolutCheckout)
+        script.onerror = reject
+        document.body.appendChild(script)
+      })
+
+    const mountWidget = async () => {
+      try {
+        const RevolutCheckout = await loadScript()
+
+        if (cancelled || !revolutContainerRef.current) return
+
+        if (revolutInstanceRef.current?.destroy) {
+          revolutInstanceRef.current.destroy()
+          revolutInstanceRef.current = null
+        }
+
+        const instance = await RevolutCheckout.embeddedCheckout({
+          publicToken: merchantPublicKey,
+          mode: 'sandbox',
+          locale: 'en',
+          target: revolutContainerRef.current,
+          createOrder: async () => {
+            return { publicId: revolutPublicId }
+          },
+          email: contact.email || undefined,
+          billingAddress: billing.country
+            ? {
+                countryCode: billing.country,
+                region: billing.state || undefined,
+                city: billing.city || undefined,
+                postcode: billing.postcode || undefined,
+                streetLine1: billing.address_1 || undefined,
+                streetLine2: billing.address_2 || undefined
+              }
+            : undefined,
+          onSuccess: () => {
+            window.location.href = `/checkout/success?order_id=${draftOrderId}`
+          },
+          onError: (error) => {
+            console.error(error)
+            setError(error?.message || 'Payment failed')
+          },
+          onCancel: () => {}
+        })
+
+        revolutInstanceRef.current = instance
+      } catch (err) {
+        console.error(err)
+        setError('Failed to load payment widget')
       }
+    }
 
-      const existing = document.querySelector('script[data-revolut-checkout="true"]')
-      if (existing) {
-        existing.addEventListener('load', () => resolve(window.RevolutCheckout))
-        existing.addEventListener('error', reject)
-        return
-      }
+    mountWidget()
 
-      const script = document.createElement('script')
-      script.src = 'https://merchant.revolut.com/embed.js'
-      script.async = true
-      script.dataset.revolutCheckout = 'true'
-      script.onload = () => resolve(window.RevolutCheckout)
-      script.onerror = reject
-      document.body.appendChild(script)
-    })
-
-  const mountWidget = async () => {
-    try {
-      const RevolutCheckout = await loadScript()
-
-      if (cancelled || !revolutContainerRef.current) return
-
+    return () => {
+      cancelled = true
       if (revolutInstanceRef.current?.destroy) {
         revolutInstanceRef.current.destroy()
         revolutInstanceRef.current = null
       }
-
-      console.log('MOUNT REVOLUT', {
-  merchantPublicKey,
-  revolutPublicId,
-  paymentCurrency,
-  paymentTotalAmount,
-  draftOrderId
-})
-
-const instance = RevolutCheckout.payments({
-  publicToken: merchantPublicKey,
-  mode: 'sandbox',
-  locale: 'en'
-})
-
-      revolutInstanceRef.current = instance
-
-      const revolutPay = instance.revolutPay
-
-      revolutPay.mount(revolutContainerRef.current, {
-        currency: paymentCurrency,
-        totalAmount: paymentTotalAmount,
-        createOrder: () => {
-          return { publicId: revolutPublicId }
-        },
-        customer: {
-          email: contact.email,
-          phone: contact.phone,
-          name: `${billing.first_name} ${billing.last_name}`.trim()
-        },
-        mobileRedirectUrls: {
-          success: `${window.location.origin}/checkout/success`,
-          failure: `${window.location.origin}/checkout`,
-          cancel: `${window.location.origin}/checkout`
-        }
-      })
-
-      revolutPay.on('payment', (event) => {
-        switch (event.type) {
-          case 'success':
-            window.location.href = `/checkout/success?order_id=${draftOrderId}`
-            break
-          case 'error':
-            setError(event?.error?.message || 'Payment failed')
-            break
-          case 'cancel':
-            break
-          default:
-            break
-        }
-      })
-    } catch (err) {
-      console.error(err)
-      setError('Failed to load payment widget')
     }
-  }
+  }, [
+    paymentStep,
+    merchantPublicKey,
+    revolutPublicId,
+    contact.email,
+    billing.country,
+    billing.state,
+    billing.city,
+    billing.postcode,
+    billing.address_1,
+    billing.address_2,
+    draftOrderId
+  ])
 
-  mountWidget()
+  useEffect(() => {
+    if (!draftOrderId) return
 
-  return () => {
-    cancelled = true
-    if (revolutInstanceRef.current?.destroy) {
-      revolutInstanceRef.current.destroy()
-      revolutInstanceRef.current = null
-    }
-  }
-}, [
-  paymentStep,
-  merchantPublicKey,
-  revolutPublicId,
-  paymentCurrency,
-  paymentTotalAmount,
-  contact.email,
-  contact.phone,
-  billing.first_name,
-  billing.last_name
-])
+    const timeout = setTimeout(async () => {
+      try {
+        const nextCheckoutData = await updateCheckoutDraft({
+          order_notes: orderNote
+        })
 
-useEffect(() => {
-  if (!draftOrderId) return
-
-  const timeout = setTimeout(async () => {
-    try {
-      const nextCheckoutData = await updateCheckoutDraft({
-        order_notes: orderNote
-      })
-
-      if (nextCheckoutData) {
-        setCheckoutData(nextCheckoutData)
-        setDraftOrderId(nextCheckoutData.order_id || null)
-        setDraftOrderKey(nextCheckoutData.order_key || '')
+        if (nextCheckoutData) {
+          setCheckoutData(nextCheckoutData)
+          setDraftOrderId(nextCheckoutData.order_id || null)
+          setDraftOrderKey(nextCheckoutData.order_key || '')
+        }
+      } catch (err) {
+        console.error(err)
       }
-    } catch (err) {
-      console.error(err)
-    }
-  }, 400)
+    }, 400)
 
-  return () => clearTimeout(timeout)
-}, [draftOrderId, orderNote])
+    return () => clearTimeout(timeout)
+  }, [draftOrderId, orderNote])
 
-if (loading || cartLoading) {
-  return <div>Loading checkout...</div>
-}
+  if (loading || cartLoading) {
+    return <div>Loading checkout...</div>
+  }
 
   if (error) {
     return <div>{error}</div>
   }
 
   if (!cartItems?.length) {
-  return <div>Your cart is empty.</div>
-}
+    return <div>Your cart is empty.</div>
+  }
 
   return (
     <div className="checkout-page">
@@ -539,125 +534,127 @@ if (loading || cartLoading) {
             />
           </section>
         )}
-      <section className="checkout-section">
-  <h2>Order note</h2>
-  <textarea
-    placeholder="Add a note to your order"
-    value={orderNote}
-    onChange={(e) => setOrderNote(e.target.value)}
-  />
-</section>
-</div>
+
+        <section className="checkout-section">
+          <h2>Order note</h2>
+          <textarea
+            placeholder="Add a note to your order"
+            value={orderNote}
+            onChange={(e) => setOrderNote(e.target.value)}
+          />
+        </section>
+      </div>
 
       <aside className="checkout-sidebar">
-  <section className="checkout-section">
-    <h2>Order summary</h2>
+        <section className="checkout-section">
+          <h2>Order summary</h2>
 
-    {cartItems.map((item) => {
-      const imageSrc =
-        item.images?.[0]?.thumbnail ||
-        item.images?.[0]?.src ||
-        '/api/Uploads/fallback-image.png'
+          {cartItems.map((item) => {
+            const imageSrc =
+              item.images?.[0]?.thumbnail ||
+              item.images?.[0]?.src ||
+              '/api/Uploads/fallback-image.png'
 
-      return (
-        <div key={item.key} className="checkout-summary-item">
-          <div className="checkout-summary-item-main">
-            <img
-              src={imageSrc}
-              alt={item.name}
-              className="checkout-summary-item-image"
-            />
-            <div className="checkout-summary-item-info">
-              <div>{item.name}</div>
-              <div>Qty: {item.quantity}</div>
+            return (
+              <div key={item.key} className="checkout-summary-item">
+                <div className="checkout-summary-item-main">
+                  <img
+                    src={imageSrc}
+                    alt={item.name}
+                    className="checkout-summary-item-image"
+                  />
+                  <div className="checkout-summary-item-info">
+                    <div>{item.name}</div>
+                    <div>Qty: {item.quantity}</div>
+                  </div>
+                </div>
+
+                <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
+              </div>
+            )
+          })}
+
+          <div className="checkout-summary-totals">
+            <div className="checkout-summary-row checkout-summary-coupon">
+              <span>Coupon code</span>
+              <button type="button" className="checkout-apply-button">Apply</button>
             </div>
+
+            <div className="checkout-summary-row">
+              <span>Subtotal</span>
+              <span>{formatWooMoney(cart?.totals?.total_items, cart?.totals)}</span>
+            </div>
+
+            <div className="checkout-summary-row checkout-summary-shipment">
+              <span>Shipment</span>
+              <div className="checkout-summary-shipping-value">
+                {(cart?.shipping_rates?.[0]?.shipping_rates?.[0]?.name) || 'Free shipping'}
+              </div>
+            </div>
+
+            <div className="checkout-summary-row">
+              <span>Tax</span>
+              <span>{formatWooMoney(cart?.totals?.total_tax, cart?.totals)}</span>
+            </div>
+
+            <div className="checkout-summary-row checkout-summary-total">
+              <span>Total</span>
+              <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  setPaymentLoading(true)
+                  setError('')
+
+                  const latestCheckout = await getCheckoutData()
+                  setCheckoutData(latestCheckout)
+                  setDraftOrderId(latestCheckout.order_id || null)
+                  setDraftOrderKey(latestCheckout.order_key || '')
+
+                  const revolutResult = await createRevolutOrder({
+                    billing_email: contact.email,
+                    billing_phone: contact.phone || '',
+                    draft_order_id: latestCheckout.order_id || null,
+                    draft_order_key: latestCheckout.order_key || ''
+                  })
+
+                  console.log('REVOLUT RESULT', revolutResult)
+
+                  const nextToken = revolutResult.revolut_order_token || ''
+                  const nextMerchantKey = revolutResult.merchant_public_key || ''
+
+                  if (!nextToken || !nextMerchantKey) {
+                    throw new Error('Missing Revolut payment data')
+                  }
+
+                  setRevolutPublicId(nextToken)
+                  setMerchantPublicKey(nextMerchantKey)
+                  setPaymentCurrency(revolutResult.currency || '')
+                  setPaymentTotalAmount(revolutResult.total_amount || 0)
+                  setPaymentStep(true)
+                } catch (err) {
+                  setError(err.message || 'Failed to prepare payment')
+                } finally {
+                  setPaymentLoading(false)
+                }
+              }}
+              disabled={paymentLoading}
+            >
+              {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
+            </button>
           </div>
 
-          <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
-        </div>
-      )
-    })}
-
-    <div className="checkout-summary-totals">
-  <div className="checkout-summary-row checkout-summary-coupon">
-    <span>Coupon code</span>
-    <button type="button" className="checkout-apply-button">Apply</button>
-  </div>
-
-  <div className="checkout-summary-row">
-    <span>Subtotal</span>
-    <span>{formatWooMoney(cart?.totals?.total_items, cart?.totals)}</span>
-  </div>
-
-  <div className="checkout-summary-row checkout-summary-shipment">
-    <span>Shipment</span>
-    <div className="checkout-summary-shipping-value">
-      {(cart?.shipping_rates?.[0]?.shipping_rates?.[0]?.name) || 'Free shipping'}
-    </div>
-  </div>
-
-  <div className="checkout-summary-row">
-    <span>Tax</span>
-    <span>{formatWooMoney(cart?.totals?.total_tax, cart?.totals)}</span>
-  </div>
-
-  <div className="checkout-summary-row checkout-summary-total">
-    <span>Total</span>
-    <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
-  </div>
-<button
-  type="button"
-  onClick={async () => {
-  try {
-    setPaymentLoading(true)
-    setError('')
-
-    const latestCheckout = await getCheckoutData()
-    setCheckoutData(latestCheckout)
-    setDraftOrderId(latestCheckout.order_id || null)
-    setDraftOrderKey(latestCheckout.order_key || '')
-
-    const revolutResult = await createRevolutOrder({
-      billing_email: contact.email,
-      billing_phone: contact.phone || '',
-      draft_order_id: latestCheckout.order_id || null,
-      draft_order_key: latestCheckout.order_key || ''
-    })
-console.log('REVOLUT RESULT', revolutResult)
-
-const nextPublicId = revolutResult.revolut_order_public_id || ''
-const nextMerchantKey = revolutResult.merchant_public_key || ''
-
-setRevolutPublicId(nextPublicId)
-setMerchantPublicKey(nextMerchantKey)
-setPaymentCurrency(revolutResult.currency || '')
-setPaymentTotalAmount(revolutResult.total_amount || 0)
-
-if (!nextPublicId || !nextMerchantKey) {
-  throw new Error('Missing Revolut payment data')
-}
-
-setPaymentStep(true)
-  } catch (err) {
-    setError(err.message || 'Failed to prepare payment')
-  } finally {
-    setPaymentLoading(false)
-  }
-}}
-  disabled={paymentLoading}
->
-  {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
-</button>
-</div>
-
-{paymentStep && (
-  <section className="checkout-section">
-    <h2>Payment</h2>
-    <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
-  </section>
-)}
-  </section>
-</aside>
+          {paymentStep && (
+            <section className="checkout-section">
+              <h2>Payment</h2>
+              <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
+            </section>
+          )}
+        </section>
+      </aside>
     </div>
   )
 }
