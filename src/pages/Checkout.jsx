@@ -605,12 +605,31 @@ export default function Checkout() {
                   setDraftOrderId(latestCheckout.order_id || null)
                   setDraftOrderKey(latestCheckout.order_key || '')
 
-                  const revolutResult = await createRevolutOrder({
-                    billing_email: contact.email,
-                    billing_phone: contact.phone || '',
-                    draft_order_id: latestCheckout.order_id || null,
-                    draft_order_key: latestCheckout.order_key || ''
-                  })
+const revolutResult = await createRevolutOrder({
+  draft_order_id: latestCheckout.order_id || null,
+  draft_order_key: latestCheckout.order_key || '',
+  billing_email: contact.email,
+  billing_phone: contact.phone || '',
+  billing_first_name: billing.first_name,
+  billing_last_name: billing.last_name,
+  billing_company: billing.company,
+  billing_address_1: billing.address_1,
+  billing_address_2: billing.address_2,
+  billing_city: billing.city,
+  billing_state: billing.state,
+  billing_postcode: billing.postcode,
+  billing_country: billing.country,
+  shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
+  shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
+  shipping_company: useSeparateShipping ? shipping.company : billing.company,
+  shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
+  shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
+  shipping_city: useSeparateShipping ? shipping.city : billing.city,
+  shipping_state: useSeparateShipping ? shipping.state : billing.state,
+  shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
+  shipping_country: useSeparateShipping ? shipping.country : billing.country,
+  order_note: orderNote || ''
+})
 
                   const checkoutUrl = revolutResult.checkout_url || ''
 
