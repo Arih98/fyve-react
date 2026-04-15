@@ -94,43 +94,43 @@ if (!billingReady || !shippingReady) return
       setShippingRatesLoading(true)
 
       const payload = {
-        billing_address: {
-          first_name: billing.first_name,
-          last_name: billing.last_name,
-          company: billing.company,
-          address_1: billing.address_1,
-          address_2: billing.address_2,
-          city: billing.city,
-          state: billing.state,
-          postcode: billing.postcode,
-          country: billing.country,
-          email: contact.email,
-          phone: contact.phone
-        },
-        shipping_address: useSeparateShipping
-          ? {
-              first_name: shipping.first_name,
-              last_name: shipping.last_name,
-              company: shipping.company,
-              address_1: shipping.address_1,
-              address_2: shipping.address_2,
-              city: shipping.city,
-              state: shipping.state,
-              postcode: shipping.postcode,
-              country: shipping.country
-            }
-          : {
-              first_name: billing.first_name,
-              last_name: billing.last_name,
-              company: billing.company,
-              address_1: billing.address_1,
-              address_2: billing.address_2,
-              city: billing.city,
-              state: billing.state,
-              postcode: billing.postcode,
-              country: billing.country
-            }
+  billingAddress: {
+    first_name: billing.first_name,
+    last_name: billing.last_name,
+    company: billing.company,
+    address_1: billing.address_1,
+    address_2: billing.address_2,
+    city: billing.city,
+    state: billing.state,
+    postcode: billing.postcode,
+    country: billing.country,
+    email: contact.email,
+    phone: contact.phone
+  },
+  shippingAddress: useSeparateShipping
+    ? {
+        first_name: shipping.first_name,
+        last_name: shipping.last_name,
+        company: shipping.company,
+        address_1: shipping.address_1,
+        address_2: shipping.address_2,
+        city: shipping.city,
+        state: shipping.state,
+        postcode: shipping.postcode,
+        country: shipping.country
       }
+    : {
+        first_name: billing.first_name,
+        last_name: billing.last_name,
+        company: billing.company,
+        address_1: billing.address_1,
+        address_2: billing.address_2,
+        city: billing.city,
+        state: billing.state,
+        postcode: billing.postcode,
+        country: billing.country
+      }
+}
 
       await updateCheckoutCustomer(payload)
       await refreshCart({ silent: true })
