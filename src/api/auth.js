@@ -1,101 +1,44 @@
-const API_BASE = 'https://fyvelondon.com/wp-json/fyve-auth/v1';
+const API_BASE = `${window.location.origin}/wp-json`
 
-export async function getCurrentUser() {
-  const response = await fetch(`${API_BASE}/me`, {
-    credentials: 'include'
-  });
+const CART_TOKEN_KEY = 'woo_store_cart_token'
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch current user');
-  }
-
-  return response.json();
+function getStoredCartToken() {
+  return localStorage.getItem(CART_TOKEN_KEY) || ''
 }
 
-export async function loginUser({ email, password }) {
-  const response = await fetch(`${API_BASE}/login`, {
-    method: 'POST',
+function setStoredCartToken(token) {
+  if (token) {
+    localStorage.setItem(CART_TOKEN_KEY, token)
+  }
+}
+
+export async function apiRequest(path, options = {}) {
+  const storedCartToken = getStoredCartToken()
+  const headers = new Headers(options.headers || {})
+
+  if (!headers.has('Content-Type') && options.body) {
+    headers.set('Content-Type', 'application/json')
+  }
+
+  if (storedCartToken) {
+    headers.set('Cart-Token', storedCartToken)
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, {
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, password })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Login failed');
-  }
-
-  return data;
-}
-
-export async function registerUser({ firstName, lastName, email, password }) {
-  const response = await fetch(`${API_BASE}/register`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Signup failed');
-  }
-
-  return data;
-}
-
-export async function logoutUser() {
-  const response = await fetch(`${API_BASE}/logout`, {
-    method: 'POST',
-    credentials: 'include'
-  });
-
-  if (!response.ok) {
-    throw new Error('Logout failed');
-  }
-
-  return response.json();
-}
-
-export async function forgotPassword(email) {
-  const response = await fetch(`${API_BASE}/forgot-password`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email })
+    ...options,
+    headers
   })
 
-  const data = await response.json()
-
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || 'Failed to send reset email')
+  const responseCartToken = res.headers.get('Cart-Token')
+  if (responseCartToken) {
+    setStoredCartToken(responseCartToken)
   }
 
-  return data
-}
+  const data = await res.json().catch(() => null)
 
-export async function resetPassword({ login, key, password }) {
-  const response = await fetch(`${API_BASE}/reset-password`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ login, key, password })
-  })
-
-  const data = await response.json()
-
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || 'Failed to reset password')
+  if (!res.ok) {
+    throw new Error(data?.message || 'Request failed')
   }
 
   return data
