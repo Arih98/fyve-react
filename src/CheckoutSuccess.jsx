@@ -29,7 +29,19 @@ export default function CheckoutSuccess() {
           credentials: 'include'
         })
 
-        const result = await response.json()
+        const raw = await response.text()
+
+let result = null
+
+try {
+  result = raw ? JSON.parse(raw) : null
+} catch (e) {
+  throw new Error(raw || `Request failed with status ${response.status}`)
+}
+
+if (!response.ok) {
+  throw new Error(result?.message || `Request failed with status ${response.status}`)
+}
 
         if (cancelled) return
 
