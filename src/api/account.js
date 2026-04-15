@@ -1,4 +1,4 @@
-const ACCOUNT_API_BASE = 'https://fyvelondon.com/wp-json/fyve-account/v1';
+const ACCOUNT_API_BASE = `${window.location.origin}/wp-json/fyve-account/v1`
 
 export async function getOrders() {
   const response = await fetch(`${ACCOUNT_API_BASE}/orders`, {
