@@ -10,6 +10,7 @@ import {
 } from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
+import RevolutCheckout from '@revolut/checkout'
 
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }
@@ -30,6 +31,10 @@ const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const [revolutSession, setRevolutSession] = useState(null)
+const [showRevolutWidget, setShowRevolutWidget] = useState(false)
+const revolutContainerRef = useRef(null)
 
   const [contact, setContact] = useState({
     email: '',
@@ -314,6 +319,80 @@ export default function Checkout() {
   }, [])
 
   useEffect(() => {
+  if (!showRevolutWidget) return
+  if (!revolutSession?.merchant_public_key) return
+  if (!revolutSession?.revolut_order_token) return
+  if (!revolutContainerRef.current) return
+
+  let instance = null
+  let cancelled = false
+
+  const mount = async () => {
+    try {
+      const embedded = await RevolutCheckout.embeddedCheckout({
+        publicToken: revolutSession.merchant_public_key,
+        mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
+        locale: 'en',
+        target: revolutContainerRef.current,
+        email: contact.email || undefined,
+        billingAddress: {
+          countryCode: billing.country || undefined,
+          region: billing.state || undefined,
+          city: billing.city || undefined,
+          postcode: billing.postcode || undefined,
+          streetLine1: billing.address_1 || undefined,
+          streetLine2: billing.address_2 || undefined
+        },
+createOrder: async () => ({
+  publicId: revolutSession.revolut_order_token
+}),
+        onSuccess: ({ orderId }) => {
+          const params = new URLSearchParams({
+            order_id: String(revolutSession.wc_order_id),
+            revolut_token: orderId
+          })
+          window.location.href = `/checkout/success?${params.toString()}`
+        },
+        onError: ({ error }) => {
+          setError(error?.message || 'Payment failed')
+        },
+        onCancel: () => {
+          setError('Payment cancelled')
+        }
+      })
+
+      if (cancelled) {
+        embedded.destroy()
+        return
+      }
+
+      instance = embedded
+    } catch (err) {
+      setError(err.message || 'Failed to load payment widget')
+    }
+  }
+
+  mount()
+
+  return () => {
+    cancelled = true
+    if (instance) {
+      instance.destroy()
+    }
+  }
+}, [
+  showRevolutWidget,
+  revolutSession,
+  contact.email,
+  billing.country,
+  billing.state,
+  billing.city,
+  billing.postcode,
+  billing.address_1,
+  billing.address_2
+])
+
+  useEffect(() => {
     if (!draftOrderId) return
 
     const timeout = setTimeout(async () => {
@@ -337,10 +416,6 @@ export default function Checkout() {
 
   if (loading || cartLoading) {
     return <div>Loading checkout...</div>
-  }
-
-  if (error) {
-    return <div>{error}</div>
   }
 
   if (!cartItems?.length) {
@@ -589,65 +664,82 @@ export default function Checkout() {
               <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
             </div>
 
+{error && (
+  <div className="checkout-error">
+    {error}
+  </div>
+)}
+
             <button
-              type="button"
-              onClick={async () => {
-                try {
-                  if (!billing.first_name.trim() || !billing.last_name.trim()) {
-                    throw new Error('Please enter your first and last name')
-                  }
+  type="button"
+  onClick={async () => {
+    try {
+      if (!billing.first_name.trim() || !billing.last_name.trim()) {
+        throw new Error('Please enter your first and last name')
+      }
 
-                  setPaymentLoading(true)
-                  setError('')
+      setPaymentLoading(true)
+      setError('')
+      setShowRevolutWidget(false)
+      setRevolutSession(null)
 
-                  const latestCheckout = await getCheckoutData()
-                  setCheckoutData(latestCheckout)
-                  setDraftOrderId(latestCheckout.order_id || null)
-                  setDraftOrderKey(latestCheckout.order_key || '')
+      const latestCheckout = await getCheckoutData()
+      setCheckoutData(latestCheckout)
+      setDraftOrderId(latestCheckout.order_id || null)
+      setDraftOrderKey(latestCheckout.order_key || '')
 
-const revolutResult = await createRevolutOrder({
-  draft_order_id: latestCheckout.order_id || null,
-  draft_order_key: latestCheckout.order_key || '',
-  billing_email: contact.email,
-  billing_phone: contact.phone || '',
-  billing_first_name: billing.first_name,
-  billing_last_name: billing.last_name,
-  billing_company: billing.company,
-  billing_address_1: billing.address_1,
-  billing_address_2: billing.address_2,
-  billing_city: billing.city,
-  billing_state: billing.state,
-  billing_postcode: billing.postcode,
-  billing_country: billing.country,
-  shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
-  shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
-  shipping_company: useSeparateShipping ? shipping.company : billing.company,
-  shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
-  shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
-  shipping_city: useSeparateShipping ? shipping.city : billing.city,
-  shipping_state: useSeparateShipping ? shipping.state : billing.state,
-  shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
-  shipping_country: useSeparateShipping ? shipping.country : billing.country,
-  order_note: orderNote || ''
-})
+      const revolutResult = await createRevolutOrder({
+        draft_order_id: latestCheckout.order_id || null,
+        draft_order_key: latestCheckout.order_key || '',
+        billing_email: contact.email,
+        billing_phone: contact.phone || '',
+        billing_first_name: billing.first_name,
+        billing_last_name: billing.last_name,
+        billing_company: billing.company,
+        billing_address_1: billing.address_1,
+        billing_address_2: billing.address_2,
+        billing_city: billing.city,
+        billing_state: billing.state,
+        billing_postcode: billing.postcode,
+        billing_country: billing.country,
+        shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
+        shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
+        shipping_company: useSeparateShipping ? shipping.company : billing.company,
+        shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
+        shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
+        shipping_city: useSeparateShipping ? shipping.city : billing.city,
+        shipping_state: useSeparateShipping ? shipping.state : billing.state,
+        shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
+        shipping_country: useSeparateShipping ? shipping.country : billing.country,
+        order_note: orderNote || ''
+      })
 
-                  const checkoutUrl = revolutResult.checkout_url || ''
+      if (!revolutResult?.merchant_public_key) {
+        throw new Error('Missing Revolut public key')
+      }
 
-                  if (!checkoutUrl) {
-                    throw new Error('Missing Revolut checkout URL')
-                  }
+      if (!revolutResult?.revolut_order_token) {
+        throw new Error('Missing Revolut order token')
+      }
 
-                  window.location.href = checkoutUrl
-                } catch (err) {
-                  setError(err.message || 'Failed to prepare payment')
-                } finally {
-                  setPaymentLoading(false)
-                }
-              }}
-              disabled={paymentLoading}
-            >
-              {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
-            </button>
+      setRevolutSession(revolutResult)
+      setShowRevolutWidget(true)
+    } catch (err) {
+      setError(err.message || 'Failed to prepare payment')
+    } finally {
+      setPaymentLoading(false)
+    }
+  }}
+  disabled={paymentLoading}
+>
+  {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
+</button>
+      {showRevolutWidget && (
+  <div className="checkout-section">
+    <h2>Payment</h2>
+    <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
+  </div>
+)}
           </div>
         </section>
       </aside>
