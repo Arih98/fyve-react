@@ -626,6 +626,9 @@ export default function Checkout() {
 
                   console.log('REVOLUT RESULT', revolutResult)
 
+                  console.log('REVOLUT KEY PREFIX', (revolutResult.merchant_public_key || '').slice(0, 20))
+console.log('REVOLUT TOKEN', revolutResult.revolut_order_token)
+
                   const nextToken = revolutResult.revolut_order_token || ''
                   const nextMerchantKey = revolutResult.merchant_public_key || ''
 
