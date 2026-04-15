@@ -7,6 +7,10 @@ export function login(email, password) {
   })
 }
 
+export function loginUser(email, password) {
+  return login(email, password)
+}
+
 export function register(payload) {
   return apiRequest('/fyve-auth/v1/register', {
     method: 'POST',
@@ -14,10 +18,18 @@ export function register(payload) {
   })
 }
 
+export function registerUser(payload) {
+  return register(payload)
+}
+
 export function logout() {
   return apiRequest('/fyve-auth/v1/logout', {
     method: 'POST'
   })
+}
+
+export function logoutUser() {
+  return logout()
 }
 
 export function getMe() {
