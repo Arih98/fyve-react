@@ -42,3 +42,9 @@ export function createRevolutOrder(payload) {
 export function getCheckoutOrderStatus(orderId) {
   return apiRequest(`/fyve-checkout/v1/order-status/${orderId}`)
 }
+
+export function clearCheckoutCart() {
+  return apiRequest('/fyve-checkout/v1/clear-cart', {
+    method: 'POST'
+  })
+}

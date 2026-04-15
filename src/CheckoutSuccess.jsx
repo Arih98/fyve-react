@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { getCheckoutOrderStatus } from './api/checkout'
+import { getCheckoutOrderStatus, clearCheckoutCart } from './api/checkout'
 import { CartContext } from './CartContext'
 
 export default function CheckoutSuccess() {
@@ -22,6 +22,7 @@ export default function CheckoutSuccess() {
     let cancelled = false
     let attempts = 0
     let timeoutId
+    let cartCleared = false
 
     const pollOrder = async () => {
       try {
@@ -32,11 +33,16 @@ export default function CheckoutSuccess() {
         const nextOrder = result.order || null
         setOrder(nextOrder)
 
-if (nextOrder?.is_paid || nextOrder?.status === 'processing' || nextOrder?.status === 'completed') {
-  await refreshCart({ silent: true }).catch(() => {})
-  setLoading(false)
-  return
-}
+        if (nextOrder?.is_paid || nextOrder?.status === 'processing' || nextOrder?.status === 'completed') {
+          if (!cartCleared) {
+            await clearCheckoutCart().catch(() => {})
+            await refreshCart({ silent: true }).catch(() => {})
+            cartCleared = true
+          }
+
+          setLoading(false)
+          return
+        }
 
         attempts += 1
 
@@ -59,7 +65,7 @@ if (nextOrder?.is_paid || nextOrder?.status === 'processing' || nextOrder?.statu
       cancelled = true
       clearTimeout(timeoutId)
     }
-  }, [orderId])
+  }, [orderId, refreshCart])
 
   if (loading) {
     return (
