@@ -23,6 +23,10 @@ function mergeEmptyFields(current, incoming) {
   return next
 }
 
+const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.com'
+  ? 'fyve_checkout_draft_dev_v1'
+  : 'fyve_checkout_draft_live_v1'
+
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -68,6 +72,54 @@ export default function Checkout() {
   const [draftOrderId, setDraftOrderId] = useState(null)
   const [draftOrderKey, setDraftOrderKey] = useState('')
   const [paymentLoading, setPaymentLoading] = useState(false)
+
+  const clearSavedCheckoutDraft = () => {
+    localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
+
+    setContact({
+      email: '',
+      phone: ''
+    })
+
+    setBilling({
+      first_name: '',
+      last_name: '',
+      company: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      postcode: '',
+      country: ''
+    })
+
+    setShipping({
+      first_name: '',
+      last_name: '',
+      company: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      postcode: '',
+      country: ''
+    })
+
+    setUseSeparateShipping(false)
+    setOrderNote('')
+  }
+
+  useEffect(() => {
+    const draft = {
+      contact,
+      billing,
+      shipping,
+      useSeparateShipping,
+      orderNote
+    }
+
+    localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
+  }, [contact, billing, shipping, useSeparateShipping, orderNote])
 
   useEffect(() => {
     if (!cartItems?.length) return
@@ -165,6 +217,45 @@ export default function Checkout() {
         setLoading(true)
         setError('')
 
+        const savedDraftRaw = localStorage.getItem(CHECKOUT_DRAFT_STORAGE_KEY)
+
+        if (savedDraftRaw) {
+          try {
+            const savedDraft = JSON.parse(savedDraftRaw)
+
+            if (savedDraft.contact) {
+              setContact((prev) => ({
+                ...prev,
+                ...savedDraft.contact
+              }))
+            }
+
+            if (savedDraft.billing) {
+              setBilling((prev) => ({
+                ...prev,
+                ...savedDraft.billing
+              }))
+            }
+
+            if (savedDraft.shipping) {
+              setShipping((prev) => ({
+                ...prev,
+                ...savedDraft.shipping
+              }))
+            }
+
+            if (typeof savedDraft.useSeparateShipping === 'boolean') {
+              setUseSeparateShipping(savedDraft.useSeparateShipping)
+            }
+
+            if (typeof savedDraft.orderNote === 'string') {
+              setOrderNote(savedDraft.orderNote)
+            }
+          } catch (err) {
+            console.error(err)
+          }
+        }
+
         const prefillData = await getCheckoutPrefill().catch(() => null)
         const checkoutResponse = await getCheckoutData().catch(() => null)
 
@@ -261,6 +352,9 @@ export default function Checkout() {
       <div className="checkout-main">
         <section className="checkout-section">
           <h1>Checkout</h1>
+          <button type="button" onClick={clearSavedCheckoutDraft}>
+            Clear saved test details
+          </button>
         </section>
 
         <section className="checkout-section">
@@ -500,8 +594,9 @@ export default function Checkout() {
               onClick={async () => {
                 try {
                   if (!billing.first_name.trim() || !billing.last_name.trim()) {
-  throw new Error('Please enter your first and last name')
-}
+                    throw new Error('Please enter your first and last name')
+                  }
+
                   setPaymentLoading(true)
                   setError('')
 
@@ -511,21 +606,19 @@ export default function Checkout() {
                   setDraftOrderKey(latestCheckout.order_key || '')
 
                   const revolutResult = await createRevolutOrder({
-  billing_email: contact.email,
-  billing_phone: contact.phone || '',
-  draft_order_id: latestCheckout.order_id || null,
-  draft_order_key: latestCheckout.order_key || ''
-})
+                    billing_email: contact.email,
+                    billing_phone: contact.phone || '',
+                    draft_order_id: latestCheckout.order_id || null,
+                    draft_order_key: latestCheckout.order_key || ''
+                  })
 
-const checkoutUrl = revolutResult.checkout_url || ''
+                  const checkoutUrl = revolutResult.checkout_url || ''
 
-if (!checkoutUrl) {
-  throw new Error('Missing Revolut checkout URL')
-}
+                  if (!checkoutUrl) {
+                    throw new Error('Missing Revolut checkout URL')
+                  }
 
-window.location.href = checkoutUrl
-return
-
+                  window.location.href = checkoutUrl
                 } catch (err) {
                   setError(err.message || 'Failed to prepare payment')
                 } finally {
@@ -537,7 +630,6 @@ return
               {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
             </button>
           </div>
-
         </section>
       </aside>
     </div>
