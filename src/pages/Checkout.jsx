@@ -126,8 +126,10 @@ const revolutContainerRef = useRef(null)
     localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
   }, [contact, billing, shipping, useSeparateShipping, orderNote])
 
-  useEffect(() => {
-    if (!cartItems?.length) return
+useEffect(() => {
+  if (!cartItems?.length) return
+  if (paymentLoading) return
+  if (showRevolutWidget) return
 
     const billingReady = billing.country.trim() && billing.postcode.trim()
 
@@ -205,14 +207,16 @@ const revolutContainerRef = useRef(null)
     }, 400)
 
     return () => clearTimeout(timeout)
-  }, [
-    billing,
-    shipping,
-    contact,
-    useSeparateShipping,
-    refreshCart,
-    cartItems
-  ])
+}, [
+  billing,
+  shipping,
+  contact,
+  useSeparateShipping,
+  refreshCart,
+  cartItems,
+  paymentLoading,
+  showRevolutWidget
+])
 
   useEffect(() => {
     let active = true
@@ -389,18 +393,13 @@ createOrder: async () => ({
   }
 }, [
   showRevolutWidget,
-  revolutSession,
-  contact.email,
-  billing.country,
-  billing.state,
-  billing.city,
-  billing.postcode,
-  billing.address_1,
-  billing.address_2
+  revolutSession
 ])
 
-  useEffect(() => {
-    if (!draftOrderId) return
+useEffect(() => {
+  if (!draftOrderId) return
+  if (paymentLoading) return
+  if (showRevolutWidget) return
 
     const timeout = setTimeout(async () => {
       try {
@@ -419,7 +418,7 @@ createOrder: async () => ({
     }, 400)
 
     return () => clearTimeout(timeout)
-  }, [draftOrderId, orderNote])
+  }, [draftOrderId, orderNote, paymentLoading, showRevolutWidget])
 
   if (loading || cartLoading) {
     return <div>Loading checkout...</div>
