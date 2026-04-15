@@ -1,4 +1,4 @@
-const API_BASE = `${window.location.origin}/wp-json`
+const API_BASE = `https://fyvelondon.com/wp-json`
 
 const CART_TOKEN_KEY = 'woo_store_cart_token'
 
