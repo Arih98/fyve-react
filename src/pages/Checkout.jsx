@@ -606,6 +606,9 @@ export default function Checkout() {
               type="button"
               onClick={async () => {
                 try {
+                  if (!billing.first_name.trim() || !billing.last_name.trim()) {
+  throw new Error('Please enter your first and last name')
+}
                   setPaymentLoading(true)
                   setError('')
 
