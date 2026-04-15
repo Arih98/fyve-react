@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { getCheckoutOrderStatus, clearCheckoutCart } from './api/checkout'
+import { confirmRevolutPayment } from './api/checkout'
 import { CartContext } from './CartContext'
 
 export default function CheckoutSuccess() {
@@ -22,11 +22,10 @@ export default function CheckoutSuccess() {
     let cancelled = false
     let attempts = 0
     let timeoutId
-    let cartCleared = false
 
     const pollOrder = async () => {
       try {
-        const result = await getCheckoutOrderStatus(orderId)
+        const result = await confirmRevolutPayment(orderId)
 
         if (cancelled) return
 
@@ -34,12 +33,7 @@ export default function CheckoutSuccess() {
         setOrder(nextOrder)
 
         if (nextOrder?.is_paid || nextOrder?.status === 'processing' || nextOrder?.status === 'completed') {
-          if (!cartCleared) {
-            await clearCheckoutCart().catch(() => {})
-            await refreshCart({ silent: true }).catch(() => {})
-            cartCleared = true
-          }
-
+          await refreshCart({ silent: true }).catch(() => {})
           setLoading(false)
           return
         }
