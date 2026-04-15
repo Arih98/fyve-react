@@ -257,6 +257,14 @@ useEffect(() => {
         revolutInstanceRef.current = null
       }
 
+      console.log('MOUNT REVOLUT', {
+  merchantPublicKey,
+  revolutPublicId,
+  paymentCurrency,
+  paymentTotalAmount,
+  draftOrderId
+})
+
 const instance = RevolutCheckout.payments({
   publicToken: merchantPublicKey,
   mode: 'sandbox',
@@ -615,12 +623,21 @@ if (loading || cartLoading) {
       draft_order_id: latestCheckout.order_id || null,
       draft_order_key: latestCheckout.order_key || ''
     })
+console.log('REVOLUT RESULT', revolutResult)
 
-    setRevolutPublicId(revolutResult.revolut_order_public_id || '')
-    setMerchantPublicKey(revolutResult.merchant_public_key || '')
-    setPaymentCurrency(revolutResult.currency || '')
-    setPaymentTotalAmount(revolutResult.total_amount || 0)
-    setPaymentStep(true)
+const nextPublicId = revolutResult.revolut_order_public_id || ''
+const nextMerchantKey = revolutResult.merchant_public_key || ''
+
+setRevolutPublicId(nextPublicId)
+setMerchantPublicKey(nextMerchantKey)
+setPaymentCurrency(revolutResult.currency || '')
+setPaymentTotalAmount(revolutResult.total_amount || 0)
+
+if (!nextPublicId || !nextMerchantKey) {
+  throw new Error('Missing Revolut payment data')
+}
+
+setPaymentStep(true)
   } catch (err) {
     setError(err.message || 'Failed to prepare payment')
   } finally {
