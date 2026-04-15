@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CartContext } from './CartContext'
+import { clearCheckoutCart } from './api/checkout'
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams()
@@ -19,10 +20,8 @@ export default function CheckoutSuccess() {
     }
 
     let cancelled = false
-    let attempts = 0
-    let timeoutId
 
-    const pollOrder = async () => {
+    const confirmOrder = async () => {
       try {
         const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
           method: 'POST',
@@ -31,41 +30,36 @@ export default function CheckoutSuccess() {
 
         const raw = await response.text()
 
-let result = null
+        let result = null
 
-try {
-  result = raw ? JSON.parse(raw) : null
-} catch (e) {
-  throw new Error(raw || `Request failed with status ${response.status}`)
-}
+        try {
+          result = raw ? JSON.parse(raw) : null
+        } catch (e) {
+          throw new Error(raw || `Request failed with status ${response.status}`)
+        }
 
-if (!response.ok) {
-  throw new Error(result?.message || `Request failed with status ${response.status}`)
-}
+        if (!response.ok) {
+          throw new Error(result?.message || `Request failed with status ${response.status}`)
+        }
 
         if (cancelled) return
 
-        if (!response.ok) {
-          throw new Error(result?.message || 'Failed to confirm order')
-        }
+        const nextOrder = result?.order || null
+        const confirmed = Boolean(result?.confirmed || nextOrder?.is_paid)
 
-        const nextOrder = result.order || null
         setOrder(nextOrder)
 
-        if (nextOrder?.is_paid || nextOrder?.status === 'processing' || nextOrder?.status === 'completed') {
-          await refreshCart({ silent: true }).catch(() => {})
+        if (!confirmed) {
+          setError('Payment has not been confirmed yet')
           setLoading(false)
           return
         }
 
-        attempts += 1
+        await clearCheckoutCart().catch(() => {})
+        await refreshCart({ silent: true }).catch(() => {})
 
-        if (attempts >= 12) {
-          setLoading(false)
-          return
-        }
-
-        timeoutId = setTimeout(pollOrder, 2500)
+        if (cancelled) return
+        setLoading(false)
       } catch (err) {
         if (cancelled) return
         setError(err.message || 'Failed to confirm order')
@@ -73,11 +67,10 @@ if (!response.ok) {
       }
     }
 
-    pollOrder()
+    confirmOrder()
 
     return () => {
       cancelled = true
-      clearTimeout(timeoutId)
     }
   }, [orderId, refreshCart])
 
@@ -109,25 +102,13 @@ if (!response.ok) {
     )
   }
 
-  if (order.is_paid || order.status === 'processing' || order.status === 'completed') {
-    return (
-      <div className="checkout-success-page">
-        <h1>Thank you for your order</h1>
-        <p>Order #{order.number}</p>
-        <p>Status: {order.status_label}</p>
-        <p>Total: {order.total} {order.currency}</p>
-        <a href={order.received_url}>View order confirmation</a>
-      </div>
-    )
-  }
-
   return (
     <div className="checkout-success-page">
-      <h1>Your payment is still being confirmed</h1>
+      <h1>Thank you for your order</h1>
       <p>Order #{order.number}</p>
       <p>Status: {order.status_label}</p>
-      <p>If this does not update shortly, check your account orders page.</p>
-      <Link to="/account/orders">Go to my orders</Link>
+      <p>Total: {order.total} {order.currency}</p>
+      <a href={order.received_url}>View order confirmation</a>
     </div>
   )
 }
