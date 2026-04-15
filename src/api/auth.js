@@ -1,45 +1,39 @@
-const API_BASE = `${window.location.origin}/wp-json`
+import { apiRequest } from './request'
 
-const CART_TOKEN_KEY = 'woo_store_cart_token'
-
-function getStoredCartToken() {
-  return localStorage.getItem(CART_TOKEN_KEY) || ''
-}
-
-function setStoredCartToken(token) {
-  if (token) {
-    localStorage.setItem(CART_TOKEN_KEY, token)
-  }
-}
-
-export async function apiRequest(path, options = {}) {
-  const storedCartToken = getStoredCartToken()
-  const headers = new Headers(options.headers || {})
-
-  if (!headers.has('Content-Type') && options.body) {
-    headers.set('Content-Type', 'application/json')
-  }
-
-  if (storedCartToken) {
-    headers.set('Cart-Token', storedCartToken)
-  }
-
-  const res = await fetch(`${API_BASE}${path}`, {
-    credentials: 'include',
-    ...options,
-    headers
+export function login(email, password) {
+  return apiRequest('/fyve-auth/v1/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
   })
+}
 
-  const responseCartToken = res.headers.get('Cart-Token')
-  if (responseCartToken) {
-    setStoredCartToken(responseCartToken)
-  }
+export function register(payload) {
+  return apiRequest('/fyve-auth/v1/register', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+}
 
-  const data = await res.json().catch(() => null)
+export function logout() {
+  return apiRequest('/fyve-auth/v1/logout', {
+    method: 'POST'
+  })
+}
 
-  if (!res.ok) {
-    throw new Error(data?.message || 'Request failed')
-  }
+export function getMe() {
+  return apiRequest('/fyve-auth/v1/me')
+}
 
-  return data
+export function forgotPassword(email) {
+  return apiRequest('/fyve-auth/v1/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email })
+  })
+}
+
+export function resetPassword(payload) {
+  return apiRequest('/fyve-auth/v1/reset-password', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
 }
