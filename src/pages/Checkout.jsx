@@ -10,7 +10,6 @@ import {
 } from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
-import RevolutCheckout from '@revolut/checkout'
 
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }
@@ -68,14 +67,7 @@ export default function Checkout() {
   const [orderNote, setOrderNote] = useState('')
   const [draftOrderId, setDraftOrderId] = useState(null)
   const [draftOrderKey, setDraftOrderKey] = useState('')
-  const [paymentStep, setPaymentStep] = useState(false)
   const [paymentLoading, setPaymentLoading] = useState(false)
-  const [revolutPublicId, setRevolutPublicId] = useState('')
-  const [merchantPublicKey, setMerchantPublicKey] = useState('')
-  const [paymentCurrency, setPaymentCurrency] = useState('')
-  const [paymentTotalAmount, setPaymentTotalAmount] = useState(0)
-  const revolutContainerRef = useRef(null)
-  const revolutInstanceRef = useRef(null)
 
   useEffect(() => {
     if (!cartItems?.length) return
@@ -229,98 +221,6 @@ export default function Checkout() {
       active = false
     }
   }, [])
-
-  useEffect(() => {
-  if (!paymentStep || !merchantPublicKey || !revolutPublicId || !revolutContainerRef.current) {
-    return
-  }
-
-  let cancelled = false
-
-  const mountWidget = async () => {
-    try {
-      console.log('REVOLUT INIT INPUTS', {
-        merchantPublicKey,
-        revolutPublicId,
-        paymentStep,
-        billingCountry: billing.country,
-        billingPostcode: billing.postcode
-      })
-
-      if (revolutInstanceRef.current?.destroy) {
-        revolutInstanceRef.current.destroy()
-        revolutInstanceRef.current = null
-      }
-
-      const instance = await RevolutCheckout.embeddedCheckout({
-        publicToken: merchantPublicKey,
-        mode: 'sandbox',
-        locale: 'en',
-        target: revolutContainerRef.current,
-        createOrder: async () => {
-          console.log('REVOLUT createOrder returning', revolutPublicId)
-          return { publicId: revolutPublicId }
-        },
-        email: contact.email || undefined,
-        billingAddress: billing.country && billing.postcode
-          ? {
-              countryCode: billing.country,
-              region: billing.state || undefined,
-              city: billing.city || undefined,
-              postcode: billing.postcode,
-              streetLine1: billing.address_1 || undefined,
-              streetLine2: billing.address_2 || undefined
-            }
-          : undefined,
-        onSuccess: ({ orderId }) => {
-          console.log('REVOLUT SUCCESS', orderId)
-          window.location.href = `/checkout/success?order_id=${draftOrderId}&revolut_token=${encodeURIComponent(orderId)}`
-        },
-        onError: ({ error, orderId }) => {
-          console.error('REVOLUT SDK ERROR', error, orderId)
-          setError(error?.message || 'Payment failed')
-        },
-        onCancel: ({ orderId }) => {
-          console.log('REVOLUT CANCEL', orderId)
-        }
-      })
-
-      if (cancelled) {
-        instance?.destroy?.()
-        return
-      }
-
-      revolutInstanceRef.current = instance
-      console.log('REVOLUT widget mounted')
-    } catch (err) {
-      console.error('REVOLUT INIT ERROR FULL', err)
-      console.error('REVOLUT INIT ERROR JSON', JSON.stringify(err, Object.getOwnPropertyNames(err)))
-      setError(err?.message || 'Failed to load payment widget')
-    }
-  }
-
-  mountWidget()
-
-  return () => {
-    cancelled = true
-    if (revolutInstanceRef.current?.destroy) {
-      revolutInstanceRef.current.destroy()
-      revolutInstanceRef.current = null
-    }
-  }
-}, [
-  paymentStep,
-  merchantPublicKey,
-  revolutPublicId,
-  contact.email,
-  billing.country,
-  billing.state,
-  billing.city,
-  billing.postcode,
-  billing.address_1,
-  billing.address_2,
-  draftOrderId
-])
 
   useEffect(() => {
     if (!draftOrderId) return
@@ -626,20 +526,6 @@ if (!checkoutUrl) {
 window.location.href = checkoutUrl
 return
 
-                  console.log('REVOLUT RESULT', revolutResult)
-
-                  console.log('REVOLUT KEY PREFIX', (revolutResult.merchant_public_key || '').slice(0, 20))
-
-                  console.log('REVOLUT KEY PREFIX', (revolutResult.merchant_public_key || '').slice(0, 20))
-console.log('REVOLUT TOKEN', revolutResult.revolut_order_token)
-
-                  const nextToken = revolutResult.revolut_order_token || ''
-                  const nextMerchantKey = revolutResult.merchant_public_key || ''
-
-                  if (!nextToken || !nextMerchantKey) {
-                    throw new Error('Missing Revolut payment data')
-                  }
-
                 } catch (err) {
                   setError(err.message || 'Failed to prepare payment')
                 } finally {
@@ -652,12 +538,6 @@ console.log('REVOLUT TOKEN', revolutResult.revolut_order_token)
             </button>
           </div>
 
-          {paymentStep && (
-            <section className="checkout-section">
-              <h2>Payment</h2>
-              <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
-            </section>
-          )}
         </section>
       </aside>
     </div>
