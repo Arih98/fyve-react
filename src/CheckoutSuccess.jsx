@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { confirmRevolutPayment } from './api/checkout'
 import { CartContext } from './CartContext'
 
 export default function CheckoutSuccess() {
@@ -25,9 +24,18 @@ export default function CheckoutSuccess() {
 
     const pollOrder = async () => {
       try {
-        const result = await confirmRevolutPayment(orderId)
+        const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
+          method: 'POST',
+          credentials: 'include'
+        })
+
+        const result = await response.json()
 
         if (cancelled) return
+
+        if (!response.ok) {
+          throw new Error(result?.message || 'Failed to confirm order')
+        }
 
         const nextOrder = result.order || null
         setOrder(nextOrder)
