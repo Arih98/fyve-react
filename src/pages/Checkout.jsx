@@ -320,28 +320,32 @@ const revolutContainerRef = useRef(null)
 
   useEffect(() => {
   if (!showRevolutWidget) return
-  if (!revolutSession?.merchant_public_key) return
   if (!revolutSession?.revolut_order_token) return
   if (!revolutContainerRef.current) return
 
-  let instance = null
+  let checkoutInstance = null
+  let cardFieldInstance = null
   let cancelled = false
 
   const mount = async () => {
     try {
-      console.log('REVOLUT EMBED INIT', {
-  mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
-  publicTokenPrefix: revolutSession?.merchant_public_key?.slice(0, 20),
-  orderTokenPrefix: revolutSession?.revolut_order_token?.slice(0, 20),
-  email: contact.email,
-  billingCountry: billing.country
-})
-      const embedded = await RevolutCheckout.embeddedCheckout({
-        publicToken: revolutSession.merchant_public_key,
+      console.log('REVOLUT CARD FIELD INIT', {
         mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
-        locale: 'en',
+        orderTokenPrefix: revolutSession?.revolut_order_token?.slice(0, 20),
+        email: contact.email,
+        billingCountry: billing.country
+      })
+
+      checkoutInstance = await RevolutCheckout(
+        revolutSession.revolut_order_token,
+        window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod'
+      )
+
+      cardFieldInstance = checkoutInstance.createCardField({
         target: revolutContainerRef.current,
+        locale: 'en',
         email: contact.email || undefined,
+        name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
         billingAddress: {
           countryCode: billing.country || undefined,
           region: billing.state || undefined,
@@ -350,17 +354,13 @@ const revolutContainerRef = useRef(null)
           streetLine1: billing.address_1 || undefined,
           streetLine2: billing.address_2 || undefined
         },
-createOrder: async () => ({
-  publicId: revolutSession.revolut_order_token
-}),
-        onSuccess: ({ orderId }) => {
+        onSuccess: () => {
           const params = new URLSearchParams({
-            order_id: String(revolutSession.wc_order_id),
-            revolut_token: orderId
+            order_id: String(revolutSession.wc_order_id)
           })
           window.location.href = `/checkout/success?${params.toString()}`
         },
-        onError: ({ error }) => {
+        onError: (error) => {
           setError(error?.message || 'Payment failed')
         },
         onCancel: () => {
@@ -369,11 +369,10 @@ createOrder: async () => ({
       })
 
       if (cancelled) {
-        embedded.destroy()
-        return
+        if (cardFieldInstance?.destroy) {
+          cardFieldInstance.destroy()
+        }
       }
-
-      instance = embedded
     } catch (err) {
       setError(err.message || 'Failed to load payment widget')
     }
@@ -383,14 +382,16 @@ createOrder: async () => ({
 
   return () => {
     cancelled = true
-    if (instance) {
-      instance.destroy()
+    if (cardFieldInstance?.destroy) {
+      cardFieldInstance.destroy()
     }
   }
 }, [
   showRevolutWidget,
   revolutSession,
   contact.email,
+  billing.first_name,
+  billing.last_name,
   billing.country,
   billing.state,
   billing.city,
