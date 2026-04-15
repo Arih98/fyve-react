@@ -24,6 +24,10 @@ export function getMe() {
   return apiRequest('/fyve-auth/v1/me')
 }
 
+export function getCurrentUser() {
+  return getMe()
+}
+
 export function forgotPassword(email) {
   return apiRequest('/fyve-auth/v1/forgot-password', {
     method: 'POST',
