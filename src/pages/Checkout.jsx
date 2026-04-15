@@ -329,6 +329,13 @@ const revolutContainerRef = useRef(null)
 
   const mount = async () => {
     try {
+      console.log('REVOLUT EMBED INIT', {
+  mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
+  publicTokenPrefix: revolutSession?.merchant_public_key?.slice(0, 20),
+  orderTokenPrefix: revolutSession?.revolut_order_token?.slice(0, 20),
+  email: contact.email,
+  billingCountry: billing.country
+})
       const embedded = await RevolutCheckout.embeddedCheckout({
         publicToken: revolutSession.merchant_public_key,
         mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
@@ -689,30 +696,37 @@ createOrder: async () => ({
       setDraftOrderKey(latestCheckout.order_key || '')
 
       const revolutResult = await createRevolutOrder({
-        draft_order_id: latestCheckout.order_id || null,
-        draft_order_key: latestCheckout.order_key || '',
-        billing_email: contact.email,
-        billing_phone: contact.phone || '',
-        billing_first_name: billing.first_name,
-        billing_last_name: billing.last_name,
-        billing_company: billing.company,
-        billing_address_1: billing.address_1,
-        billing_address_2: billing.address_2,
-        billing_city: billing.city,
-        billing_state: billing.state,
-        billing_postcode: billing.postcode,
-        billing_country: billing.country,
-        shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
-        shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
-        shipping_company: useSeparateShipping ? shipping.company : billing.company,
-        shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
-        shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
-        shipping_city: useSeparateShipping ? shipping.city : billing.city,
-        shipping_state: useSeparateShipping ? shipping.state : billing.state,
-        shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
-        shipping_country: useSeparateShipping ? shipping.country : billing.country,
-        order_note: orderNote || ''
-      })
+  draft_order_id: latestCheckout.order_id || null,
+  draft_order_key: latestCheckout.order_key || '',
+  billing_email: contact.email,
+  billing_phone: contact.phone || '',
+  billing_first_name: billing.first_name,
+  billing_last_name: billing.last_name,
+  billing_company: billing.company,
+  billing_address_1: billing.address_1,
+  billing_address_2: billing.address_2,
+  billing_city: billing.city,
+  billing_state: billing.state,
+  billing_postcode: billing.postcode,
+  billing_country: billing.country,
+  shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
+  shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
+  shipping_company: useSeparateShipping ? shipping.company : billing.company,
+  shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
+  shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
+  shipping_city: useSeparateShipping ? shipping.city : billing.city,
+  shipping_state: useSeparateShipping ? shipping.state : billing.state,
+  shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
+  shipping_country: useSeparateShipping ? shipping.country : billing.country,
+  order_note: orderNote || ''
+})
+
+console.log('REVOLUT RESULT', {
+  merchant_public_key: revolutResult?.merchant_public_key,
+  revolut_order_token: revolutResult?.revolut_order_token,
+  checkout_url: revolutResult?.checkout_url,
+  wc_order_id: revolutResult?.wc_order_id
+})
 
       if (!revolutResult?.merchant_public_key) {
         throw new Error('Missing Revolut public key')
