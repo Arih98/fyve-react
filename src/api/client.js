@@ -1,4 +1,4 @@
-const API_BASE = `${window.location.origin}/wp-json`
+const API_BASE = `https://fyvelondon.com/wp-json`
 
 export async function apiFetch(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -7,12 +7,12 @@ export async function apiFetch(path, options = {}) {
       ...(options.headers || {})
     },
     ...options
-  });
+  })
 
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `Request failed: ${response.status}`);
+    const text = await response.text()
+    throw new Error(text || `Request failed: ${response.status}`)
   }
 
-  return response.json();
+  return response.json()
 }
