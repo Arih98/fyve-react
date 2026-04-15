@@ -611,11 +611,20 @@ export default function Checkout() {
                   setDraftOrderKey(latestCheckout.order_key || '')
 
                   const revolutResult = await createRevolutOrder({
-                    billing_email: contact.email,
-                    billing_phone: contact.phone || '',
-                    draft_order_id: latestCheckout.order_id || null,
-                    draft_order_key: latestCheckout.order_key || ''
-                  })
+  billing_email: contact.email,
+  billing_phone: contact.phone || '',
+  draft_order_id: latestCheckout.order_id || null,
+  draft_order_key: latestCheckout.order_key || ''
+})
+
+const checkoutUrl = revolutResult.checkout_url || ''
+
+if (!checkoutUrl) {
+  throw new Error('Missing Revolut checkout URL')
+}
+
+window.location.href = checkoutUrl
+return
 
                   console.log('REVOLUT RESULT', revolutResult)
 
@@ -631,11 +640,6 @@ console.log('REVOLUT TOKEN', revolutResult.revolut_order_token)
                     throw new Error('Missing Revolut payment data')
                   }
 
-                  setRevolutPublicId(nextToken)
-                  setMerchantPublicKey(nextMerchantKey)
-                  setPaymentCurrency(revolutResult.currency || '')
-                  setPaymentTotalAmount(revolutResult.total_amount || 0)
-                  setPaymentStep(true)
                 } catch (err) {
                   setError(err.message || 'Failed to prepare payment')
                 } finally {
