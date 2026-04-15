@@ -320,32 +320,29 @@ const revolutContainerRef = useRef(null)
 
   useEffect(() => {
   if (!showRevolutWidget) return
+  if (!revolutSession?.merchant_public_key) return
   if (!revolutSession?.revolut_order_token) return
   if (!revolutContainerRef.current) return
 
-  let checkoutInstance = null
-  let cardFieldInstance = null
+  let instance = null
   let cancelled = false
 
   const mount = async () => {
     try {
-      console.log('REVOLUT CARD FIELD INIT', {
+      console.log('REVOLUT EMBED INIT', {
         mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
+        publicTokenPrefix: revolutSession?.merchant_public_key?.slice(0, 20),
         orderTokenPrefix: revolutSession?.revolut_order_token?.slice(0, 20),
         email: contact.email,
         billingCountry: billing.country
       })
 
-      checkoutInstance = await RevolutCheckout(
-        revolutSession.revolut_order_token,
-        window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod'
-      )
-
-      cardFieldInstance = checkoutInstance.createCardField({
-        target: revolutContainerRef.current,
+      const embedded = await RevolutCheckout.embeddedCheckout({
+        publicToken: revolutSession.merchant_public_key,
+        mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
         locale: 'en',
+        target: revolutContainerRef.current,
         email: contact.email || undefined,
-        name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
         billingAddress: {
           countryCode: billing.country || undefined,
           region: billing.state || undefined,
@@ -354,13 +351,17 @@ const revolutContainerRef = useRef(null)
           streetLine1: billing.address_1 || undefined,
           streetLine2: billing.address_2 || undefined
         },
-        onSuccess: () => {
+        createOrder: async () => ({
+          publicId: revolutSession.revolut_order_token
+        }),
+        onSuccess: ({ orderId }) => {
           const params = new URLSearchParams({
-            order_id: String(revolutSession.wc_order_id)
+            order_id: String(revolutSession.wc_order_id),
+            revolut_token: orderId
           })
           window.location.href = `/checkout/success?${params.toString()}`
         },
-        onError: (error) => {
+        onError: ({ error }) => {
           setError(error?.message || 'Payment failed')
         },
         onCancel: () => {
@@ -369,10 +370,14 @@ const revolutContainerRef = useRef(null)
       })
 
       if (cancelled) {
-        if (cardFieldInstance?.destroy) {
-          cardFieldInstance.destroy()
-        }
+        embedded.destroy?.()
+        return
       }
+
+      instance = embedded
+      window.revolutInstance = embedded
+      console.log('REVOLUT INSTANCE', embedded)
+      console.log('REVOLUT SUBMIT TYPE', typeof embedded?.submit)
     } catch (err) {
       setError(err.message || 'Failed to load payment widget')
     }
@@ -382,16 +387,17 @@ const revolutContainerRef = useRef(null)
 
   return () => {
     cancelled = true
-    if (cardFieldInstance?.destroy) {
-      cardFieldInstance.destroy()
+    if (instance?.destroy) {
+      instance.destroy()
+    }
+    if (window.revolutInstance === instance) {
+      delete window.revolutInstance
     }
   }
 }, [
   showRevolutWidget,
   revolutSession,
   contact.email,
-  billing.first_name,
-  billing.last_name,
   billing.country,
   billing.state,
   billing.city,
@@ -753,6 +759,37 @@ console.log('REVOLUT RESULT', {
   <div className="checkout-section">
     <h2>Payment</h2>
     <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
+
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          console.log('REVOLUT INSTANCE AT SUBMIT', window.revolutInstance)
+          console.log('REVOLUT INSTANCE SUBMIT TYPE', typeof window.revolutInstance?.submit)
+
+          if (!window.revolutInstance?.submit) {
+            throw new Error('Revolut submit is not available')
+          }
+
+          await window.revolutInstance.submit({
+            name: `${billing.first_name} ${billing.last_name}`.trim(),
+            email: contact.email,
+            billingAddress: {
+              countryCode: billing.country,
+              region: billing.state,
+              city: billing.city,
+              postcode: billing.postcode,
+              streetLine1: billing.address_1,
+              streetLine2: billing.address_2
+            }
+          })
+        } catch (err) {
+          setError(err.message || 'Payment failed')
+        }
+      }}
+    >
+      Pay now
+    </button>
   </div>
 )}
           </div>
