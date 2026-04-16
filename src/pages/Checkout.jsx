@@ -30,12 +30,12 @@ const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [showEmbeddedCheckout, setShowEmbeddedCheckout] = useState(false)
-  const [revolutPublicKey, setRevolutPublicKey] = useState('')
+
   const [contact, setContact] = useState({
     email: '',
     phone: ''
   })
+
   const [billing, setBilling] = useState({
     first_name: '',
     last_name: '',
@@ -47,7 +47,9 @@ export default function Checkout() {
     postcode: '',
     country: ''
   })
+
   const [useSeparateShipping, setUseSeparateShipping] = useState(false)
+
   const [shipping, setShipping] = useState({
     first_name: '',
     last_name: '',
@@ -59,6 +61,7 @@ export default function Checkout() {
     postcode: '',
     country: ''
   })
+
   const [checkoutData, setCheckoutData] = useState(null)
   const [shippingRatesLoading, setShippingRatesLoading] = useState(false)
   const [orderNote, setOrderNote] = useState('')
@@ -66,13 +69,49 @@ export default function Checkout() {
   const [draftOrderKey, setDraftOrderKey] = useState('')
   const [paymentLoading, setPaymentLoading] = useState(false)
 
+  const [revolutPublicKey, setRevolutPublicKey] = useState('')
+  const [cardReady, setCardReady] = useState(false)
+  const [appleGoogleReady, setAppleGoogleReady] = useState(false)
+  const [revolutPayReady, setRevolutPayReady] = useState(false)
+  const [appleGoogleMethod, setAppleGoogleMethod] = useState('')
+  const [paymentMethodsOpen, setPaymentMethodsOpen] = useState(false)
+
   const hasPrefilledRef = useRef(false)
-  const revolutCheckoutContainerRef = useRef(null)
-  const embeddedCheckoutInstanceRef = useRef(null)
+
+  const cardContainerRef = useRef(null)
+  const appleGoogleContainerRef = useRef(null)
+  const revolutPayContainerRef = useRef(null)
+
+  const cardFieldInstanceRef = useRef(null)
+  const paymentRequestInstanceRef = useRef(null)
+  const revolutPayInstanceRef = useRef(null)
+
   const latestWooOrderIdRef = useRef(null)
-  const pendingRevolutOrderRef = useRef(null)
+  const currentRevolutModeRef = useRef(window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod')
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
+
+  const clearMountedPaymentMethods = useCallback(() => {
+    setCardReady(false)
+    setAppleGoogleReady(false)
+    setRevolutPayReady(false)
+    setAppleGoogleMethod('')
+
+    if (cardFieldInstanceRef.current) {
+      cardFieldInstanceRef.current.destroy()
+      cardFieldInstanceRef.current = null
+    }
+
+    if (paymentRequestInstanceRef.current) {
+      paymentRequestInstanceRef.current.destroy()
+      paymentRequestInstanceRef.current = null
+    }
+
+    if (revolutPayInstanceRef.current) {
+      revolutPayInstanceRef.current.destroy()
+      revolutPayInstanceRef.current = null
+    }
+  }, [])
 
   const clearSavedCheckoutDraft = () => {
     localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
@@ -109,15 +148,43 @@ export default function Checkout() {
     setUseSeparateShipping(false)
     setOrderNote('')
     setError('')
-    setShowEmbeddedCheckout(false)
+    setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
-    pendingRevolutOrderRef.current = null
-
-    if (embeddedCheckoutInstanceRef.current) {
-      embeddedCheckoutInstanceRef.current.destroy()
-      embeddedCheckoutInstanceRef.current = null
-    }
+    clearMountedPaymentMethods()
   }
+
+  const getEffectiveShippingAddress = useCallback(() => {
+    if (useSeparateShipping) {
+      return {
+        countryCode: shipping.country || undefined,
+        region: shipping.state || undefined,
+        city: shipping.city || undefined,
+        postcode: shipping.postcode || undefined,
+        streetLine1: shipping.address_1 || undefined,
+        streetLine2: shipping.address_2 || undefined
+      }
+    }
+
+    return {
+      countryCode: billing.country || undefined,
+      region: billing.state || undefined,
+      city: billing.city || undefined,
+      postcode: billing.postcode || undefined,
+      streetLine1: billing.address_1 || undefined,
+      streetLine2: billing.address_2 || undefined
+    }
+  }, [useSeparateShipping, shipping, billing])
+
+  const getBillingAddress = useCallback(() => {
+    return {
+      countryCode: billing.country || undefined,
+      region: billing.state || undefined,
+      city: billing.city || undefined,
+      postcode: billing.postcode || undefined,
+      streetLine1: billing.address_1 || undefined,
+      streetLine2: billing.address_2 || undefined
+    }
+  }, [billing])
 
   const createRevolutCheckoutOrder = useCallback(async () => {
     const latestCheckout = await getCheckoutData()
@@ -171,82 +238,29 @@ export default function Checkout() {
     orderNote
   ])
 
-  useEffect(() => {
-    if (!showEmbeddedCheckout) return
-    if (!revolutPublicKey) return
-    if (!revolutCheckoutContainerRef.current) return
+  const redirectToSuccess = useCallback(() => {
+    const wooOrderId = latestWooOrderIdRef.current
 
-    let cancelled = false
-
-    const mountCheckout = async () => {
-      try {
-        const mode = window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod'
-
-        if (embeddedCheckoutInstanceRef.current) {
-          embeddedCheckoutInstanceRef.current.destroy()
-          embeddedCheckoutInstanceRef.current = null
-        }
-
-        const instance = await RevolutCheckout.embeddedCheckout({
-          publicToken: revolutPublicKey,
-          mode,
-          locale: 'en',
-          target: revolutCheckoutContainerRef.current,
-          createOrder: async () => {
-            let result = pendingRevolutOrderRef.current
-
-            if (!result) {
-              result = await createRevolutCheckoutOrder()
-            }
-
-            pendingRevolutOrderRef.current = null
-            return { publicId: result.revolut_order_token }
-          },
-          onSuccess: () => {
-            const wooOrderId = latestWooOrderIdRef.current
-
-            if (!wooOrderId) {
-              setError('Payment succeeded but order id is missing')
-              return
-            }
-
-            window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
-          },
-          onError: (error) => {
-            setError(error?.message || 'Payment failed')
-          },
-          onCancel: () => {
-            setError('Payment cancelled')
-          }
-        })
-
-        if (cancelled) {
-          instance.destroy()
-          return
-        }
-
-        embeddedCheckoutInstanceRef.current = instance
-      } catch (err) {
-        setError(err.message || 'Failed to load payment methods')
-      }
+    if (!wooOrderId) {
+      setError('Payment succeeded but order id is missing')
+      return
     }
 
-    mountCheckout()
+    window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
+  }, [])
 
-    return () => {
-      cancelled = true
-      pendingRevolutOrderRef.current = null
-
-      if (embeddedCheckoutInstanceRef.current) {
-        embeddedCheckoutInstanceRef.current.destroy()
-        embeddedCheckoutInstanceRef.current = null
-      }
+  const openPaymentMethods = useCallback(async () => {
+    if (!billing.first_name.trim() || !billing.last_name.trim()) {
+      throw new Error('Please enter your first and last name')
     }
-  }, [
-    showEmbeddedCheckout,
-    revolutPublicKey,
-    createRevolutCheckoutOrder
-  ])
+
+    setPaymentLoading(true)
+    setError('')
+
+    const firstResult = await createRevolutCheckoutOrder()
+    setRevolutPublicKey(firstResult.revolut_public_key)
+    setPaymentMethodsOpen(true)
+  }, [billing.first_name, billing.last_name, createRevolutCheckoutOrder])
 
   useEffect(() => {
     const draft = {
@@ -263,7 +277,7 @@ export default function Checkout() {
   useEffect(() => {
     if (!cartItems?.length) return
     if (paymentLoading) return
-    if (showEmbeddedCheckout) return
+    if (paymentMethodsOpen) return
 
     const billingReady = billing.country.trim() && billing.postcode.trim()
 
@@ -341,7 +355,7 @@ export default function Checkout() {
     refreshCart,
     cartItems,
     paymentLoading,
-    showEmbeddedCheckout
+    paymentMethodsOpen
   ])
 
   useEffect(() => {
@@ -443,7 +457,7 @@ export default function Checkout() {
   useEffect(() => {
     if (!draftOrderId) return
     if (paymentLoading) return
-    if (showEmbeddedCheckout) return
+    if (paymentMethodsOpen) return
 
     const timeout = setTimeout(async () => {
       try {
@@ -462,7 +476,191 @@ export default function Checkout() {
     }, 400)
 
     return () => clearTimeout(timeout)
-  }, [draftOrderId, orderNote, paymentLoading, showEmbeddedCheckout])
+  }, [draftOrderId, orderNote, paymentLoading, paymentMethodsOpen])
+
+  useEffect(() => {
+    if (!paymentMethodsOpen) {
+      clearMountedPaymentMethods()
+      return
+    }
+
+    if (!revolutPublicKey) return
+    if (!cardContainerRef.current) return
+    if (!appleGoogleContainerRef.current) return
+    if (!revolutPayContainerRef.current) return
+
+    let cancelled = false
+
+    const mountMethods = async () => {
+      try {
+        clearMountedPaymentMethods()
+
+        const mode = currentRevolutModeRef.current
+        const fullName = `${billing.first_name} ${billing.last_name}`.trim()
+        const billingAddress = getBillingAddress()
+        const shippingAddress = getEffectiveShippingAddress()
+
+        const payments = await RevolutCheckout.payments({
+          publicToken: revolutPublicKey,
+          locale: 'en',
+          mode
+        })
+
+        if (cancelled) return
+
+        const cardSession = await createRevolutCheckoutOrder()
+        if (cancelled) return
+
+        const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
+        if (cancelled) return
+
+        const cardField = cardCheckout.createCardField({
+          target: cardContainerRef.current,
+          locale: 'en',
+          hidePostcodeField: true,
+          name: fullName || undefined,
+          email: contact.email || undefined,
+          phone: contact.phone || undefined,
+          billingAddress,
+          shippingAddress,
+          onSuccess: () => {
+            redirectToSuccess()
+          },
+          onError: (error) => {
+            setError(error?.message || 'Card payment failed')
+          },
+          onCancel: () => {
+            setError('Card payment cancelled')
+          },
+          onValidation: () => {}
+        })
+
+        cardFieldInstanceRef.current = cardField
+        setCardReady(true)
+
+        const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
+          amount: Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0),
+          currency: String((cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP')).toUpperCase(),
+          createOrder: async () => {
+            const result = await createRevolutCheckoutOrder()
+            return { publicId: result.revolut_order_token }
+          },
+          onSuccess: () => {
+            redirectToSuccess()
+          },
+          onError: (error) => {
+            setError(error?.message || 'Apple Pay / Google Pay payment failed')
+          },
+          onCancel: () => {
+            setError('Apple Pay / Google Pay payment cancelled')
+          }
+        })
+
+        paymentRequestInstanceRef.current = paymentRequestInstance
+
+        const availableMethod = await paymentRequestInstance.canMakePayment()
+
+        if (!cancelled && availableMethod) {
+          setAppleGoogleMethod(availableMethod)
+          await paymentRequestInstance.render()
+          setAppleGoogleReady(true)
+        } else {
+          paymentRequestInstance.destroy()
+          paymentRequestInstanceRef.current = null
+          setAppleGoogleReady(false)
+          setAppleGoogleMethod('')
+        }
+
+        const revolutPayOptions = {
+          currency: String((cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP')).toUpperCase(),
+          totalAmount: Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0),
+          createOrder: async () => {
+            const result = await createRevolutCheckoutOrder()
+            return { publicId: result.revolut_order_token }
+          },
+          customer: {
+            name: fullName || undefined,
+            email: contact.email || undefined,
+            phone: contact.phone || undefined
+          },
+          mobileRedirectUrls: {
+            success: `${window.location.origin}/checkout/success`,
+            failure: `${window.location.origin}/checkout`,
+            cancel: `${window.location.origin}/checkout`
+          }
+        }
+
+        payments.revolutPay.mount(revolutPayContainerRef.current, revolutPayOptions)
+        payments.revolutPay.on('payment', (event) => {
+          const state = String(event?.state || '').toLowerCase()
+
+          if (state === 'completed' || state === 'authorised') {
+            redirectToSuccess()
+            return
+          }
+
+          if (state === 'failed') {
+            setError('Revolut Pay payment failed')
+            return
+          }
+
+          if (state === 'cancelled') {
+            setError('Revolut Pay payment cancelled')
+          }
+        })
+
+        revolutPayInstanceRef.current = payments.revolutPay
+        setRevolutPayReady(true)
+      } catch (err) {
+        if (!cancelled) {
+          setError(err?.message || 'Failed to load payment methods')
+        }
+      }
+    }
+
+    mountMethods()
+
+    return () => {
+      cancelled = true
+      clearMountedPaymentMethods()
+    }
+  }, [
+    paymentMethodsOpen,
+    revolutPublicKey,
+    contact,
+    billing,
+    shipping,
+    useSeparateShipping,
+    cart,
+    checkoutData,
+    createRevolutCheckoutOrder,
+    getBillingAddress,
+    getEffectiveShippingAddress,
+    redirectToSuccess,
+    clearMountedPaymentMethods
+  ])
+
+  const handleCardPay = async () => {
+    try {
+      if (!cardFieldInstanceRef.current) {
+        throw new Error('Card field is not ready')
+      }
+
+      setPaymentLoading(true)
+      setError('')
+
+      cardFieldInstanceRef.current.submit({
+        name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
+        email: contact.email || undefined,
+        phone: contact.phone || undefined,
+        billingAddress: getBillingAddress(),
+        shippingAddress: getEffectiveShippingAddress()
+      })
+    } catch (err) {
+      setError(err?.message || 'Failed to submit card payment')
+      setPaymentLoading(false)
+    }
+  }
 
   if (loading || cartLoading) {
     return <div>Loading checkout...</div>
@@ -724,37 +922,56 @@ export default function Checkout() {
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={async () => {
-                try {
-                  if (!billing.first_name.trim() || !billing.last_name.trim()) {
-                    throw new Error('Please enter your first and last name')
+            {!paymentMethodsOpen && (
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await openPaymentMethods()
+                  } catch (err) {
+                    setError(err.message || 'Failed to prepare payment')
+                  } finally {
+                    setPaymentLoading(false)
                   }
+                }}
+                disabled={paymentLoading}
+              >
+                {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
+              </button>
+            )}
 
-                  setPaymentLoading(true)
-                  setError('')
-                  pendingRevolutOrderRef.current = null
+            {paymentMethodsOpen && (
+              <div className="checkout-payment-methods">
+                <div className="checkout-section">
+                  <h2>Apple Pay / Google Pay</h2>
+                  <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+                  {!appleGoogleReady && (
+                    <div>Apple Pay / Google Pay not available on this device.</div>
+                  )}
+                  {appleGoogleReady && appleGoogleMethod && (
+                    <div>{appleGoogleMethod === 'applePay' ? 'Apple Pay available' : 'Google Pay available'}</div>
+                  )}
+                </div>
 
-                  const firstResult = await createRevolutCheckoutOrder()
-                  pendingRevolutOrderRef.current = firstResult
-                  setRevolutPublicKey(firstResult.revolut_public_key)
-                  setShowEmbeddedCheckout(true)
-                } catch (err) {
-                  setError(err.message || 'Failed to prepare payment')
-                } finally {
-                  setPaymentLoading(false)
-                }
-              }}
-              disabled={paymentLoading}
-            >
-              {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
-            </button>
+                <div className="checkout-section">
+                  <h2>Revolut Pay</h2>
+                  <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+                  {!revolutPayReady && (
+                    <div>Loading Revolut Pay...</div>
+                  )}
+                </div>
 
-            {showEmbeddedCheckout && (
-              <div className="checkout-section">
-                <h2>Payment</h2>
-                <div ref={revolutCheckoutContainerRef} id="revolut-embedded-checkout"></div>
+                <div className="checkout-section">
+                  <h2>Pay by card</h2>
+                  <div ref={cardContainerRef} id="revolut-card-field"></div>
+                  <button
+                    type="button"
+                    onClick={handleCardPay}
+                    disabled={paymentLoading || !cardReady}
+                  >
+                    {paymentLoading ? 'Processing payment...' : 'Pay now'}
+                  </button>
+                </div>
               </div>
             )}
           </div>
