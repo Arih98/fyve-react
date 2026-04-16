@@ -13,50 +13,90 @@ export default function CheckoutSuccess() {
   const { refreshCart } = useContext(CartContext)
 
   useEffect(() => {
-  if (!orderId) {
-    setError('Missing order id')
-    setLoading(false)
-    return
-  }
+    if (!orderId) {
+      setError('Missing order id')
+      setLoading(false)
+      return
+    }
 
-  let cancelled = false
+    let cancelled = false
 
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-  const loadOrderStatus = async () => {
-    try {
-      setLoading(true)
-      setError('')
+    const loadOrderStatus = async () => {
+      try {
+        setLoading(true)
+        setError('')
 
-      for (let attempt = 0; attempt < 10; attempt += 1) {
-        const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${orderId}`, {
-          method: 'GET',
+        for (let attempt = 0; attempt < 5; attempt += 1) {
+          const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${orderId}`, {
+            method: 'GET',
+            credentials: 'include'
+          })
+
+          const raw = await response.text()
+
+          let result = null
+
+          try {
+            result = raw ? JSON.parse(raw) : null
+          } catch (e) {
+            throw new Error(raw || `Request failed with status ${response.status}`)
+          }
+
+          if (!response.ok) {
+            throw new Error(result?.message || `Request failed with status ${response.status}`)
+          }
+
+          if (cancelled) return
+
+          const nextOrder = result?.order || null
+          const paid = Boolean(nextOrder?.is_paid)
+          const status = String(nextOrder?.status || '').toLowerCase()
+
+          setOrder(nextOrder)
+
+          if (paid || status === 'processing' || status === 'completed') {
+            await clearCheckoutCart().catch(() => {})
+            await refreshCart({ silent: true }).catch(() => {})
+            if (cancelled) return
+            setLoading(false)
+            return
+          }
+
+          if (attempt < 4) {
+            await sleep(2000)
+          }
+        }
+
+        const confirmResponse = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
+          method: 'POST',
           credentials: 'include'
         })
 
-        const raw = await response.text()
+        const confirmRaw = await confirmResponse.text()
 
-        let result = null
+        let confirmResult = null
 
         try {
-          result = raw ? JSON.parse(raw) : null
+          confirmResult = confirmRaw ? JSON.parse(confirmRaw) : null
         } catch (e) {
-          throw new Error(raw || `Request failed with status ${response.status}`)
+          throw new Error(confirmRaw || `Request failed with status ${confirmResponse.status}`)
         }
 
-        if (!response.ok) {
-          throw new Error(result?.message || `Request failed with status ${response.status}`)
+        if (!confirmResponse.ok) {
+          throw new Error(confirmResult?.message || `Request failed with status ${confirmResponse.status}`)
         }
 
         if (cancelled) return
 
-        const nextOrder = result?.order || null
-        const paid = Boolean(nextOrder?.is_paid)
+        const nextOrder = confirmResult?.order || null
+        const confirmed = Boolean(confirmResult?.confirmed || nextOrder?.is_paid)
         const status = String(nextOrder?.status || '').toLowerCase()
 
         setOrder(nextOrder)
 
-        if (paid || status === 'processing' || status === 'completed') {
+        if (confirmed || status === 'processing' || status === 'completed') {
           await clearCheckoutCart().catch(() => {})
           await refreshCart({ silent: true }).catch(() => {})
           if (cancelled) return
@@ -64,27 +104,21 @@ export default function CheckoutSuccess() {
           return
         }
 
-        if (attempt < 9) {
-          await sleep(2000)
-        }
+        setError('Your payment is still being finalised. Please refresh this page in a moment.')
+        setLoading(false)
+      } catch (err) {
+        if (cancelled) return
+        setError(err.message || 'Failed to load order status')
+        setLoading(false)
       }
-
-      if (cancelled) return
-      setError('Your payment is still being finalised. Please refresh this page in a moment.')
-      setLoading(false)
-    } catch (err) {
-      if (cancelled) return
-      setError(err.message || 'Failed to load order status')
-      setLoading(false)
     }
-  }
 
-  loadOrderStatus()
+    loadOrderStatus()
 
-  return () => {
-    cancelled = true
-  }
-}, [orderId, refreshCart])
+    return () => {
+      cancelled = true
+    }
+  }, [orderId, refreshCart])
 
   if (loading) {
     return (

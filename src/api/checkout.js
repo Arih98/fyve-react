@@ -48,3 +48,9 @@ export function clearCheckoutCart() {
     method: 'POST'
   })
 }
+
+export function confirmRevolutPayment(orderId) {
+  return apiRequest(`/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
+    method: 'POST'
+  })
+}
