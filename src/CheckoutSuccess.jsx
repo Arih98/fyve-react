@@ -23,14 +23,14 @@ export default function CheckoutSuccess() {
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-  const confirmOrder = async () => {
+  const loadOrderStatus = async () => {
     try {
       setLoading(true)
       setError('')
 
-      for (let attempt = 0; attempt < 8; attempt += 1) {
-        const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
-          method: 'POST',
+      for (let attempt = 0; attempt < 10; attempt += 1) {
+        const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${orderId}`, {
+          method: 'GET',
           credentials: 'include'
         })
 
@@ -51,11 +51,12 @@ export default function CheckoutSuccess() {
         if (cancelled) return
 
         const nextOrder = result?.order || null
-        const confirmed = Boolean(result?.confirmed || nextOrder?.is_paid)
+        const paid = Boolean(nextOrder?.is_paid)
+        const status = String(nextOrder?.status || '').toLowerCase()
 
         setOrder(nextOrder)
 
-        if (confirmed) {
+        if (paid || status === 'processing' || status === 'completed') {
           await clearCheckoutCart().catch(() => {})
           await refreshCart({ silent: true }).catch(() => {})
           if (cancelled) return
@@ -63,22 +64,22 @@ export default function CheckoutSuccess() {
           return
         }
 
-        if (attempt < 7) {
+        if (attempt < 9) {
           await sleep(2000)
         }
       }
 
       if (cancelled) return
-      setError('Payment has not been confirmed yet')
+      setError('Your payment is still being finalised. Please refresh this page in a moment.')
       setLoading(false)
     } catch (err) {
       if (cancelled) return
-      setError(err.message || 'Failed to confirm order')
+      setError(err.message || 'Failed to load order status')
       setLoading(false)
     }
   }
 
-  confirmOrder()
+  loadOrderStatus()
 
   return () => {
     cancelled = true
