@@ -63,7 +63,6 @@ export default function Checkout() {
   })
 
   const [checkoutData, setCheckoutData] = useState(null)
-  const [shippingRatesLoading, setShippingRatesLoading] = useState(false)
   const [orderNote, setOrderNote] = useState('')
   const [draftOrderId, setDraftOrderId] = useState(null)
   const [draftOrderKey, setDraftOrderKey] = useState('')
@@ -92,7 +91,7 @@ export default function Checkout() {
   const totalAmountMinorRef = useRef(0)
   const currencyRef = useRef('GBP')
 
-  const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
+const { cart, cartItems, loading: cartLoading } = useContext(CartContext)
 
   const clearMountedPaymentMethods = useCallback(() => {
     setCardReady(false)
@@ -158,39 +157,6 @@ export default function Checkout() {
     currencyRef.current = 'GBP'
     clearMountedPaymentMethods()
   }
-
-  const getEffectiveShippingAddress = useCallback(() => {
-    if (useSeparateShipping) {
-      return {
-        countryCode: shipping.country || undefined,
-        region: shipping.state || undefined,
-        city: shipping.city || undefined,
-        postcode: shipping.postcode || undefined,
-        streetLine1: shipping.address_1 || undefined,
-        streetLine2: shipping.address_2 || undefined
-      }
-    }
-
-    return {
-      countryCode: billing.country || undefined,
-      region: billing.state || undefined,
-      city: billing.city || undefined,
-      postcode: billing.postcode || undefined,
-      streetLine1: billing.address_1 || undefined,
-      streetLine2: billing.address_2 || undefined
-    }
-  }, [useSeparateShipping, shipping, billing])
-
-  const getBillingAddress = useCallback(() => {
-    return {
-      countryCode: billing.country || undefined,
-      region: billing.state || undefined,
-      city: billing.city || undefined,
-      postcode: billing.postcode || undefined,
-      streetLine1: billing.address_1 || undefined,
-      streetLine2: billing.address_2 || undefined
-    }
-  }, [billing])
 
   const createRevolutCheckoutOrder = useCallback(async () => {
     const latestCheckout = await getCheckoutData()
@@ -318,6 +284,53 @@ export default function Checkout() {
     totalAmountMinorRef.current = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
     currencyRef.current = String(cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP').toUpperCase()
 
+await updateCheckoutCustomer({
+  billingAddress: {
+    first_name: billing.first_name,
+    last_name: billing.last_name,
+    company: billing.company,
+    address_1: billing.address_1,
+    address_2: billing.address_2,
+    city: billing.city,
+    state: billing.state,
+    postcode: billing.postcode,
+    country: billing.country,
+    email: contact.email,
+    phone: contact.phone
+  },
+  shippingAddress: useSeparateShipping
+    ? {
+        first_name: shipping.first_name,
+        last_name: shipping.last_name,
+        company: shipping.company,
+        address_1: shipping.address_1,
+        address_2: shipping.address_2,
+        city: shipping.city,
+        state: shipping.state,
+        postcode: shipping.postcode,
+        country: shipping.country
+      }
+    : {
+        first_name: billing.first_name,
+        last_name: billing.last_name,
+        company: billing.company,
+        address_1: billing.address_1,
+        address_2: billing.address_2,
+        city: billing.city,
+        state: billing.state,
+        postcode: billing.postcode,
+        country: billing.country
+      }
+})
+
+const refreshedCheckout = await getCheckoutData().catch(() => null)
+
+if (refreshedCheckout) {
+  setCheckoutData(refreshedCheckout)
+  setDraftOrderId(refreshedCheckout.order_id || null)
+  setDraftOrderKey(refreshedCheckout.order_key || '')
+}
+
     const firstResult = await createRevolutCheckoutOrder()
     setRevolutPublicKey(firstResult.revolut_public_key)
     setPaymentMethodsOpen(true)
@@ -346,89 +359,6 @@ export default function Checkout() {
     localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
   }, [contact, billing, shipping, useSeparateShipping, orderNote])
 
-  useEffect(() => {
-    if (!cartItems?.length) return
-    if (paymentLoading) return
-    if (paymentMethodsOpen) return
-
-    const billingReady = billing.country.trim() && billing.postcode.trim()
-
-    const shippingReady = useSeparateShipping
-      ? shipping.country.trim() && shipping.postcode.trim()
-      : billing.country.trim() && billing.postcode.trim()
-
-    if (!billingReady || !shippingReady) return
-
-    const timeout = setTimeout(async () => {
-      try {
-        setShippingRatesLoading(true)
-
-        const payload = {
-          billingAddress: {
-            first_name: billing.first_name,
-            last_name: billing.last_name,
-            company: billing.company,
-            address_1: billing.address_1,
-            address_2: billing.address_2,
-            city: billing.city,
-            state: billing.state,
-            postcode: billing.postcode,
-            country: billing.country,
-            email: contact.email,
-            phone: contact.phone
-          },
-          shippingAddress: useSeparateShipping
-            ? {
-                first_name: shipping.first_name,
-                last_name: shipping.last_name,
-                company: shipping.company,
-                address_1: shipping.address_1,
-                address_2: shipping.address_2,
-                city: shipping.city,
-                state: shipping.state,
-                postcode: shipping.postcode,
-                country: shipping.country
-              }
-            : {
-                first_name: billing.first_name,
-                last_name: billing.last_name,
-                company: billing.company,
-                address_1: billing.address_1,
-                address_2: billing.address_2,
-                city: billing.city,
-                state: billing.state,
-                postcode: billing.postcode,
-                country: billing.country
-              }
-        }
-
-        await updateCheckoutCustomer(payload)
-        await refreshCart({ silent: true })
-        const nextCheckoutData = await getCheckoutData().catch(() => null)
-
-        if (nextCheckoutData) {
-          setCheckoutData(nextCheckoutData)
-          setDraftOrderId(nextCheckoutData.order_id || null)
-          setDraftOrderKey(nextCheckoutData.order_key || '')
-        }
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setShippingRatesLoading(false)
-      }
-    }, 400)
-
-    return () => clearTimeout(timeout)
-  }, [
-    billing,
-    shipping,
-    contact,
-    useSeparateShipping,
-    refreshCart,
-    cartItems,
-    paymentLoading,
-    paymentMethodsOpen
-  ])
 
   useEffect(() => {
     let active = true
@@ -1027,10 +957,6 @@ export default function Checkout() {
               <span>Total</span>
               <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
             </div>
-
-            {shippingRatesLoading && (
-              <div>Updating shipping...</div>
-            )}
 
             {error && (
               <div className="checkout-error">
