@@ -88,6 +88,9 @@ export default function Checkout() {
 
   const latestWooOrderIdRef = useRef(null)
   const currentRevolutModeRef = useRef(window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod')
+  const paymentSnapshotRef = useRef(null)
+  const totalAmountMinorRef = useRef(0)
+  const currencyRef = useRef('GBP')
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
@@ -150,6 +153,9 @@ export default function Checkout() {
     setError('')
     setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
+    paymentSnapshotRef.current = null
+    totalAmountMinorRef.current = 0
+    currencyRef.current = 'GBP'
     clearMountedPaymentMethods()
   }
 
@@ -238,6 +244,50 @@ export default function Checkout() {
     orderNote
   ])
 
+  const createRevolutPaymentOrder = useCallback(async () => {
+    const snapshot = paymentSnapshotRef.current
+
+    if (!snapshot) {
+      throw new Error('Payment snapshot is missing')
+    }
+
+    const latestCheckout = await getCheckoutData()
+
+    const revolutResult = await createRevolutOrder({
+      draft_order_id: latestCheckout.order_id || null,
+      draft_order_key: latestCheckout.order_key || '',
+      billing_email: snapshot.contact.email,
+      billing_phone: snapshot.contact.phone || '',
+      billing_first_name: snapshot.billing.first_name,
+      billing_last_name: snapshot.billing.last_name,
+      billing_company: snapshot.billing.company,
+      billing_address_1: snapshot.billing.address_1,
+      billing_address_2: snapshot.billing.address_2,
+      billing_city: snapshot.billing.city,
+      billing_state: snapshot.billing.state,
+      billing_postcode: snapshot.billing.postcode,
+      billing_country: snapshot.billing.country,
+      shipping_first_name: snapshot.useSeparateShipping ? snapshot.shipping.first_name : snapshot.billing.first_name,
+      shipping_last_name: snapshot.useSeparateShipping ? snapshot.shipping.last_name : snapshot.billing.last_name,
+      shipping_company: snapshot.useSeparateShipping ? snapshot.shipping.company : snapshot.billing.company,
+      shipping_address_1: snapshot.useSeparateShipping ? snapshot.shipping.address_1 : snapshot.billing.address_1,
+      shipping_address_2: snapshot.useSeparateShipping ? snapshot.shipping.address_2 : snapshot.billing.address_2,
+      shipping_city: snapshot.useSeparateShipping ? snapshot.shipping.city : snapshot.billing.city,
+      shipping_state: snapshot.useSeparateShipping ? snapshot.shipping.state : snapshot.billing.state,
+      shipping_postcode: snapshot.useSeparateShipping ? snapshot.shipping.postcode : snapshot.billing.postcode,
+      shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : snapshot.billing.country,
+      order_note: snapshot.orderNote || ''
+    })
+
+    if (!revolutResult?.revolut_order_token) {
+      throw new Error('Missing Revolut order token')
+    }
+
+    latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
+
+    return revolutResult
+  }, [])
+
   const redirectToSuccess = useCallback(() => {
     const wooOrderId = latestWooOrderIdRef.current
 
@@ -257,10 +307,32 @@ export default function Checkout() {
     setPaymentLoading(true)
     setError('')
 
+    paymentSnapshotRef.current = {
+      contact: { ...contact },
+      billing: { ...billing },
+      shipping: { ...shipping },
+      useSeparateShipping,
+      orderNote
+    }
+
+    totalAmountMinorRef.current = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
+    currencyRef.current = String(cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP').toUpperCase()
+
     const firstResult = await createRevolutCheckoutOrder()
     setRevolutPublicKey(firstResult.revolut_public_key)
     setPaymentMethodsOpen(true)
-  }, [billing.first_name, billing.last_name, createRevolutCheckoutOrder])
+  }, [
+    billing.first_name,
+    billing.last_name,
+    contact,
+    billing,
+    shipping,
+    useSeparateShipping,
+    orderNote,
+    checkoutData,
+    cart,
+    createRevolutCheckoutOrder
+  ])
 
   useEffect(() => {
     const draft = {
@@ -496,9 +568,33 @@ export default function Checkout() {
         clearMountedPaymentMethods()
 
         const mode = currentRevolutModeRef.current
-        const fullName = `${billing.first_name} ${billing.last_name}`.trim()
-        const billingAddress = getBillingAddress()
-        const shippingAddress = getEffectiveShippingAddress()
+        const snapshot = paymentSnapshotRef.current
+
+        if (!snapshot) {
+          throw new Error('Payment snapshot is missing')
+        }
+
+        const fullName = `${snapshot.billing.first_name} ${snapshot.billing.last_name}`.trim()
+
+        const billingAddress = {
+          countryCode: snapshot.billing.country || undefined,
+          region: snapshot.billing.state || undefined,
+          city: snapshot.billing.city || undefined,
+          postcode: snapshot.billing.postcode || undefined,
+          streetLine1: snapshot.billing.address_1 || undefined,
+          streetLine2: snapshot.billing.address_2 || undefined
+        }
+
+        const shippingAddress = snapshot.useSeparateShipping
+          ? {
+              countryCode: snapshot.shipping.country || undefined,
+              region: snapshot.shipping.state || undefined,
+              city: snapshot.shipping.city || undefined,
+              postcode: snapshot.shipping.postcode || undefined,
+              streetLine1: snapshot.shipping.address_1 || undefined,
+              streetLine2: snapshot.shipping.address_2 || undefined
+            }
+          : billingAddress
 
         const payments = await RevolutCheckout.payments({
           publicToken: revolutPublicKey,
@@ -508,7 +604,7 @@ export default function Checkout() {
 
         if (cancelled) return
 
-        const cardSession = await createRevolutCheckoutOrder()
+        const cardSession = await createRevolutPaymentOrder()
         if (cancelled) return
 
         const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
@@ -519,30 +615,32 @@ export default function Checkout() {
           locale: 'en',
           hidePostcodeField: true,
           name: fullName || undefined,
-          email: contact.email || undefined,
-          phone: contact.phone || undefined,
+          email: snapshot.contact.email || undefined,
+          phone: snapshot.contact.phone || undefined,
           billingAddress,
           shippingAddress,
           onSuccess: () => {
+            setPaymentLoading(false)
             redirectToSuccess()
           },
           onError: (error) => {
+            setPaymentLoading(false)
             setError(error?.message || 'Card payment failed')
           },
           onCancel: () => {
+            setPaymentLoading(false)
             setError('Card payment cancelled')
-          },
-          onValidation: () => {}
+          }
         })
 
         cardFieldInstanceRef.current = cardField
         setCardReady(true)
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
-          amount: Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0),
-          currency: String((cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP')).toUpperCase(),
+          amount: totalAmountMinorRef.current,
+          currency: currencyRef.current,
           createOrder: async () => {
-            const result = await createRevolutCheckoutOrder()
+            const result = await createRevolutPaymentOrder()
             return { publicId: result.revolut_order_token }
           },
           onSuccess: () => {
@@ -572,16 +670,18 @@ export default function Checkout() {
         }
 
         const revolutPayOptions = {
-          currency: String((cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP')).toUpperCase(),
-          totalAmount: Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0),
+          currency: currencyRef.current,
+          totalAmount: totalAmountMinorRef.current,
           createOrder: async () => {
-            const result = await createRevolutCheckoutOrder()
+            const result = await createRevolutPaymentOrder()
             return { publicId: result.revolut_order_token }
           },
           customer: {
             name: fullName || undefined,
-            email: contact.email || undefined,
-            phone: contact.phone || undefined
+            email: snapshot.contact.email || undefined,
+            phone: snapshot.contact.phone || undefined,
+            billingAddress,
+            shippingAddress
           },
           mobileRedirectUrls: {
             success: `${window.location.origin}/checkout/success`,
@@ -591,26 +691,24 @@ export default function Checkout() {
         }
 
         payments.revolutPay.mount(revolutPayContainerRef.current, revolutPayOptions)
-        payments.revolutPay.on('payment', (event) => {
-          const state = String(event?.state || '').toLowerCase()
-
-          if (state === 'completed' || state === 'authorised') {
-            redirectToSuccess()
-            return
-          }
-
-          if (state === 'failed') {
-            setError('Revolut Pay payment failed')
-            return
-          }
-
-          if (state === 'cancelled') {
-            setError('Revolut Pay payment cancelled')
-          }
-        })
-
         revolutPayInstanceRef.current = payments.revolutPay
         setRevolutPayReady(true)
+
+        payments.revolutPay.on('payment', (event) => {
+          switch (event?.type) {
+            case 'success':
+              redirectToSuccess()
+              break
+            case 'error':
+              setError(event?.error?.message || 'Revolut Pay payment failed')
+              break
+            case 'cancel':
+              setError('Revolut Pay payment cancelled')
+              break
+            default:
+              break
+          }
+        })
       } catch (err) {
         if (!cancelled) {
           setError(err?.message || 'Failed to load payment methods')
@@ -627,17 +725,9 @@ export default function Checkout() {
   }, [
     paymentMethodsOpen,
     revolutPublicKey,
-    contact,
-    billing,
-    shipping,
-    useSeparateShipping,
-    cart,
-    checkoutData,
-    createRevolutCheckoutOrder,
-    getBillingAddress,
-    getEffectiveShippingAddress,
     redirectToSuccess,
-    clearMountedPaymentMethods
+    clearMountedPaymentMethods,
+    createRevolutPaymentOrder
   ])
 
   const handleCardPay = async () => {
@@ -646,19 +736,45 @@ export default function Checkout() {
         throw new Error('Card field is not ready')
       }
 
+      const snapshot = paymentSnapshotRef.current
+
+      if (!snapshot) {
+        throw new Error('Payment snapshot is missing')
+      }
+
       setPaymentLoading(true)
       setError('')
 
+      const billingAddress = {
+        countryCode: snapshot.billing.country || undefined,
+        region: snapshot.billing.state || undefined,
+        city: snapshot.billing.city || undefined,
+        postcode: snapshot.billing.postcode || undefined,
+        streetLine1: snapshot.billing.address_1 || undefined,
+        streetLine2: snapshot.billing.address_2 || undefined
+      }
+
+      const shippingAddress = snapshot.useSeparateShipping
+        ? {
+            countryCode: snapshot.shipping.country || undefined,
+            region: snapshot.shipping.state || undefined,
+            city: snapshot.shipping.city || undefined,
+            postcode: snapshot.shipping.postcode || undefined,
+            streetLine1: snapshot.shipping.address_1 || undefined,
+            streetLine2: snapshot.shipping.address_2 || undefined
+          }
+        : billingAddress
+
       cardFieldInstanceRef.current.submit({
-        name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
-        email: contact.email || undefined,
-        phone: contact.phone || undefined,
-        billingAddress: getBillingAddress(),
-        shippingAddress: getEffectiveShippingAddress()
+        name: `${snapshot.billing.first_name} ${snapshot.billing.last_name}`.trim() || undefined,
+        email: snapshot.contact.email || undefined,
+        phone: snapshot.contact.phone || undefined,
+        billingAddress,
+        shippingAddress
       })
     } catch (err) {
-      setError(err?.message || 'Failed to submit card payment')
       setPaymentLoading(false)
+      setError(err?.message || 'Failed to submit card payment')
     }
   }
 
