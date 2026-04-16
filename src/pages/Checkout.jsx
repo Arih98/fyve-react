@@ -331,9 +331,8 @@ if (refreshedCheckout) {
   setDraftOrderKey(refreshedCheckout.order_key || '')
 }
 
-    const firstResult = await createRevolutCheckoutOrder()
-    setRevolutPublicKey(firstResult.revolut_public_key)
-    setPaymentMethodsOpen(true)
+await createRevolutCheckoutOrder()
+setPaymentMethodsOpen(true)
   }, [
     billing.first_name,
     billing.last_name,
