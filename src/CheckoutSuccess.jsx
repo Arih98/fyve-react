@@ -13,16 +13,22 @@ export default function CheckoutSuccess() {
   const { refreshCart } = useContext(CartContext)
 
   useEffect(() => {
-    if (!orderId) {
-      setError('Missing order id')
-      setLoading(false)
-      return
-    }
+  if (!orderId) {
+    setError('Missing order id')
+    setLoading(false)
+    return
+  }
 
-    let cancelled = false
+  let cancelled = false
 
-    const confirmOrder = async () => {
-      try {
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  const confirmOrder = async () => {
+    try {
+      setLoading(true)
+      setError('')
+
+      for (let attempt = 0; attempt < 8; attempt += 1) {
         const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
           method: 'POST',
           credentials: 'include'
@@ -49,30 +55,35 @@ export default function CheckoutSuccess() {
 
         setOrder(nextOrder)
 
-        if (!confirmed) {
-          setError('Payment has not been confirmed yet')
+        if (confirmed) {
+          await clearCheckoutCart().catch(() => {})
+          await refreshCart({ silent: true }).catch(() => {})
+          if (cancelled) return
           setLoading(false)
           return
         }
 
-        await clearCheckoutCart().catch(() => {})
-        await refreshCart({ silent: true }).catch(() => {})
-
-        if (cancelled) return
-        setLoading(false)
-      } catch (err) {
-        if (cancelled) return
-        setError(err.message || 'Failed to confirm order')
-        setLoading(false)
+        if (attempt < 7) {
+          await sleep(2000)
+        }
       }
-    }
 
-    confirmOrder()
-
-    return () => {
-      cancelled = true
+      if (cancelled) return
+      setError('Payment has not been confirmed yet')
+      setLoading(false)
+    } catch (err) {
+      if (cancelled) return
+      setError(err.message || 'Failed to confirm order')
+      setLoading(false)
     }
-  }, [orderId, refreshCart])
+  }
+
+  confirmOrder()
+
+  return () => {
+    cancelled = true
+  }
+}, [orderId, refreshCart])
 
   if (loading) {
     return (
