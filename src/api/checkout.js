@@ -43,6 +43,12 @@ export function getCheckoutOrderStatus(orderId) {
   return apiRequest(`/fyve-checkout/v1/order-status/${orderId}`)
 }
 
+export function confirmRevolutPayment(orderId) {
+  return apiRequest(`/fyve-checkout/v1/confirm-revolut-payment/${orderId}`, {
+    method: 'POST'
+  })
+}
+
 export function clearCheckoutCart() {
   return apiRequest('/fyve-checkout/v1/clear-cart', {
     method: 'POST'
