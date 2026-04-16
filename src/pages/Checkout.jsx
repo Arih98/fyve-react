@@ -33,8 +33,12 @@ export default function Checkout() {
   const [error, setError] = useState('')
 
   const [revolutSession, setRevolutSession] = useState(null)
-const [showRevolutWidget, setShowRevolutWidget] = useState(false)
-const revolutContainerRef = useRef(null)
+  const [showCardField, setShowCardField] = useState(false)
+  const [cardFieldReady, setCardFieldReady] = useState(false)
+  const [cardholderName, setCardholderName] = useState('')
+  const revolutContainerRef = useRef(null)
+  const cardFieldInstanceRef = useRef(null)
+  const revolutInstanceRef = useRef(null)
 
   const [contact, setContact] = useState({
     email: '',
@@ -77,6 +81,55 @@ const revolutContainerRef = useRef(null)
   const [draftOrderId, setDraftOrderId] = useState(null)
   const [draftOrderKey, setDraftOrderKey] = useState('')
   const [paymentLoading, setPaymentLoading] = useState(false)
+
+  const submitCardPayment = async () => {
+  try {
+    if (!cardFieldInstanceRef.current) {
+      throw new Error('Card field is not ready')
+    }
+
+    setPaymentLoading(true)
+    setError('')
+
+    const result = await cardFieldInstanceRef.current.submit({
+      name: cardholderName || `${billing.first_name} ${billing.last_name}`.trim(),
+      email: contact.email || undefined,
+      phone: contact.phone || undefined,
+      billingAddress: {
+        countryCode: billing.country || undefined,
+        region: billing.state || undefined,
+        city: billing.city || undefined,
+        postcode: billing.postcode || undefined,
+        streetLine1: billing.address_1 || undefined,
+        streetLine2: billing.address_2 || undefined
+      },
+      shippingAddress: useSeparateShipping
+        ? {
+            countryCode: shipping.country || undefined,
+            region: shipping.state || undefined,
+            city: shipping.city || undefined,
+            postcode: shipping.postcode || undefined,
+            streetLine1: shipping.address_1 || undefined,
+            streetLine2: shipping.address_2 || undefined
+          }
+        : {
+            countryCode: billing.country || undefined,
+            region: billing.state || undefined,
+            city: billing.city || undefined,
+            postcode: billing.postcode || undefined,
+            streetLine1: billing.address_1 || undefined,
+            streetLine2: billing.address_2 || undefined
+          }
+    })
+
+    console.log('REVOLUT CARD FIELD SUBMIT RESULT', result)
+  } catch (err) {
+    console.log('REVOLUT CARD FIELD SUBMIT ERROR', err)
+    setError(err?.message || 'Failed to submit payment')
+  } finally {
+    setPaymentLoading(false)
+  }
+}
 
   const clearSavedCheckoutDraft = () => {
     localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
@@ -128,8 +181,8 @@ const revolutContainerRef = useRef(null)
 
 useEffect(() => {
   if (!cartItems?.length) return
-  if (paymentLoading) return
-  if (showRevolutWidget) return
+if (paymentLoading) return
+if (showCardField) return
 
     const billingReady = billing.country.trim() && billing.postcode.trim()
 
@@ -142,7 +195,6 @@ useEffect(() => {
     const timeout = setTimeout(async () => {
       try {
         setShippingRatesLoading(true)
-
         const payload = {
           billingAddress: {
             first_name: billing.first_name,
@@ -215,7 +267,7 @@ useEffect(() => {
   refreshCart,
   cartItems,
   paymentLoading,
-  showRevolutWidget
+  showCardField
 ])
 
   useEffect(() => {
@@ -323,29 +375,23 @@ useEffect(() => {
   }, [])
 
   useEffect(() => {
-  if (!showRevolutWidget) return
-  if (!revolutSession?.merchant_public_key) return
+  if (!showCardField) return
   if (!revolutSession?.revolut_order_token) return
   if (!revolutContainerRef.current) return
 
-  let instance = null
   let cancelled = false
 
   const mount = async () => {
     try {
-      console.log('REVOLUT EMBED INIT', {
-  mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
-  publicTokenPrefix: revolutSession?.merchant_public_key?.slice(0, 20),
-  orderTokenPrefix: revolutSession?.revolut_order_token?.slice(0, 20),
-  email: contact.email,
-  billingCountry: billing.country
-})
-      const embedded = await RevolutCheckout.embeddedCheckout({
-        publicToken: revolutSession.merchant_public_key,
-        mode: window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod',
-        locale: 'en',
-        target: revolutContainerRef.current,
-        email: contact.email || undefined,
+      setCardFieldReady(false)
+
+      const mode = window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod'
+
+      console.log('REVOLUT CARD FIELD INIT', {
+        mode,
+        orderTokenPrefix: revolutSession?.revolut_order_token?.slice(0, 24),
+        wcOrderId: revolutSession?.wc_order_id,
+        email: contact.email,
         billingAddress: {
           countryCode: billing.country || undefined,
           region: billing.state || undefined,
@@ -353,33 +399,46 @@ useEffect(() => {
           postcode: billing.postcode || undefined,
           streetLine1: billing.address_1 || undefined,
           streetLine2: billing.address_2 || undefined
-        },
-createOrder: async () => ({
-  publicId: revolutSession.revolut_order_token
-}),
-        onSuccess: ({ orderId }) => {
-          const params = new URLSearchParams({
-            order_id: String(revolutSession.wc_order_id),
-            revolut_token: orderId
-          })
-          window.location.href = `/checkout/success?${params.toString()}`
-        },
-        onError: ({ error }) => {
-          setError(error?.message || 'Payment failed')
-        },
-        onCancel: () => {
-          setError('Payment cancelled')
         }
       })
 
+      const revolut = await RevolutCheckout(
+        revolutSession.revolut_order_token,
+        mode
+      )
+
+      if (cancelled) return
+
+      revolutInstanceRef.current = revolut
+
+      const cardField = revolut.createCardField({
+        target: revolutContainerRef.current,
+        locale: 'en',
+        onSuccess: () => {
+          const params = new URLSearchParams({
+            order_id: String(revolutSession.wc_order_id)
+          })
+          window.location.href = `/checkout/success?${params.toString()}`
+        },
+        onError: (error) => {
+          console.log('REVOLUT CARD FIELD ERROR', error)
+          setError(error?.message || 'Payment failed')
+        },
+onValidation: (errors) => {
+  console.log('REVOLUT CARD FIELD VALIDATION', errors)
+}
+      })
+
       if (cancelled) {
-        embedded.destroy()
+        cardField.destroy()
         return
       }
 
-      instance = embedded
+      cardFieldInstanceRef.current = cardField
+      setCardFieldReady(true)
     } catch (err) {
-      setError(err.message || 'Failed to load payment widget')
+      console.log('REVOLUT CARD FIELD MOUNT ERROR', err)
+      setError(err.message || 'Failed to load card field')
     }
   }
 
@@ -387,19 +446,21 @@ createOrder: async () => ({
 
   return () => {
     cancelled = true
-    if (instance) {
-      instance.destroy()
+    setCardFieldReady(false)
+
+    if (cardFieldInstanceRef.current) {
+      cardFieldInstanceRef.current.destroy()
+      cardFieldInstanceRef.current = null
     }
+
+    revolutInstanceRef.current = null
   }
-}, [
-  showRevolutWidget,
-  revolutSession
-])
+}, [showCardField, revolutSession])
 
 useEffect(() => {
   if (!draftOrderId) return
-  if (paymentLoading) return
-  if (showRevolutWidget) return
+if (paymentLoading) return
+if (showCardField) return
 
     const timeout = setTimeout(async () => {
       try {
@@ -418,7 +479,7 @@ useEffect(() => {
     }, 400)
 
     return () => clearTimeout(timeout)
-  }, [draftOrderId, orderNote, paymentLoading, showRevolutWidget])
+  }, [draftOrderId, orderNote, paymentLoading, showCardField])
 
   if (loading || cartLoading) {
     return <div>Loading checkout...</div>
@@ -686,8 +747,16 @@ useEffect(() => {
 
       setPaymentLoading(true)
       setError('')
-      setShowRevolutWidget(false)
-      setRevolutSession(null)
+setShowCardField(false)
+setRevolutSession(null)
+setCardFieldReady(false)
+
+if (cardFieldInstanceRef.current) {
+  cardFieldInstanceRef.current.destroy()
+  cardFieldInstanceRef.current = null
+}
+
+revolutInstanceRef.current = null
 
       const latestCheckout = await getCheckoutData()
       setCheckoutData(latestCheckout)
@@ -721,22 +790,18 @@ useEffect(() => {
 })
 
 console.log('REVOLUT RESULT', {
-  merchant_public_key: revolutResult?.merchant_public_key,
   revolut_order_token: revolutResult?.revolut_order_token,
   checkout_url: revolutResult?.checkout_url,
   wc_order_id: revolutResult?.wc_order_id
 })
 
-      if (!revolutResult?.merchant_public_key) {
-        throw new Error('Missing Revolut public key')
-      }
-
       if (!revolutResult?.revolut_order_token) {
         throw new Error('Missing Revolut order token')
       }
 
-      setRevolutSession(revolutResult)
-      setShowRevolutWidget(true)
+setRevolutSession(revolutResult)
+setCardholderName(`${billing.first_name} ${billing.last_name}`.trim())
+setShowCardField(true)
     } catch (err) {
       setError(err.message || 'Failed to prepare payment')
     } finally {
@@ -747,10 +812,26 @@ console.log('REVOLUT RESULT', {
 >
   {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
 </button>
-      {showRevolutWidget && (
+{showCardField && (
   <div className="checkout-section">
-    <h2>Payment</h2>
-    <div ref={revolutContainerRef} id="revolut-checkout-container"></div>
+    <h2>Card payment</h2>
+
+    <div ref={revolutContainerRef} id="revolut-card-field"></div>
+
+    <input
+      type="text"
+      placeholder="Cardholder name"
+      value={cardholderName}
+      onChange={(e) => setCardholderName(e.target.value)}
+    />
+
+    <button
+      type="button"
+      onClick={submitCardPayment}
+      disabled={paymentLoading || !cardFieldReady}
+    >
+      {paymentLoading ? 'Processing payment...' : 'Pay now'}
+    </button>
   </div>
 )}
           </div>
