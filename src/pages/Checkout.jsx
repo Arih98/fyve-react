@@ -220,22 +220,18 @@ const initializePaymentMethods = useCallback(async () => {
   totalAmountMinorRef.current = Number(latestCheckout?.totals?.total_price || cart?.totals?.total_price || 0)
   currencyRef.current = String(latestCheckout?.totals?.currency_code || cart?.totals?.currency_code || 'GBP').toUpperCase()
 
-  const revolutResult = await createRevolutOrder({
-    draft_order_id: latestCheckout.order_id || null,
-    draft_order_key: latestCheckout.order_key || ''
-  })
+  const publicKey = window.location.hostname === 'dev.fyvelondon.com'
+  ? 'YOUR_SANDBOX_PUBLIC_KEY_HERE'
+  : 'YOUR_LIVE_PUBLIC_KEY_HERE'
 
-  if (!revolutResult?.revolut_order_token) {
-    throw new Error('Missing Revolut order token')
-  }
+if (!publicKey) {
+  throw new Error('Missing Revolut public API key')
+}
 
-  if (!revolutResult?.revolut_public_key) {
-    throw new Error('Missing Revolut public API key')
-  }
-
-  latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
-  setRevolutPublicKey(revolutResult.revolut_public_key)
-  setPaymentMethodsOpen(true)
+latestWooOrderIdRef.current = latestCheckout.order_id || null
+setRevolutPublicKey(publicKey)
+setPaymentMethodsOpen(true)
+setPaymentLoading(false)
 }, [contact, billing, shipping, useSeparateShipping, cart])
 
   const clearSavedCheckoutDraft = () => {
