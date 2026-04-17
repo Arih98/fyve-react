@@ -24,8 +24,8 @@ function mergeEmptyFields(current, incoming) {
 }
 
 const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.com'
-  ? 'fyve_checkout_draft_dev_v1'
-  : 'fyve_checkout_draft_live_v1'
+  ? 'fyve_checkout_draft_dev_v2'
+  : 'fyve_checkout_draft_live_v2'
 
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
@@ -391,21 +391,19 @@ export default function Checkout() {
               }))
             }
 
-            if (savedDraft.billing) {
-              setBilling((prev) => ({
-                ...prev,
-                ...savedDraft.billing,
-                country: 'US'
-              }))
-            }
+if (savedDraft.billing) {
+  setBilling((prev) => ({
+    ...prev,
+    ...savedDraft.billing
+  }))
+}
 
-            if (savedDraft.shipping) {
-              setShipping((prev) => ({
-                ...prev,
-                ...savedDraft.shipping,
-                country: 'US'
-              }))
-            }
+if (savedDraft.shipping) {
+  setShipping((prev) => ({
+    ...prev,
+    ...savedDraft.shipping
+  }))
+}
 
             if (typeof savedDraft.useSeparateShipping === 'boolean') {
               setUseSeparateShipping(savedDraft.useSeparateShipping)
@@ -436,15 +434,9 @@ export default function Checkout() {
             phone: prev.phone || prefill?.billing?.phone || ''
           }))
 
-          setBilling((prev) => ({
-            ...mergeEmptyFields(prev, prefill?.billing || {}),
-            country: 'US'
-          }))
+setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
 
-          setShipping((prev) => ({
-            ...mergeEmptyFields(prev, prefill?.shipping || {}),
-            country: 'US'
-          }))
+setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
 
           const hasShippingPrefill = Object.values(prefill?.shipping || {}).some(Boolean)
 
@@ -498,25 +490,25 @@ export default function Checkout() {
 
         const fullName = `${snapshot.billing.first_name} ${snapshot.billing.last_name}`.trim()
 
-        const billingAddress = {
-          countryCode: snapshot.billing.country || undefined,
-          region: snapshot.billing.state || undefined,
-          city: snapshot.billing.city || undefined,
-          postcode: snapshot.billing.postcode || undefined,
-          streetLine1: snapshot.billing.address_1 || undefined,
-          streetLine2: snapshot.billing.address_2 || undefined
-        }
+const billingAddress = {
+  countryCode: snapshot.billing.country || undefined,
+  region: normalizeUsState(snapshot.billing.state) || undefined,
+  city: snapshot.billing.city || undefined,
+  postcode: snapshot.billing.postcode || undefined,
+  streetLine1: snapshot.billing.address_1 || undefined,
+  streetLine2: snapshot.billing.address_2 || undefined
+}
 
-        const shippingAddress = snapshot.useSeparateShipping
-          ? {
-              countryCode: snapshot.shipping.country || undefined,
-              region: snapshot.shipping.state || undefined,
-              city: snapshot.shipping.city || undefined,
-              postcode: snapshot.shipping.postcode || undefined,
-              streetLine1: snapshot.shipping.address_1 || undefined,
-              streetLine2: snapshot.shipping.address_2 || undefined
-            }
-          : billingAddress
+const shippingAddress = snapshot.useSeparateShipping
+  ? {
+      countryCode: snapshot.shipping.country || undefined,
+      region: normalizeUsState(snapshot.shipping.state) || undefined,
+      city: snapshot.shipping.city || undefined,
+      postcode: snapshot.shipping.postcode || undefined,
+      streetLine1: snapshot.shipping.address_1 || undefined,
+      streetLine2: snapshot.shipping.address_2 || undefined
+    }
+  : billingAddress
 
         const payments = await RevolutCheckout.payments({
           publicToken: revolutPublicKey,
@@ -665,25 +657,25 @@ export default function Checkout() {
       setPaymentLoading(true)
       setError('')
 
-      const billingAddress = {
-        countryCode: snapshot.billing.country || undefined,
-        region: snapshot.billing.state || undefined,
-        city: snapshot.billing.city || undefined,
-        postcode: snapshot.billing.postcode || undefined,
-        streetLine1: snapshot.billing.address_1 || undefined,
-        streetLine2: snapshot.billing.address_2 || undefined
-      }
+const billingAddress = {
+  countryCode: snapshot.billing.country || undefined,
+  region: normalizeUsState(snapshot.billing.state) || undefined,
+  city: snapshot.billing.city || undefined,
+  postcode: snapshot.billing.postcode || undefined,
+  streetLine1: snapshot.billing.address_1 || undefined,
+  streetLine2: snapshot.billing.address_2 || undefined
+}
 
-      const shippingAddress = snapshot.useSeparateShipping
-        ? {
-            countryCode: snapshot.shipping.country || undefined,
-            region: snapshot.shipping.state || undefined,
-            city: snapshot.shipping.city || undefined,
-            postcode: snapshot.shipping.postcode || undefined,
-            streetLine1: snapshot.shipping.address_1 || undefined,
-            streetLine2: snapshot.shipping.address_2 || undefined
-          }
-        : billingAddress
+const shippingAddress = snapshot.useSeparateShipping
+  ? {
+      countryCode: snapshot.shipping.country || undefined,
+      region: normalizeUsState(snapshot.shipping.state) || undefined,
+      city: snapshot.shipping.city || undefined,
+      postcode: snapshot.shipping.postcode || undefined,
+      streetLine1: snapshot.shipping.address_1 || undefined,
+      streetLine2: snapshot.shipping.address_2 || undefined
+    }
+  : billingAddress
 
       cardFieldInstanceRef.current.submit({
         name: `${snapshot.billing.first_name} ${snapshot.billing.last_name}`.trim() || undefined,
