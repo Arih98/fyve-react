@@ -984,15 +984,12 @@ setPaymentMethodsOpen(true)
             {paymentMethodsOpen && (
               <div className="checkout-payment-methods">
                 <div className="checkout-section">
-                  <h2>Apple Pay / Google Pay</h2>
-                  <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-                  {!appleGoogleReady && (
-                    <div>Apple Pay / Google Pay not available on this device.</div>
-                  )}
-                  {appleGoogleReady && appleGoogleMethod && (
-                    <div>{appleGoogleMethod === 'applePay' ? 'Apple Pay available' : 'Google Pay available'}</div>
-                  )}
-                </div>
+  <h2>Google Pay</h2>
+  <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+  {!appleGoogleReady && (
+    <div>Google Pay not available on this device.</div>
+  )}
+</div>
 
                 <div className="checkout-section">
                   <h2>Revolut Pay</h2>
