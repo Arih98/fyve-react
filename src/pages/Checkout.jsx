@@ -404,6 +404,19 @@ const validateCheckoutBeforePayment = useCallback(() => {
   return true
 }, [contact, billing, shipping, useSeparateShipping, focusFirstInvalidField])
 
+const applyServerValidationErrors = useCallback((err) => {
+  const fieldErrorsFromServer = err?.field_errors || err?.data?.field_errors || err?.response?.data?.field_errors
+
+  if (fieldErrorsFromServer && typeof fieldErrorsFromServer === 'object') {
+    setFieldErrors(fieldErrorsFromServer)
+    setError(err?.message || err?.data?.message || 'Please complete the required fields')
+    focusFirstInvalidField(fieldErrorsFromServer)
+    return true
+  }
+
+  return false
+}, [focusFirstInvalidField])
+
   useEffect(() => {
     const draft = {
       contact,
@@ -647,44 +660,51 @@ const shippingAddress = snapshot.useSeparateShipping
     throw new Error('Please complete the required fields')
   }
 
-  await updateCheckoutCustomer({
-    billingAddress: {
-      first_name: live.billing.first_name,
-      last_name: live.billing.last_name,
-      address_1: live.billing.address_1,
-      address_2: live.billing.address_2,
-      city: live.billing.city,
-      state: normalizeUsState(live.billing.state),
-      postcode: live.billing.postcode,
-      country: live.billing.country,
-      email: live.contact.email,
-      phone: live.contact.phone
-    },
-    shippingAddress: live.useSeparateShipping
-      ? {
-          first_name: live.shipping.first_name,
-          last_name: live.shipping.last_name,
-          address_1: live.shipping.address_1,
-          address_2: live.shipping.address_2,
-          city: live.shipping.city,
-          state: normalizeUsState(live.shipping.state),
-          postcode: live.shipping.postcode,
-          country: live.shipping.country
-        }
-      : {
-          first_name: live.billing.first_name,
-          last_name: live.billing.last_name,
-          address_1: live.billing.address_1,
-          address_2: live.billing.address_2,
-          city: live.billing.city,
-          state: normalizeUsState(live.billing.state),
-          postcode: live.billing.postcode,
-          country: live.billing.country
-        }
-  })
+  try {
+    await updateCheckoutCustomer({
+      billingAddress: {
+        first_name: live.billing.first_name,
+        last_name: live.billing.last_name,
+        address_1: live.billing.address_1,
+        address_2: live.billing.address_2,
+        city: live.billing.city,
+        state: normalizeUsState(live.billing.state),
+        postcode: live.billing.postcode,
+        country: live.billing.country,
+        email: live.contact.email,
+        phone: live.contact.phone
+      },
+      shippingAddress: live.useSeparateShipping
+        ? {
+            first_name: live.shipping.first_name,
+            last_name: live.shipping.last_name,
+            address_1: live.shipping.address_1,
+            address_2: live.shipping.address_2,
+            city: live.shipping.city,
+            state: normalizeUsState(live.shipping.state),
+            postcode: live.shipping.postcode,
+            country: live.shipping.country
+          }
+        : {
+            first_name: live.billing.first_name,
+            last_name: live.billing.last_name,
+            address_1: live.billing.address_1,
+            address_2: live.billing.address_2,
+            city: live.billing.city,
+            state: normalizeUsState(live.billing.state),
+            postcode: live.billing.postcode,
+            country: live.billing.country
+          }
+    })
 
-  const result = await createRevolutPaymentOrder()
-  return { publicId: result.revolut_order_token }
+    const result = await createRevolutPaymentOrder()
+    return { publicId: result.revolut_order_token }
+  } catch (err) {
+    if (applyServerValidationErrors(err)) {
+      throw new Error('Please complete the required fields')
+    }
+    throw err
+  }
 },
   onSuccess: () => {
     redirectToSuccess()
@@ -732,44 +752,51 @@ onError: (error) => {
     throw new Error('Please complete the required fields')
   }
 
-  await updateCheckoutCustomer({
-    billingAddress: {
-      first_name: live.billing.first_name,
-      last_name: live.billing.last_name,
-      address_1: live.billing.address_1,
-      address_2: live.billing.address_2,
-      city: live.billing.city,
-      state: normalizeUsState(live.billing.state),
-      postcode: live.billing.postcode,
-      country: live.billing.country,
-      email: live.contact.email,
-      phone: live.contact.phone
-    },
-    shippingAddress: live.useSeparateShipping
-      ? {
-          first_name: live.shipping.first_name,
-          last_name: live.shipping.last_name,
-          address_1: live.shipping.address_1,
-          address_2: live.shipping.address_2,
-          city: live.shipping.city,
-          state: normalizeUsState(live.shipping.state),
-          postcode: live.shipping.postcode,
-          country: live.shipping.country
-        }
-      : {
-          first_name: live.billing.first_name,
-          last_name: live.billing.last_name,
-          address_1: live.billing.address_1,
-          address_2: live.billing.address_2,
-          city: live.billing.city,
-          state: normalizeUsState(live.billing.state),
-          postcode: live.billing.postcode,
-          country: live.billing.country
-        }
-  })
+  try {
+    await updateCheckoutCustomer({
+      billingAddress: {
+        first_name: live.billing.first_name,
+        last_name: live.billing.last_name,
+        address_1: live.billing.address_1,
+        address_2: live.billing.address_2,
+        city: live.billing.city,
+        state: normalizeUsState(live.billing.state),
+        postcode: live.billing.postcode,
+        country: live.billing.country,
+        email: live.contact.email,
+        phone: live.contact.phone
+      },
+      shippingAddress: live.useSeparateShipping
+        ? {
+            first_name: live.shipping.first_name,
+            last_name: live.shipping.last_name,
+            address_1: live.shipping.address_1,
+            address_2: live.shipping.address_2,
+            city: live.shipping.city,
+            state: normalizeUsState(live.shipping.state),
+            postcode: live.shipping.postcode,
+            country: live.shipping.country
+          }
+        : {
+            first_name: live.billing.first_name,
+            last_name: live.billing.last_name,
+            address_1: live.billing.address_1,
+            address_2: live.billing.address_2,
+            city: live.billing.city,
+            state: normalizeUsState(live.billing.state),
+            postcode: live.billing.postcode,
+            country: live.billing.country
+          }
+    })
 
-  const result = await createRevolutPaymentOrder()
-  return { publicId: result.revolut_order_token }
+    const result = await createRevolutPaymentOrder()
+    return { publicId: result.revolut_order_token }
+  } catch (err) {
+    if (applyServerValidationErrors(err)) {
+      throw new Error('Please complete the required fields')
+    }
+    throw err
+  }
 },
           customer: {
             name: fullName || undefined,
@@ -823,13 +850,19 @@ case 'error': {
       cancelled = true
       clearMountedPaymentMethods()
     }
-  }, [
-    paymentMethodsOpen,
-    revolutPublicKey,
-    redirectToSuccess,
-    clearMountedPaymentMethods,
-    createRevolutPaymentOrder
-  ])
+}, [
+  paymentMethodsOpen,
+  revolutPublicKey,
+  redirectToSuccess,
+  clearMountedPaymentMethods,
+  createRevolutPaymentOrder,
+  applyServerValidationErrors,
+  focusFirstInvalidField,
+  contact,
+  billing,
+  shipping,
+  useSeparateShipping
+])
 
   const handleCardPay = async () => {
   try {
@@ -847,41 +880,49 @@ case 'error': {
       return
     }
 
-    await updateCheckoutCustomer({
-      billingAddress: {
-        first_name: billing.first_name,
-        last_name: billing.last_name,
-        address_1: billing.address_1,
-        address_2: billing.address_2,
-        city: billing.city,
-        state: normalizeUsState(billing.state),
-        postcode: billing.postcode,
-        country: billing.country,
-        email: contact.email,
-        phone: contact.phone
-      },
-      shippingAddress: useSeparateShipping
-        ? {
-            first_name: shipping.first_name,
-            last_name: shipping.last_name,
-            address_1: shipping.address_1,
-            address_2: shipping.address_2,
-            city: shipping.city,
-            state: normalizeUsState(shipping.state),
-            postcode: shipping.postcode,
-            country: shipping.country
-          }
-        : {
-            first_name: billing.first_name,
-            last_name: billing.last_name,
-            address_1: billing.address_1,
-            address_2: billing.address_2,
-            city: billing.city,
-            state: normalizeUsState(billing.state),
-            postcode: billing.postcode,
-            country: billing.country
-          }
-    })
+    try {
+  await updateCheckoutCustomer({
+    billingAddress: {
+      first_name: billing.first_name,
+      last_name: billing.last_name,
+      address_1: billing.address_1,
+      address_2: billing.address_2,
+      city: billing.city,
+      state: normalizeUsState(billing.state),
+      postcode: billing.postcode,
+      country: billing.country,
+      email: contact.email,
+      phone: contact.phone
+    },
+    shippingAddress: useSeparateShipping
+      ? {
+          first_name: shipping.first_name,
+          last_name: shipping.last_name,
+          address_1: shipping.address_1,
+          address_2: shipping.address_2,
+          city: shipping.city,
+          state: normalizeUsState(shipping.state),
+          postcode: shipping.postcode,
+          country: shipping.country
+        }
+      : {
+          first_name: billing.first_name,
+          last_name: billing.last_name,
+          address_1: billing.address_1,
+          address_2: billing.address_2,
+          city: billing.city,
+          state: normalizeUsState(billing.state),
+          postcode: billing.postcode,
+          country: billing.country
+        }
+  })
+} catch (err) {
+  if (applyServerValidationErrors(err)) {
+    setPaymentLoading(false)
+    return
+  }
+  throw err
+}
 
     paymentSnapshotRef.current = {
       contact: { ...contact },
