@@ -90,6 +90,27 @@ function normalizeUsState(value) {
   return input
 }
 
+function getCheckoutValidationError({ contact, billing, shipping, useSeparateShipping }) {
+  if (!billing.first_name.trim()) return 'Please enter your first name'
+  if (!billing.last_name.trim()) return 'Please enter your last name'
+  if (!billing.address_1.trim()) return 'Please enter your street address'
+  if (!billing.city.trim()) return 'Please enter your city'
+  if (!billing.state.trim()) return 'Please enter your state'
+  if (!billing.postcode.trim()) return 'Please enter your ZIP code'
+  if (!contact.email.trim()) return 'Please enter your email address'
+
+  if (useSeparateShipping) {
+    if (!shipping.first_name.trim()) return 'Please enter your shipping first name'
+    if (!shipping.last_name.trim()) return 'Please enter your shipping last name'
+    if (!shipping.address_1.trim()) return 'Please enter your shipping street address'
+    if (!shipping.city.trim()) return 'Please enter your shipping city'
+    if (!shipping.state.trim()) return 'Please enter your shipping state'
+    if (!shipping.postcode.trim()) return 'Please enter your shipping ZIP code'
+  }
+
+  return ''
+}
+
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -174,6 +195,43 @@ export default function Checkout() {
       revolutPayInstanceRef.current = null
     }
   }, [])
+
+const initializePaymentMethods = useCallback(async () => {
+  setPaymentLoading(true)
+  setError('')
+
+  const latestCheckout = await getCheckoutData()
+  setCheckoutData(latestCheckout)
+  setDraftOrderId(latestCheckout.order_id || null)
+  setDraftOrderKey(latestCheckout.order_key || '')
+
+  paymentSnapshotRef.current = {
+    contact: { ...contact },
+    billing: { ...billing },
+    shipping: { ...shipping },
+    useSeparateShipping
+  }
+
+  totalAmountMinorRef.current = Number(latestCheckout?.totals?.total_price || cart?.totals?.total_price || 0)
+  currencyRef.current = String(latestCheckout?.totals?.currency_code || cart?.totals?.currency_code || 'GBP').toUpperCase()
+
+  const revolutResult = await createRevolutOrder({
+    draft_order_id: latestCheckout.order_id || null,
+    draft_order_key: latestCheckout.order_key || ''
+  })
+
+  if (!revolutResult?.revolut_order_token) {
+    throw new Error('Missing Revolut order token')
+  }
+
+  if (!revolutResult?.revolut_public_key) {
+    throw new Error('Missing Revolut public API key')
+  }
+
+  latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
+  setRevolutPublicKey(revolutResult.revolut_public_key)
+  setPaymentMethodsOpen(true)
+}, [contact, billing, shipping, useSeparateShipping, cart])
 
   const isPaymentFormReady =
   !!billing.first_name.trim() &&
@@ -458,65 +516,34 @@ shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : sna
   useEffect(() => {
   if (loading || cartLoading) return
   if (!cartItems?.length) return
-
-  if (!isPaymentFormReady) {
-    paymentInitKeyRef.current = ''
-    if (paymentMethodsOpen) {
-      setPaymentMethodsOpen(false)
-      setRevolutPublicKey('')
-      clearMountedPaymentMethods()
-    }
-    return
-  }
-
-  const nextKey = JSON.stringify({
-    contactEmail: contact.email.trim(),
-    contactPhone: contact.phone.trim(),
-    billingFirstName: billing.first_name.trim(),
-    billingLastName: billing.last_name.trim(),
-    billingAddress1: billing.address_1.trim(),
-    billingAddress2: billing.address_2.trim(),
-    billingCity: billing.city.trim(),
-    billingState: normalizeUsState(billing.state),
-    billingPostcode: billing.postcode.trim(),
-    billingCountry: billing.country,
-    useSeparateShipping,
-    shippingFirstName: shipping.first_name.trim(),
-    shippingLastName: shipping.last_name.trim(),
-    shippingAddress1: shipping.address_1.trim(),
-    shippingAddress2: shipping.address_2.trim(),
-    shippingCity: shipping.city.trim(),
-    shippingState: normalizeUsState(shipping.state),
-    shippingPostcode: shipping.postcode.trim(),
-    shippingCountry: shipping.country
-  })
-
-  if (paymentInitKeyRef.current === nextKey) return
-
-  paymentInitKeyRef.current = nextKey
+  if (paymentMethodsOpen) return
+  if (revolutPublicKey) return
 
   ;(async () => {
     try {
-      await openPaymentMethods()
+      await initializePaymentMethods()
     } catch (err) {
-      setError(err.message || 'Failed to prepare payment')
       setPaymentLoading(false)
+      setError(err.message || 'Failed to prepare payment methods')
     }
   })()
 }, [
   loading,
   cartLoading,
   cartItems,
-  isPaymentFormReady,
-  contact,
-  billing,
-  shipping,
-  useSeparateShipping,
   paymentMethodsOpen,
-  openPaymentMethods,
-  clearMountedPaymentMethods
+  revolutPublicKey,
+  initializePaymentMethods
 ])
 
+useEffect(() => {
+  paymentSnapshotRef.current = {
+    contact: { ...contact },
+    billing: { ...billing },
+    shipping: { ...shipping },
+    useSeparateShipping
+  }
+}, [contact, billing, shipping, useSeparateShipping])
 
   useEffect(() => {
     let active = true
@@ -793,52 +820,102 @@ const shippingAddress = snapshot.useSeparateShipping
   ])
 
   const handleCardPay = async () => {
-    try {
-      if (!cardFieldInstanceRef.current) {
-        throw new Error('Card field is not ready')
-      }
-
-      const snapshot = paymentSnapshotRef.current
-
-      if (!snapshot) {
-        throw new Error('Payment snapshot is missing')
-      }
-
-      setPaymentLoading(true)
-      setError('')
-
-const billingAddress = {
-  countryCode: snapshot.billing.country || undefined,
-  region: normalizeUsState(snapshot.billing.state) || undefined,
-  city: snapshot.billing.city || undefined,
-  postcode: snapshot.billing.postcode || undefined,
-  streetLine1: snapshot.billing.address_1 || undefined,
-  streetLine2: snapshot.billing.address_2 || undefined
-}
-
-const shippingAddress = snapshot.useSeparateShipping
-  ? {
-      countryCode: snapshot.shipping.country || undefined,
-      region: normalizeUsState(snapshot.shipping.state) || undefined,
-      city: snapshot.shipping.city || undefined,
-      postcode: snapshot.shipping.postcode || undefined,
-      streetLine1: snapshot.shipping.address_1 || undefined,
-      streetLine2: snapshot.shipping.address_2 || undefined
+  try {
+    if (!cardFieldInstanceRef.current) {
+      throw new Error('Card field is not ready')
     }
-  : billingAddress
 
-      cardFieldInstanceRef.current.submit({
-        name: `${snapshot.billing.first_name} ${snapshot.billing.last_name}`.trim() || undefined,
-        email: snapshot.contact.email || undefined,
-        phone: snapshot.contact.phone || undefined,
-        billingAddress,
-        shippingAddress
-      })
-    } catch (err) {
+    setPaymentLoading(true)
+    setError('')
+
+    const validationError = getCheckoutValidationError({
+      contact,
+      billing,
+      shipping,
+      useSeparateShipping
+    })
+
+    if (validationError) {
       setPaymentLoading(false)
-      setError(err?.message || 'Failed to submit card payment')
+      setError(validationError)
+      return
     }
+
+    await updateCheckoutCustomer({
+      billingAddress: {
+        first_name: billing.first_name,
+        last_name: billing.last_name,
+        address_1: billing.address_1,
+        address_2: billing.address_2,
+        city: billing.city,
+        state: normalizeUsState(billing.state),
+        postcode: billing.postcode,
+        country: billing.country,
+        email: contact.email,
+        phone: contact.phone
+      },
+      shippingAddress: useSeparateShipping
+        ? {
+            first_name: shipping.first_name,
+            last_name: shipping.last_name,
+            address_1: shipping.address_1,
+            address_2: shipping.address_2,
+            city: shipping.city,
+            state: normalizeUsState(shipping.state),
+            postcode: shipping.postcode,
+            country: shipping.country
+          }
+        : {
+            first_name: billing.first_name,
+            last_name: billing.last_name,
+            address_1: billing.address_1,
+            address_2: billing.address_2,
+            city: billing.city,
+            state: normalizeUsState(billing.state),
+            postcode: billing.postcode,
+            country: billing.country
+          }
+    })
+
+    paymentSnapshotRef.current = {
+      contact: { ...contact },
+      billing: { ...billing },
+      shipping: { ...shipping },
+      useSeparateShipping
+    }
+
+    const billingAddress = {
+      countryCode: billing.country || undefined,
+      region: normalizeUsState(billing.state) || undefined,
+      city: billing.city || undefined,
+      postcode: billing.postcode || undefined,
+      streetLine1: billing.address_1 || undefined,
+      streetLine2: billing.address_2 || undefined
+    }
+
+    const shippingAddress = useSeparateShipping
+      ? {
+          countryCode: shipping.country || undefined,
+          region: normalizeUsState(shipping.state) || undefined,
+          city: shipping.city || undefined,
+          postcode: shipping.postcode || undefined,
+          streetLine1: shipping.address_1 || undefined,
+          streetLine2: shipping.address_2 || undefined
+        }
+      : billingAddress
+
+    cardFieldInstanceRef.current.submit({
+      name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
+      email: contact.email || undefined,
+      phone: contact.phone || undefined,
+      billingAddress,
+      shippingAddress
+    })
+  } catch (err) {
+    setPaymentLoading(false)
+    setError(err?.message || 'Failed to submit card payment')
   }
+}
 
   if (loading || cartLoading) {
     return <div>Loading checkout...</div>
@@ -1070,53 +1147,36 @@ const shippingAddress = snapshot.useSeparateShipping
             )}
 
             <div className="checkout-payment-methods">
-  {!isPaymentFormReady && (
-    <div>Please complete your billing details to load payment options.</div>
+  {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
+    <div>Preparing payment methods...</div>
   )}
 
-  {isPaymentFormReady && paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
-    <div>Preparing payment methods...</div>
+  {!cardReady && !appleGoogleReady && !revolutPayReady && !paymentLoading && (
+    <div>Payment methods unavailable or still loading.</div>
   )}
 
   <div className="checkout-section">
     <h2>Google Pay</h2>
-    {isPaymentFormReady ? (
-      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-    ) : (
-      <div>Complete your details to enable Google Pay.</div>
-    )}
+    <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+    {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
   </div>
 
   <div className="checkout-section">
     <h2>Revolut Pay</h2>
-    {isPaymentFormReady ? (
-      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-    ) : (
-      <div>Complete your details to enable Revolut Pay.</div>
-    )}
+    <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+    {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
   </div>
 
   <div className="checkout-section">
     <h2>Pay by card</h2>
-    {isPaymentFormReady ? (
-      <>
-        <div ref={cardContainerRef} id="revolut-card-field"></div>
-        <button
-          type="button"
-          onClick={handleCardPay}
-          disabled={paymentLoading || !cardReady}
-        >
-          {paymentLoading ? 'Processing payment...' : 'Pay now'}
-        </button>
-      </>
-    ) : (
-      <>
-        <div>Complete your details to enable card payment.</div>
-        <button type="button" disabled>
-          Pay now
-        </button>
-      </>
-    )}
+    <div ref={cardContainerRef} id="revolut-card-field"></div>
+    <button
+      type="button"
+      onClick={handleCardPay}
+      disabled={paymentLoading || !cardReady}
+    >
+      {paymentLoading ? 'Processing payment...' : 'Pay now'}
+    </button>
   </div>
 </div>
           </div>
