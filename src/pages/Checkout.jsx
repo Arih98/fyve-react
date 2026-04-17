@@ -4,7 +4,6 @@ import {
   getCheckoutPrefill,
   getCheckoutData,
   updateCheckoutCustomer,
-  updateCheckoutDraft,
   createRevolutOrder,
   clearCheckoutCart
 } from '../api/checkout'
@@ -37,34 +36,31 @@ export default function Checkout() {
     phone: ''
   })
 
-  const [billing, setBilling] = useState({
-    first_name: '',
-    last_name: '',
-    company: '',
-    address_1: '',
-    address_2: '',
-    city: '',
-    state: '',
-    postcode: '',
-    country: ''
-  })
+const [billing, setBilling] = useState({
+  first_name: '',
+  last_name: '',
+  address_1: '',
+  address_2: '',
+  city: '',
+  state: '',
+  postcode: '',
+  country: ''
+})
 
   const [useSeparateShipping, setUseSeparateShipping] = useState(false)
 
-  const [shipping, setShipping] = useState({
-    first_name: '',
-    last_name: '',
-    company: '',
-    address_1: '',
-    address_2: '',
-    city: '',
-    state: '',
-    postcode: '',
-    country: ''
-  })
+const [shipping, setShipping] = useState({
+  first_name: '',
+  last_name: '',
+  address_1: '',
+  address_2: '',
+  city: '',
+  state: '',
+  postcode: '',
+  country: ''
+})
 
   const [checkoutData, setCheckoutData] = useState(null)
-  const [orderNote, setOrderNote] = useState('')
   const [draftOrderId, setDraftOrderId] = useState(null)
   const [draftOrderKey, setDraftOrderKey] = useState('')
   const [paymentLoading, setPaymentLoading] = useState(false)
@@ -149,7 +145,6 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
     })
 
     setUseSeparateShipping(false)
-    setOrderNote('')
     setError('')
     setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
@@ -172,7 +167,6 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
       billing_phone: contact.phone || '',
       billing_first_name: billing.first_name,
       billing_last_name: billing.last_name,
-      billing_company: billing.company,
       billing_address_1: billing.address_1,
       billing_address_2: billing.address_2,
       billing_city: billing.city,
@@ -181,14 +175,12 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
       billing_country: billing.country,
       shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
       shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
-      shipping_company: useSeparateShipping ? shipping.company : billing.company,
       shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
       shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
       shipping_city: useSeparateShipping ? shipping.city : billing.city,
       shipping_state: useSeparateShipping ? shipping.state : billing.state,
       shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
       shipping_country: useSeparateShipping ? shipping.country : billing.country,
-      order_note: orderNote || ''
     })
 
     if (!revolutResult?.revolut_order_token) {
@@ -227,7 +219,6 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
       billing_phone: snapshot.contact.phone || '',
       billing_first_name: snapshot.billing.first_name,
       billing_last_name: snapshot.billing.last_name,
-      billing_company: snapshot.billing.company,
       billing_address_1: snapshot.billing.address_1,
       billing_address_2: snapshot.billing.address_2,
       billing_city: snapshot.billing.city,
@@ -236,14 +227,12 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
       billing_country: snapshot.billing.country,
       shipping_first_name: snapshot.useSeparateShipping ? snapshot.shipping.first_name : snapshot.billing.first_name,
       shipping_last_name: snapshot.useSeparateShipping ? snapshot.shipping.last_name : snapshot.billing.last_name,
-      shipping_company: snapshot.useSeparateShipping ? snapshot.shipping.company : snapshot.billing.company,
       shipping_address_1: snapshot.useSeparateShipping ? snapshot.shipping.address_1 : snapshot.billing.address_1,
       shipping_address_2: snapshot.useSeparateShipping ? snapshot.shipping.address_2 : snapshot.billing.address_2,
       shipping_city: snapshot.useSeparateShipping ? snapshot.shipping.city : snapshot.billing.city,
       shipping_state: snapshot.useSeparateShipping ? snapshot.shipping.state : snapshot.billing.state,
       shipping_postcode: snapshot.useSeparateShipping ? snapshot.shipping.postcode : snapshot.billing.postcode,
       shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : snapshot.billing.country,
-      order_note: snapshot.orderNote || ''
     })
 
     if (!revolutResult?.revolut_order_token) {
@@ -280,13 +269,12 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
     setPaymentLoading(true)
     setError('')
 
-    paymentSnapshotRef.current = {
-      contact: { ...contact },
-      billing: { ...billing },
-      shipping: { ...shipping },
-      useSeparateShipping,
-      orderNote
-    }
+paymentSnapshotRef.current = {
+  contact: { ...contact },
+  billing: { ...billing },
+  shipping: { ...shipping },
+  useSeparateShipping
+}
 
     totalAmountMinorRef.current = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
     currencyRef.current = String(cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP').toUpperCase()
@@ -295,7 +283,6 @@ await updateCheckoutCustomer({
   billingAddress: {
     first_name: billing.first_name,
     last_name: billing.last_name,
-    company: billing.company,
     address_1: billing.address_1,
     address_2: billing.address_2,
     city: billing.city,
@@ -309,7 +296,6 @@ await updateCheckoutCustomer({
     ? {
         first_name: shipping.first_name,
         last_name: shipping.last_name,
-        company: shipping.company,
         address_1: shipping.address_1,
         address_2: shipping.address_2,
         city: shipping.city,
@@ -320,7 +306,6 @@ await updateCheckoutCustomer({
     : {
         first_name: billing.first_name,
         last_name: billing.last_name,
-        company: billing.company,
         address_1: billing.address_1,
         address_2: billing.address_2,
         city: billing.city,
@@ -354,16 +339,15 @@ setPaymentMethodsOpen(true)
   ])
 
   useEffect(() => {
-    const draft = {
-      contact,
-      billing,
-      shipping,
-      useSeparateShipping,
-      orderNote
-    }
+const draft = {
+  contact,
+  billing,
+  shipping,
+  useSeparateShipping
+}
 
     localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
-  }, [contact, billing, shipping, useSeparateShipping, orderNote])
+}, [contact, billing, shipping, useSeparateShipping])
 
 
   useEffect(() => {
@@ -405,9 +389,6 @@ setPaymentMethodsOpen(true)
               setUseSeparateShipping(savedDraft.useSeparateShipping)
             }
 
-            if (typeof savedDraft.orderNote === 'string') {
-              setOrderNote(savedDraft.orderNote)
-            }
           } catch (err) {
             console.error(err)
           }
@@ -461,30 +442,6 @@ setPaymentMethodsOpen(true)
       active = false
     }
   }, [])
-
-  useEffect(() => {
-    if (!draftOrderId) return
-    if (paymentLoading) return
-    if (paymentMethodsOpen) return
-
-    const timeout = setTimeout(async () => {
-      try {
-        const nextCheckoutData = await updateCheckoutDraft({
-          order_notes: orderNote
-        })
-
-        if (nextCheckoutData) {
-          setCheckoutData(nextCheckoutData)
-          setDraftOrderId(nextCheckoutData.order_id || null)
-          setDraftOrderKey(nextCheckoutData.order_key || '')
-        }
-      } catch (err) {
-        console.error(err)
-      }
-    }, 400)
-
-    return () => clearTimeout(timeout)
-  }, [draftOrderId, orderNote, paymentLoading, paymentMethodsOpen])
 
   useEffect(() => {
     if (!paymentMethodsOpen) {
@@ -769,13 +726,6 @@ mobileRedirectUrls: {
 
           <input
             type="text"
-            placeholder="Company"
-            value={billing.company}
-            onChange={(e) => setBilling((prev) => ({ ...prev, company: e.target.value }))}
-          />
-
-          <input
-            type="text"
             placeholder="Address line 1"
             value={billing.address_1}
             onChange={(e) => setBilling((prev) => ({ ...prev, address_1: e.target.value }))}
@@ -848,13 +798,6 @@ mobileRedirectUrls: {
 
             <input
               type="text"
-              placeholder="Company"
-              value={shipping.company}
-              onChange={(e) => setShipping((prev) => ({ ...prev, company: e.target.value }))}
-            />
-
-            <input
-              type="text"
               placeholder="Address line 1"
               value={shipping.address_1}
               onChange={(e) => setShipping((prev) => ({ ...prev, address_1: e.target.value }))}
@@ -896,15 +839,6 @@ mobileRedirectUrls: {
             />
           </section>
         )}
-
-        <section className="checkout-section">
-          <h2>Order note</h2>
-          <textarea
-            placeholder="Add a note to your order"
-            value={orderNote}
-            onChange={(e) => setOrderNote(e.target.value)}
-          />
-        </section>
       </div>
 
       <aside className="checkout-sidebar">
