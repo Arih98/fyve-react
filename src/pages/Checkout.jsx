@@ -27,6 +27,69 @@ const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.
   ? 'fyve_checkout_draft_dev_v2'
   : 'fyve_checkout_draft_live_v2'
 
+function normalizeUsState(value) {
+  const input = String(value || '').trim()
+  const upper = input.toUpperCase()
+
+  const map = {
+    ALABAMA: 'AL',
+    ALASKA: 'AK',
+    ARIZONA: 'AZ',
+    ARKANSAS: 'AR',
+    CALIFORNIA: 'CA',
+    COLORADO: 'CO',
+    CONNECTICUT: 'CT',
+    DELAWARE: 'DE',
+    FLORIDA: 'FL',
+    GEORGIA: 'GA',
+    HAWAII: 'HI',
+    IDAHO: 'ID',
+    ILLINOIS: 'IL',
+    INDIANA: 'IN',
+    IOWA: 'IA',
+    KANSAS: 'KS',
+    KENTUCKY: 'KY',
+    LOUISIANA: 'LA',
+    MAINE: 'ME',
+    MARYLAND: 'MD',
+    MASSACHUSETTS: 'MA',
+    MICHIGAN: 'MI',
+    MINNESOTA: 'MN',
+    MISSISSIPPI: 'MS',
+    MISSOURI: 'MO',
+    MONTANA: 'MT',
+    NEBRASKA: 'NE',
+    NEVADA: 'NV',
+    'NEW HAMPSHIRE': 'NH',
+    'NEW JERSEY': 'NJ',
+    'NEW MEXICO': 'NM',
+    'NEW YORK': 'NY',
+    'NORTH CAROLINA': 'NC',
+    'NORTH DAKOTA': 'ND',
+    OHIO: 'OH',
+    OKLAHOMA: 'OK',
+    OREGON: 'OR',
+    PENNSYLVANIA: 'PA',
+    'RHODE ISLAND': 'RI',
+    'SOUTH CAROLINA': 'SC',
+    'SOUTH DAKOTA': 'SD',
+    TENNESSEE: 'TN',
+    TEXAS: 'TX',
+    UTAH: 'UT',
+    VERMONT: 'VT',
+    VIRGINIA: 'VA',
+    WASHINGTON: 'WA',
+    'WEST VIRGINIA': 'WV',
+    WISCONSIN: 'WI',
+    WYOMING: 'WY',
+    'DISTRICT OF COLUMBIA': 'DC'
+  }
+
+  if (map[upper]) return map[upper]
+  if (/^[A-Z]{2}$/.test(upper)) return upper
+  return input
+}
+
 export default function Checkout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -166,7 +229,7 @@ export default function Checkout() {
       billing_address_1: billing.address_1,
       billing_address_2: billing.address_2,
       billing_city: billing.city,
-      billing_state: billing.state,
+      billing_state: normalizeUsState(billing.state),
       billing_postcode: billing.postcode,
       billing_country: billing.country,
       shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
@@ -174,7 +237,7 @@ export default function Checkout() {
       shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
       shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
       shipping_city: useSeparateShipping ? shipping.city : billing.city,
-      shipping_state: useSeparateShipping ? shipping.state : billing.state,
+      shipping_state: useSeparateShipping ? normalizeUsState(shipping.state) : normalizeUsState(billing.state),
       shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
       shipping_country: useSeparateShipping ? shipping.country : billing.country,
     })
@@ -217,17 +280,17 @@ export default function Checkout() {
       billing_address_1: snapshot.billing.address_1,
       billing_address_2: snapshot.billing.address_2,
       billing_city: snapshot.billing.city,
-      billing_state: snapshot.billing.state,
-      billing_postcode: snapshot.billing.postcode,
-      billing_country: snapshot.billing.country,
-      shipping_first_name: snapshot.useSeparateShipping ? snapshot.shipping.first_name : snapshot.billing.first_name,
-      shipping_last_name: snapshot.useSeparateShipping ? snapshot.shipping.last_name : snapshot.billing.last_name,
-      shipping_address_1: snapshot.useSeparateShipping ? snapshot.shipping.address_1 : snapshot.billing.address_1,
-      shipping_address_2: snapshot.useSeparateShipping ? snapshot.shipping.address_2 : snapshot.billing.address_2,
-      shipping_city: snapshot.useSeparateShipping ? snapshot.shipping.city : snapshot.billing.city,
-      shipping_state: snapshot.useSeparateShipping ? snapshot.shipping.state : snapshot.billing.state,
-      shipping_postcode: snapshot.useSeparateShipping ? snapshot.shipping.postcode : snapshot.billing.postcode,
-      shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : snapshot.billing.country,
+billing_state: normalizeUsState(snapshot.billing.state),
+billing_postcode: snapshot.billing.postcode,
+billing_country: snapshot.billing.country,
+shipping_first_name: snapshot.useSeparateShipping ? snapshot.shipping.first_name : snapshot.billing.first_name,
+shipping_last_name: snapshot.useSeparateShipping ? snapshot.shipping.last_name : snapshot.billing.last_name,
+shipping_address_1: snapshot.useSeparateShipping ? snapshot.shipping.address_1 : snapshot.billing.address_1,
+shipping_address_2: snapshot.useSeparateShipping ? snapshot.shipping.address_2 : snapshot.billing.address_2,
+shipping_city: snapshot.useSeparateShipping ? snapshot.shipping.city : snapshot.billing.city,
+shipping_state: snapshot.useSeparateShipping ? normalizeUsState(snapshot.shipping.state) : normalizeUsState(snapshot.billing.state),
+shipping_postcode: snapshot.useSeparateShipping ? snapshot.shipping.postcode : snapshot.billing.postcode,
+shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : snapshot.billing.country,
     })
 
     if (!revolutResult?.revolut_order_token) {
@@ -303,7 +366,7 @@ export default function Checkout() {
         address_1: billing.address_1,
         address_2: billing.address_2,
         city: billing.city,
-        state: billing.state,
+        state: normalizeUsState(billing.state),
         postcode: billing.postcode,
         country: billing.country,
         email: contact.email,
@@ -316,7 +379,7 @@ export default function Checkout() {
             address_1: shipping.address_1,
             address_2: shipping.address_2,
             city: shipping.city,
-            state: shipping.state,
+            state: normalizeUsState(shipping.state),
             postcode: shipping.postcode,
             country: shipping.country
           }
@@ -326,7 +389,7 @@ export default function Checkout() {
             address_1: billing.address_1,
             address_2: billing.address_2,
             city: billing.city,
-            state: billing.state,
+            state: normalizeUsState(billing.state),
             postcode: billing.postcode,
             country: billing.country
           }
