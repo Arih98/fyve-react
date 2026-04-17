@@ -1069,38 +1069,56 @@ const shippingAddress = snapshot.useSeparateShipping
               </div>
             )}
 
-            {isPaymentFormReady && (
-  <div className="checkout-payment-methods">
-    {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
-      <div>Preparing payment methods...</div>
-    )}
+            <div className="checkout-payment-methods">
+  {!isPaymentFormReady && (
+    <div>Please complete your billing details to load payment options.</div>
+  )}
 
-    <div className="checkout-section">
-      <h2>Google Pay</h2>
+  {isPaymentFormReady && paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
+    <div>Preparing payment methods...</div>
+  )}
+
+  <div className="checkout-section">
+    <h2>Google Pay</h2>
+    {isPaymentFormReady ? (
       <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-    </div>
+    ) : (
+      <div>Complete your details to enable Google Pay.</div>
+    )}
+  </div>
 
-                <div className="checkout-section">
-                  <h2>Revolut Pay</h2>
-                  <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-                  {!revolutPayReady && (
-                    <div>Loading Revolut Pay...</div>
-                  )}
-                </div>
+  <div className="checkout-section">
+    <h2>Revolut Pay</h2>
+    {isPaymentFormReady ? (
+      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+    ) : (
+      <div>Complete your details to enable Revolut Pay.</div>
+    )}
+  </div>
 
-                <div className="checkout-section">
-                  <h2>Pay by card</h2>
-                  <div ref={cardContainerRef} id="revolut-card-field"></div>
-                  <button
-                    type="button"
-                    onClick={handleCardPay}
-                    disabled={paymentLoading || !cardReady}
-                  >
-                    {paymentLoading ? 'Processing payment...' : 'Pay now'}
-                  </button>
-                </div>
-              </div>
-            )}
+  <div className="checkout-section">
+    <h2>Pay by card</h2>
+    {isPaymentFormReady ? (
+      <>
+        <div ref={cardContainerRef} id="revolut-card-field"></div>
+        <button
+          type="button"
+          onClick={handleCardPay}
+          disabled={paymentLoading || !cardReady}
+        >
+          {paymentLoading ? 'Processing payment...' : 'Pay now'}
+        </button>
+      </>
+    ) : (
+      <>
+        <div>Complete your details to enable card payment.</div>
+        <button type="button" disabled>
+          Pay now
+        </button>
+      </>
+    )}
+  </div>
+</div>
           </div>
         </section>
       </aside>
