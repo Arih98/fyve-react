@@ -36,29 +36,29 @@ export default function Checkout() {
     phone: ''
   })
 
-const [billing, setBilling] = useState({
-  first_name: '',
-  last_name: '',
-  address_1: '',
-  address_2: '',
-  city: '',
-  state: '',
-  postcode: '',
-  country: ''
-})
+  const [billing, setBilling] = useState({
+    first_name: '',
+    last_name: '',
+    address_1: '',
+    address_2: '',
+    city: '',
+    state: '',
+    postcode: '',
+    country: 'US'
+  })
 
   const [useSeparateShipping, setUseSeparateShipping] = useState(false)
 
-const [shipping, setShipping] = useState({
-  first_name: '',
-  last_name: '',
-  address_1: '',
-  address_2: '',
-  city: '',
-  state: '',
-  postcode: '',
-  country: ''
-})
+  const [shipping, setShipping] = useState({
+    first_name: '',
+    last_name: '',
+    address_1: '',
+    address_2: '',
+    city: '',
+    state: '',
+    postcode: '',
+    country: 'US'
+  })
 
   const [checkoutData, setCheckoutData] = useState(null)
   const [draftOrderId, setDraftOrderId] = useState(null)
@@ -87,7 +87,7 @@ const [shipping, setShipping] = useState({
   const totalAmountMinorRef = useRef(0)
   const currencyRef = useRef('GBP')
 
-const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
+  const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
   const clearMountedPaymentMethods = useCallback(() => {
     setCardReady(false)
@@ -118,27 +118,27 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
       phone: ''
     })
 
-setBilling({
-  first_name: '',
-  last_name: '',
-  address_1: '',
-  address_2: '',
-  city: '',
-  state: '',
-  postcode: '',
-  country: ''
-})
+    setBilling({
+      first_name: '',
+      last_name: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      postcode: '',
+      country: 'US'
+    })
 
-setShipping({
-  first_name: '',
-  last_name: '',
-  address_1: '',
-  address_2: '',
-  city: '',
-  state: '',
-  postcode: '',
-  country: ''
-})
+    setShipping({
+      first_name: '',
+      last_name: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      postcode: '',
+      country: 'US'
+    })
 
     setUseSeparateShipping(false)
     setError('')
@@ -240,65 +240,64 @@ setShipping({
   }, [])
 
   const redirectToSuccess = useCallback(async () => {
-  const wooOrderId = latestWooOrderIdRef.current
+    const wooOrderId = latestWooOrderIdRef.current
 
-  if (!wooOrderId) {
-    setError('Payment succeeded but order id is missing')
-    return
-  }
+    if (!wooOrderId) {
+      setError('Payment succeeded but order id is missing')
+      return
+    }
 
-  try {
-    await clearCheckoutCart().catch(() => {})
-    await refreshCart({ silent: true }).catch(() => {})
-  } catch (err) {
-  }
+    try {
+      await clearCheckoutCart().catch(() => {})
+      await refreshCart({ silent: true }).catch(() => {})
+    } catch (err) {
+    }
 
-  window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
-}, [refreshCart])
+    window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
+  }, [refreshCart])
 
   const openPaymentMethods = useCallback(async () => {
-    if (!billing.first_name.trim() || !billing.last_name.trim()) {
-      throw new Error('Please enter your first and last name')
+    if (
+      !billing.first_name.trim() ||
+      !billing.last_name.trim() ||
+      !billing.address_1.trim() ||
+      !billing.city.trim() ||
+      !billing.state.trim() ||
+      !billing.postcode.trim() ||
+      !contact.email.trim()
+    ) {
+      throw new Error('Please complete all required fields')
+    }
+
+    if (
+      useSeparateShipping &&
+      (
+        !shipping.first_name.trim() ||
+        !shipping.last_name.trim() ||
+        !shipping.address_1.trim() ||
+        !shipping.city.trim() ||
+        !shipping.state.trim() ||
+        !shipping.postcode.trim()
+      )
+    ) {
+      throw new Error('Please complete all required shipping fields')
     }
 
     setPaymentLoading(true)
     setError('')
 
-paymentSnapshotRef.current = {
-  contact: { ...contact },
-  billing: { ...billing },
-  shipping: { ...shipping },
-  useSeparateShipping
-}
+    paymentSnapshotRef.current = {
+      contact: { ...contact },
+      billing: { ...billing },
+      shipping: { ...shipping },
+      useSeparateShipping
+    }
 
     totalAmountMinorRef.current = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
     currencyRef.current = String(cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP').toUpperCase()
 
-await updateCheckoutCustomer({
-  billingAddress: {
-    first_name: billing.first_name,
-    last_name: billing.last_name,
-    address_1: billing.address_1,
-    address_2: billing.address_2,
-    city: billing.city,
-    state: billing.state,
-    postcode: billing.postcode,
-    country: billing.country,
-    email: contact.email,
-    phone: contact.phone
-  },
-  shippingAddress: useSeparateShipping
-    ? {
-        first_name: shipping.first_name,
-        last_name: shipping.last_name,
-        address_1: shipping.address_1,
-        address_2: shipping.address_2,
-        city: shipping.city,
-        state: shipping.state,
-        postcode: shipping.postcode,
-        country: shipping.country
-      }
-    : {
+    await updateCheckoutCustomer({
+      billingAddress: {
         first_name: billing.first_name,
         last_name: billing.last_name,
         address_1: billing.address_1,
@@ -306,23 +305,51 @@ await updateCheckoutCustomer({
         city: billing.city,
         state: billing.state,
         postcode: billing.postcode,
-        country: billing.country
-      }
-})
+        country: billing.country,
+        email: contact.email,
+        phone: contact.phone
+      },
+      shippingAddress: useSeparateShipping
+        ? {
+            first_name: shipping.first_name,
+            last_name: shipping.last_name,
+            address_1: shipping.address_1,
+            address_2: shipping.address_2,
+            city: shipping.city,
+            state: shipping.state,
+            postcode: shipping.postcode,
+            country: shipping.country
+          }
+        : {
+            first_name: billing.first_name,
+            last_name: billing.last_name,
+            address_1: billing.address_1,
+            address_2: billing.address_2,
+            city: billing.city,
+            state: billing.state,
+            postcode: billing.postcode,
+            country: billing.country
+          }
+    })
 
-const refreshedCheckout = await getCheckoutData().catch(() => null)
+    const refreshedCheckout = await getCheckoutData().catch(() => null)
 
-if (refreshedCheckout) {
-  setCheckoutData(refreshedCheckout)
-  setDraftOrderId(refreshedCheckout.order_id || null)
-  setDraftOrderKey(refreshedCheckout.order_key || '')
-}
+    if (refreshedCheckout) {
+      setCheckoutData(refreshedCheckout)
+      setDraftOrderId(refreshedCheckout.order_id || null)
+      setDraftOrderKey(refreshedCheckout.order_key || '')
+    }
 
-await createRevolutCheckoutOrder()
-setPaymentMethodsOpen(true)
+    await createRevolutCheckoutOrder()
+    setPaymentMethodsOpen(true)
   }, [
     billing.first_name,
     billing.last_name,
+    billing.address_1,
+    billing.city,
+    billing.state,
+    billing.postcode,
+    contact.email,
     contact,
     billing,
     shipping,
@@ -333,16 +360,15 @@ setPaymentMethodsOpen(true)
   ])
 
   useEffect(() => {
-const draft = {
-  contact,
-  billing,
-  shipping,
-  useSeparateShipping
-}
+    const draft = {
+      contact,
+      billing,
+      shipping,
+      useSeparateShipping
+    }
 
     localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
-}, [contact, billing, shipping, useSeparateShipping])
-
+  }, [contact, billing, shipping, useSeparateShipping])
 
   useEffect(() => {
     let active = true
@@ -368,14 +394,16 @@ const draft = {
             if (savedDraft.billing) {
               setBilling((prev) => ({
                 ...prev,
-                ...savedDraft.billing
+                ...savedDraft.billing,
+                country: 'US'
               }))
             }
 
             if (savedDraft.shipping) {
               setShipping((prev) => ({
                 ...prev,
-                ...savedDraft.shipping
+                ...savedDraft.shipping,
+                country: 'US'
               }))
             }
 
@@ -408,8 +436,15 @@ const draft = {
             phone: prev.phone || prefill?.billing?.phone || ''
           }))
 
-          setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
-          setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
+          setBilling((prev) => ({
+            ...mergeEmptyFields(prev, prefill?.billing || {}),
+            country: 'US'
+          }))
+
+          setShipping((prev) => ({
+            ...mergeEmptyFields(prev, prefill?.shipping || {}),
+            country: 'US'
+          }))
 
           const hasShippingPrefill = Object.values(prefill?.shipping || {}).some(Boolean)
 
@@ -568,11 +603,11 @@ const draft = {
             billingAddress,
             shippingAddress
           },
-mobileRedirectUrls: {
-  success: `${window.location.origin}/checkout/success?order_id=${encodeURIComponent(latestWooOrderIdRef.current || '')}`,
-  failure: `${window.location.origin}/checkout`,
-  cancel: `${window.location.origin}/checkout`
-}
+          mobileRedirectUrls: {
+            success: `${window.location.origin}/checkout/success?order_id=${encodeURIComponent(latestWooOrderIdRef.current || '')}`,
+            failure: `${window.location.origin}/checkout`,
+            cancel: `${window.location.origin}/checkout`
+          }
         }
 
         payments.revolutPay.mount(revolutPayContainerRef.current, revolutPayOptions)
@@ -682,80 +717,76 @@ mobileRedirectUrls: {
         </section>
 
         <section className="checkout-section">
-          <h2>Contact</h2>
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={contact.email}
-            onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
-          />
-
-          <input
-            type="text"
-            placeholder="Phone"
-            value={contact.phone}
-            onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
-          />
-        </section>
-
-        <section className="checkout-section">
           <h2>Billing address</h2>
 
           <input
             type="text"
-            placeholder="First name"
+            placeholder="First name *"
             value={billing.first_name}
             onChange={(e) => setBilling((prev) => ({ ...prev, first_name: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="Last name"
+            placeholder="Last name *"
             value={billing.last_name}
             onChange={(e) => setBilling((prev) => ({ ...prev, last_name: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="Address line 1"
+            placeholder="Country / Region *"
+            value="United States (US)"
+            readOnly
+          />
+
+          <input
+            type="text"
+            placeholder="Street address *"
             value={billing.address_1}
             onChange={(e) => setBilling((prev) => ({ ...prev, address_1: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="Address line 2"
+            placeholder="Apartment, suite, unit, etc. (optional)"
             value={billing.address_2}
             onChange={(e) => setBilling((prev) => ({ ...prev, address_2: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="City"
+            placeholder="Town / City *"
             value={billing.city}
             onChange={(e) => setBilling((prev) => ({ ...prev, city: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="State / County"
+            placeholder="State *"
             value={billing.state}
             onChange={(e) => setBilling((prev) => ({ ...prev, state: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="Postcode"
+            placeholder="ZIP Code *"
             value={billing.postcode}
             onChange={(e) => setBilling((prev) => ({ ...prev, postcode: e.target.value }))}
           />
 
           <input
             type="text"
-            placeholder="Country"
-            value={billing.country}
-            onChange={(e) => setBilling((prev) => ({ ...prev, country: e.target.value }))}
+            placeholder="Phone (optional)"
+            value={contact.phone}
+            onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
+          />
+
+          <input
+            type="email"
+            placeholder="Email address *"
+            value={contact.email}
+            onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
           />
         </section>
 
@@ -776,58 +807,58 @@ mobileRedirectUrls: {
 
             <input
               type="text"
-              placeholder="First name"
+              placeholder="First name *"
               value={shipping.first_name}
               onChange={(e) => setShipping((prev) => ({ ...prev, first_name: e.target.value }))}
             />
 
             <input
               type="text"
-              placeholder="Last name"
+              placeholder="Last name *"
               value={shipping.last_name}
               onChange={(e) => setShipping((prev) => ({ ...prev, last_name: e.target.value }))}
             />
 
             <input
               type="text"
-              placeholder="Address line 1"
+              placeholder="Country / Region *"
+              value="United States (US)"
+              readOnly
+            />
+
+            <input
+              type="text"
+              placeholder="Street address *"
               value={shipping.address_1}
               onChange={(e) => setShipping((prev) => ({ ...prev, address_1: e.target.value }))}
             />
 
             <input
               type="text"
-              placeholder="Address line 2"
+              placeholder="Apartment, suite, unit, etc. (optional)"
               value={shipping.address_2}
               onChange={(e) => setShipping((prev) => ({ ...prev, address_2: e.target.value }))}
             />
 
             <input
               type="text"
-              placeholder="City"
+              placeholder="Town / City *"
               value={shipping.city}
               onChange={(e) => setShipping((prev) => ({ ...prev, city: e.target.value }))}
             />
 
             <input
               type="text"
-              placeholder="State / County"
+              placeholder="State *"
               value={shipping.state}
               onChange={(e) => setShipping((prev) => ({ ...prev, state: e.target.value }))}
             />
 
             <input
               type="text"
-              placeholder="Postcode"
+              placeholder="ZIP Code *"
               value={shipping.postcode}
               onChange={(e) => setShipping((prev) => ({ ...prev, postcode: e.target.value }))}
-            />
-
-            <input
-              type="text"
-              placeholder="Country"
-              value={shipping.country}
-              onChange={(e) => setShipping((prev) => ({ ...prev, country: e.target.value }))}
             />
           </section>
         )}
@@ -917,9 +948,9 @@ mobileRedirectUrls: {
             {paymentMethodsOpen && (
               <div className="checkout-payment-methods">
                 <div className="checkout-section">
-  <h2>Google Pay</h2>
-  <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-</div>
+                  <h2>Google Pay</h2>
+                  <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+                </div>
 
                 <div className="checkout-section">
                   <h2>Revolut Pay</h2>
