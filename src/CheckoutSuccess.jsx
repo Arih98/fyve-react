@@ -9,6 +9,7 @@ export default function CheckoutSuccess() {
   const orderId = searchParams.get('order_id')
 
   const [loading, setLoading] = useState(true)
+  const [isConfirming, setIsConfirming] = useState(false)
   const [error, setError] = useState('')
   const [order, setOrder] = useState(null)
   const { refreshCart, clearCartState } = useContext(CartContext)
@@ -24,12 +25,58 @@ export default function CheckoutSuccess() {
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+    const clearFrontendCart = async () => {
+      await clearCheckoutCart().catch(() => {})
+      clearStoredCartToken()
+      clearCartState()
+      await refreshCart({ silent: true }).catch(() => {})
+    }
+
     const loadOrderStatus = async () => {
       try {
         setLoading(true)
+        setIsConfirming(false)
         setError('')
 
-        for (let attempt = 0; attempt < 5; attempt += 1) {
+        const firstResponse = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${orderId}`, {
+          method: 'GET',
+          credentials: 'include'
+        })
+
+        const firstRaw = await firstResponse.text()
+
+        let firstResult = null
+
+        try {
+          firstResult = firstRaw ? JSON.parse(firstRaw) : null
+        } catch (e) {
+          throw new Error(firstRaw || `Request failed with status ${firstResponse.status}`)
+        }
+
+        if (!firstResponse.ok) {
+          throw new Error(firstResult?.message || `Request failed with status ${firstResponse.status}`)
+        }
+
+        if (cancelled) return
+
+        const firstOrder = firstResult?.order || null
+        const firstPaid = Boolean(firstOrder?.is_paid)
+        const firstStatus = String(firstOrder?.status || '').toLowerCase()
+
+        setOrder(firstOrder)
+
+        if (firstPaid || firstStatus === 'processing' || firstStatus === 'completed') {
+          await clearFrontendCart()
+          if (cancelled) return
+          setLoading(false)
+          return
+        }
+
+        setIsConfirming(true)
+
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          await sleep(2000)
+
           const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${orderId}`, {
             method: 'GET',
             credentials: 'include'
@@ -58,17 +105,11 @@ export default function CheckoutSuccess() {
           setOrder(nextOrder)
 
           if (paid || status === 'processing' || status === 'completed') {
-await clearCheckoutCart().catch(() => {})
-clearStoredCartToken()
-clearCartState()
-await refreshCart({ silent: true }).catch(() => {})
+            await clearFrontendCart()
             if (cancelled) return
             setLoading(false)
+            setIsConfirming(false)
             return
-          }
-
-          if (attempt < 4) {
-            await sleep(2000)
           }
         }
 
@@ -100,21 +141,21 @@ await refreshCart({ silent: true }).catch(() => {})
         setOrder(nextOrder)
 
         if (confirmed || status === 'processing' || status === 'completed') {
-await clearCheckoutCart().catch(() => {})
-clearStoredCartToken()
-clearCartState()
-await refreshCart({ silent: true }).catch(() => {})
+          await clearFrontendCart()
           if (cancelled) return
           setLoading(false)
+          setIsConfirming(false)
           return
         }
 
         setError('Your payment is still being finalised. Please refresh this page in a moment.')
         setLoading(false)
+        setIsConfirming(false)
       } catch (err) {
         if (cancelled) return
         setError(err.message || 'Failed to load order status')
         setLoading(false)
+        setIsConfirming(false)
       }
     }
 
@@ -125,11 +166,19 @@ await refreshCart({ silent: true }).catch(() => {})
     }
   }, [orderId, refreshCart, clearCartState])
 
-  if (loading) {
+  if (loading && isConfirming) {
     return (
       <div className="checkout-success-page">
         <h1>Confirming your payment...</h1>
         <p>Please stay on this page for a moment.</p>
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="checkout-success-page">
+        <h1>Loading your order...</h1>
       </div>
     )
   }
