@@ -12,6 +12,10 @@ function setStoredCartToken(token) {
   }
 }
 
+export function clearStoredCartToken() {
+  localStorage.removeItem(CART_TOKEN_KEY)
+}
+
 export async function apiRequest(path, options = {}) {
   const storedCartToken = getStoredCartToken()
   const headers = new Headers(options.headers || {})

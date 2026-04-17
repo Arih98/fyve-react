@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CartContext } from './CartContext'
 import { clearCheckoutCart } from './api/checkout'
+import { clearStoredCartToken } from './api/request'
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams()
@@ -10,7 +11,7 @@ export default function CheckoutSuccess() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [order, setOrder] = useState(null)
-  const { refreshCart } = useContext(CartContext)
+  const { refreshCart, clearCartState } = useContext(CartContext)
 
   useEffect(() => {
     if (!orderId) {
@@ -57,8 +58,10 @@ export default function CheckoutSuccess() {
           setOrder(nextOrder)
 
           if (paid || status === 'processing' || status === 'completed') {
-            await clearCheckoutCart().catch(() => {})
-            await refreshCart({ silent: true }).catch(() => {})
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
+clearCartState()
+await refreshCart({ silent: true }).catch(() => {})
             if (cancelled) return
             setLoading(false)
             return
@@ -97,8 +100,10 @@ export default function CheckoutSuccess() {
         setOrder(nextOrder)
 
         if (confirmed || status === 'processing' || status === 'completed') {
-          await clearCheckoutCart().catch(() => {})
-          await refreshCart({ silent: true }).catch(() => {})
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
+clearCartState()
+await refreshCart({ silent: true }).catch(() => {})
           if (cancelled) return
           setLoading(false)
           return
@@ -118,7 +123,7 @@ export default function CheckoutSuccess() {
     return () => {
       cancelled = true
     }
-  }, [orderId, refreshCart])
+  }, [orderId, refreshCart, clearCartState])
 
   if (loading) {
     return (

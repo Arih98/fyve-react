@@ -37,51 +37,51 @@ export function CartProvider({ children }) {
     refreshCart().catch(() => {})
   }, [refreshCart])
 
-const addItem = useCallback(async (payload) => {
-  setLoading(true)
-  setError('')
+  const addItem = useCallback(async (payload) => {
+    setLoading(true)
+    setError('')
 
-  try {
-    const item = await addStoreCartItem(payload)
+    try {
+      const item = await addStoreCartItem(payload)
 
-    setCart((prev) => {
-      if (!prev) return prev
+      setCart((prev) => {
+        if (!prev) return prev
 
-      const existingItems = Array.isArray(prev.items) ? prev.items : []
-      const existingIndex = existingItems.findIndex((existing) => existing.key === item.key)
+        const existingItems = Array.isArray(prev.items) ? prev.items : []
+        const existingIndex = existingItems.findIndex((existing) => existing.key === item.key)
 
-      let nextItems
+        let nextItems
 
-      if (existingIndex !== -1) {
-        nextItems = [...existingItems]
-        nextItems[existingIndex] = item
-      } else {
-        nextItems = [...existingItems, item]
-      }
+        if (existingIndex !== -1) {
+          nextItems = [...existingItems]
+          nextItems[existingIndex] = item
+        } else {
+          nextItems = [...existingItems, item]
+        }
 
-      const addedQuantity = Number(item.quantity || 0)
-      const previousQuantity =
-        existingIndex !== -1 ? Number(existingItems[existingIndex]?.quantity || 0) : 0
-      const quantityDelta = Math.max(0, addedQuantity - previousQuantity)
+        const addedQuantity = Number(item.quantity || 0)
+        const previousQuantity =
+          existingIndex !== -1 ? Number(existingItems[existingIndex]?.quantity || 0) : 0
+        const quantityDelta = Math.max(0, addedQuantity - previousQuantity)
 
-      return {
-        ...prev,
-        items: nextItems,
-        items_count: Number(prev.items_count || 0) + quantityDelta
-      }
-    })
+        return {
+          ...prev,
+          items: nextItems,
+          items_count: Number(prev.items_count || 0) + quantityDelta
+        }
+      })
 
-    refreshCart({ silent: true }).catch(() => {})
+      refreshCart({ silent: true }).catch(() => {})
 
-    return item
-  } catch (err) {
-    setError(err.message || 'Failed to add item')
-    await refreshCart({ silent: true }).catch(() => {})
-    throw err
-  } finally {
-    setLoading(false)
-  }
-}, [refreshCart])
+      return item
+    } catch (err) {
+      setError(err.message || 'Failed to add item')
+      await refreshCart({ silent: true }).catch(() => {})
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }, [refreshCart])
 
   const updateItemQuantity = useCallback(async (key, quantity) => {
     setLoading(true)
@@ -135,6 +135,18 @@ const addItem = useCallback(async (payload) => {
     }
   }, [refreshCart])
 
+  const clearCartState = useCallback(() => {
+    setCart({
+      items: [],
+      items_count: 0,
+      totals: {
+        total_price: '0',
+        total_items: '0',
+        total_tax: '0'
+      }
+    })
+  }, [])
+
   const value = useMemo(() => {
     const items = cart?.items || []
     const cartCount = cart?.items_count || items.reduce((sum, item) => sum + (item.quantity || 0), 0)
@@ -150,9 +162,10 @@ const addItem = useCallback(async (payload) => {
       refreshCart,
       addItem,
       updateItemQuantity,
-      removeItem
+      removeItem,
+      clearCartState
     }
-  }, [cart, loading, error, refreshCart, addItem, updateItemQuantity, removeItem])
+  }, [cart, loading, error, refreshCart, addItem, updateItemQuantity, removeItem, clearCartState])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
