@@ -986,9 +986,6 @@ setPaymentMethodsOpen(true)
                 <div className="checkout-section">
   <h2>Google Pay</h2>
   <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-  {!appleGoogleReady && (
-    <div>Google Pay not available on this device.</div>
-  )}
 </div>
 
                 <div className="checkout-section">
