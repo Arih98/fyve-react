@@ -152,6 +152,8 @@ export default function Checkout() {
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
+  const paymentInitKeyRef = useRef('')
+
   const clearMountedPaymentMethods = useCallback(() => {
     setCardReady(false)
     setAppleGoogleReady(false)
@@ -172,6 +174,26 @@ export default function Checkout() {
       revolutPayInstanceRef.current = null
     }
   }, [])
+
+  const isPaymentFormReady =
+  !!billing.first_name.trim() &&
+  !!billing.last_name.trim() &&
+  !!billing.address_1.trim() &&
+  !!billing.city.trim() &&
+  !!billing.state.trim() &&
+  !!billing.postcode.trim() &&
+  !!contact.email.trim() &&
+  (
+    !useSeparateShipping ||
+    (
+      !!shipping.first_name.trim() &&
+      !!shipping.last_name.trim() &&
+      !!shipping.address_1.trim() &&
+      !!shipping.city.trim() &&
+      !!shipping.state.trim() &&
+      !!shipping.postcode.trim()
+    )
+  )
 
   const clearSavedCheckoutDraft = () => {
     localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
@@ -434,6 +456,69 @@ shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : sna
   }, [contact, billing, shipping, useSeparateShipping])
 
   useEffect(() => {
+  if (loading || cartLoading) return
+  if (!cartItems?.length) return
+
+  if (!isPaymentFormReady) {
+    paymentInitKeyRef.current = ''
+    if (paymentMethodsOpen) {
+      setPaymentMethodsOpen(false)
+      setRevolutPublicKey('')
+      clearMountedPaymentMethods()
+    }
+    return
+  }
+
+  const nextKey = JSON.stringify({
+    contactEmail: contact.email.trim(),
+    contactPhone: contact.phone.trim(),
+    billingFirstName: billing.first_name.trim(),
+    billingLastName: billing.last_name.trim(),
+    billingAddress1: billing.address_1.trim(),
+    billingAddress2: billing.address_2.trim(),
+    billingCity: billing.city.trim(),
+    billingState: normalizeUsState(billing.state),
+    billingPostcode: billing.postcode.trim(),
+    billingCountry: billing.country,
+    useSeparateShipping,
+    shippingFirstName: shipping.first_name.trim(),
+    shippingLastName: shipping.last_name.trim(),
+    shippingAddress1: shipping.address_1.trim(),
+    shippingAddress2: shipping.address_2.trim(),
+    shippingCity: shipping.city.trim(),
+    shippingState: normalizeUsState(shipping.state),
+    shippingPostcode: shipping.postcode.trim(),
+    shippingCountry: shipping.country
+  })
+
+  if (paymentInitKeyRef.current === nextKey) return
+
+  paymentInitKeyRef.current = nextKey
+
+  ;(async () => {
+    try {
+      await openPaymentMethods()
+    } catch (err) {
+      setError(err.message || 'Failed to prepare payment')
+      setPaymentLoading(false)
+    }
+  })()
+}, [
+  loading,
+  cartLoading,
+  cartItems,
+  isPaymentFormReady,
+  contact,
+  billing,
+  shipping,
+  useSeparateShipping,
+  paymentMethodsOpen,
+  openPaymentMethods,
+  clearMountedPaymentMethods
+])
+
+
+  useEffect(() => {
     let active = true
 
     async function loadCheckout() {
@@ -668,6 +753,7 @@ const shippingAddress = snapshot.useSeparateShipping
         payments.revolutPay.mount(revolutPayContainerRef.current, revolutPayOptions)
         revolutPayInstanceRef.current = payments.revolutPay
         setRevolutPayReady(true)
+        setPaymentLoading(false)
 
         payments.revolutPay.on('payment', (event) => {
           switch (event?.type) {
@@ -684,11 +770,12 @@ const shippingAddress = snapshot.useSeparateShipping
               break
           }
         })
-      } catch (err) {
-        if (!cancelled) {
-          setError(err?.message || 'Failed to load payment methods')
-        }
-      }
+} catch (err) {
+  if (!cancelled) {
+    setPaymentLoading(false)
+    setError(err?.message || 'Failed to load payment methods')
+  }
+}
     }
 
     mountMethods()
@@ -982,30 +1069,16 @@ const shippingAddress = snapshot.useSeparateShipping
               </div>
             )}
 
-            {!paymentMethodsOpen && (
-              <button
-                type="button"
-                onClick={async () => {
-                  try {
-                    await openPaymentMethods()
-                  } catch (err) {
-                    setError(err.message || 'Failed to prepare payment')
-                  } finally {
-                    setPaymentLoading(false)
-                  }
-                }}
-                disabled={paymentLoading}
-              >
-                {paymentLoading ? 'Preparing payment...' : 'Continue to Payment'}
-              </button>
-            )}
+            {isPaymentFormReady && (
+  <div className="checkout-payment-methods">
+    {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
+      <div>Preparing payment methods...</div>
+    )}
 
-            {paymentMethodsOpen && (
-              <div className="checkout-payment-methods">
-                <div className="checkout-section">
-                  <h2>Google Pay</h2>
-                  <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-                </div>
+    <div className="checkout-section">
+      <h2>Google Pay</h2>
+      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+    </div>
 
                 <div className="checkout-section">
                   <h2>Revolut Pay</h2>
