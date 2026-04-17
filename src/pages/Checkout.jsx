@@ -90,25 +90,32 @@ function normalizeUsState(value) {
   return input
 }
 
-function getCheckoutValidationError({ contact, billing, shipping, useSeparateShipping }) {
-  if (!billing.first_name.trim()) return 'Please enter your first name'
-  if (!billing.last_name.trim()) return 'Please enter your last name'
-  if (!billing.address_1.trim()) return 'Please enter your street address'
-  if (!billing.city.trim()) return 'Please enter your city'
-  if (!billing.state.trim()) return 'Please enter your state'
-  if (!billing.postcode.trim()) return 'Please enter your ZIP code'
-  if (!contact.email.trim()) return 'Please enter your email address'
+function getCheckoutValidationErrors({ contact, billing, shipping, useSeparateShipping }) {
+  const errors = {}
 
-  if (useSeparateShipping) {
-    if (!shipping.first_name.trim()) return 'Please enter your shipping first name'
-    if (!shipping.last_name.trim()) return 'Please enter your shipping last name'
-    if (!shipping.address_1.trim()) return 'Please enter your shipping street address'
-    if (!shipping.city.trim()) return 'Please enter your shipping city'
-    if (!shipping.state.trim()) return 'Please enter your shipping state'
-    if (!shipping.postcode.trim()) return 'Please enter your shipping ZIP code'
+  if (!billing.first_name.trim()) errors.billing_first_name = 'Please enter your first name'
+  if (!billing.last_name.trim()) errors.billing_last_name = 'Please enter your last name'
+  if (!billing.address_1.trim()) errors.billing_address_1 = 'Please enter your street address'
+  if (!billing.city.trim()) errors.billing_city = 'Please enter your city'
+  if (!billing.state.trim()) errors.billing_state = 'Please enter your state'
+  if (!billing.postcode.trim()) errors.billing_postcode = 'Please enter your ZIP code'
+
+  if (!contact.email.trim()) {
+    errors.contact_email = 'Please enter your email address'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim())) {
+    errors.contact_email = 'Please enter a valid email address'
   }
 
-  return ''
+  if (useSeparateShipping) {
+    if (!shipping.first_name.trim()) errors.shipping_first_name = 'Please enter your shipping first name'
+    if (!shipping.last_name.trim()) errors.shipping_last_name = 'Please enter your shipping last name'
+    if (!shipping.address_1.trim()) errors.shipping_address_1 = 'Please enter your shipping street address'
+    if (!shipping.city.trim()) errors.shipping_city = 'Please enter your shipping city'
+    if (!shipping.state.trim()) errors.shipping_state = 'Please enter your shipping state'
+    if (!shipping.postcode.trim()) errors.shipping_postcode = 'Please enter your shipping ZIP code'
+  }
+
+  return errors
 }
 
 export default function Checkout() {
@@ -173,8 +180,6 @@ export default function Checkout() {
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
-  const paymentInitKeyRef = useRef('')
-
   const clearMountedPaymentMethods = useCallback(() => {
     setCardReady(false)
     setAppleGoogleReady(false)
@@ -233,26 +238,6 @@ const initializePaymentMethods = useCallback(async () => {
   setPaymentMethodsOpen(true)
 }, [contact, billing, shipping, useSeparateShipping, cart])
 
-  const isPaymentFormReady =
-  !!billing.first_name.trim() &&
-  !!billing.last_name.trim() &&
-  !!billing.address_1.trim() &&
-  !!billing.city.trim() &&
-  !!billing.state.trim() &&
-  !!billing.postcode.trim() &&
-  !!contact.email.trim() &&
-  (
-    !useSeparateShipping ||
-    (
-      !!shipping.first_name.trim() &&
-      !!shipping.last_name.trim() &&
-      !!shipping.address_1.trim() &&
-      !!shipping.city.trim() &&
-      !!shipping.state.trim() &&
-      !!shipping.postcode.trim()
-    )
-  )
-
   const clearSavedCheckoutDraft = () => {
     localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
 
@@ -292,54 +277,6 @@ const initializePaymentMethods = useCallback(async () => {
     currencyRef.current = 'GBP'
     clearMountedPaymentMethods()
   }
-
-  const createRevolutCheckoutOrder = useCallback(async () => {
-    const latestCheckout = await getCheckoutData()
-    setCheckoutData(latestCheckout)
-    setDraftOrderId(latestCheckout.order_id || null)
-    setDraftOrderKey(latestCheckout.order_key || '')
-
-    const revolutResult = await createRevolutOrder({
-      draft_order_id: latestCheckout.order_id || null,
-      draft_order_key: latestCheckout.order_key || '',
-      billing_email: contact.email,
-      billing_phone: contact.phone || '',
-      billing_first_name: billing.first_name,
-      billing_last_name: billing.last_name,
-      billing_address_1: billing.address_1,
-      billing_address_2: billing.address_2,
-      billing_city: billing.city,
-      billing_state: normalizeUsState(billing.state),
-      billing_postcode: billing.postcode,
-      billing_country: billing.country,
-      shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
-      shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
-      shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
-      shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
-      shipping_city: useSeparateShipping ? shipping.city : billing.city,
-      shipping_state: useSeparateShipping ? normalizeUsState(shipping.state) : normalizeUsState(billing.state),
-      shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
-      shipping_country: useSeparateShipping ? shipping.country : billing.country,
-    })
-
-    if (!revolutResult?.revolut_order_token) {
-      throw new Error('Missing Revolut order token')
-    }
-
-    if (!revolutResult?.revolut_public_key) {
-      throw new Error('Missing Revolut public API key')
-    }
-
-    latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
-    setRevolutPublicKey(revolutResult.revolut_public_key)
-
-    return revolutResult
-  }, [
-    contact,
-    billing,
-    shipping,
-    useSeparateShipping
-  ])
 
   const createRevolutPaymentOrder = useCallback(async () => {
     const snapshot = paymentSnapshotRef.current
@@ -399,108 +336,73 @@ shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : sna
     window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
   }, [refreshCart])
 
-  const openPaymentMethods = useCallback(async () => {
-    if (
-      !billing.first_name.trim() ||
-      !billing.last_name.trim() ||
-      !billing.address_1.trim() ||
-      !billing.city.trim() ||
-      !billing.state.trim() ||
-      !billing.postcode.trim() ||
-      !contact.email.trim()
-    ) {
-      throw new Error('Please complete all required fields')
-    }
+  const [fieldErrors, setFieldErrors] = useState({})
 
-    if (
-      useSeparateShipping &&
-      (
-        !shipping.first_name.trim() ||
-        !shipping.last_name.trim() ||
-        !shipping.address_1.trim() ||
-        !shipping.city.trim() ||
-        !shipping.state.trim() ||
-        !shipping.postcode.trim()
-      )
-    ) {
-      throw new Error('Please complete all required shipping fields')
-    }
+const firstNameRef = useRef(null)
+const lastNameRef = useRef(null)
+const address1Ref = useRef(null)
+const cityRef = useRef(null)
+const stateRef = useRef(null)
+const postcodeRef = useRef(null)
+const emailRef = useRef(null)
 
-    setPaymentLoading(true)
-    setError('')
+const shippingFirstNameRef = useRef(null)
+const shippingLastNameRef = useRef(null)
+const shippingAddress1Ref = useRef(null)
+const shippingCityRef = useRef(null)
+const shippingStateRef = useRef(null)
+const shippingPostcodeRef = useRef(null)
 
-    paymentSnapshotRef.current = {
-      contact: { ...contact },
-      billing: { ...billing },
-      shipping: { ...shipping },
-      useSeparateShipping
-    }
+const focusFirstInvalidField = useCallback((errors) => {
+  const firstKey = Object.keys(errors)[0]
 
-    totalAmountMinorRef.current = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
-    currencyRef.current = String(cart?.totals?.currency_code || checkoutData?.totals?.currency_code || 'GBP').toUpperCase()
+  if (!firstKey) return
 
-    await updateCheckoutCustomer({
-      billingAddress: {
-        first_name: billing.first_name,
-        last_name: billing.last_name,
-        address_1: billing.address_1,
-        address_2: billing.address_2,
-        city: billing.city,
-        state: normalizeUsState(billing.state),
-        postcode: billing.postcode,
-        country: billing.country,
-        email: contact.email,
-        phone: contact.phone
-      },
-      shippingAddress: useSeparateShipping
-        ? {
-            first_name: shipping.first_name,
-            last_name: shipping.last_name,
-            address_1: shipping.address_1,
-            address_2: shipping.address_2,
-            city: shipping.city,
-            state: normalizeUsState(shipping.state),
-            postcode: shipping.postcode,
-            country: shipping.country
-          }
-        : {
-            first_name: billing.first_name,
-            last_name: billing.last_name,
-            address_1: billing.address_1,
-            address_2: billing.address_2,
-            city: billing.city,
-            state: normalizeUsState(billing.state),
-            postcode: billing.postcode,
-            country: billing.country
-          }
-    })
+  const refMap = {
+    billing_first_name: firstNameRef,
+    billing_last_name: lastNameRef,
+    billing_address_1: address1Ref,
+    billing_city: cityRef,
+    billing_state: stateRef,
+    billing_postcode: postcodeRef,
+    contact_email: emailRef,
+    shipping_first_name: shippingFirstNameRef,
+    shipping_last_name: shippingLastNameRef,
+    shipping_address_1: shippingAddress1Ref,
+    shipping_city: shippingCityRef,
+    shipping_state: shippingStateRef,
+    shipping_postcode: shippingPostcodeRef
+  }
 
-    const refreshedCheckout = await getCheckoutData().catch(() => null)
+  const ref = refMap[firstKey]
 
-    if (refreshedCheckout) {
-      setCheckoutData(refreshedCheckout)
-      setDraftOrderId(refreshedCheckout.order_id || null)
-      setDraftOrderKey(refreshedCheckout.order_key || '')
-    }
+  if (ref?.current) {
+    ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => {
+      ref.current?.focus()
+    }, 250)
+  }
+}, [])
 
-    await createRevolutCheckoutOrder()
-    setPaymentMethodsOpen(true)
-  }, [
-    billing.first_name,
-    billing.last_name,
-    billing.address_1,
-    billing.city,
-    billing.state,
-    billing.postcode,
-    contact.email,
+const validateCheckoutBeforePayment = useCallback(() => {
+  const errors = getCheckoutValidationErrors({
     contact,
     billing,
     shipping,
-    useSeparateShipping,
-    checkoutData,
-    cart,
-    createRevolutCheckoutOrder
-  ])
+    useSeparateShipping
+  })
+
+  setFieldErrors(errors)
+
+  if (Object.keys(errors).length > 0) {
+    setError('Please complete the required fields')
+    focusFirstInvalidField(errors)
+    return false
+  }
+
+  setError('')
+  return true
+}, [contact, billing, shipping, useSeparateShipping, focusFirstInvalidField])
 
   useEffect(() => {
     const draft = {
@@ -726,22 +628,76 @@ const shippingAddress = snapshot.useSeparateShipping
         setCardReady(true)
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
-          amount: totalAmountMinorRef.current,
-          currency: currencyRef.current,
-          createOrder: async () => {
-            const result = await createRevolutPaymentOrder()
-            return { publicId: result.revolut_order_token }
-          },
-          onSuccess: () => {
-            redirectToSuccess()
-          },
-          onError: (error) => {
-            setError(error?.message || 'Apple Pay / Google Pay payment failed')
-          },
-          onCancel: () => {
-            setError('Apple Pay / Google Pay payment cancelled')
-          }
-        })
+  amount: totalAmountMinorRef.current,
+  currency: currencyRef.current,
+  createOrder: async () => {
+  const live = paymentSnapshotRef.current
+
+  if (!live) {
+    throw new Error('Payment snapshot is missing')
+  }
+
+  const errors = getCheckoutValidationErrors(live)
+
+  setFieldErrors(errors)
+
+  if (Object.keys(errors).length > 0) {
+    setError('Please complete the required fields')
+    focusFirstInvalidField(errors)
+    throw new Error('Please complete the required fields')
+  }
+
+  await updateCheckoutCustomer({
+    billingAddress: {
+      first_name: live.billing.first_name,
+      last_name: live.billing.last_name,
+      address_1: live.billing.address_1,
+      address_2: live.billing.address_2,
+      city: live.billing.city,
+      state: normalizeUsState(live.billing.state),
+      postcode: live.billing.postcode,
+      country: live.billing.country,
+      email: live.contact.email,
+      phone: live.contact.phone
+    },
+    shippingAddress: live.useSeparateShipping
+      ? {
+          first_name: live.shipping.first_name,
+          last_name: live.shipping.last_name,
+          address_1: live.shipping.address_1,
+          address_2: live.shipping.address_2,
+          city: live.shipping.city,
+          state: normalizeUsState(live.shipping.state),
+          postcode: live.shipping.postcode,
+          country: live.shipping.country
+        }
+      : {
+          first_name: live.billing.first_name,
+          last_name: live.billing.last_name,
+          address_1: live.billing.address_1,
+          address_2: live.billing.address_2,
+          city: live.billing.city,
+          state: normalizeUsState(live.billing.state),
+          postcode: live.billing.postcode,
+          country: live.billing.country
+        }
+  })
+
+  const result = await createRevolutPaymentOrder()
+  return { publicId: result.revolut_order_token }
+},
+  onSuccess: () => {
+    redirectToSuccess()
+  },
+onError: (error) => {
+  const message = error?.message || 'Apple Pay / Google Pay payment failed'
+  if (message === 'Please complete the required fields') return
+  setError(message)
+},
+  onCancel: () => {
+    setError('Apple Pay / Google Pay payment cancelled')
+  }
+})
 
         paymentRequestInstanceRef.current = paymentRequestInstance
 
@@ -756,13 +712,65 @@ const shippingAddress = snapshot.useSeparateShipping
           setAppleGoogleReady(false)
         }
 
-        const revolutPayOptions = {
+                const revolutPayOptions = {
           currency: currencyRef.current,
           totalAmount: totalAmountMinorRef.current,
           createOrder: async () => {
-            const result = await createRevolutPaymentOrder()
-            return { publicId: result.revolut_order_token }
-          },
+  const live = paymentSnapshotRef.current
+
+  if (!live) {
+    throw new Error('Payment snapshot is missing')
+  }
+
+  const errors = getCheckoutValidationErrors(live)
+
+  setFieldErrors(errors)
+
+  if (Object.keys(errors).length > 0) {
+    setError('Please complete the required fields')
+    focusFirstInvalidField(errors)
+    throw new Error('Please complete the required fields')
+  }
+
+  await updateCheckoutCustomer({
+    billingAddress: {
+      first_name: live.billing.first_name,
+      last_name: live.billing.last_name,
+      address_1: live.billing.address_1,
+      address_2: live.billing.address_2,
+      city: live.billing.city,
+      state: normalizeUsState(live.billing.state),
+      postcode: live.billing.postcode,
+      country: live.billing.country,
+      email: live.contact.email,
+      phone: live.contact.phone
+    },
+    shippingAddress: live.useSeparateShipping
+      ? {
+          first_name: live.shipping.first_name,
+          last_name: live.shipping.last_name,
+          address_1: live.shipping.address_1,
+          address_2: live.shipping.address_2,
+          city: live.shipping.city,
+          state: normalizeUsState(live.shipping.state),
+          postcode: live.shipping.postcode,
+          country: live.shipping.country
+        }
+      : {
+          first_name: live.billing.first_name,
+          last_name: live.billing.last_name,
+          address_1: live.billing.address_1,
+          address_2: live.billing.address_2,
+          city: live.billing.city,
+          state: normalizeUsState(live.billing.state),
+          postcode: live.billing.postcode,
+          country: live.billing.country
+        }
+  })
+
+  const result = await createRevolutPaymentOrder()
+  return { publicId: result.revolut_order_token }
+},
           customer: {
             name: fullName || undefined,
             email: snapshot.contact.email || undefined,
@@ -787,9 +795,13 @@ const shippingAddress = snapshot.useSeparateShipping
             case 'success':
               redirectToSuccess()
               break
-            case 'error':
-              setError(event?.error?.message || 'Revolut Pay payment failed')
-              break
+case 'error': {
+  const message = event?.error?.message || 'Revolut Pay payment failed'
+  if (message !== 'Please complete the required fields') {
+    setError(message)
+  }
+  break
+}
             case 'cancel':
               setError('Revolut Pay payment cancelled')
               break
@@ -828,16 +840,10 @@ const shippingAddress = snapshot.useSeparateShipping
     setPaymentLoading(true)
     setError('')
 
-    const validationError = getCheckoutValidationError({
-      contact,
-      billing,
-      shipping,
-      useSeparateShipping
-    })
+    const isValid = validateCheckoutBeforePayment()
 
-    if (validationError) {
+    if (!isValid) {
       setPaymentLoading(false)
-      setError(validationError)
       return
     }
 
@@ -938,19 +944,33 @@ const shippingAddress = snapshot.useSeparateShipping
         <section className="checkout-section">
           <h2>Billing address</h2>
 
-          <input
-            type="text"
-            placeholder="First name *"
-            value={billing.first_name}
-            onChange={(e) => setBilling((prev) => ({ ...prev, first_name: e.target.value }))}
-          />
+{fieldErrors.billing_first_name && (
+  <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
+)}
+<input
+  ref={firstNameRef}
+  type="text"
+  placeholder="First name *"
+  value={billing.first_name}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, first_name: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
+  }}
+/>
 
-          <input
-            type="text"
-            placeholder="Last name *"
-            value={billing.last_name}
-            onChange={(e) => setBilling((prev) => ({ ...prev, last_name: e.target.value }))}
-          />
+{fieldErrors.billing_last_name && (
+  <div className="checkout-field-error">{fieldErrors.billing_last_name}</div>
+)}
+<input
+  ref={lastNameRef}
+  type="text"
+  placeholder="Last name *"
+  value={billing.last_name}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, last_name: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
+  }}
+/>
 
           <input
             type="text"
@@ -959,12 +979,19 @@ const shippingAddress = snapshot.useSeparateShipping
             readOnly
           />
 
-          <input
-            type="text"
-            placeholder="Street address *"
-            value={billing.address_1}
-            onChange={(e) => setBilling((prev) => ({ ...prev, address_1: e.target.value }))}
-          />
+{fieldErrors.billing_address_1 && (
+  <div className="checkout-field-error">{fieldErrors.billing_address_1}</div>
+)}
+<input
+  ref={address1Ref}
+  type="text"
+  placeholder="Street address *"
+  value={billing.address_1}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, address_1: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_address_1: '' }))
+  }}
+/>
 
           <input
             type="text"
@@ -973,26 +1000,47 @@ const shippingAddress = snapshot.useSeparateShipping
             onChange={(e) => setBilling((prev) => ({ ...prev, address_2: e.target.value }))}
           />
 
-          <input
-            type="text"
-            placeholder="Town / City *"
-            value={billing.city}
-            onChange={(e) => setBilling((prev) => ({ ...prev, city: e.target.value }))}
-          />
+{fieldErrors.billing_city && (
+  <div className="checkout-field-error">{fieldErrors.billing_city}</div>
+)}
+<input
+  ref={cityRef}
+  type="text"
+  placeholder="Town / City *"
+  value={billing.city}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, city: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_city: '' }))
+  }}
+/>
 
-          <input
-            type="text"
-            placeholder="State *"
-            value={billing.state}
-            onChange={(e) => setBilling((prev) => ({ ...prev, state: e.target.value }))}
-          />
+{fieldErrors.billing_state && (
+  <div className="checkout-field-error">{fieldErrors.billing_state}</div>
+)}
+<input
+  ref={stateRef}
+  type="text"
+  placeholder="State *"
+  value={billing.state}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, state: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
+  }}
+/>
 
-          <input
-            type="text"
-            placeholder="ZIP Code *"
-            value={billing.postcode}
-            onChange={(e) => setBilling((prev) => ({ ...prev, postcode: e.target.value }))}
-          />
+{fieldErrors.billing_postcode && (
+  <div className="checkout-field-error">{fieldErrors.billing_postcode}</div>
+)}
+<input
+  ref={postcodeRef}
+  type="text"
+  placeholder="ZIP Code *"
+  value={billing.postcode}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, postcode: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_postcode: '' }))
+  }}
+/>
 
           <input
             type="text"
@@ -1001,41 +1049,76 @@ const shippingAddress = snapshot.useSeparateShipping
             onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
           />
 
-          <input
-            type="email"
-            placeholder="Email address *"
-            value={contact.email}
-            onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
-          />
-        </section>
+{fieldErrors.contact_email && (
+  <div className="checkout-field-error">{fieldErrors.contact_email}</div>
+)}
+<input
+  ref={emailRef}
+  type="email"
+  placeholder="Email address *"
+  value={contact.email}
+  onChange={(e) => {
+    setContact((prev) => ({ ...prev, email: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, contact_email: '' }))
+  }}
+/>
+</section>
 
         <section className="checkout-section">
           <label>
             <input
               type="checkbox"
               checked={useSeparateShipping}
-              onChange={(e) => setUseSeparateShipping(e.target.checked)}
+              onChange={(e) => {
+  const checked = e.target.checked
+  setUseSeparateShipping(checked)
+  if (!checked) {
+    setFieldErrors((prev) => ({
+      ...prev,
+      shipping_first_name: '',
+      shipping_last_name: '',
+      shipping_address_1: '',
+      shipping_city: '',
+      shipping_state: '',
+      shipping_postcode: ''
+    }))
+  }
+}}
             />
             Ship to a different address
           </label>
         </section>
 
-        {useSeparateShipping && (
+                {useSeparateShipping && (
           <section className="checkout-section">
             <h2>Shipping address</h2>
 
+            {fieldErrors.shipping_first_name && (
+              <div className="checkout-field-error">{fieldErrors.shipping_first_name}</div>
+            )}
             <input
+              ref={shippingFirstNameRef}
               type="text"
               placeholder="First name *"
               value={shipping.first_name}
-              onChange={(e) => setShipping((prev) => ({ ...prev, first_name: e.target.value }))}
+              onChange={(e) => {
+                setShipping((prev) => ({ ...prev, first_name: e.target.value }))
+                setFieldErrors((prev) => ({ ...prev, shipping_first_name: '' }))
+              }}
             />
 
+            {fieldErrors.shipping_last_name && (
+              <div className="checkout-field-error">{fieldErrors.shipping_last_name}</div>
+            )}
             <input
+              ref={shippingLastNameRef}
               type="text"
               placeholder="Last name *"
               value={shipping.last_name}
-              onChange={(e) => setShipping((prev) => ({ ...prev, last_name: e.target.value }))}
+              onChange={(e) => {
+                setShipping((prev) => ({ ...prev, last_name: e.target.value }))
+                setFieldErrors((prev) => ({ ...prev, shipping_last_name: '' }))
+              }}
             />
 
             <input
@@ -1045,11 +1128,18 @@ const shippingAddress = snapshot.useSeparateShipping
               readOnly
             />
 
+            {fieldErrors.shipping_address_1 && (
+              <div className="checkout-field-error">{fieldErrors.shipping_address_1}</div>
+            )}
             <input
+              ref={shippingAddress1Ref}
               type="text"
               placeholder="Street address *"
               value={shipping.address_1}
-              onChange={(e) => setShipping((prev) => ({ ...prev, address_1: e.target.value }))}
+              onChange={(e) => {
+                setShipping((prev) => ({ ...prev, address_1: e.target.value }))
+                setFieldErrors((prev) => ({ ...prev, shipping_address_1: '' }))
+              }}
             />
 
             <input
@@ -1059,25 +1149,46 @@ const shippingAddress = snapshot.useSeparateShipping
               onChange={(e) => setShipping((prev) => ({ ...prev, address_2: e.target.value }))}
             />
 
+            {fieldErrors.shipping_city && (
+              <div className="checkout-field-error">{fieldErrors.shipping_city}</div>
+            )}
             <input
+              ref={shippingCityRef}
               type="text"
               placeholder="Town / City *"
               value={shipping.city}
-              onChange={(e) => setShipping((prev) => ({ ...prev, city: e.target.value }))}
+              onChange={(e) => {
+                setShipping((prev) => ({ ...prev, city: e.target.value }))
+                setFieldErrors((prev) => ({ ...prev, shipping_city: '' }))
+              }}
             />
 
+            {fieldErrors.shipping_state && (
+              <div className="checkout-field-error">{fieldErrors.shipping_state}</div>
+            )}
             <input
+              ref={shippingStateRef}
               type="text"
               placeholder="State *"
               value={shipping.state}
-              onChange={(e) => setShipping((prev) => ({ ...prev, state: e.target.value }))}
+              onChange={(e) => {
+                setShipping((prev) => ({ ...prev, state: e.target.value }))
+                setFieldErrors((prev) => ({ ...prev, shipping_state: '' }))
+              }}
             />
 
+            {fieldErrors.shipping_postcode && (
+              <div className="checkout-field-error">{fieldErrors.shipping_postcode}</div>
+            )}
             <input
+              ref={shippingPostcodeRef}
               type="text"
               placeholder="ZIP Code *"
               value={shipping.postcode}
-              onChange={(e) => setShipping((prev) => ({ ...prev, postcode: e.target.value }))}
+              onChange={(e) => {
+                setShipping((prev) => ({ ...prev, postcode: e.target.value }))
+                setFieldErrors((prev) => ({ ...prev, shipping_postcode: '' }))
+              }}
             />
           </section>
         )}

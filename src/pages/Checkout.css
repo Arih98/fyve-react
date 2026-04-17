@@ -31,6 +31,9 @@
   font: inherit;
 }
 
-#revolut-checkout-container {
-  min-height: 56px;
+.checkout-field-error {
+  color: #c62828;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0 0 6px;
 }
