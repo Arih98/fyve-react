@@ -5,7 +5,8 @@ import {
   getCheckoutData,
   updateCheckoutCustomer,
   updateCheckoutDraft,
-  createRevolutOrder
+  createRevolutOrder,
+  clearCheckoutCart
 } from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
@@ -91,7 +92,7 @@ export default function Checkout() {
   const totalAmountMinorRef = useRef(0)
   const currencyRef = useRef('GBP')
 
-const { cart, cartItems, loading: cartLoading } = useContext(CartContext)
+const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
   const clearMountedPaymentMethods = useCallback(() => {
     setCardReady(false)
@@ -254,16 +255,22 @@ const { cart, cartItems, loading: cartLoading } = useContext(CartContext)
     return revolutResult
   }, [])
 
-  const redirectToSuccess = useCallback(() => {
-    const wooOrderId = latestWooOrderIdRef.current
+  const redirectToSuccess = useCallback(async () => {
+  const wooOrderId = latestWooOrderIdRef.current
 
-    if (!wooOrderId) {
-      setError('Payment succeeded but order id is missing')
-      return
-    }
+  if (!wooOrderId) {
+    setError('Payment succeeded but order id is missing')
+    return
+  }
 
-    window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
-  }, [])
+  try {
+    await clearCheckoutCart().catch(() => {})
+    await refreshCart({ silent: true }).catch(() => {})
+  } catch (err) {
+  }
+
+  window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
+}, [refreshCart])
 
   const openPaymentMethods = useCallback(async () => {
     if (!billing.first_name.trim() || !billing.last_name.trim()) {
@@ -612,11 +619,11 @@ setPaymentMethodsOpen(true)
             billingAddress,
             shippingAddress
           },
-          mobileRedirectUrls: {
-            success: `${window.location.origin}/checkout/success`,
-            failure: `${window.location.origin}/checkout`,
-            cancel: `${window.location.origin}/checkout`
-          }
+mobileRedirectUrls: {
+  success: `${window.location.origin}/checkout/success?order_id=${encodeURIComponent(latestWooOrderIdRef.current || '')}`,
+  failure: `${window.location.origin}/checkout`,
+  cancel: `${window.location.origin}/checkout`
+}
         }
 
         payments.revolutPay.mount(revolutPayContainerRef.current, revolutPayOptions)
