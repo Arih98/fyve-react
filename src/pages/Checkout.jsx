@@ -69,7 +69,6 @@ const [shipping, setShipping] = useState({
   const [cardReady, setCardReady] = useState(false)
   const [appleGoogleReady, setAppleGoogleReady] = useState(false)
   const [revolutPayReady, setRevolutPayReady] = useState(false)
-  const [appleGoogleMethod, setAppleGoogleMethod] = useState('')
   const [paymentMethodsOpen, setPaymentMethodsOpen] = useState(false)
 
   const hasPrefilledRef = useRef(false)
@@ -94,7 +93,6 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
     setCardReady(false)
     setAppleGoogleReady(false)
     setRevolutPayReady(false)
-    setAppleGoogleMethod('')
 
     if (cardFieldInstanceRef.current) {
       cardFieldInstanceRef.current.destroy()
@@ -120,29 +118,27 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
       phone: ''
     })
 
-    setBilling({
-      first_name: '',
-      last_name: '',
-      company: '',
-      address_1: '',
-      address_2: '',
-      city: '',
-      state: '',
-      postcode: '',
-      country: ''
-    })
+setBilling({
+  first_name: '',
+  last_name: '',
+  address_1: '',
+  address_2: '',
+  city: '',
+  state: '',
+  postcode: '',
+  country: ''
+})
 
-    setShipping({
-      first_name: '',
-      last_name: '',
-      company: '',
-      address_1: '',
-      address_2: '',
-      city: '',
-      state: '',
-      postcode: '',
-      country: ''
-    })
+setShipping({
+  first_name: '',
+  last_name: '',
+  address_1: '',
+  address_2: '',
+  city: '',
+  state: '',
+  postcode: '',
+  country: ''
+})
 
     setUseSeparateShipping(false)
     setError('')
@@ -199,8 +195,7 @@ const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartCo
     contact,
     billing,
     shipping,
-    useSeparateShipping,
-    orderNote
+    useSeparateShipping
   ])
 
   const createRevolutPaymentOrder = useCallback(async () => {
@@ -332,7 +327,6 @@ setPaymentMethodsOpen(true)
     billing,
     shipping,
     useSeparateShipping,
-    orderNote,
     checkoutData,
     cart,
     createRevolutCheckoutOrder
@@ -552,14 +546,12 @@ const draft = {
         const availableMethod = await paymentRequestInstance.canMakePayment()
 
         if (!cancelled && availableMethod) {
-          setAppleGoogleMethod(availableMethod)
           await paymentRequestInstance.render()
           setAppleGoogleReady(true)
         } else {
           paymentRequestInstance.destroy()
           paymentRequestInstanceRef.current = null
           setAppleGoogleReady(false)
-          setAppleGoogleMethod('')
         }
 
         const revolutPayOptions = {
