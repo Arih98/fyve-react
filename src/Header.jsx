@@ -286,6 +286,16 @@ const handleLogoClick = () => {
   }
 };
 
+const handleAccountClick = () => {
+  navigate('/account');
+
+  if (isMobile && isMenuOpen) {
+    setTimeout(() => {
+      setIsMenuOpen(false);
+    }, 80);
+  }
+};
+
 const handleBagClick = () => {
   if (isMobile) {
     navigate('/cart');
@@ -501,7 +511,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
           <img src={searchIconSrc} alt="Search" />
         </button>
 
-        <button className="mobile-nav-icon" onClick={() => navigate('/account')}>
+        <button className="mobile-nav-icon" onClick={handleAccountClick}>
           <img src={accountIconSrc} alt="Account" />
         </button>
 
