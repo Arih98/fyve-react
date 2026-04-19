@@ -173,12 +173,12 @@ gsap.set('.london-below', { opacity: 0 })
 
         .addLabel('splitReveal', 'lettersIn+=0.72')
 .to('.hero-side-left', {
-  xPercent: -63,
+  xPercent: -67,
   duration: 0.95 * speed,
   ease: 'power3.inOut'
 }, 'splitReveal')
 .to('.hero-side-right', {
-  xPercent: 63,
+  xPercent: 64,
   duration: 0.95 * speed,
   ease: 'power3.inOut'
 }, 'splitReveal')
