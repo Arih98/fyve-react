@@ -17,10 +17,12 @@
 }
 
 .footer-fyve {
-  font-weight: 600;
+  font-family: quasimoda, sans-serif !important;
+  font-weight: 300;
 }
 
 .footer-london {
+  font-family: quasimoda, sans-serif !important;
   font-weight: 300;
 }
 
