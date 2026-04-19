@@ -1,68 +1,53 @@
 .footer {
-  background: #111;
-  color: #fff;
-  padding: 60px 20px 30px;
-}
-
-.footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.footer-top {
+  padding: 60px 40px;
+  background: #f1dbd1;
   display: flex;
-  justify-content: space-between;
-  gap: 60px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
 }
 
-.footer-brand h2 {
-  font-family: 'ArizonaFlare', sans-serif;
+.footer-brand {
+  display: flex;
+  gap: 8px;
   font-size: 28px;
-  margin-bottom: 10px;
+  letter-spacing: 2px;
 }
 
-.footer-brand p {
-  font-size: 14px;
-  opacity: 0.7;
+.footer-fyve {
+  font-weight: 600;
+}
+
+.footer-london {
+  font-weight: 300;
 }
 
 .footer-links {
   display: flex;
-  gap: 60px;
+  gap: 80px;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-.footer-links h4 {
-  font-size: 14px;
-  margin-bottom: 12px;
-  opacity: 0.6;
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
 }
 
-.footer-links a {
-  display: block;
+.footer-column h4 {
   font-size: 14px;
   margin-bottom: 8px;
-  color: #fff;
+}
+
+.footer-column a {
   text-decoration: none;
-  opacity: 0.8;
+  color: #000;
+  font-size: 14px;
+  transition: opacity 0.2s ease;
 }
 
-.footer-links a:hover {
-  opacity: 1;
-}
-
-.footer-bottom {
-  margin-top: 50px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
+.footer-column a:hover {
   opacity: 0.6;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.footer-legal a {
-  margin-left: 20px;
-  color: #fff;
-  text-decoration: none;
 }
