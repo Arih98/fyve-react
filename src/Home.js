@@ -178,7 +178,7 @@ gsap.set('.london-below', { opacity: 0 })
   ease: 'power3.inOut'
 }, 'splitReveal')
 .to('.hero-side-right', {
-  xPercent: 64,
+  xPercent: 84,
   duration: 0.95 * speed,
   ease: 'power3.inOut'
 }, 'splitReveal')
