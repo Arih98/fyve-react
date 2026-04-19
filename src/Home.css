@@ -433,11 +433,11 @@
 
 @media (max-width: 768px) {
 .hero-side-left .london-text {
-  left: 7vw;
+  left: 8vw;
 }
 
 .hero-side-right .london-text {
-  left: -7vw;
+  left: -8vw;
 }
 
   .home-page {
