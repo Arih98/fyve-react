@@ -137,12 +137,6 @@
   height: 100%;
 }
 
-.fyve-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .london-mask {
   visibility: hidden;
   position: absolute;

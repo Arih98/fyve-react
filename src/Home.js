@@ -101,7 +101,7 @@ const londonFadeDelay = animationDuration * 0.3;
     if (shouldSkipIntro) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
       gsap.set('.fyve-image', { visibility: 'visible' });
-gsap.set('.fyve-image-scale-wrap', { scale: 1, transformOrigin: 'center center' });
+gsap.set('.fyve-image-scale-wrap', { scaleX: 1, scaleY: 1, transformOrigin: 'center center' });
       gsap.set('.fyve-letter', { y: 0 });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
@@ -130,7 +130,7 @@ gsap.set('.fyve-image-scale-wrap', { scale: 1, transformOrigin: 'center center' 
     gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
 gsap.set('.fyve-image', { visibility: 'visible' });
 gsap.set('.fyve-image-container', { width: intermediateWidth });
-gsap.set('.fyve-image-scale-wrap', { scale: 0.3, transformOrigin: 'center center' });
+gsap.set('.fyve-image-scale-wrap', { scaleX: 0.02, scaleY: 1, transformOrigin: 'center center' });
 gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
@@ -177,7 +177,7 @@ gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
 .to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
 .to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
 .to('.fyve-image-scale-wrap', {
-  scale: 1,
+  scaleX: 1,
   duration: 0.8 * speed,
   ease: 'power2.out'
 }, 'splitOpen+=0.2')
