@@ -5,9 +5,11 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-brand">
-        <span className="footer-fyve">FYVE</span>
-        <span className="footer-london">LONDON</span>
-      </div>
+  <span className="footer-fyve">
+    FYV<span className="kern-e">E</span>
+  </span>
+  <span className="footer-london">LONDON</span>
+</div>
 
       <div className="footer-links">
   <span className="footer-heading">Quick links:</span>
