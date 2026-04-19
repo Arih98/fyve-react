@@ -102,8 +102,8 @@ gsap.set('.hero-side-left, .hero-side-right', { visibility: 'visible' })
 gsap.set('.fyve-letter', { yPercent: 0 })
 gsap.set('.london-letter', { yPercent: 0 })
 gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
-gsap.set('.hero-side-left', { xPercent: -220, visibility: 'hidden' })
-gsap.set('.hero-side-right', { xPercent: 220, visibility: 'hidden' })
+gsap.set('.hero-side-left', { xPercent: -340, visibility: 'hidden' })
+gsap.set('.hero-side-right', { xPercent: 340, visibility: 'hidden' })
 gsap.set('.fyve-image-slot', { width: '100vw', height: finalHeight })
 gsap.set('.fyve-image-scale-wrap', { scale: 1 })
 gsap.set('.fyve-cover-left', { xPercent: -100 })
@@ -173,12 +173,12 @@ gsap.set('.london-below', { opacity: 0 })
 
         .addLabel('splitReveal', 'lettersIn+=0.72')
 .to('.hero-side-left', {
-  xPercent: -8,
+  xPercent: -22,
   duration: 0.8 * speed,
   ease: 'expo.inOut'
 }, 'splitReveal')
 .to('.hero-side-right', {
-  xPercent: 8,
+  xPercent: 22,
   duration: 0.8 * speed,
   ease: 'expo.inOut'
 }, 'splitReveal')
@@ -205,13 +205,13 @@ gsap.set('.london-below', { opacity: 0 })
 
         .addLabel('expandOut', 'splitReveal+=0.95')
 .to('.hero-side-left', {
-  xPercent: -220,
+  xPercent: -340,
   duration: 0.88 * speed,
   ease: 'expo.inOut',
   onComplete: () => gsap.set('.hero-side-left', { visibility: 'hidden' })
 }, 'expandOut')
 .to('.hero-side-right', {
-  xPercent: 220,
+  xPercent: 340,
   duration: 0.88 * speed,
   ease: 'expo.inOut',
   onComplete: () => gsap.set('.hero-side-right', { visibility: 'hidden' })

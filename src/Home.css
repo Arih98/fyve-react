@@ -81,6 +81,15 @@
 .hero-side .london-text {
   margin-top: 0.8vw;
   overflow: hidden;
+  position: relative;
+}
+
+.hero-side-left .london-text {
+  left: 1.25vw;
+}
+
+.hero-side-right .london-text {
+  left: -1.25vw;
 }
 
 .fyve-ui-layer {
@@ -123,14 +132,6 @@
   position: relative;
   overflow: hidden;
   z-index: 2;
-}
-
-.fyve-mask > .fyve-text:first-child {
-  text-align: right;
-}
-
-.fyve-mask > .fyve-text:last-child {
-  text-align: left;
 }
 
 .fyve-letter {
@@ -431,6 +432,14 @@
 }
 
 @media (max-width: 768px) {
+  .hero-side-left .london-text {
+    left: 2.2vw;
+  }
+
+  .hero-side-right .london-text {
+    left: -2.2vw;
+  }
+
   .home-page {
     padding-top: var(--home-announcement-offset, 0px);
   }
