@@ -85,11 +85,11 @@
 }
 
 .hero-side-left .london-text {
-  left: 1.25vw;
+  left: 3.2vw;
 }
 
 .hero-side-right .london-text {
-  left: -1.25vw;
+  left: -3.2vw;
 }
 
 .fyve-ui-layer {
@@ -432,13 +432,13 @@
 }
 
 @media (max-width: 768px) {
-  .hero-side-left .london-text {
-    left: 2.2vw;
-  }
+.hero-side-left .london-text {
+  left: 5vw;
+}
 
-  .hero-side-right .london-text {
-    left: -2.2vw;
-  }
+.hero-side-right .london-text {
+  left: -5vw;
+}
 
   .home-page {
     padding-top: var(--home-announcement-offset, 0px);
