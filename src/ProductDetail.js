@@ -179,11 +179,11 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
         }
       );
 
-      gsap.to(icon, {
-        rotate: 45,
-        duration: 0.35,
-        ease: 'power2.out'
-      });
+gsap.to(icon, {
+  rotate: 45,
+  duration: 0.22,
+  ease: 'power3.out'
+});
     } else {
       gsap.to(panel, {
         height: 0,
@@ -192,11 +192,11 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
         ease: 'power2.out'
       });
 
-      gsap.to(icon, {
-        rotate: 0,
-        duration: 0.35,
-        ease: 'power2.out'
-      });
+gsap.to(icon, {
+  rotate: 0,
+  duration: 0.22,
+  ease: 'power3.out'
+});
     }
   };
 

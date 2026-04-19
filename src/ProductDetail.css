@@ -469,7 +469,8 @@
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
-  transition: transform 0.3s ease;
+  will-change: transform;
+  transform-origin: center;
 }
 
 .product-description-accordion-icon span {
@@ -480,7 +481,6 @@
   height: 1px;
   background: #4a494a;
   transform-origin: center;
-  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .product-description-accordion-icon span:first-child {
