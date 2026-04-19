@@ -128,9 +128,10 @@ gsap.set('.fyve-image-scale-wrap', { scale: 1, transformOrigin: 'center center' 
     }
 
     gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
-    gsap.set('.fyve-image', { visibility: 'visible' });
+gsap.set('.fyve-image', { visibility: 'visible' });
+gsap.set('.fyve-image-container', { width: intermediateWidth });
 gsap.set('.fyve-image-scale-wrap', { scale: 0.3, transformOrigin: 'center center' });
-    gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
+gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
       yPercent: -50,
