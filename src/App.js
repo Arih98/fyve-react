@@ -28,6 +28,7 @@ import ResetPassword from './ResetPassword'
 import AccountOrderDetail from './AccountOrderDetail'
 import Checkout from './pages/Checkout'
 import CheckoutSuccess from './CheckoutSuccess'
+import Footer from './Footer';
 
 const ProductDetailWrapper = () => {
   return <ProductDetail />;
@@ -59,6 +60,7 @@ const Layout = () => {
           </AnimatePresence>
         </LayoutGroup>
       </div>
+      {showFooter && <Footer />}
     </div>
   );
 };
