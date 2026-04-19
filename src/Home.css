@@ -115,28 +115,46 @@
   z-index: 1;
 }
 
+.fyve-image-reveal {
+  position: absolute;
+  inset: 0;
+  --reveal-left: 50%;
+  --reveal-right: 50%;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    transparent var(--reveal-left),
+    #000 var(--reveal-left),
+    #000 var(--reveal-right),
+    transparent var(--reveal-right),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    transparent var(--reveal-left),
+    #000 var(--reveal-left),
+    #000 var(--reveal-right),
+    transparent var(--reveal-right),
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.fyve-image-reveal picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .fyve-image {
   width: 100vw;
   height: 100%;
   object-fit: cover;
-}
-
-.mask-left,
-.mask-right {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background: #F1DBD1;
-  z-index: 1;
-}
-
-.mask-left {
-  left: 0;
-}
-
-.mask-right {
-  right: 0;
+  display: block;
 }
 
 .london-mask {
@@ -409,6 +427,11 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
     height: 50vw;
   }
 
+  .fyve-image-reveal {
+    position: absolute;
+    inset: 0;
+  }
+
   .fyve-image {
     position: absolute;
     top: 0;
@@ -417,6 +440,10 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
     height: 100%;
     object-fit: cover;
   }
+
+  .fyve-image-reveal {
+  will-change: mask-image, -webkit-mask-image;
+}
 
   .fyve-text {
     font-size: 25vw;
