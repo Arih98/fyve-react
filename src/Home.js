@@ -71,268 +71,222 @@ const Home = () => {
   }, [])
 
   useEffect(() => {
-  const navEntry = performance.getEntriesByType('navigation')[0]
-  const isReload = navEntry?.type === 'reload'
+    const navEntry = performance.getEntriesByType('navigation')[0]
+    const isReload = navEntry?.type === 'reload'
 
-  if (isReload) {
-    sessionStorage.removeItem('homeIntroPlayed')
-  }
-
-  const shouldSkipIntro = sessionStorage.getItem('homeIntroPlayed') === 'true'
-
-  hasAnimated.current = false
-  introDone.current = false
-
-  const speed = 1.35
-
-  const ctx = gsap.context(() => {
-    const isMobile = window.innerWidth <= 768
-    const finalHeight = isMobile ? '100svh' : '100vh'
-    const initialSlotWidth = isMobile ? '24vw' : '14vw'
-    const intermediateWidth = isMobile ? '28vw' : '18vw'
-    const initialSlotHeight = isMobile ? '50vw' : '14vw'
-    const fyveTextY = -1.11
-    const londonX = 1.3
-    const londonY = isMobile ? 12 : 5
-    const fyveMoveX = isMobile ? '-5px' : '-0.4vw'
-    const fyveMoveXEnd = isMobile ? '5px' : '0.4vw'
-    const londonMoveX = isMobile ? '-55px' : '-8.9vw'
-    const londonMoveXEnd = isMobile ? '55px' : '8.9vw'
-    const exitPercent = 220
-    const mobileHeaderEl = document.querySelector('.mobile-header')
-    const announcementBarEl = document.querySelector('.announcement-bar')
-    const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0
-
-    if (shouldSkipIntro) {
-      gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 })
-      gsap.set('.fyve-letter', { yPercent: 0 })
-      gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
-      gsap.set('.fyve-text:first-child', { xPercent: -exitPercent, visibility: 'hidden' })
-      gsap.set('.fyve-text:last-child', { xPercent: exitPercent, visibility: 'hidden' })
-      gsap.set('.fyve-image-slot', { width: '100vw', height: finalHeight })
-      gsap.set('.fyve-image-scale-wrap', { scale: 1 })
-      gsap.set('.fyve-cover-left', { xPercent: -100 })
-      gsap.set('.fyve-cover-right', { xPercent: 100 })
-      gsap.set('.london-mask', {
-        xPercent: -50,
-        yPercent: -50,
-        x: `${londonX}vw`,
-        y: `${londonY}vw`,
-        marginTop: 0,
-        visibility: 'visible'
-      })
-      gsap.set('.london-mask .london-text:first-child', { xPercent: -exitPercent, visibility: 'hidden' })
-      gsap.set('.london-mask .london-text:last-child', { xPercent: exitPercent, visibility: 'hidden' })
-      gsap.set('.lottie-container', { autoAlpha: 1 })
-      gsap.set('.london-below', { opacity: 1 })
-      gsap.set(document.documentElement, { '--home-announcement-offset': `${announcementHeight}px` })
-
-      if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 })
-      if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1, y: 0 })
-      gsap.set('.home-mobile-top-logo', { opacity: 1 })
-
-      introDone.current = true
-      return
+    if (isReload) {
+      sessionStorage.removeItem('homeIntroPlayed')
     }
 
-    gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 })
-    gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
-    gsap.set('.fyve-image-slot', { width: initialSlotWidth, height: initialSlotHeight })
-    gsap.set('.fyve-image-scale-wrap', { scale: 0.94, transformOrigin: 'center center' })
-    gsap.set('.fyve-cover-left', { xPercent: 0 })
-    gsap.set('.fyve-cover-right', { xPercent: 0 })
-    gsap.set('.london-mask', {
-      xPercent: -50,
-      yPercent: -50,
-      x: `${londonX}vw`,
-      y: `${londonY}vw`,
-      marginTop: 0,
-      visibility: 'visible'
-    })
-    gsap.set('.london-mask .london-text:first-child', { x: '0%' })
-    gsap.set('.london-mask .london-text:last-child', { x: '0%' })
-    gsap.set('.lottie-container', { autoAlpha: 0 })
-    gsap.set('.london-below', { opacity: 0 })
-    gsap.set(document.documentElement, { '--home-announcement-offset': '0px' })
+    const shouldSkipIntro = sessionStorage.getItem('homeIntroPlayed') === 'true'
 
-    if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 })
+    hasAnimated.current = false
+    introDone.current = false
 
-    if (announcementBarEl) {
-      if (isMobile) {
-        gsap.set(announcementBarEl, { opacity: 1, y: -announcementHeight })
-      } else {
-        gsap.set(announcementBarEl, { opacity: 0, y: 0 })
-      }
-    }
+    const speed = 1.35
 
-    gsap.set('.home-mobile-top-logo', { opacity: 0 })
+    const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth <= 768
+      const finalHeight = isMobile ? '100svh' : '100vh'
+      const initialSlotWidth = '0vw'
+      const intermediateWidth = isMobile ? '28vw' : '18vw'
+      const initialSlotHeight = isMobile ? '50vw' : '14vw'
+      const fyveTextY = -1.11
+      const mobileHeaderEl = document.querySelector('.mobile-header')
+      const announcementBarEl = document.querySelector('.announcement-bar')
+      const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0
 
-    const tl = gsap.timeline({
-      onComplete: () => {
+      if (shouldSkipIntro) {
+        gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 })
+gsap.set('.hero-side-left, .hero-side-right', { visibility: 'visible' })
+gsap.set('.fyve-letter', { yPercent: 0 })
+gsap.set('.london-letter', { yPercent: 0 })
+gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
+gsap.set('.hero-side-left', { xPercent: -220, visibility: 'hidden' })
+gsap.set('.hero-side-right', { xPercent: 220, visibility: 'hidden' })
+gsap.set('.fyve-image-slot', { width: '100vw', height: finalHeight })
+gsap.set('.fyve-image-scale-wrap', { scale: 1 })
+gsap.set('.fyve-cover-left', { xPercent: -100 })
+gsap.set('.fyve-cover-right', { xPercent: 100 })
+gsap.set('.lottie-container', { autoAlpha: 1 })
+gsap.set('.london-below', { opacity: 1 })
+        gsap.set(document.documentElement, { '--home-announcement-offset': `${announcementHeight}px` })
+
+        if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 1 })
+        if (announcementBarEl) gsap.set(announcementBarEl, { opacity: 1, y: 0 })
+        gsap.set('.home-mobile-top-logo', { opacity: 1 })
+
         introDone.current = true
-        if (!hasSetHomeIntroPlayed.current) {
-          sessionStorage.setItem('homeIntroPlayed', 'true')
-          hasSetHomeIntroPlayed.current = true
+        return
+      }
+
+      gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 })
+gsap.set('.hero-side-left, .hero-side-right', { visibility: 'visible', xPercent: 0 })
+gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
+gsap.set('.fyve-image-slot', { width: initialSlotWidth, height: initialSlotHeight })
+gsap.set('.fyve-image-scale-wrap', { scale: 0.94, transformOrigin: 'center center' })
+gsap.set('.fyve-cover-left', { xPercent: 0 })
+gsap.set('.fyve-cover-right', { xPercent: 0 })
+gsap.set('.lottie-container', { autoAlpha: 0 })
+gsap.set('.london-below', { opacity: 0 })
+      gsap.set(document.documentElement, { '--home-announcement-offset': '0px' })
+
+      if (mobileHeaderEl) gsap.set(mobileHeaderEl, { opacity: 0 })
+
+      if (announcementBarEl) {
+        if (isMobile) {
+          gsap.set(announcementBarEl, { opacity: 1, y: -announcementHeight })
+        } else {
+          gsap.set(announcementBarEl, { opacity: 0, y: 0 })
         }
       }
-    })
 
-    tl.addLabel('lettersIn')
-      .fromTo('.fyve-letter', {
-        yPercent: 100
-      }, {
-        yPercent: 0,
-        duration: 1.1 * speed,
-        ease: 'expo.out',
-        stagger: 0.03
-      }, 'lettersIn')
-      .fromTo('.london-letter', {
-        yPercent: 100
-      }, {
-        yPercent: 0,
-        duration: 1.0 * speed,
-        ease: 'expo.out',
-        stagger: 0.02
-      }, 'lettersIn+=0.22')
+      gsap.set('.home-mobile-top-logo', { opacity: 0 })
 
-      .addLabel('splitReveal', 'lettersIn+=0.72')
-      .to('.fyve-text:first-child', {
-        x: fyveMoveX,
-        duration: 0.75 * speed,
-        ease: 'expo.inOut'
-      }, 'splitReveal')
-      .to('.fyve-text:last-child', {
-        x: fyveMoveXEnd,
-        duration: 0.75 * speed,
-        ease: 'expo.inOut'
-      }, 'splitReveal')
-      .to('.fyve-image-slot', {
-        width: intermediateWidth,
-        duration: 0.82 * speed,
-        ease: 'expo.inOut'
-      }, 'splitReveal+=0.08')
-      .to('.fyve-cover-left', {
-        xPercent: -100,
-        duration: 0.82 * speed,
-        ease: 'power3.inOut'
-      }, 'splitReveal+=0.08')
-      .to('.fyve-cover-right', {
-        xPercent: 100,
-        duration: 0.82 * speed,
-        ease: 'power3.inOut'
-      }, 'splitReveal+=0.08')
-      .to('.fyve-image-scale-wrap', {
-        scale: 1,
-        duration: 1.0 * speed,
-        ease: 'expo.out'
-      }, 'splitReveal')
-      .to('.london-mask .london-text:first-child', {
-        x: londonMoveX,
-        duration: 0.8 * speed,
-        ease: 'expo.inOut'
-      }, 'splitReveal+=0.08')
-      .to('.london-mask .london-text:last-child', {
-        x: londonMoveXEnd,
-        duration: 0.8 * speed,
-        ease: 'expo.inOut'
-      }, 'splitReveal+=0.08')
+      const tl = gsap.timeline({
+        onComplete: () => {
+          introDone.current = true
+          if (!hasSetHomeIntroPlayed.current) {
+            sessionStorage.setItem('homeIntroPlayed', 'true')
+            hasSetHomeIntroPlayed.current = true
+          }
+        }
+      })
 
-      .addLabel('expandOut', 'splitReveal+=0.95')
-      .to('.fyve-text:first-child', {
-        xPercent: -exitPercent,
-        duration: 0.9 * speed,
-        ease: 'expo.inOut',
-        onComplete: () => gsap.set('.fyve-text:first-child', { visibility: 'hidden' })
-      }, 'expandOut')
-      .to('.fyve-text:last-child', {
-        xPercent: exitPercent,
-        duration: 0.9 * speed,
-        ease: 'expo.inOut',
-        onComplete: () => gsap.set('.fyve-text:last-child', { visibility: 'hidden' })
-      }, 'expandOut')
-      .to('.fyve-image-slot', {
-        width: '100vw',
-        height: finalHeight,
-        duration: 0.9 * speed,
-        ease: 'expo.inOut'
-      }, 'expandOut')
-      .to('.london-mask .london-text:first-child', {
-        xPercent: -exitPercent,
-        duration: 0.9 * speed,
-        ease: 'expo.inOut',
-        onComplete: () => gsap.set('.london-mask .london-text:first-child', { visibility: 'hidden' })
-      }, 'expandOut')
-      .to('.london-mask .london-text:last-child', {
-        xPercent: exitPercent,
-        duration: 0.9 * speed,
-        ease: 'expo.inOut',
-        onComplete: () => gsap.set('.london-mask .london-text:last-child', { visibility: 'hidden' })
-      }, 'expandOut')
+      tl.addLabel('lettersIn')
+        .fromTo('.fyve-letter', {
+          yPercent: 100
+        }, {
+          yPercent: 0,
+          duration: 1.1 * speed,
+          ease: 'expo.out',
+          stagger: 0.03
+        }, 'lettersIn')
+        .fromTo('.london-letter', {
+          yPercent: 100
+        }, {
+          yPercent: 0,
+          duration: 1.0 * speed,
+          ease: 'expo.out',
+          stagger: 0.02
+        }, 'lettersIn+=0.22')
 
-      .addLabel('uiReveal', 'expandOut+=0.35')
-      .to(document.documentElement, {
-        '--home-announcement-offset': `${announcementHeight}px`,
-        duration: 0.9 * speed,
-        ease: 'power2.out'
-      }, 'uiReveal')
+        .addLabel('splitReveal', 'lettersIn+=0.72')
+.to('.hero-side-left', {
+  xPercent: -8,
+  duration: 0.8 * speed,
+  ease: 'expo.inOut'
+}, 'splitReveal')
+.to('.hero-side-right', {
+  xPercent: 8,
+  duration: 0.8 * speed,
+  ease: 'expo.inOut'
+}, 'splitReveal')
+.to('.fyve-image-slot', {
+  width: intermediateWidth,
+  duration: 0.82 * speed,
+  ease: 'expo.inOut'
+}, 'splitReveal+=0.08')
+.to('.fyve-cover-left', {
+  xPercent: -100,
+  duration: 0.82 * speed,
+  ease: 'power3.inOut'
+}, 'splitReveal+=0.08')
+.to('.fyve-cover-right', {
+  xPercent: 100,
+  duration: 0.82 * speed,
+  ease: 'power3.inOut'
+}, 'splitReveal+=0.08')
+.to('.fyve-image-scale-wrap', {
+  scale: 1,
+  duration: 1.0 * speed,
+  ease: 'expo.out'
+}, 'splitReveal')
 
-    if (announcementBarEl) {
-      if (isMobile) {
-        tl.to(announcementBarEl, {
-          y: 0,
+        .addLabel('expandOut', 'splitReveal+=0.95')
+.to('.hero-side-left', {
+  xPercent: -220,
+  duration: 0.88 * speed,
+  ease: 'expo.inOut',
+  onComplete: () => gsap.set('.hero-side-left', { visibility: 'hidden' })
+}, 'expandOut')
+.to('.hero-side-right', {
+  xPercent: 220,
+  duration: 0.88 * speed,
+  ease: 'expo.inOut',
+  onComplete: () => gsap.set('.hero-side-right', { visibility: 'hidden' })
+}, 'expandOut')
+.to('.fyve-image-slot', {
+  width: '100vw',
+  height: finalHeight,
+  duration: 0.9 * speed,
+  ease: 'expo.inOut'
+}, 'expandOut')
+
+        .addLabel('uiReveal', 'expandOut+=0.35')
+        .to(document.documentElement, {
+          '--home-announcement-offset': `${announcementHeight}px`,
           duration: 0.9 * speed,
           ease: 'power2.out'
         }, 'uiReveal')
-      } else {
-        tl.to(announcementBarEl, {
-          opacity: 1,
-          duration: 0.6 * speed,
-          ease: 'power2.out'
-        }, 'uiReveal+=0.4')
-      }
-    }
 
-    if (mobileHeaderEl) {
-      tl.to(mobileHeaderEl, {
-        opacity: 1,
-        duration: 0.7 * speed,
-        ease: 'power2.out'
-      }, 'uiReveal+=0.75')
-    }
-
-    tl.to('.home-mobile-top-logo', {
-      opacity: 1,
-      duration: 0.5 * speed,
-      ease: 'power2.out'
-    }, 'uiReveal+=0.45')
-      .addLabel('lottieIn', 'uiReveal+=0.45')
-      .to('.lottie-container', {
-        autoAlpha: 1,
-        duration: 0.8 * speed,
-        ease: 'power2.out',
-        onStart: () => {
-          lottieRef.current?.play()
+      if (announcementBarEl) {
+        if (isMobile) {
+          tl.to(announcementBarEl, {
+            y: 0,
+            duration: 0.9 * speed,
+            ease: 'power2.out'
+          }, 'uiReveal')
+        } else {
+          tl.to(announcementBarEl, {
+            opacity: 1,
+            duration: 0.6 * speed,
+            ease: 'power2.out'
+          }, 'uiReveal+=0.4')
         }
-      }, 'lottieIn')
-      .to('.london-below', {
+      }
+
+      if (mobileHeaderEl) {
+        tl.to(mobileHeaderEl, {
+          opacity: 1,
+          duration: 0.7 * speed,
+          ease: 'power2.out'
+        }, 'uiReveal+=0.75')
+      }
+
+      tl.to('.home-mobile-top-logo', {
         opacity: 1,
         duration: 0.5 * speed,
         ease: 'power2.out'
-      }, `lottieIn+=${londonFadeDelay / 1000}`)
-  }, heroRef)
+      }, 'uiReveal+=0.45')
+        .addLabel('lottieIn', 'uiReveal+=0.45')
+        .to('.lottie-container', {
+          autoAlpha: 1,
+          duration: 0.8 * speed,
+          ease: 'power2.out',
+          onStart: () => {
+            lottieRef.current?.play()
+          }
+        }, 'lottieIn')
+        .to('.london-below', {
+          opacity: 1,
+          duration: 0.5 * speed,
+          ease: 'power2.out'
+        }, `lottieIn+=${londonFadeDelay / 1000}`)
+    }, heroRef)
 
-  requestAnimationFrame(() => {
-    ScrollTrigger.refresh()
-    setTimeout(() => ScrollTrigger.refresh(), 250)
-  })
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh()
+      setTimeout(() => ScrollTrigger.refresh(), 250)
+    })
 
-  hasAnimated.current = !shouldSkipIntro
+    hasAnimated.current = !shouldSkipIntro
 
-  return () => {
-    ctx.revert()
-    document.documentElement.style.removeProperty('--home-announcement-offset')
-  }
-}, [londonFadeDelay])
+    return () => {
+      ctx.revert()
+      document.documentElement.style.removeProperty('--home-announcement-offset')
+    }
+  }, [londonFadeDelay])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -395,38 +349,39 @@ const Home = () => {
         <div ref={setHeroViewportRef} className="fyve-hero-viewport">
           <div className="fyve-animation-stage">
             <div className="fyve-brand-layer">
-              <div className="fyve-mask">
-                <div className="fyve-text">
-                  {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
-                </div>
+  <div className="hero-side hero-side-left">
+    <div className="fyve-text">
+      {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
+    </div>
+    <div className="london-text">
+      {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
+    </div>
+  </div>
 
-                <div className="fyve-image-slot">
-                  <div className="fyve-image-reveal">
-                    <div className="fyve-image-scale-wrap">
-                      <picture className="fyve-image-picture">
-                        <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-                        <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-                      </picture>
-                    </div>
-                    <div className="fyve-cover fyve-cover-left"></div>
-                    <div className="fyve-cover fyve-cover-right"></div>
-                  </div>
-                </div>
+  <div className="fyve-mask">
+    <div className="fyve-image-slot">
+      <div className="fyve-image-reveal">
+        <div className="fyve-image-scale-wrap">
+          <picture className="fyve-image-picture">
+            <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
+            <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
+          </picture>
+        </div>
+        <div className="fyve-cover fyve-cover-left"></div>
+        <div className="fyve-cover fyve-cover-right"></div>
+      </div>
+    </div>
+  </div>
 
-                <div className="fyve-text">
-                  {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
-                </div>
-              </div>
-
-              <div className="london-mask">
-                <div className="london-text">
-                  {'LON'.split('').map((l, i) => <span key={i} className="london-letter">{l}</span>)}
-                </div>
-                <div className="london-text">
-                  {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
-                </div>
-              </div>
-            </div>
+  <div className="hero-side hero-side-right">
+    <div className="fyve-text">
+      {'VE'.split('').map((l, i) => <span key={i + 2} className="fyve-letter">{l}</span>)}
+    </div>
+    <div className="london-text">
+      {'DON'.split('').map((l, i) => <span key={i + 3} className="london-letter">{l}</span>)}
+    </div>
+  </div>
+</div>
           </div>
 
           <div className="fyve-ui-layer">
