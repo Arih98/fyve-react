@@ -494,11 +494,12 @@
   .home-mobile-top-logo {
     position: absolute;
     top: calc(env(safe-area-inset-top, 0px) + 35px);
-    left: 50%;
+    left: 45%;
     transform: translateX(-50%);
     z-index: 20;
     display: block;
     opacity: 0;
+    transform: scaleX(-1);
   }
 
   .home-mobile-top-logo img {

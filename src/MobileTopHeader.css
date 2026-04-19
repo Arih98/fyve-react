@@ -17,6 +17,7 @@
   height: 45px;
   width: auto;
   cursor: pointer;
+  transform: scaleX(-1);
 }
 
 @media (min-width: 769px) {
