@@ -174,13 +174,13 @@ gsap.set('.london-below', { opacity: 0 })
         .addLabel('splitReveal', 'lettersIn+=0.72')
 .to('.hero-side-left', {
   xPercent: -63,
-  duration: 0.8 * speed,
-  ease: 'expo.inOut'
+  duration: 1.05 * speed,
+  ease: 'power2.inOut'
 }, 'splitReveal')
 .to('.hero-side-right', {
   xPercent: 63,
-  duration: 0.8 * speed,
-  ease: 'expo.inOut'
+  duration: 1.05 * speed,
+  ease: 'power2.inOut'
 }, 'splitReveal')
 .to('.fyve-image-slot', {
   width: intermediateWidth,
