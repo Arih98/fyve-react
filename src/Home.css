@@ -107,43 +107,40 @@
   margin-right: -0.08em;
 }
 
+.fyve-image {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+}
+
 .fyve-image-container {
   height: 14vw;
-  width: 0;
+  width: 18vw;
   position: relative;
   overflow: hidden;
   z-index: 1;
+}
+
+.fyve-image-scale-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.fyve-image-scale-wrap picture,
+.fyve-image-scale-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .fyve-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-}
-
-.fyve-image-reveal {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  clip-path: inset(0 50% 0 50%);
-  will-change: clip-path;
-}
-
-.fyve-image-reveal picture {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.fyve-image-reveal {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  clip-path: inset(0 50% 0 50%);
-  will-change: clip-path;
-  transform: translateZ(0);
-  backface-visibility: hidden;
 }
 
 .london-mask {
@@ -416,12 +413,14 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
     height: 50vw;
   }
 
-.fyve-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+  .fyve-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   .fyve-text {
     font-size: 25vw;
@@ -668,4 +667,24 @@ letter-spacing: clamp(70px, 6.8vw, 180px);
 .section2-shop-button {
   display: none;
 }
+}
+
+@media (max-width: 768px) {
+  .fyve-image-container {
+    height: 50vw;
+    width: 28vw;
+  }
+
+  .fyve-image-scale-wrap {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .fyve-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }

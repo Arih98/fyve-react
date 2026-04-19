@@ -101,7 +101,7 @@ const londonFadeDelay = animationDuration * 0.3;
     if (shouldSkipIntro) {
       gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
       gsap.set('.fyve-image', { visibility: 'visible' });
-gsap.set('.fyve-image-reveal', { clipPath: 'inset(0 0% 0 0%)' });
+gsap.set('.fyve-image-scale-wrap', { scale: 1, transformOrigin: 'center center' });
       gsap.set('.fyve-letter', { y: 0 });
       gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
       gsap.set('.fyve-text:first-child', { x: '-100vw', visibility: 'hidden' });
@@ -129,7 +129,7 @@ gsap.set('.fyve-image-reveal', { clipPath: 'inset(0 0% 0 0%)' });
 
     gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
     gsap.set('.fyve-image', { visibility: 'visible' });
-gsap.set('.fyve-image-reveal', { clipPath: 'inset(0 50% 0 50%)' });
+gsap.set('.fyve-image-scale-wrap', { scale: 0.3, transformOrigin: 'center center' });
     gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,
@@ -173,15 +173,15 @@ gsap.set('.fyve-image-reveal', { clipPath: 'inset(0 50% 0 50%)' });
       .fromTo('.london-letter', { y: '100%' }, { y: 0, duration: 1.3 * speed }, 'lettersIn+=0.35')
 
       .addLabel('splitOpen', 1 * speed)
-      .to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
-      .to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
-      .to('.fyve-image-container', { width: intermediateWidth, duration: 0.8 * speed }, 'splitOpen+=0.2')
-.to('.fyve-image-reveal', {
-  clipPath: 'inset(0 0% 0 0%)',
-  duration: 0.8 * speed
+.to('.fyve-text:first-child', { x: fyveMoveX, duration: 0.8 * speed }, 'splitOpen')
+.to('.fyve-text:last-child', { x: fyveMoveXEnd, duration: 0.8 * speed }, 'splitOpen')
+.to('.fyve-image-scale-wrap', {
+  scale: 1,
+  duration: 0.8 * speed,
+  ease: 'power2.out'
 }, 'splitOpen+=0.2')
-      .to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8 * speed }, 'splitOpen+=0.2')
-      .to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8 * speed }, 'splitOpen+=0.2')
+.to('.london-mask .london-text:first-child', { x: londonMoveX, duration: 0.8 * speed }, 'splitOpen+=0.2')
+.to('.london-mask .london-text:last-child', { x: londonMoveXEnd, duration: 0.8 * speed }, 'splitOpen+=0.2')
 
       .addLabel('expandOut', 2 * speed)
       .to('.fyve-text:first-child', {
@@ -335,8 +335,8 @@ useEffect(() => {
           <div className="fyve-text">
             {'FY'.split('').map((l, i) => <span key={i} className="fyve-letter">{l}</span>)}
           </div>
-<div className="fyve-image-container">
-  <div className="fyve-image-reveal">
+          <div className="fyve-image-container">
+  <div className="fyve-image-scale-wrap">
     <picture>
       <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
       <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
