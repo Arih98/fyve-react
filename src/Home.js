@@ -130,7 +130,7 @@ gsap.set('.fyve-image-scale-wrap', { clipPath: 'inset(0 0% 0 0%)' });
     gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 });
 gsap.set('.fyve-image', { visibility: 'visible' });
 gsap.set('.fyve-image-container', { width: intermediateWidth });
-gsap.set('.fyve-image-scale-wrap', { clipPath: 'inset(0 50% 0 50%)' });
+gsap.set('.fyve-image-scale-wrap', { clipPath: 'inset(0 49% 0 49%)' });
 gsap.set('.fyve-text', { y: `${fyveTextY}vw` });
     gsap.set('.london-mask', {
       xPercent: -50,

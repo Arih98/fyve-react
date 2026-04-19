@@ -127,6 +127,7 @@
   width: 100%;
   height: 100%;
   will-change: clip-path;
+  overflow: hidden;
 }
 
 .fyve-image-scale-wrap picture,
