@@ -36,8 +36,9 @@
 
 .footer-london {
   font-family: quasimoda, sans-serif !important;
-  font-weight: 200;
-  font-size: clamp(12px, 1.5vw, 20px);
+  font-weight: 300;
+  font-size: clamp(18px, 2.5vw, 40px);
+  letter-spacing: 2em;
 }
 
 .footer-links {
