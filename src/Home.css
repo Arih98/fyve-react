@@ -73,9 +73,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
   z-index: 1;
   transform: translate(-50%, -50%);
@@ -98,12 +96,10 @@
 }
 
 .fyve-mask > .fyve-text:first-child {
-  justify-self: end;
   text-align: right;
 }
 
 .fyve-mask > .fyve-text:last-child {
-  justify-self: start;
   text-align: left;
 }
 
