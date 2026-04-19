@@ -74,6 +74,10 @@
   transform: translate(0%, -50%);
 }
 
+.hero-side-right .fyve-letter:last-child {
+  transform: translateX(-0.35vw);
+}
+
 .hero-side .fyve-text {
   overflow: hidden;
 }
@@ -438,6 +442,10 @@
 
 .hero-side-right .london-text {
   left: -8vw;
+}
+
+.hero-side-right .fyve-letter:last-child {
+  transform: translateX(-0.35vw);
 }
 
   .home-page {

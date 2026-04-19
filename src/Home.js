@@ -85,25 +85,29 @@ const Home = () => {
 
     const speed = 1.35
 
-    const ctx = gsap.context(() => {
-      const isMobile = window.innerWidth <= 768
-      const finalHeight = isMobile ? '100svh' : '100vh'
-      const initialSlotWidth = '0vw'
-      const intermediateWidth = isMobile ? '28vw' : '18vw'
-      const initialSlotHeight = isMobile ? '50vw' : '14vw'
-      const fyveTextY = -1.11
-      const mobileHeaderEl = document.querySelector('.mobile-header')
-      const announcementBarEl = document.querySelector('.announcement-bar')
-      const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0
+const ctx = gsap.context(() => {
+  const isMobile = window.innerWidth <= 768
+  const splitLeftX = isMobile ? -58 : -72
+  const splitRightX = isMobile ? 52 : 64
+  const expandLeftX = isMobile ? -280 : -340
+  const expandRightX = isMobile ? 280 : 340
+  const finalHeight = isMobile ? '100svh' : '100vh'
+  const initialSlotWidth = '0vw'
+  const intermediateWidth = isMobile ? '28vw' : '18vw'
+  const initialSlotHeight = isMobile ? '50vw' : '14vw'
+  const fyveTextY = -1.11
+  const mobileHeaderEl = document.querySelector('.mobile-header')
+  const announcementBarEl = document.querySelector('.announcement-bar')
+  const announcementHeight = announcementBarEl ? announcementBarEl.offsetHeight : 0
 
-      if (shouldSkipIntro) {
+  if (shouldSkipIntro) {
         gsap.set('.fyve-mask', { visibility: 'visible', xPercent: -50, yPercent: -50 })
 gsap.set('.hero-side-left, .hero-side-right', { visibility: 'visible' })
 gsap.set('.fyve-letter', { yPercent: 0 })
 gsap.set('.london-letter', { yPercent: 0 })
 gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
-gsap.set('.hero-side-left', { xPercent: -340, visibility: 'hidden' })
-gsap.set('.hero-side-right', { xPercent: 340, visibility: 'hidden' })
+gsap.set('.hero-side-left', { xPercent: expandLeftX, visibility: 'hidden' })
+gsap.set('.hero-side-right', { xPercent: expandRightX, visibility: 'hidden' })
 gsap.set('.fyve-image-slot', { width: '100vw', height: finalHeight })
 gsap.set('.fyve-image-scale-wrap', { scale: 1 })
 gsap.set('.fyve-cover-left', { xPercent: -100 })
@@ -173,12 +177,12 @@ gsap.set('.london-below', { opacity: 0 })
 
         .addLabel('splitReveal', 'lettersIn+=0.72')
 .to('.hero-side-left', {
-  xPercent: -72,
+  xPercent: splitLeftX,
   duration: 0.95 * speed,
   ease: 'power3.inOut'
 }, 'splitReveal')
 .to('.hero-side-right', {
-  xPercent: 64,
+  xPercent: splitRightX,
   duration: 0.95 * speed,
   ease: 'power3.inOut'
 }, 'splitReveal')
@@ -205,13 +209,13 @@ gsap.set('.london-below', { opacity: 0 })
 
         .addLabel('expandOut', 'splitReveal+=0.95')
 .to('.hero-side-left', {
-  xPercent: -340,
+  xPercent: expandLeftX,
   duration: 0.88 * speed,
   ease: 'expo.inOut',
   onComplete: () => gsap.set('.hero-side-left', { visibility: 'hidden' })
 }, 'expandOut')
 .to('.hero-side-right', {
-  xPercent: 340,
+  xPercent: expandRightX,
   duration: 0.88 * speed,
   ease: 'expo.inOut',
   onComplete: () => gsap.set('.hero-side-right', { visibility: 'hidden' })
