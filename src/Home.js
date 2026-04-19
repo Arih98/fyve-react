@@ -94,8 +94,8 @@ const Home = () => {
       const fyveTextY = -1.11
       const londonX = 1.3
       const londonY = isMobile ? 12 : 5
-      const fyveMoveX = isMobile ? '-5px' : '-0.4vw'
-      const fyveMoveXEnd = isMobile ? '5px' : '0.4vw'
+      const fyveMoveX = isMobile ? '-18px' : '-1.35vw'
+const fyveMoveXEnd = isMobile ? '18px' : '1.35vw'
       const londonMoveX = isMobile ? '-55px' : '-8.9vw'
       const londonMoveXEnd = isMobile ? '55px' : '8.9vw'
       const mobileHeaderEl = document.querySelector('.mobile-header')
@@ -196,45 +196,30 @@ const Home = () => {
 
         .addLabel('splitReveal', 'lettersIn+=0.72')
         .to('.fyve-text:first-child', {
-          x: fyveMoveX,
-          duration: 0.75 * speed,
-          ease: 'expo.inOut'
-        }, 'splitReveal')
-        .to('.fyve-text:last-child', {
-          x: fyveMoveXEnd,
-          duration: 0.75 * speed,
-          ease: 'expo.inOut'
-        }, 'splitReveal')
-        .to('.fyve-image-slot', {
-          width: intermediateWidth,
-          duration: 0.82 * speed,
-          ease: 'expo.inOut'
-        }, 'splitReveal+=0.08')
-        .to('.fyve-cover-left', {
-          xPercent: -100,
-          duration: 0.82 * speed,
-          ease: 'power3.inOut'
-        }, 'splitReveal+=0.08')
-        .to('.fyve-cover-right', {
-          xPercent: 100,
-          duration: 0.82 * speed,
-          ease: 'power3.inOut'
-        }, 'splitReveal+=0.08')
-        .to('.fyve-image-scale-wrap', {
-          scale: 1,
-          duration: 1.0 * speed,
-          ease: 'expo.out'
-        }, 'splitReveal')
-        .to('.london-mask .london-text:first-child', {
-          x: londonMoveX,
-          duration: 0.8 * speed,
-          ease: 'expo.inOut'
-        }, 'splitReveal+=0.08')
-        .to('.london-mask .london-text:last-child', {
-          x: londonMoveXEnd,
-          duration: 0.8 * speed,
-          ease: 'expo.inOut'
-        }, 'splitReveal+=0.08')
+  x: fyveMoveX,
+  duration: 0.82 * speed,
+  ease: 'expo.inOut'
+}, 'splitReveal')
+.to('.fyve-text:last-child', {
+  x: fyveMoveXEnd,
+  duration: 0.82 * speed,
+  ease: 'expo.inOut'
+}, 'splitReveal')
+.to('.fyve-image-slot', {
+  width: intermediateWidth,
+  duration: 0.82 * speed,
+  ease: 'expo.inOut'
+}, 'splitReveal')
+.to('.fyve-cover-left', {
+  xPercent: -100,
+  duration: 0.82 * speed,
+  ease: 'power3.inOut'
+}, 'splitReveal')
+.to('.fyve-cover-right', {
+  xPercent: 100,
+  duration: 0.82 * speed,
+  ease: 'power3.inOut'
+}, 'splitReveal')
 
         .addLabel('expandOut', 'splitReveal+=0.95')
         .to('.fyve-text:first-child', {
