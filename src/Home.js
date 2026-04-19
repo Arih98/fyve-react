@@ -88,7 +88,7 @@ const Home = () => {
     const ctx = gsap.context(() => {
       const isMobile = window.innerWidth <= 768
       const finalHeight = isMobile ? '100svh' : '100vh'
-      const initialSlotWidth = isMobile ? '24vw' : '14vw'
+      const initialSlotWidth = '0vw'
       const intermediateWidth = isMobile ? '28vw' : '18vw'
       const initialSlotHeight = isMobile ? '50vw' : '14vw'
       const fyveTextY = -1.11
