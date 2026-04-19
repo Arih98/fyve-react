@@ -39,7 +39,8 @@ const Layout = () => {
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showAnnouncementBar = location.pathname !== '/admin';
-
+  const showFooter = location.pathname !== '/admin';
+  
   return (
     <div className="App">
       {showAnnouncementBar && <AnnouncementBar />}
