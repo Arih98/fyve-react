@@ -209,6 +209,7 @@ body.locked {
 .header-logo img {
   max-height: 50px;
   cursor: pointer;
+  transform: scaleX(-1);
 }
 
 .mobile-nav-icons {
