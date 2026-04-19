@@ -10,20 +10,18 @@ const Footer = () => {
       </div>
 
       <div className="footer-links">
-        <div className="footer-column">
-          <h4>Quick links</h4>
-          <a href="/faq">FAQ</a>
-          <a href="/returns">Return Policy</a>
-          <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
-        </div>
+  <span className="footer-heading">Quick links:</span>
 
-        <div className="footer-column">
-          <h4>Stay updated</h4>
-          <a href="https://www.instagram.com/fyvelondon/" target="_blank" rel="noopener noreferrer">
-            Instagram
-          </a>
-        </div>
-      </div>
+  <a href="/faq">FAQ</a>
+  <a href="/returns">Return Policy</a>
+  <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
+
+  <span className="footer-heading">Stay updated:</span>
+
+  <a href="https://www.instagram.com/fyvelondon/" target="_blank" rel="noopener noreferrer">
+    Instagram
+  </a>
+</div>
     </footer>
   )
 }
