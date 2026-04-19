@@ -73,11 +73,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  z-index: 1;
+  flex-direction: row;
+  gap: 0;
+  z-index: 2;
   transform: translate(-50%, -50%);
 }
 
@@ -94,76 +94,56 @@
   padding: 0;
   position: relative;
   overflow: hidden;
+  flex: 1;
+  text-align: center;
   z-index: 2;
-}
-
-.fyve-mask > .fyve-text:first-child {
-  justify-self: end;
-  text-align: right;
-}
-
-.fyve-mask > .fyve-text:last-child {
-  justify-self: start;
-  text-align: left;
 }
 
 .fyve-letter {
   display: inline-block;
 }
 
-.fyve-image-slot {
-  position: relative;
-  width: 14vw;
-  height: 14vw;
-  flex: 0 0 auto;
-  z-index: 1;
-  overflow: visible;
+.fyve-mask > .fyve-text:last-child > .fyve-letter:first-child {
+  margin-right: -0.08em;
 }
 
-.fyve-image-reveal {
-  position: relative;
-  width: 100%;
-  height: 100%;
+/* =============================================
+   NEW: three-layer image structure
+   Replaces .fyve-image-container, .mask-left, .mask-right
+   ============================================= */
+
+.fyve-image-wrap {
+  /* GSAP animates scale on this element. */
+  /* Starts at ~0.28 (desktop) or ~0.22 (mobile), ends at 1.0. */
+  /* transform-origin is set inline by GSAP: center center */
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  will-change: transform;
+}
+
+.fyve-image-mask {
+  /* Contains the image and clips it to the hero bounds at all scales */
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
-.fyve-image-scale-wrap {
+.fyve-image {
+  /* Fills the full hero area. object-fit: cover ensures no distortion
+     at any scale level — the image crops, never stretches. */
   position: absolute;
   inset: 0;
-  transform-origin: center center;
-  will-change: transform;
-}
-
-.fyve-image-picture {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.fyve-image {
-  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  overflow: clip;
+  visibility: hidden; /* GSAP sets to visible on init */
 }
 
-.fyve-cover {
-  position: absolute;
-  top: 0;
-  width: 50.5%;
-  height: 100%;
-  background: #F1DBD1;
-  z-index: 2;
-  will-change: transform;
-}
-
-.fyve-cover-left {
-  left: 0;
-}
-
-.fyve-cover-right {
-  right: 0;
-}
+/* =============================================
+   END new image structure
+   ============================================= */
 
 .london-mask {
   visibility: hidden;
@@ -425,15 +405,22 @@
 
   .fyve-hero-section {
     height: calc(100svh - var(--home-announcement-offset, 0px));
-    overflow: hidden;
   }
 
   .fyve-animation-stage {
     height: calc(100svh - var(--home-announcement-offset, 0px));
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    transform: none;
+  }
+
+  .fyve-text {
+    font-size: 25vw;
+  }
+
+  .london-text {
+    font-size: 2.5vw;
+  }
+
+  .fyve-hero-section {
+    height: 100svh;
     overflow: hidden;
   }
 
@@ -444,25 +431,21 @@
     overflow: hidden;
   }
 
-  .fyve-text {
-    font-size: 25vw;
-  }
-
-  .fyve-image-slot {
-    width: 24vw;
-    height: 50vw;
-  }
-
-  .london-text {
-    font-size: 2.5vw;
-  }
-
   .fyve-ui-layer {
     position: absolute;
     inset: 0;
     display: block;
     padding: 0;
     height: 100%;
+  }
+
+  .fyve-animation-stage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+    overflow: hidden;
   }
 
   .home-mobile-top-logo {
@@ -672,45 +655,5 @@
 
   .section2-shop-button {
     display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .fyve-image-slot {
-    width: 24vw;
-    height: 50vw;
-  }
-
-  .fyve-image-reveal {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .fyve-image-scale-wrap {
-    position: absolute;
-    inset: 0;
-  }
-
-  .fyve-image-picture {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .fyve-image {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: auto;
-    min-width: 100%;
-    height: 100%;
-    transform: translateX(-50%);
-    object-fit: cover;
-    object-position: center center;
-    display: block;
   }
 }
