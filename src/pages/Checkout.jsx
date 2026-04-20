@@ -988,8 +988,7 @@ case 'error': {
 
 const handleApplyCoupon = async () => {
   const code = couponCode.trim()
-console.log('latestCart after coupon', latestCart)
-console.log('latestCheckout after coupon', latestCheckout)
+
   if (!code) {
     setCouponMessage('Please enter a coupon code')
     return
@@ -1004,6 +1003,9 @@ console.log('latestCheckout after coupon', latestCheckout)
 
     const latestCart = await refreshCart({ silent: true }).catch(() => null)
     const latestCheckout = await getCheckoutData().catch(() => null)
+
+    console.log('latestCart after coupon', latestCart)
+    console.log('latestCheckout after coupon', latestCheckout)
 
     if (latestCheckout) {
       setCheckoutData(latestCheckout)
