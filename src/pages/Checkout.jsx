@@ -1330,7 +1330,7 @@ const handleCardPay = async () => {
 <input
   ref={firstNameRef}
   type="text"
-  placeholder="First name *"
+  placeholder="First name"
   value={billing.first_name}
   onChange={(e) => {
     setBilling((prev) => ({ ...prev, first_name: e.target.value }))
@@ -1344,7 +1344,7 @@ const handleCardPay = async () => {
 <input
   ref={lastNameRef}
   type="text"
-  placeholder="Last name *"
+  placeholder="Last name"
   value={billing.last_name}
   onChange={(e) => {
     setBilling((prev) => ({ ...prev, last_name: e.target.value }))
@@ -1366,7 +1366,7 @@ const handleCardPay = async () => {
 <input
   ref={address1Ref}
   type="text"
-  placeholder="Street address *"
+  placeholder="Street address"
   value={billing.address_1}
   onChange={(e) => {
     setBilling((prev) => ({ ...prev, address_1: e.target.value }))
@@ -1387,7 +1387,7 @@ const handleCardPay = async () => {
 <input
   ref={cityRef}
   type="text"
-  placeholder="Town / City *"
+  placeholder="Town / City"
   value={billing.city}
   onChange={(e) => {
     setBilling((prev) => ({ ...prev, city: e.target.value }))
@@ -1401,7 +1401,7 @@ const handleCardPay = async () => {
 <input
   ref={stateRef}
   type="text"
-  placeholder="State *"
+  placeholder="State"
   value={billing.state}
   onChange={(e) => {
     setBilling((prev) => ({ ...prev, state: e.target.value }))
@@ -1415,7 +1415,7 @@ const handleCardPay = async () => {
 <input
   ref={postcodeRef}
   type="text"
-  placeholder="ZIP Code *"
+  placeholder="ZIP Code"
   value={billing.postcode}
   onChange={(e) => {
     setBilling((prev) => ({ ...prev, postcode: e.target.value }))
@@ -1425,7 +1425,7 @@ const handleCardPay = async () => {
 
           <input
             type="text"
-            placeholder="Phone (optional)"
+            placeholder="Phone"
             value={contact.phone}
             onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
           />
@@ -1436,7 +1436,7 @@ const handleCardPay = async () => {
 <input
   ref={emailRef}
   type="email"
-  placeholder="Email address *"
+  placeholder="Email address"
   value={contact.email}
   onChange={(e) => {
     setContact((prev) => ({ ...prev, email: e.target.value }))
@@ -1480,7 +1480,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingFirstNameRef}
               type="text"
-              placeholder="First name *"
+              placeholder="First name"
               value={shipping.first_name}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, first_name: e.target.value }))
@@ -1494,7 +1494,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingLastNameRef}
               type="text"
-              placeholder="Last name *"
+              placeholder="Last name"
               value={shipping.last_name}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, last_name: e.target.value }))
@@ -1516,7 +1516,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingAddress1Ref}
               type="text"
-              placeholder="Street address *"
+              placeholder="Street address"
               value={shipping.address_1}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, address_1: e.target.value }))
@@ -1537,7 +1537,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingCityRef}
               type="text"
-              placeholder="Town / City *"
+              placeholder="Town / City"
               value={shipping.city}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, city: e.target.value }))
@@ -1551,7 +1551,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingStateRef}
               type="text"
-              placeholder="State *"
+              placeholder="State"
               value={shipping.state}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, state: e.target.value }))
@@ -1565,7 +1565,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingPostcodeRef}
               type="text"
-              placeholder="ZIP Code *"
+              placeholder="ZIP Code"
               value={shipping.postcode}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, postcode: e.target.value }))
