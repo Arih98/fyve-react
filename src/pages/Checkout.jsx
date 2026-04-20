@@ -732,13 +732,15 @@ onSuccess: async () => {
   }
 },
   onError: (error) => {
-    setPaymentLoading(false)
-    setError(error?.message || 'Card payment failed')
-  },
-  onCancel: () => {
-    setPaymentLoading(false)
-    setError('Card payment cancelled')
-  }
+  setPaymentLoading(false)
+  setIsFinalizingOrder(false)
+  setError(error?.message || 'Card payment failed')
+},
+onCancel: () => {
+  setPaymentLoading(false)
+  setIsFinalizingOrder(false)
+  setError('Card payment cancelled')
+}
 })
 
 cardFieldInstanceRef.current = cardField
@@ -992,12 +994,14 @@ const handleCardPay = async () => {
     }
 
     setPaymentLoading(true)
+    setIsFinalizingOrder(true)
     setError('')
 
     const isValid = validateCheckoutBeforePayment()
 
     if (!isValid) {
       setPaymentLoading(false)
+      setIsFinalizingOrder(false)
       return
     }
 
@@ -1077,6 +1081,7 @@ const handleCardPay = async () => {
     } catch (err) {
       if (applyServerValidationErrors(err)) {
         setPaymentLoading(false)
+        setIsFinalizingOrder(false)
         return
       }
       throw err
@@ -1111,6 +1116,7 @@ const handleCardPay = async () => {
     })
   } catch (err) {
     setPaymentLoading(false)
+    setIsFinalizingOrder(false)
     setError(err?.message || 'Failed to submit card payment')
   }
 }
