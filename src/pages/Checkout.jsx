@@ -704,15 +704,48 @@ const shippingAddress = snapshot.useSeparateShipping
   shipping_country: useSeparateShipping ? shipping.country : billing.country
 })
 
-if (cardSession?.free_order) {
-  await clearCheckoutCart().catch(() => {})
-  await refreshCart({ silent: true }).catch(() => {})
-  window.location.href = `/checkout/success?order_id=${encodeURIComponent(cardSession.wc_order_id)}`
-  return
-}
-
 if (!cardSession?.revolut_order_token) {
-  throw new Error('Missing Revolut order token')
+  setCardReady(false)
+} else {
+  latestWooOrderIdRef.current = cardSession.wc_order_id || latestWooOrderIdRef.current
+
+  const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
+
+  if (cancelled) return
+
+  const cardField = cardCheckout.createCardField({
+    target: cardContainerRef.current,
+    locale: 'en',
+    hidePostcodeField: true,
+    name: fullName || undefined,
+    email: snapshot.contact.email || undefined,
+    phone: snapshot.contact.phone || undefined,
+    billingAddress,
+    shippingAddress,
+    onSuccess: async () => {
+      try {
+        setIsFinalizingOrder(true)
+        await finalizeOrderBeforeRedirect()
+      } catch (error) {
+        setIsFinalizingOrder(false)
+        setPaymentLoading(false)
+        setError(error?.message || 'Failed to finalise order')
+      }
+    },
+    onError: (error) => {
+      setPaymentLoading(false)
+      setIsFinalizingOrder(false)
+      setError(error?.message || 'Card payment failed')
+    },
+    onCancel: () => {
+      setPaymentLoading(false)
+      setIsFinalizingOrder(false)
+      setError('Card payment cancelled')
+    }
+  })
+
+  cardFieldInstanceRef.current = cardField
+  setCardReady(true)
 }
 
 latestWooOrderIdRef.current = cardSession.wc_order_id || latestWooOrderIdRef.current
