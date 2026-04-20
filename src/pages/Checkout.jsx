@@ -210,29 +210,22 @@ const initializePaymentMethods = useCallback(async () => {
   setDraftOrderId(latestCheckout.order_id || null)
   setDraftOrderKey(latestCheckout.order_key || '')
 
-  paymentSnapshotRef.current = {
-    contact: { ...contact },
-    billing: { ...billing },
-    shipping: { ...shipping },
-    useSeparateShipping
-  }
-
   totalAmountMinorRef.current = Number(latestCheckout?.totals?.total_price || cart?.totals?.total_price || 0)
   currencyRef.current = String(latestCheckout?.totals?.currency_code || cart?.totals?.currency_code || 'GBP').toUpperCase()
 
   const publicKey = window.location.hostname === 'dev.fyvelondon.com'
-  ? 'pk_dET7Wo5zuMrGJQtsyNUP1ia6YV7HmWTK87KxlTiTVrNRpv8W'
-  : 'pk_4Vz86AUZwd356oEaE8mTXaymLyMSushzlPa6rx6cKnMQBQOI'
+    ? 'pk_dET7Wo5zuMrGJQtsyNUP1ia6YV7HmWTK87KxlTiTVrNRpv8W'
+    : 'pk_4Vz86AUZwd356oEaE8mTXaymLyMSushzlPa6rx6cKnMQBQOI'
 
-if (!publicKey) {
-  throw new Error('Missing Revolut public API key')
-}
+  if (!publicKey) {
+    throw new Error('Missing Revolut public API key')
+  }
 
-latestWooOrderIdRef.current = latestCheckout.order_id || null
-setRevolutPublicKey(publicKey)
-setPaymentMethodsOpen(true)
-setPaymentLoading(false)
-}, [contact, billing, shipping, useSeparateShipping, cart])
+  latestWooOrderIdRef.current = latestCheckout.order_id || null
+  setRevolutPublicKey(publicKey)
+  setPaymentMethodsOpen(true)
+  setPaymentLoading(false)
+}, [cart])
 
   const clearSavedCheckoutDraft = () => {
     localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
@@ -604,38 +597,7 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-const cardOrder = await createRevolutPaymentOrder()
-if (cancelled) return
-
-const cardCheckout = await RevolutCheckout(cardOrder.revolut_order_token, mode)
-if (cancelled) return
-
-const cardField = cardCheckout.createCardField({
-  target: cardContainerRef.current,
-  locale: 'en',
-  hidePostcodeField: true,
-  name: fullName || undefined,
-  email: snapshot.contact.email || undefined,
-  phone: snapshot.contact.phone || undefined,
-  billingAddress,
-  shippingAddress,
-  onSuccess: () => {
-    setPaymentLoading(false)
-    redirectToSuccess()
-  },
-  onError: (error) => {
-    setPaymentLoading(false)
-    setError(error?.message || 'Card payment failed')
-  },
-  onCancel: () => {
-    setPaymentLoading(false)
-    setError('Card payment cancelled')
-  }
-})
-
-cardFieldInstanceRef.current = cardField
-setCardReady(true)
-
+cardFieldInstanceRef.current = null
 setCardReady(true)
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
@@ -855,19 +817,11 @@ case 'error': {
   clearMountedPaymentMethods,
   createRevolutPaymentOrder,
   applyServerValidationErrors,
-  focusFirstInvalidField,
-  contact,
-  billing,
-  shipping,
-  useSeparateShipping
+  focusFirstInvalidField
 ])
 
 const handleCardPay = async () => {
   try {
-    if (!cardFieldInstanceRef.current) {
-      throw new Error('Card field is not ready')
-    }
-
     setPaymentLoading(true)
     setError('')
 
@@ -929,36 +883,59 @@ const handleCardPay = async () => {
       useSeparateShipping
     }
 
-    cardFieldInstanceRef.current.submit({
+    if (cardFieldInstanceRef.current) {
+      cardFieldInstanceRef.current.destroy()
+      cardFieldInstanceRef.current = null
+    }
+
+    const cardOrder = await createRevolutPaymentOrder()
+    const cardCheckout = await RevolutCheckout(cardOrder.revolut_order_token, currentRevolutModeRef.current)
+
+    const billingAddress = {
+      countryCode: billing.country || undefined,
+      region: normalizeUsState(billing.state) || undefined,
+      city: billing.city || undefined,
+      postcode: billing.postcode || undefined,
+      streetLine1: billing.address_1 || undefined,
+      streetLine2: billing.address_2 || undefined
+    }
+
+    const shippingAddress = useSeparateShipping
+      ? {
+          countryCode: shipping.country || undefined,
+          region: normalizeUsState(shipping.state) || undefined,
+          city: shipping.city || undefined,
+          postcode: shipping.postcode || undefined,
+          streetLine1: shipping.address_1 || undefined,
+          streetLine2: shipping.address_2 || undefined
+        }
+      : billingAddress
+
+    const cardField = cardCheckout.createCardField({
+      target: cardContainerRef.current,
+      locale: 'en',
+      hidePostcodeField: true,
       name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
       email: contact.email || undefined,
       phone: contact.phone || undefined,
-      billingAddress: {
-        countryCode: billing.country || undefined,
-        region: normalizeUsState(billing.state) || undefined,
-        city: billing.city || undefined,
-        postcode: billing.postcode || undefined,
-        streetLine1: billing.address_1 || undefined,
-        streetLine2: billing.address_2 || undefined
+      billingAddress,
+      shippingAddress,
+      onSuccess: () => {
+        setPaymentLoading(false)
+        redirectToSuccess()
       },
-      shippingAddress: useSeparateShipping
-        ? {
-            countryCode: shipping.country || undefined,
-            region: normalizeUsState(shipping.state) || undefined,
-            city: shipping.city || undefined,
-            postcode: shipping.postcode || undefined,
-            streetLine1: shipping.address_1 || undefined,
-            streetLine2: shipping.address_2 || undefined
-          }
-        : {
-            countryCode: billing.country || undefined,
-            region: normalizeUsState(billing.state) || undefined,
-            city: billing.city || undefined,
-            postcode: billing.postcode || undefined,
-            streetLine1: billing.address_1 || undefined,
-            streetLine2: billing.address_2 || undefined
-          }
+      onError: (error) => {
+        setPaymentLoading(false)
+        setError(error?.message || 'Card payment failed')
+      },
+      onCancel: () => {
+        setPaymentLoading(false)
+        setError('Card payment cancelled')
+      }
     })
+
+    cardFieldInstanceRef.current = cardField
+    cardField.submit()
   } catch (err) {
     setPaymentLoading(false)
     setError(err?.message || 'Failed to submit card payment')
