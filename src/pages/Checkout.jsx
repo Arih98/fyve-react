@@ -1004,8 +1004,10 @@ const handleApplyCoupon = async () => {
     const latestCart = await refreshCart({ silent: true }).catch(() => null)
     const latestCheckout = await getCheckoutData().catch(() => null)
 
-    console.log('latestCart after coupon', latestCart)
-    console.log('latestCheckout after coupon', latestCheckout)
+console.log('latestCart totals after coupon', latestCart?.totals)
+console.log('latestCart coupons after coupon', latestCart?.coupons)
+console.log('latestCheckout totals after coupon', latestCheckout?.totals)
+console.log('current cart context totals after coupon', cart?.totals)
 
     if (latestCheckout) {
       setCheckoutData(latestCheckout)
