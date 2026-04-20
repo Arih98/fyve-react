@@ -50,6 +50,8 @@
   align-items: center;
   gap: 150px;
   white-space: nowrap;
+  font-size: clamp(16px, 1.4vw, 22px);
+  text-transform: capitalize;
 }
 
 .footer-heading {
