@@ -168,6 +168,7 @@ export default function Checkout() {
   const appleGoogleContainerRef = useRef(null)
   const revolutPayContainerRef = useRef(null)
 
+  const cardFieldFactoryRef = useRef(null)
   const cardFieldInstanceRef = useRef(null)
   const paymentRequestInstanceRef = useRef(null)
   const revolutPayInstanceRef = useRef(null)
@@ -181,25 +182,27 @@ export default function Checkout() {
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
   const clearMountedPaymentMethods = useCallback(() => {
-    setCardReady(false)
-    setAppleGoogleReady(false)
-    setRevolutPayReady(false)
+  setCardReady(false)
+  setAppleGoogleReady(false)
+  setRevolutPayReady(false)
 
-    if (cardFieldInstanceRef.current) {
-      cardFieldInstanceRef.current.destroy()
-      cardFieldInstanceRef.current = null
-    }
+  if (cardFieldInstanceRef.current) {
+    cardFieldInstanceRef.current.destroy()
+    cardFieldInstanceRef.current = null
+  }
 
-    if (paymentRequestInstanceRef.current) {
-      paymentRequestInstanceRef.current.destroy()
-      paymentRequestInstanceRef.current = null
-    }
+  cardFieldFactoryRef.current = null
 
-    if (revolutPayInstanceRef.current) {
-      revolutPayInstanceRef.current.destroy()
-      revolutPayInstanceRef.current = null
-    }
-  }, [])
+  if (paymentRequestInstanceRef.current) {
+    paymentRequestInstanceRef.current.destroy()
+    paymentRequestInstanceRef.current = null
+  }
+
+  if (revolutPayInstanceRef.current) {
+    revolutPayInstanceRef.current.destroy()
+    revolutPayInstanceRef.current = null
+  }
+}, [])
 
 const initializePaymentMethods = useCallback(async () => {
   setPaymentLoading(true)
@@ -604,38 +607,43 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-cardFieldInstanceRef.current = {
-  create: async () => {
-    const cardOrder = await createRevolutPaymentOrder()
-    const checkout = await RevolutCheckout(cardOrder.revolut_order_token, mode)
-    return checkout.createCardField({
-      target: cardContainerRef.current,
-      locale: 'en',
-      hidePostcodeField: true,
-      name: fullName || undefined,
-      email: snapshot.contact.email || undefined,
-      phone: snapshot.contact.phone || undefined,
-      billingAddress,
-      shippingAddress,
-      onSuccess: () => {
-        setPaymentLoading(false)
-        redirectToSuccess()
-      },
-      onError: (error) => {
-        setPaymentLoading(false)
-        setError(error?.message || 'Card payment failed')
-      },
-      onCancel: () => {
-        setPaymentLoading(false)
-        setError('Card payment cancelled')
-      }
-    })
+cardFieldFactoryRef.current = async () => {
+  if (cardFieldInstanceRef.current) {
+    cardFieldInstanceRef.current.destroy()
+    cardFieldInstanceRef.current = null
   }
-}
-setCardReady(true)
 
-        cardFieldInstanceRef.current = cardField
-        setCardReady(true)
+  const cardOrder = await createRevolutPaymentOrder()
+  const checkout = await RevolutCheckout(cardOrder.revolut_order_token, mode)
+
+  const field = checkout.createCardField({
+    target: cardContainerRef.current,
+    locale: 'en',
+    hidePostcodeField: true,
+    name: fullName || undefined,
+    email: snapshot.contact.email || undefined,
+    phone: snapshot.contact.phone || undefined,
+    billingAddress,
+    shippingAddress,
+    onSuccess: () => {
+      setPaymentLoading(false)
+      redirectToSuccess()
+    },
+    onError: (error) => {
+      setPaymentLoading(false)
+      setError(error?.message || 'Card payment failed')
+    },
+    onCancel: () => {
+      setPaymentLoading(false)
+      setError('Card payment cancelled')
+    }
+  })
+
+  cardFieldInstanceRef.current = field
+  return field
+}
+
+setCardReady(true)
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
   amount: totalAmountMinorRef.current,
@@ -863,7 +871,7 @@ case 'error': {
 
 const handleCardPay = async () => {
   try {
-    if (!cardFieldInstanceRef.current) {
+    if (!cardFieldFactoryRef.current) {
       throw new Error('Card field is not ready')
     }
 
@@ -928,8 +936,7 @@ const handleCardPay = async () => {
       useSeparateShipping
     }
 
-    const cardField = await cardFieldInstanceRef.current.create()
-
+    const cardField = await cardFieldFactoryRef.current()
     cardField.submit()
   } catch (err) {
     setPaymentLoading(false)
