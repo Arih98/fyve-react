@@ -602,7 +602,26 @@ const shippingAddress = snapshot.useSeparateShipping
 const cardSession = await createRevolutOrder({
   draft_order_id: draftOrderId || checkoutData?.order_id || null,
   draft_order_key: draftOrderKey || checkoutData?.order_key || '',
-  validation_mode: 'mount'
+  validation_mode: 'mount',
+  useSeparateShipping,
+  billing_email: contact.email,
+  billing_phone: contact.phone || '',
+  billing_first_name: billing.first_name,
+  billing_last_name: billing.last_name,
+  billing_address_1: billing.address_1,
+  billing_address_2: billing.address_2,
+  billing_city: billing.city,
+  billing_state: normalizeUsState(billing.state),
+  billing_postcode: billing.postcode,
+  billing_country: billing.country,
+  shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
+  shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
+  shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
+  shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
+  shipping_city: useSeparateShipping ? shipping.city : billing.city,
+  shipping_state: useSeparateShipping ? normalizeUsState(shipping.state) : normalizeUsState(billing.state),
+  shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
+  shipping_country: useSeparateShipping ? shipping.country : billing.country
 })
 
 if (!cardSession?.revolut_order_token) {
