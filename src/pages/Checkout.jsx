@@ -988,7 +988,8 @@ case 'error': {
 
 const handleApplyCoupon = async () => {
   const code = couponCode.trim()
-
+console.log('latestCart after coupon', latestCart)
+console.log('latestCheckout after coupon', latestCheckout)
   if (!code) {
     setCouponMessage('Please enter a coupon code')
     return
@@ -1553,7 +1554,12 @@ const handleCardPay = async () => {
               <span>Tax</span>
               <span>{formatWooMoney(cart?.totals?.total_tax, cart?.totals)}</span>
             </div>
-
+{!!cart?.totals?.total_discount && Number(cart.totals.total_discount) > 0 && (
+  <div className="checkout-summary-row">
+    <span>Discount</span>
+    <span>-{formatWooMoney(cart.totals.total_discount, cart?.totals)}</span>
+  </div>
+)}
             <div className="checkout-summary-row checkout-summary-total">
               <span>Total</span>
               <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
