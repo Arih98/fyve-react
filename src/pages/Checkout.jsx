@@ -660,6 +660,12 @@ setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
           throw new Error('Payment snapshot is missing')
         }
 
+        if (!requiresPayment) {
+  clearMountedPaymentMethods()
+  setPaymentLoading(false)
+  return
+}
+
         const fullName = `${snapshot.billing.first_name} ${snapshot.billing.last_name}`.trim()
 
 const billingAddress = {
@@ -1119,6 +1125,7 @@ const handleApplyCoupon = async () => {
     }
 
     setCouponMessage('Coupon applied')
+    setSelectedPaymentMethod('card')
     clearMountedPaymentMethods()
     setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
@@ -1149,6 +1156,7 @@ const handleRemoveCoupon = async (code) => {
     }
 
     setCouponMessage('Coupon removed')
+    setSelectedPaymentMethod('card')
     clearMountedPaymentMethods()
     setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
