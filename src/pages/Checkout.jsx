@@ -388,9 +388,14 @@ const initializePaymentMethods = useCallback(async () => {
     shipping_country: snapshot.useSeparateShipping ? snapshot.shipping.country : snapshot.billing.country
   })
 
-  if (!revolutResult?.revolut_order_token) {
-    throw new Error('Missing Revolut order token')
-  }
+if (revolutResult?.free_order) {
+  latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
+  return revolutResult
+}
+
+if (!revolutResult?.revolut_order_token) {
+  throw new Error('Missing Revolut order token')
+}
 
   latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
 
@@ -674,6 +679,7 @@ const shippingAddress = snapshot.useSeparateShipping
         if (cancelled) return
 
         const cardSession = await createRevolutOrder({
+  
   draft_order_id: draftOrderId || checkoutData?.order_id || null,
   draft_order_key: draftOrderKey || checkoutData?.order_key || '',
   validation_mode: 'mount',
@@ -697,6 +703,11 @@ const shippingAddress = snapshot.useSeparateShipping
   shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
   shipping_country: useSeparateShipping ? shipping.country : billing.country
 })
+
+if (cardSession?.free_order) {
+  window.location.href = `/checkout/success?order_id=${encodeURIComponent(cardSession.wc_order_id)}`
+  return
+}
 
 if (!cardSession?.revolut_order_token) {
   throw new Error('Missing Revolut order token')
@@ -800,8 +811,14 @@ setCardReady(true)
           }
     })
 
-    const result = await createRevolutPaymentOrder()
-    return { publicId: result.revolut_order_token }
+const result = await createRevolutPaymentOrder()
+
+if (result?.free_order) {
+  window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
+  return
+}
+
+return { publicId: result.revolut_order_token }
   } catch (err) {
     if (applyServerValidationErrors(err)) {
       throw new Error('Please complete the required fields')
@@ -899,8 +916,15 @@ onError: (error) => {
           }
     })
 
-    const result = await createRevolutPaymentOrder()
-    return { publicId: result.revolut_order_token }
+const result = await createRevolutPaymentOrder()
+
+if (result?.free_order) {
+  window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
+  return
+}
+
+return { publicId: result.revolut_order_token }
+
   } catch (err) {
     if (applyServerValidationErrors(err)) {
       throw new Error('Please complete the required fields')
