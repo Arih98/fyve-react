@@ -221,8 +221,8 @@ const initializePaymentMethods = useCallback(async () => {
   currencyRef.current = String(latestCheckout?.totals?.currency_code || cart?.totals?.currency_code || 'GBP').toUpperCase()
 
   const publicKey = window.location.hostname === 'dev.fyvelondon.com'
-  ? 'YOUR_SANDBOX_PUBLIC_KEY_HERE'
-  : 'YOUR_LIVE_PUBLIC_KEY_HERE'
+  ? 'pk_dET7Wo5zuMrGJQtsyNUP1ia6YV7HmWTK87KxlTiTVrNRpv8W'
+  : 'pk_4Vz86AUZwd356oEaE8mTXaymLyMSushzlPa6rx6cKnMQBQOI'
 
 if (!publicKey) {
   throw new Error('Missing Revolut public API key')
@@ -604,34 +604,16 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-        const cardSession = await createRevolutPaymentOrder()
-        if (cancelled) return
+        const cardCheckout = await RevolutCheckout.payments({
+  publicToken: revolutPublicKey,
+  locale: 'en',
+  mode
+})
 
-        const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
-        if (cancelled) return
+if (cancelled) return
 
-        const cardField = cardCheckout.createCardField({
-          target: cardContainerRef.current,
-          locale: 'en',
-          hidePostcodeField: true,
-          name: fullName || undefined,
-          email: snapshot.contact.email || undefined,
-          phone: snapshot.contact.phone || undefined,
-          billingAddress,
-          shippingAddress,
-          onSuccess: () => {
-            setPaymentLoading(false)
-            redirectToSuccess()
-          },
-          onError: (error) => {
-            setPaymentLoading(false)
-            setError(error?.message || 'Card payment failed')
-          },
-          onCancel: () => {
-            setPaymentLoading(false)
-            setError('Card payment cancelled')
-          }
-        })
+cardFieldInstanceRef.current = cardCheckout
+setCardReady(true)
 
         cardFieldInstanceRef.current = cardField
         setCardReady(true)
@@ -877,31 +859,8 @@ case 'error': {
     }
 
     try {
-  await updateCheckoutCustomer({
-    billingAddress: {
-      first_name: billing.first_name,
-      last_name: billing.last_name,
-      address_1: billing.address_1,
-      address_2: billing.address_2,
-      city: billing.city,
-      state: normalizeUsState(billing.state),
-      postcode: billing.postcode,
-      country: billing.country,
-      email: contact.email,
-      phone: contact.phone
-    },
-    shippingAddress: useSeparateShipping
-      ? {
-          first_name: shipping.first_name,
-          last_name: shipping.last_name,
-          address_1: shipping.address_1,
-          address_2: shipping.address_2,
-          city: shipping.city,
-          state: normalizeUsState(shipping.state),
-          postcode: shipping.postcode,
-          country: shipping.country
-        }
-      : {
+      await updateCheckoutCustomer({
+        billingAddress: {
           first_name: billing.first_name,
           last_name: billing.last_name,
           address_1: billing.address_1,
@@ -909,16 +868,39 @@ case 'error': {
           city: billing.city,
           state: normalizeUsState(billing.state),
           postcode: billing.postcode,
-          country: billing.country
-        }
-  })
-} catch (err) {
-  if (applyServerValidationErrors(err)) {
-    setPaymentLoading(false)
-    return
-  }
-  throw err
-}
+          country: billing.country,
+          email: contact.email,
+          phone: contact.phone
+        },
+        shippingAddress: useSeparateShipping
+          ? {
+              first_name: shipping.first_name,
+              last_name: shipping.last_name,
+              address_1: shipping.address_1,
+              address_2: shipping.address_2,
+              city: shipping.city,
+              state: normalizeUsState(shipping.state),
+              postcode: shipping.postcode,
+              country: shipping.country
+            }
+          : {
+              first_name: billing.first_name,
+              last_name: billing.last_name,
+              address_1: billing.address_1,
+              address_2: billing.address_2,
+              city: billing.city,
+              state: normalizeUsState(billing.state),
+              postcode: billing.postcode,
+              country: billing.country
+            }
+      })
+    } catch (err) {
+      if (applyServerValidationErrors(err)) {
+        setPaymentLoading(false)
+        return
+      }
+      throw err
+    }
 
     paymentSnapshotRef.current = {
       contact: { ...contact },
@@ -947,12 +929,33 @@ case 'error': {
         }
       : billingAddress
 
-    cardFieldInstanceRef.current.submit({
+    const cardOrder = await createRevolutPaymentOrder()
+
+    const cardInstance = cardFieldInstanceRef.current.createCardField({
+      target: cardContainerRef.current,
+      locale: 'en',
+      hidePostcodeField: true,
       name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
       email: contact.email || undefined,
       phone: contact.phone || undefined,
       billingAddress,
-      shippingAddress
+      shippingAddress,
+      onSuccess: () => {
+        setPaymentLoading(false)
+        redirectToSuccess()
+      },
+      onError: (error) => {
+        setPaymentLoading(false)
+        setError(error?.message || 'Card payment failed')
+      },
+      onCancel: () => {
+        setPaymentLoading(false)
+        setError('Card payment cancelled')
+      }
+    })
+
+    cardInstance.submit({
+      orderToken: cardOrder.revolut_order_token
     })
   } catch (err) {
     setPaymentLoading(false)
