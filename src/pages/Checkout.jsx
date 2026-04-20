@@ -162,6 +162,7 @@ export default function Checkout() {
   const [appleGoogleReady, setAppleGoogleReady] = useState(false)
   const [revolutPayReady, setRevolutPayReady] = useState(false)
   const [paymentMethodsOpen, setPaymentMethodsOpen] = useState(false)
+  const [isFinalizingOrder, setIsFinalizingOrder] = useState(false)
 
   const hasPrefilledRef = useRef(false)
 
@@ -201,6 +202,82 @@ export default function Checkout() {
     revolutPayInstanceRef.current = null
   }
 }, [])
+
+const finalizeOrderBeforeRedirect = useCallback(async () => {
+  const wooOrderId = latestWooOrderIdRef.current
+
+  if (!wooOrderId) {
+    throw new Error('Payment succeeded but order id is missing')
+  }
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${wooOrderId}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+
+    const raw = await response.text()
+
+    let result = null
+
+    try {
+      result = raw ? JSON.parse(raw) : null
+    } catch (e) {
+      throw new Error(raw || `Request failed with status ${response.status}`)
+    }
+
+    if (!response.ok) {
+      throw new Error(result?.message || `Request failed with status ${response.status}`)
+    }
+
+    const nextOrder = result?.order || null
+    const paid = Boolean(nextOrder?.is_paid)
+    const status = String(nextOrder?.status || '').toLowerCase()
+
+    if (paid || status === 'processing' || status === 'completed') {
+      await clearCheckoutCart().catch(() => {})
+      await refreshCart({ silent: true }).catch(() => {})
+      window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
+      return
+    }
+
+    await sleep(2000)
+  }
+
+  const confirmResponse = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${wooOrderId}`, {
+    method: 'POST',
+    credentials: 'include'
+  })
+
+  const confirmRaw = await confirmResponse.text()
+
+  let confirmResult = null
+
+  try {
+    confirmResult = confirmRaw ? JSON.parse(confirmRaw) : null
+  } catch (e) {
+    throw new Error(confirmRaw || `Request failed with status ${confirmResponse.status}`)
+  }
+
+  if (!confirmResponse.ok) {
+    throw new Error(confirmResult?.message || `Request failed with status ${confirmResponse.status}`)
+  }
+
+  const nextOrder = confirmResult?.order || null
+  const confirmed = Boolean(confirmResult?.confirmed || nextOrder?.is_paid)
+  const status = String(nextOrder?.status || '').toLowerCase()
+
+  if (confirmed || status === 'processing' || status === 'completed') {
+    await clearCheckoutCart().catch(() => {})
+    await refreshCart({ silent: true }).catch(() => {})
+    window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
+    return
+  }
+
+  throw new Error('Your payment is still being finalised. Please refresh this page in a moment.')
+}, [refreshCart])
 
 const initializePaymentMethods = useCallback(async () => {
   setPaymentLoading(true)
@@ -644,10 +721,16 @@ const cardField = cardCheckout.createCardField({
   phone: snapshot.contact.phone || undefined,
   billingAddress,
   shippingAddress,
-  onSuccess: () => {
+onSuccess: async () => {
+  try {
+    setIsFinalizingOrder(true)
+    await finalizeOrderBeforeRedirect()
+  } catch (error) {
+    setIsFinalizingOrder(false)
     setPaymentLoading(false)
-    redirectToSuccess()
-  },
+    setError(error?.message || 'Failed to finalise order')
+  }
+},
   onError: (error) => {
     setPaymentLoading(false)
     setError(error?.message || 'Card payment failed')
@@ -728,9 +811,16 @@ setCardReady(true)
     throw err
   }
 },
-  onSuccess: () => {
-    redirectToSuccess()
-  },
+onSuccess: async () => {
+  try {
+    setIsFinalizingOrder(true)
+    await finalizeOrderBeforeRedirect()
+  } catch (error) {
+    setIsFinalizingOrder(false)
+    setPaymentLoading(false)
+    setError(error?.message || 'Failed to finalise order')
+  }
+},
 onError: (error) => {
   const message = error?.message || 'Apple Pay / Google Pay payment failed'
   if (message === 'Please complete the required fields') return
@@ -841,9 +931,18 @@ onError: (error) => {
 
         payments.revolutPay.on('payment', (event) => {
           switch (event?.type) {
-            case 'success':
-              redirectToSuccess()
-              break
+case 'success':
+  ;(async () => {
+    try {
+      setIsFinalizingOrder(true)
+      await finalizeOrderBeforeRedirect()
+    } catch (error) {
+      setIsFinalizingOrder(false)
+      setPaymentLoading(false)
+      setError(error?.message || 'Failed to finalise order')
+    }
+  })()
+  break
 case 'error': {
   const message = event?.error?.message || 'Revolut Pay payment failed'
   if (message !== 'Please complete the required fields') {
@@ -1025,7 +1124,7 @@ const handleCardPay = async () => {
   }
 
   return (
-    <div className="checkout-page">
+    <div className={`checkout-page ${isFinalizingOrder ? 'checkout-page-processing' : ''}`}>
       <div className="checkout-main">
         <section className="checkout-section">
           <h1>Checkout</h1>
@@ -1375,18 +1474,29 @@ const handleCardPay = async () => {
   <h2>Pay by card</h2>
   <div ref={cardContainerRef} id="revolut-card-field"></div>
   {!cardReady && <div>Card payment unavailable or still loading.</div>}
-  <button
-    type="button"
-    onClick={handleCardPay}
-    disabled={paymentLoading || !cardReady}
-  >
-    {paymentLoading ? 'Processing payment...' : 'Pay now'}
-  </button>
+<button
+  type="button"
+  onClick={handleCardPay}
+  disabled={paymentLoading || !cardReady || isFinalizingOrder}
+  className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
+>
+  {(paymentLoading || isFinalizingOrder) ? (
+    <>
+      <span className="checkout-button-spinner"></span>
+      <span>Processing</span>
+    </>
+  ) : (
+    'Pay now'
+  )}
+</button>
 </div>
 </div>
           </div>
         </section>
       </aside>
+      {isFinalizingOrder && (
+  <div className="checkout-processing-overlay" aria-hidden="true"></div>
+)}
     </div>
   )
 }

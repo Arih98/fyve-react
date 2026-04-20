@@ -37,3 +37,46 @@
   line-height: 1.4;
   margin: 0 0 6px;
 }
+
+.checkout-page {
+  position: relative;
+}
+
+.checkout-page-processing {
+  pointer-events: none;
+}
+
+.checkout-page-processing .checkout-main,
+.checkout-page-processing .checkout-sidebar {
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+
+.checkout-processing-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 20;
+}
+
+.checkout-pay-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.checkout-button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: checkout-spin 0.8s linear infinite;
+}
+
+@keyframes checkout-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
