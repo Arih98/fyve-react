@@ -39,6 +39,7 @@
   font-weight: 400;
   font-size: clamp(12px, 1.5vw, 20px);
   letter-spacing: 2em;
+  margin-top: -1em;
 }
 
 .footer-links {
