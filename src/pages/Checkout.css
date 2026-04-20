@@ -88,3 +88,7 @@
 .checkout-payment-option-body.is-active {
   display: block;
 }
+
+input[readonly] {
+  pointer-events: none;
+}

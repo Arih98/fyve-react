@@ -1166,7 +1166,7 @@ const handleCardPay = async () => {
   placeholder="Country / Region *"
   value="United States (US)"
   readOnly
-  disabled
+  tabIndex={-1}
 />
 
 {fieldErrors.billing_address_1 && (
@@ -1316,7 +1316,7 @@ const handleCardPay = async () => {
   placeholder="Country / Region *"
   value="United States (US)"
   readOnly
-  disabled
+  tabIndex={-1}
 />
 
             {fieldErrors.shipping_address_1 && (
