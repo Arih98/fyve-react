@@ -923,6 +923,8 @@ onError: (error) => {
 const result = await createRevolutPaymentOrder()
 
 if (result?.free_order) {
+  await clearCheckoutCart().catch(() => {})
+  await refreshCart({ silent: true }).catch(() => {})
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   return
 }
@@ -1031,11 +1033,6 @@ const handleApplyCoupon = async () => {
 
     const latestCart = await refreshCart({ silent: true }).catch(() => null)
     const latestCheckout = await getCheckoutData().catch(() => null)
-
-console.log('latestCart totals after coupon', latestCart?.totals)
-console.log('latestCart coupons after coupon', latestCart?.coupons)
-console.log('latestCheckout totals after coupon', latestCheckout?.totals)
-console.log('current cart context totals after coupon', cart?.totals)
 
     if (latestCheckout) {
       setCheckoutData(latestCheckout)
