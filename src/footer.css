@@ -21,6 +21,7 @@
   font-size: 28px;
   letter-spacing: 2px;
   line-height: 1;
+  margin-bottom: 0.5em;
 }
 
 .footer-fyve {
@@ -38,7 +39,7 @@
   font-family: quasimoda, sans-serif !important;
   font-weight: 600;
   font-size: clamp(12px, 1.5vw, 20px);
-  letter-spacing: 2.8em;
+  letter-spacing: 2.9em;
   margin-top: -1em;
 }
 
@@ -47,7 +48,7 @@
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 150px;
   white-space: nowrap;
 }
 
