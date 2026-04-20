@@ -960,7 +960,6 @@ case 'error': {
 }, [
   paymentMethodsOpen,
   revolutPublicKey,
-  redirectToSuccess,
   clearMountedPaymentMethods,
   createRevolutPaymentOrder,
   applyServerValidationErrors,
