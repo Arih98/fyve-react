@@ -61,3 +61,55 @@ export function updateRevolutOrderDetails(payload) {
     body: JSON.stringify(payload)
   })
 }
+
+export async function applyCoupon(code) {
+  const response = await fetch('https://fyvelondon.com/wp-json/fyve-checkout/v1/apply-coupon', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ code })
+  })
+
+  const raw = await response.text()
+  let result = null
+
+  try {
+    result = raw ? JSON.parse(raw) : null
+  } catch (e) {
+    throw new Error(raw || `Request failed with status ${response.status}`)
+  }
+
+  if (!response.ok) {
+    throw new Error(result?.message || 'Failed to apply coupon')
+  }
+
+  return result
+}
+
+export async function removeCoupon(code) {
+  const response = await fetch('https://fyvelondon.com/wp-json/fyve-checkout/v1/remove-coupon', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ code })
+  })
+
+  const raw = await response.text()
+  let result = null
+
+  try {
+    result = raw ? JSON.parse(raw) : null
+  } catch (e) {
+    throw new Error(raw || `Request failed with status ${response.status}`)
+  }
+
+  if (!response.ok) {
+    throw new Error(result?.message || 'Failed to remove coupon')
+  }
+
+  return result
+}

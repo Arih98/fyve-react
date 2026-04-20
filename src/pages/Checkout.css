@@ -92,3 +92,49 @@
 input[readonly] {
   pointer-events: none;
 }
+
+.checkout-summary-coupon-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-summary-coupon-label {
+  font: inherit;
+}
+
+.checkout-summary-coupon-row {
+  display: flex;
+  gap: 10px;
+}
+
+.checkout-summary-coupon-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.checkout-coupon-message {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.checkout-applied-coupons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkout-applied-coupon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.checkout-applied-coupon button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}

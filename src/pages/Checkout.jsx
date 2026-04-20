@@ -1,12 +1,16 @@
 import React, { useContext, useEffect, useRef, useState, useCallback } from 'react'
 import { CartContext } from '../CartContext'
+import React, { useContext, useEffect, useRef, useState, useCallback } from 'react'
+import { CartContext } from '../CartContext'
 import {
   getCheckoutPrefill,
   getCheckoutData,
   updateCheckoutCustomer,
   createRevolutOrder,
   clearCheckoutCart,
-  updateRevolutOrderDetails
+  updateRevolutOrderDetails,
+  applyCoupon,
+  removeCoupon
 } from '../api/checkout'
 import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
@@ -405,6 +409,10 @@ const shippingAddress1Ref = useRef(null)
 const shippingCityRef = useRef(null)
 const shippingStateRef = useRef(null)
 const shippingPostcodeRef = useRef(null)
+
+const [couponCode, setCouponCode] = useState('')
+const [couponLoading, setCouponLoading] = useState(false)
+const [couponMessage, setCouponMessage] = useState('')
 
 const focusFirstInvalidField = useCallback((errors) => {
   const firstKey = Object.keys(errors)[0]
@@ -974,6 +982,73 @@ case 'error': {
   finalizeOrderBeforeRedirect
 ])
 
+const handleApplyCoupon = async () => {
+  const code = couponCode.trim()
+
+  if (!code) {
+    setCouponMessage('Please enter a coupon code')
+    return
+  }
+
+  try {
+    setCouponLoading(true)
+    setCouponMessage('')
+    setError('')
+
+    await applyCoupon(code)
+
+    const latestCart = await refreshCart({ silent: true }).catch(() => null)
+    const latestCheckout = await getCheckoutData().catch(() => null)
+
+    if (latestCheckout) {
+      setCheckoutData(latestCheckout)
+      setDraftOrderId(latestCheckout.order_id || null)
+      setDraftOrderKey(latestCheckout.order_key || '')
+      totalAmountMinorRef.current = Number(latestCheckout?.totals?.total_price || latestCart?.totals?.total_price || 0)
+      currencyRef.current = String(latestCheckout?.totals?.currency_code || latestCart?.totals?.currency_code || 'GBP').toUpperCase()
+    }
+
+    setCouponMessage('Coupon applied')
+    clearMountedPaymentMethods()
+    setPaymentMethodsOpen(false)
+    setRevolutPublicKey('')
+  } catch (err) {
+    setCouponMessage(err?.message || 'Failed to apply coupon')
+  } finally {
+    setCouponLoading(false)
+  }
+}
+
+const handleRemoveCoupon = async (code) => {
+  try {
+    setCouponLoading(true)
+    setCouponMessage('')
+    setError('')
+
+    await removeCoupon(code)
+
+    const latestCart = await refreshCart({ silent: true }).catch(() => null)
+    const latestCheckout = await getCheckoutData().catch(() => null)
+
+    if (latestCheckout) {
+      setCheckoutData(latestCheckout)
+      setDraftOrderId(latestCheckout.order_id || null)
+      setDraftOrderKey(latestCheckout.order_key || '')
+      totalAmountMinorRef.current = Number(latestCheckout?.totals?.total_price || latestCart?.totals?.total_price || 0)
+      currencyRef.current = String(latestCheckout?.totals?.currency_code || latestCart?.totals?.currency_code || 'GBP').toUpperCase()
+    }
+
+    setCouponMessage('Coupon removed')
+    clearMountedPaymentMethods()
+    setPaymentMethodsOpen(false)
+    setRevolutPublicKey('')
+  } catch (err) {
+    setCouponMessage(err?.message || 'Failed to remove coupon')
+  } finally {
+    setCouponLoading(false)
+  }
+}
+
 const handleCardPay = async () => {
   try {
     if (!cardFieldInstanceRef.current) {
@@ -1415,10 +1490,48 @@ const handleCardPay = async () => {
           })}
 
           <div className="checkout-summary-totals">
-            <div className="checkout-summary-row checkout-summary-coupon">
-              <span>Coupon code</span>
-              <button type="button" className="checkout-apply-button">Apply</button>
-            </div>
+            <div className="checkout-summary-coupon-block">
+  <label className="checkout-summary-coupon-label">Coupon code</label>
+
+  <div className="checkout-summary-coupon-row">
+    <input
+      type="text"
+      value={couponCode}
+      onChange={(e) => setCouponCode(e.target.value)}
+      placeholder="Enter coupon code"
+      disabled={couponLoading || isFinalizingOrder}
+    />
+    <button
+      type="button"
+      className="checkout-apply-button"
+      onClick={handleApplyCoupon}
+      disabled={couponLoading || isFinalizingOrder}
+    >
+      {couponLoading ? 'Applying...' : 'Apply'}
+    </button>
+  </div>
+
+  {couponMessage && (
+    <div className="checkout-coupon-message">{couponMessage}</div>
+  )}
+
+  {!!cart?.coupons?.length && (
+    <div className="checkout-applied-coupons">
+      {cart.coupons.map((coupon) => (
+        <div key={coupon.code} className="checkout-applied-coupon">
+          <span>{coupon.code}</span>
+          <button
+            type="button"
+            onClick={() => handleRemoveCoupon(coupon.code)}
+            disabled={couponLoading || isFinalizingOrder}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
 
             <div className="checkout-summary-row">
               <span>Subtotal</span>
