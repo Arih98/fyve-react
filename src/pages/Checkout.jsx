@@ -184,6 +184,7 @@ export default function Checkout() {
   setCardReady(false)
   setAppleGoogleReady(false)
   setRevolutPayReady(false)
+  setCardMountReady(false)
 
   if (cardFieldInstanceRef.current) {
     cardFieldInstanceRef.current.destroy()
@@ -343,6 +344,7 @@ const shippingAddress1Ref = useRef(null)
 const shippingCityRef = useRef(null)
 const shippingStateRef = useRef(null)
 const shippingPostcodeRef = useRef(null)
+const [cardMountReady, setCardMountReady] = useState(false)
 
 const focusFirstInvalidField = useCallback((errors) => {
   const firstKey = Object.keys(errors)[0]
@@ -374,6 +376,134 @@ const focusFirstInvalidField = useCallback((errors) => {
     }, 250)
   }
 }, [])
+
+const mountCardField = useCallback(async () => {
+  const errors = getCheckoutValidationErrors({
+    contact,
+    billing,
+    shipping,
+    useSeparateShipping
+  })
+
+  setFieldErrors(errors)
+
+  if (Object.keys(errors).length > 0) {
+    setError('Please complete the required fields')
+    focusFirstInvalidField(errors)
+    return
+  }
+
+  setPaymentLoading(true)
+  setError('')
+
+  try {
+    await updateCheckoutCustomer({
+      billingAddress: {
+        first_name: billing.first_name,
+        last_name: billing.last_name,
+        address_1: billing.address_1,
+        address_2: billing.address_2,
+        city: billing.city,
+        state: normalizeUsState(billing.state),
+        postcode: billing.postcode,
+        country: billing.country,
+        email: contact.email,
+        phone: contact.phone
+      },
+      shippingAddress: useSeparateShipping
+        ? {
+            first_name: shipping.first_name,
+            last_name: shipping.last_name,
+            address_1: shipping.address_1,
+            address_2: shipping.address_2,
+            city: shipping.city,
+            state: normalizeUsState(shipping.state),
+            postcode: shipping.postcode,
+            country: shipping.country
+          }
+        : {
+            first_name: billing.first_name,
+            last_name: billing.last_name,
+            address_1: billing.address_1,
+            address_2: billing.address_2,
+            city: billing.city,
+            state: normalizeUsState(billing.state),
+            postcode: billing.postcode,
+            country: billing.country
+          }
+    })
+
+    paymentSnapshotRef.current = {
+      contact: { ...contact },
+      billing: { ...billing },
+      shipping: { ...shipping },
+      useSeparateShipping
+    }
+
+    const cardOrder = await createRevolutPaymentOrder()
+
+    const billingAddress = {
+      countryCode: billing.country || undefined,
+      region: normalizeUsState(billing.state) || undefined,
+      city: billing.city || undefined,
+      postcode: billing.postcode || undefined,
+      streetLine1: billing.address_1 || undefined,
+      streetLine2: billing.address_2 || undefined
+    }
+
+    const shippingAddress = useSeparateShipping
+      ? {
+          countryCode: shipping.country || undefined,
+          region: normalizeUsState(shipping.state) || undefined,
+          city: shipping.city || undefined,
+          postcode: shipping.postcode || undefined,
+          streetLine1: shipping.address_1 || undefined,
+          streetLine2: shipping.address_2 || undefined
+        }
+      : billingAddress
+
+    if (cardFieldInstanceRef.current) {
+      cardFieldInstanceRef.current.destroy()
+      cardFieldInstanceRef.current = null
+    }
+
+    const cardCheckout = await RevolutCheckout(
+      cardOrder.revolut_order_token,
+      currentRevolutModeRef.current
+    )
+
+    const cardField = cardCheckout.createCardField({
+      target: cardContainerRef.current,
+      locale: 'en',
+      hidePostcodeField: true,
+      name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
+      email: contact.email || undefined,
+      phone: contact.phone || undefined,
+      billingAddress,
+      shippingAddress,
+      onSuccess: () => {
+        setPaymentLoading(false)
+        redirectToSuccess()
+      },
+      onError: (error) => {
+        setPaymentLoading(false)
+        setError(error?.message || 'Card payment failed')
+      },
+      onCancel: () => {
+        setPaymentLoading(false)
+        setError('Card payment cancelled')
+      }
+    })
+
+    cardFieldInstanceRef.current = cardField
+    setCardReady(true)
+    setCardMountReady(true)
+    setPaymentLoading(false)
+  } catch (err) {
+    setPaymentLoading(false)
+    setError(err?.message || 'Failed to load card payment')
+  }
+}, [contact, billing, shipping, useSeparateShipping, createRevolutPaymentOrder, redirectToSuccess, focusFirstInvalidField])
 
 const validateCheckoutBeforePayment = useCallback(() => {
   const errors = getCheckoutValidationErrors({
@@ -599,64 +729,6 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-const cardSession = await createRevolutOrder({
-  draft_order_id: draftOrderId || checkoutData?.order_id || null,
-  draft_order_key: draftOrderKey || checkoutData?.order_key || '',
-  validation_mode: 'mount',
-  useSeparateShipping,
-  billing_email: contact.email,
-  billing_phone: contact.phone || '',
-  billing_first_name: billing.first_name,
-  billing_last_name: billing.last_name,
-  billing_address_1: billing.address_1,
-  billing_address_2: billing.address_2,
-  billing_city: billing.city,
-  billing_state: normalizeUsState(billing.state),
-  billing_postcode: billing.postcode,
-  billing_country: billing.country,
-  shipping_first_name: useSeparateShipping ? shipping.first_name : billing.first_name,
-  shipping_last_name: useSeparateShipping ? shipping.last_name : billing.last_name,
-  shipping_address_1: useSeparateShipping ? shipping.address_1 : billing.address_1,
-  shipping_address_2: useSeparateShipping ? shipping.address_2 : billing.address_2,
-  shipping_city: useSeparateShipping ? shipping.city : billing.city,
-  shipping_state: useSeparateShipping ? normalizeUsState(shipping.state) : normalizeUsState(billing.state),
-  shipping_postcode: useSeparateShipping ? shipping.postcode : billing.postcode,
-  shipping_country: useSeparateShipping ? shipping.country : billing.country
-})
-
-if (!cardSession?.revolut_order_token) {
-  throw new Error('Missing Revolut order token')
-}
-
-const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
-
-if (cancelled) return
-
-const cardField = cardCheckout.createCardField({
-  target: cardContainerRef.current,
-  locale: 'en',
-  hidePostcodeField: true,
-  name: fullName || undefined,
-  email: snapshot.contact.email || undefined,
-  phone: snapshot.contact.phone || undefined,
-  billingAddress,
-  shippingAddress,
-  onSuccess: () => {
-    setPaymentLoading(false)
-    redirectToSuccess()
-  },
-  onError: (error) => {
-    setPaymentLoading(false)
-    setError(error?.message || 'Card payment failed')
-  },
-  onCancel: () => {
-    setPaymentLoading(false)
-    setError('Card payment cancelled')
-  }
-})
-
-cardFieldInstanceRef.current = cardField
-setCardReady(true)
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
   amount: totalAmountMinorRef.current,
@@ -1327,8 +1399,25 @@ const handleCardPay = async () => {
   </div>
 
   <div className="checkout-section">
-    <h2>Pay by card</h2>
-    <div ref={cardContainerRef} id="revolut-card-field"></div>
+  <h2>Pay by card</h2>
+
+  {!cardMountReady && (
+    <button
+      type="button"
+      onClick={mountCardField}
+      disabled={paymentLoading}
+    >
+      {paymentLoading ? 'Preparing card payment...' : 'Enter card details'}
+    </button>
+  )}
+
+  <div ref={cardContainerRef} id="revolut-card-field"></div>
+
+  {!cardMountReady && (
+    <div>Enter your billing details, then load the card form.</div>
+  )}
+
+  {cardMountReady && (
     <button
       type="button"
       onClick={handleCardPay}
@@ -1336,7 +1425,8 @@ const handleCardPay = async () => {
     >
       {paymentLoading ? 'Processing payment...' : 'Pay now'}
     </button>
-  </div>
+  )}
+</div>
 </div>
           </div>
         </section>
