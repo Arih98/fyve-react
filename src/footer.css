@@ -108,7 +108,7 @@
   }
 
   .footer-fyve {
-    font-size: 100%;
+    font-size: calc((100vw - 40px) / 3.2);
     width: 100%;
     text-align: center;
   }
