@@ -168,7 +168,6 @@ export default function Checkout() {
   const appleGoogleContainerRef = useRef(null)
   const revolutPayContainerRef = useRef(null)
 
-  const cardFieldFactoryRef = useRef(null)
   const cardFieldInstanceRef = useRef(null)
   const paymentRequestInstanceRef = useRef(null)
   const revolutPayInstanceRef = useRef(null)
@@ -190,8 +189,6 @@ export default function Checkout() {
     cardFieldInstanceRef.current.destroy()
     cardFieldInstanceRef.current = null
   }
-
-  cardFieldFactoryRef.current = null
 
   if (paymentRequestInstanceRef.current) {
     paymentRequestInstanceRef.current.destroy()
@@ -607,41 +604,37 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-cardFieldFactoryRef.current = async () => {
-  if (cardFieldInstanceRef.current) {
-    cardFieldInstanceRef.current.destroy()
-    cardFieldInstanceRef.current = null
+const cardOrder = await createRevolutPaymentOrder()
+if (cancelled) return
+
+const cardCheckout = await RevolutCheckout(cardOrder.revolut_order_token, mode)
+if (cancelled) return
+
+const cardField = cardCheckout.createCardField({
+  target: cardContainerRef.current,
+  locale: 'en',
+  hidePostcodeField: true,
+  name: fullName || undefined,
+  email: snapshot.contact.email || undefined,
+  phone: snapshot.contact.phone || undefined,
+  billingAddress,
+  shippingAddress,
+  onSuccess: () => {
+    setPaymentLoading(false)
+    redirectToSuccess()
+  },
+  onError: (error) => {
+    setPaymentLoading(false)
+    setError(error?.message || 'Card payment failed')
+  },
+  onCancel: () => {
+    setPaymentLoading(false)
+    setError('Card payment cancelled')
   }
+})
 
-  const cardOrder = await createRevolutPaymentOrder()
-  const checkout = await RevolutCheckout(cardOrder.revolut_order_token, mode)
-
-  const field = checkout.createCardField({
-    target: cardContainerRef.current,
-    locale: 'en',
-    hidePostcodeField: true,
-    name: fullName || undefined,
-    email: snapshot.contact.email || undefined,
-    phone: snapshot.contact.phone || undefined,
-    billingAddress,
-    shippingAddress,
-    onSuccess: () => {
-      setPaymentLoading(false)
-      redirectToSuccess()
-    },
-    onError: (error) => {
-      setPaymentLoading(false)
-      setError(error?.message || 'Card payment failed')
-    },
-    onCancel: () => {
-      setPaymentLoading(false)
-      setError('Card payment cancelled')
-    }
-  })
-
-  cardFieldInstanceRef.current = field
-  return field
-}
+cardFieldInstanceRef.current = cardField
+setCardReady(true)
 
 setCardReady(true)
 
@@ -871,7 +864,7 @@ case 'error': {
 
 const handleCardPay = async () => {
   try {
-    if (!cardFieldFactoryRef.current) {
+    if (!cardFieldInstanceRef.current) {
       throw new Error('Card field is not ready')
     }
 
@@ -936,8 +929,36 @@ const handleCardPay = async () => {
       useSeparateShipping
     }
 
-    const cardField = await cardFieldFactoryRef.current()
-    cardField.submit()
+    cardFieldInstanceRef.current.submit({
+      name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
+      email: contact.email || undefined,
+      phone: contact.phone || undefined,
+      billingAddress: {
+        countryCode: billing.country || undefined,
+        region: normalizeUsState(billing.state) || undefined,
+        city: billing.city || undefined,
+        postcode: billing.postcode || undefined,
+        streetLine1: billing.address_1 || undefined,
+        streetLine2: billing.address_2 || undefined
+      },
+      shippingAddress: useSeparateShipping
+        ? {
+            countryCode: shipping.country || undefined,
+            region: normalizeUsState(shipping.state) || undefined,
+            city: shipping.city || undefined,
+            postcode: shipping.postcode || undefined,
+            streetLine1: shipping.address_1 || undefined,
+            streetLine2: shipping.address_2 || undefined
+          }
+        : {
+            countryCode: billing.country || undefined,
+            region: normalizeUsState(billing.state) || undefined,
+            city: billing.city || undefined,
+            postcode: billing.postcode || undefined,
+            streetLine1: billing.address_1 || undefined,
+            streetLine2: billing.address_2 || undefined
+          }
+    })
   } catch (err) {
     setPaymentLoading(false)
     setError(err?.message || 'Failed to submit card payment')
