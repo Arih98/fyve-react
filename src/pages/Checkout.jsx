@@ -705,6 +705,8 @@ const shippingAddress = snapshot.useSeparateShipping
 })
 
 if (cardSession?.free_order) {
+  await clearCheckoutCart().catch(() => {})
+  await refreshCart({ silent: true }).catch(() => {})
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(cardSession.wc_order_id)}`
   return
 }
@@ -814,6 +816,8 @@ setCardReady(true)
 const result = await createRevolutPaymentOrder()
 
 if (result?.free_order) {
+  await clearCheckoutCart().catch(() => {})
+  await refreshCart({ silent: true }).catch(() => {})
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   return
 }
