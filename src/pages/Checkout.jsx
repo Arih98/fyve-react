@@ -1,5 +1,3 @@
-Like this?
-
 import React, { useContext, useEffect, useRef, useState, useCallback } from 'react'
 import { CartContext } from '../CartContext'
 import {
@@ -1163,12 +1161,13 @@ const handleCardPay = async () => {
   }}
 />
 
-          <input
-            type="text"
-            placeholder="Country / Region *"
-            value="United States (US)"
-            readOnly
-          />
+<input
+  type="text"
+  placeholder="Country / Region *"
+  value="United States (US)"
+  readOnly
+  disabled
+/>
 
 {fieldErrors.billing_address_1 && (
   <div className="checkout-field-error">{fieldErrors.billing_address_1}</div>
@@ -1312,12 +1311,13 @@ const handleCardPay = async () => {
               }}
             />
 
-            <input
-              type="text"
-              placeholder="Country / Region *"
-              value="United States (US)"
-              readOnly
-            />
+<input
+  type="text"
+  placeholder="Country / Region *"
+  value="United States (US)"
+  readOnly
+  disabled
+/>
 
             {fieldErrors.shipping_address_1 && (
               <div className="checkout-field-error">{fieldErrors.shipping_address_1}</div>
