@@ -68,3 +68,32 @@
 .footer-links a:hover {
   opacity: 0.6;
 }
+
+.footer-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-form input {
+  border: none;
+  border-bottom: 1px solid #000;
+  background: transparent;
+  outline: none;
+  font: inherit;
+  padding: 6px 0;
+  min-width: 180px;
+}
+
+.footer-form button {
+  border: none;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.footer-form-message {
+  font-size: 14px;
+  white-space: nowrap;
+}
