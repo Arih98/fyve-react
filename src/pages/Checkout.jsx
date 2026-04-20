@@ -1315,8 +1315,9 @@ const handleCardPay = async () => {
 
   return (
     <div className={`checkout-page ${isFinalizingOrder ? 'checkout-page-processing' : ''}`}>
-      <div className="checkout-main">
-        <section className="checkout-section">
+  <div className="checkout-main">
+    <div className="checkout-flow">
+      <section className="checkout-section">
           <h1>Checkout</h1>
           <button type="button" onClick={clearSavedCheckoutDraft}>
             Clear saved test details
@@ -1687,9 +1688,10 @@ const handleCardPay = async () => {
     </div>
   )}
 </section>
-      </div>
+    </div>
+  </div>
 
-      <aside className="checkout-sidebar">
+  <aside className="checkout-sidebar">
         <section className="checkout-section">
           <h2>Order summary</h2>
 
