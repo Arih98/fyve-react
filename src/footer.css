@@ -28,6 +28,7 @@
   font-family: quasimoda, sans-serif !important;
   font-weight: 200;
   font-size: clamp(160px, 26vw, 520px);
+  color: #4A494A;
 }
 
 .kern-e {
@@ -40,6 +41,7 @@
   font-weight: 600;
   font-size: clamp(12px, 1.5vw, 20px);
   letter-spacing: 2.9em;
+  color: #4A494A;
   margin-top: -1em;
 }
 
@@ -50,20 +52,20 @@
   align-items: center;
   gap: 70px;
   white-space: nowrap;
-  font-size: clamp(16px, 1.4vw, 22px);
+  font-size: clamp(12px, 1vw, 16px);
   text-transform: uppercase;
 }
 
 .footer-heading {
   font-weight: 500;
-  font-size: clamp(16px, 1.4vw, 22px);
+  font-size: clamp(12px, 1vw, 16px);
   text-transform: uppercase;
 }
 
 .footer-links a {
   text-decoration: none;
-  color: #000;
-  font-size: 14px;
+  color: #4A494A;
+  font-size: clamp(12px, 1vw, 16px);
   transition: opacity 0.2s ease;
 }
 
