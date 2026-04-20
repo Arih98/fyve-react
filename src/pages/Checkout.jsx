@@ -599,7 +599,44 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-cardFieldInstanceRef.current = null
+const cardSession = await createRevolutOrder({
+  draft_order_id: draftOrderId || checkoutData?.order_id || null,
+  draft_order_key: draftOrderKey || checkoutData?.order_key || '',
+  validation_mode: 'mount'
+})
+
+if (!cardSession?.revolut_order_token) {
+  throw new Error('Missing Revolut order token')
+}
+
+const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
+
+if (cancelled) return
+
+const cardField = cardCheckout.createCardField({
+  target: cardContainerRef.current,
+  locale: 'en',
+  hidePostcodeField: true,
+  name: fullName || undefined,
+  email: snapshot.contact.email || undefined,
+  phone: snapshot.contact.phone || undefined,
+  billingAddress,
+  shippingAddress,
+  onSuccess: () => {
+    setPaymentLoading(false)
+    redirectToSuccess()
+  },
+  onError: (error) => {
+    setPaymentLoading(false)
+    setError(error?.message || 'Card payment failed')
+  },
+  onCancel: () => {
+    setPaymentLoading(false)
+    setError('Card payment cancelled')
+  }
+})
+
+cardFieldInstanceRef.current = cardField
 setCardReady(true)
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
