@@ -1544,7 +1544,7 @@ const handleCardPay = async () => {
 
             <div className="checkout-summary-row">
               <span>Subtotal</span>
-              <span>{formatWooMoney(cart?.totals?.total_items, cart?.totals)}</span>
+              <span>{formatWooMoney(checkoutData?.totals?.total_items || cart?.totals?.total_items, checkoutData?.totals || cart?.totals)}</span>
             </div>
 
             <div className="checkout-summary-row checkout-summary-shipment">
@@ -1556,7 +1556,7 @@ const handleCardPay = async () => {
 
             <div className="checkout-summary-row">
               <span>Tax</span>
-              <span>{formatWooMoney(cart?.totals?.total_tax, cart?.totals)}</span>
+              <span>{formatWooMoney(checkoutData?.totals?.total_tax || cart?.totals?.total_tax, checkoutData?.totals || cart?.totals)}</span>
             </div>
 {!!cart?.totals?.total_discount && Number(cart.totals.total_discount) > 0 && (
   <div className="checkout-summary-row">
@@ -1566,7 +1566,7 @@ const handleCardPay = async () => {
 )}
             <div className="checkout-summary-row checkout-summary-total">
               <span>Total</span>
-              <span>{formatWooMoney(cart?.totals?.total_price, cart?.totals)}</span>
+              <span>{formatWooMoney(checkoutData?.totals?.total_price || cart?.totals?.total_price, checkoutData?.totals || cart?.totals)}</span>
             </div>
 
             {error && (
