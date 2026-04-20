@@ -1336,6 +1336,7 @@ const handleCardPay = async () => {
     setBilling((prev) => ({ ...prev, first_name: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
   }}
+  required
 />
 
 {fieldErrors.billing_last_name && (
@@ -1350,11 +1351,12 @@ const handleCardPay = async () => {
     setBilling((prev) => ({ ...prev, last_name: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
   }}
+  required
 />
 
 <input
   type="text"
-  placeholder="Country / Region *"
+  placeholder="Country / Region"
   value="United States (US)"
   readOnly
   tabIndex={-1}
@@ -1372,6 +1374,7 @@ const handleCardPay = async () => {
     setBilling((prev) => ({ ...prev, address_1: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, billing_address_1: '' }))
   }}
+  required
 />
 
           <input
@@ -1393,6 +1396,7 @@ const handleCardPay = async () => {
     setBilling((prev) => ({ ...prev, city: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, billing_city: '' }))
   }}
+  required
 />
 
 {fieldErrors.billing_state && (
@@ -1407,6 +1411,7 @@ const handleCardPay = async () => {
     setBilling((prev) => ({ ...prev, state: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
   }}
+  required
 />
 
 {fieldErrors.billing_postcode && (
@@ -1421,6 +1426,7 @@ const handleCardPay = async () => {
     setBilling((prev) => ({ ...prev, postcode: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, billing_postcode: '' }))
   }}
+  required
 />
 
           <input
@@ -1442,6 +1448,7 @@ const handleCardPay = async () => {
     setContact((prev) => ({ ...prev, email: e.target.value }))
     setFieldErrors((prev) => ({ ...prev, contact_email: '' }))
   }}
+  required
 />
 </section>
 
@@ -1486,6 +1493,7 @@ const handleCardPay = async () => {
                 setShipping((prev) => ({ ...prev, first_name: e.target.value }))
                 setFieldErrors((prev) => ({ ...prev, shipping_first_name: '' }))
               }}
+              required
             />
 
             {fieldErrors.shipping_last_name && (
@@ -1500,11 +1508,12 @@ const handleCardPay = async () => {
                 setShipping((prev) => ({ ...prev, last_name: e.target.value }))
                 setFieldErrors((prev) => ({ ...prev, shipping_last_name: '' }))
               }}
+              required
             />
 
 <input
   type="text"
-  placeholder="Country / Region *"
+  placeholder="Country / Region"
   value="United States (US)"
   readOnly
   tabIndex={-1}
@@ -1522,6 +1531,7 @@ const handleCardPay = async () => {
                 setShipping((prev) => ({ ...prev, address_1: e.target.value }))
                 setFieldErrors((prev) => ({ ...prev, shipping_address_1: '' }))
               }}
+              required
             />
 
             <input
@@ -1543,6 +1553,7 @@ const handleCardPay = async () => {
                 setShipping((prev) => ({ ...prev, city: e.target.value }))
                 setFieldErrors((prev) => ({ ...prev, shipping_city: '' }))
               }}
+              required
             />
 
             {fieldErrors.shipping_state && (
@@ -1557,6 +1568,7 @@ const handleCardPay = async () => {
                 setShipping((prev) => ({ ...prev, state: e.target.value }))
                 setFieldErrors((prev) => ({ ...prev, shipping_state: '' }))
               }}
+              required
             />
 
             {fieldErrors.shipping_postcode && (
@@ -1571,6 +1583,7 @@ const handleCardPay = async () => {
                 setShipping((prev) => ({ ...prev, postcode: e.target.value }))
                 setFieldErrors((prev) => ({ ...prev, shipping_postcode: '' }))
               }}
+              required
             />
           </section>
         )}
