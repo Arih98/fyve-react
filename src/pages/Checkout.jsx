@@ -604,15 +604,34 @@ const shippingAddress = snapshot.useSeparateShipping
 
         if (cancelled) return
 
-        const cardCheckout = await RevolutCheckout.payments({
-  publicToken: revolutPublicKey,
-  locale: 'en',
-  mode
-})
-
-if (cancelled) return
-
-cardFieldInstanceRef.current = cardCheckout
+cardFieldInstanceRef.current = {
+  create: async () => {
+    const cardOrder = await createRevolutPaymentOrder()
+    const checkout = await RevolutCheckout(cardOrder.revolut_order_token, mode)
+    return checkout.createCardField({
+      target: cardContainerRef.current,
+      locale: 'en',
+      hidePostcodeField: true,
+      name: fullName || undefined,
+      email: snapshot.contact.email || undefined,
+      phone: snapshot.contact.phone || undefined,
+      billingAddress,
+      shippingAddress,
+      onSuccess: () => {
+        setPaymentLoading(false)
+        redirectToSuccess()
+      },
+      onError: (error) => {
+        setPaymentLoading(false)
+        setError(error?.message || 'Card payment failed')
+      },
+      onCancel: () => {
+        setPaymentLoading(false)
+        setError('Card payment cancelled')
+      }
+    })
+  }
+}
 setCardReady(true)
 
         cardFieldInstanceRef.current = cardField
@@ -842,7 +861,7 @@ case 'error': {
   useSeparateShipping
 ])
 
-  const handleCardPay = async () => {
+const handleCardPay = async () => {
   try {
     if (!cardFieldInstanceRef.current) {
       throw new Error('Card field is not ready')
@@ -909,54 +928,9 @@ case 'error': {
       useSeparateShipping
     }
 
-    const billingAddress = {
-      countryCode: billing.country || undefined,
-      region: normalizeUsState(billing.state) || undefined,
-      city: billing.city || undefined,
-      postcode: billing.postcode || undefined,
-      streetLine1: billing.address_1 || undefined,
-      streetLine2: billing.address_2 || undefined
-    }
+    const cardField = await cardFieldInstanceRef.current.create()
 
-    const shippingAddress = useSeparateShipping
-      ? {
-          countryCode: shipping.country || undefined,
-          region: normalizeUsState(shipping.state) || undefined,
-          city: shipping.city || undefined,
-          postcode: shipping.postcode || undefined,
-          streetLine1: shipping.address_1 || undefined,
-          streetLine2: shipping.address_2 || undefined
-        }
-      : billingAddress
-
-    const cardOrder = await createRevolutPaymentOrder()
-
-    const cardInstance = cardFieldInstanceRef.current.createCardField({
-      target: cardContainerRef.current,
-      locale: 'en',
-      hidePostcodeField: true,
-      name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
-      email: contact.email || undefined,
-      phone: contact.phone || undefined,
-      billingAddress,
-      shippingAddress,
-      onSuccess: () => {
-        setPaymentLoading(false)
-        redirectToSuccess()
-      },
-      onError: (error) => {
-        setPaymentLoading(false)
-        setError(error?.message || 'Card payment failed')
-      },
-      onCancel: () => {
-        setPaymentLoading(false)
-        setError('Card payment cancelled')
-      }
-    })
-
-    cardInstance.submit({
-      orderToken: cardOrder.revolut_order_token
-    })
+    cardField.submit()
   } catch (err) {
     setPaymentLoading(false)
     setError(err?.message || 'Failed to submit card payment')
