@@ -880,7 +880,7 @@ case 'error': {
 
 const handleCardPay = async () => {
   try {
-    if (!cardContainerRef.current) {
+    if (!cardFieldInstanceRef.current) {
       throw new Error('Card field is not ready')
     }
 
@@ -938,19 +938,6 @@ const handleCardPay = async () => {
       throw err
     }
 
-    paymentSnapshotRef.current = {
-      contact: { ...contact },
-      billing: { ...billing },
-      shipping: { ...shipping },
-      useSeparateShipping
-    }
-
-    if (cardFieldInstanceRef.current) {
-      cardFieldInstanceRef.current.destroy()
-      cardFieldInstanceRef.current = null
-    }
-
-    const cardOrder = await createRevolutPaymentOrder()
     const billingAddress = {
       countryCode: billing.country || undefined,
       region: normalizeUsState(billing.state) || undefined,
@@ -971,42 +958,13 @@ const handleCardPay = async () => {
         }
       : billingAddress
 
-    const cardCheckout = await RevolutCheckout(cardOrder.revolut_order_token, currentRevolutModeRef.current)
-
-    const cardField = cardCheckout.createCardField({
-      target: cardContainerRef.current,
-      locale: 'en',
-      hidePostcodeField: true,
+    cardFieldInstanceRef.current.submit({
       name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
       email: contact.email || undefined,
       phone: contact.phone || undefined,
       billingAddress,
-      shippingAddress,
-      onSuccess: () => {
-        setPaymentLoading(false)
-        redirectToSuccess()
-      },
-      onError: (error) => {
-        setPaymentLoading(false)
-        setError(error?.message || 'Card payment failed')
-      },
-      onCancel: () => {
-        setPaymentLoading(false)
-        setError('Card payment cancelled')
-      }
+      shippingAddress
     })
-
-    cardFieldInstanceRef.current = cardField
-
-    setTimeout(() => {
-      cardField.submit({
-        name: `${billing.first_name} ${billing.last_name}`.trim() || undefined,
-        email: contact.email || undefined,
-        phone: contact.phone || undefined,
-        billingAddress,
-        shippingAddress
-      })
-    }, 150)
   } catch (err) {
     setPaymentLoading(false)
     setError(err?.message || 'Failed to submit card payment')
