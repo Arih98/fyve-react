@@ -54,3 +54,10 @@ export function confirmRevolutPayment(orderId) {
     method: 'POST'
   })
 }
+
+export function updateRevolutOrderDetails(payload) {
+  return apiRequest('/fyve-checkout/v1/update-revolut-order-details', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+}

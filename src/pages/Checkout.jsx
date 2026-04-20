@@ -12,13 +12,6 @@ import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
 import RevolutCheckout from '@revolut/checkout'
 
-export function updateRevolutOrderDetails(payload) {
-  return apiRequest('/fyve-checkout/v1/update-revolut-order-details', {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
-}
-
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }
 
