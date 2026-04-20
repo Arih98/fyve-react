@@ -45,6 +45,10 @@
   align-items: flex-start;
   gap: 48px;
   width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+  box-sizing: border-box;
 }
 
 .checkout-page-processing {
@@ -100,6 +104,7 @@
   border-radius: 4px;
   font: inherit;
   background: #fff;
+  box-sizing: border-box;
 }
 
 .checkout-section input:focus {
@@ -211,11 +216,11 @@ input[readonly] {
   font: inherit;
 }
 
-
 @media (max-width: 768px) {
   .checkout-page {
     flex-direction: column;
     gap: 32px;
+    padding: 24px 16px 40px;
   }
 
   .checkout-sidebar {
@@ -228,7 +233,7 @@ input[readonly] {
     max-width: 100%;
   }
 
-    .checkout-section {
+  .checkout-section {
     padding: 24px;
   }
 }
