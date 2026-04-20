@@ -81,6 +81,14 @@
   }
 }
 
+.checkout-payment-option-body.is-hidden {
+  display: none;
+}
+
+.checkout-payment-option-body.is-active {
+  display: block;
+}
+
 .checkout-payment-methods {
   display: flex;
   flex-direction: column;
