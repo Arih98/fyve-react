@@ -423,8 +423,11 @@ const [couponCode, setCouponCode] = useState('')
 const [couponLoading, setCouponLoading] = useState(false)
 const [couponMessage, setCouponMessage] = useState('')
 
+const checkoutTotalMinor = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
+const requiresPayment = checkoutTotalMinor > 0
+
 const focusFirstInvalidField = useCallback((errors) => {
-  const firstKey = Object.keys(errors)[0]
+const firstKey = Object.keys(errors)[0]
 
   if (!firstKey) return
 
@@ -501,6 +504,13 @@ const applyServerValidationErrors = useCallback((err) => {
   useEffect(() => {
   if (loading || cartLoading) return
   if (!cartItems?.length) return
+  if (!requiresPayment) {
+    clearMountedPaymentMethods()
+    setPaymentMethodsOpen(false)
+    setRevolutPublicKey('')
+    setPaymentLoading(false)
+    return
+  }
   if (paymentMethodsOpen) return
   if (revolutPublicKey) return
 
@@ -516,9 +526,11 @@ const applyServerValidationErrors = useCallback((err) => {
   loading,
   cartLoading,
   cartItems,
+  requiresPayment,
   paymentMethodsOpen,
   revolutPublicKey,
-  initializePaymentMethods
+  initializePaymentMethods,
+  clearMountedPaymentMethods
 ])
 
 useEffect(() => {
@@ -747,47 +759,6 @@ if (!cardSession?.revolut_order_token) {
   cardFieldInstanceRef.current = cardField
   setCardReady(true)
 }
-
-latestWooOrderIdRef.current = cardSession.wc_order_id || latestWooOrderIdRef.current
-
-const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
-
-if (cancelled) return
-
-const cardField = cardCheckout.createCardField({
-  target: cardContainerRef.current,
-  locale: 'en',
-  hidePostcodeField: true,
-  name: fullName || undefined,
-  email: snapshot.contact.email || undefined,
-  phone: snapshot.contact.phone || undefined,
-  billingAddress,
-  shippingAddress,
-onSuccess: async () => {
-  try {
-    setIsFinalizingOrder(true)
-    await finalizeOrderBeforeRedirect()
-  } catch (error) {
-    setIsFinalizingOrder(false)
-    setPaymentLoading(false)
-    setError(error?.message || 'Failed to finalise order')
-  }
-},
-  onError: (error) => {
-  setPaymentLoading(false)
-  setIsFinalizingOrder(false)
-  setError(error?.message || 'Card payment failed')
-},
-onCancel: () => {
-  setPaymentLoading(false)
-  setIsFinalizingOrder(false)
-  setError('Card payment cancelled')
-}
-})
-
-cardFieldInstanceRef.current = cardField
-setCardReady(true)
-
 
         const paymentRequestInstance = payments.paymentRequest(appleGoogleContainerRef.current, {
   amount: totalAmountMinorRef.current,
@@ -1048,6 +1019,78 @@ case 'error': {
   useSeparateShipping,
   finalizeOrderBeforeRedirect
 ])
+
+const handleFreeOrder = async () => {
+  try {
+    setPaymentLoading(true)
+    setIsFinalizingOrder(true)
+    setError('')
+
+    const isValid = validateCheckoutBeforePayment()
+
+    if (!isValid) {
+      setPaymentLoading(false)
+      setIsFinalizingOrder(false)
+      return
+    }
+
+    await updateCheckoutCustomer({
+      billingAddress: {
+        first_name: billing.first_name,
+        last_name: billing.last_name,
+        address_1: billing.address_1,
+        address_2: billing.address_2,
+        city: billing.city,
+        state: normalizeUsState(billing.state),
+        postcode: billing.postcode,
+        country: billing.country,
+        email: contact.email,
+        phone: contact.phone
+      },
+      shippingAddress: useSeparateShipping
+        ? {
+            first_name: shipping.first_name,
+            last_name: shipping.last_name,
+            address_1: shipping.address_1,
+            address_2: shipping.address_2,
+            city: shipping.city,
+            state: normalizeUsState(shipping.state),
+            postcode: shipping.postcode,
+            country: shipping.country
+          }
+        : {
+            first_name: billing.first_name,
+            last_name: billing.last_name,
+            address_1: billing.address_1,
+            address_2: billing.address_2,
+            city: billing.city,
+            state: normalizeUsState(billing.state),
+            postcode: billing.postcode,
+            country: billing.country
+          }
+    })
+
+    const result = await createRevolutPaymentOrder()
+
+    if (!result?.free_order) {
+      throw new Error('Expected a free order')
+    }
+
+    await clearCheckoutCart().catch(() => {})
+    await refreshCart({ silent: true }).catch(() => {})
+    window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
+  } catch (err) {
+    if (applyServerValidationErrors(err)) {
+      setPaymentLoading(false)
+      setIsFinalizingOrder(false)
+      return
+    }
+
+    setPaymentLoading(false)
+    setIsFinalizingOrder(false)
+    setError(err?.message || 'Failed to place free order')
+  }
+}
 
 const handleApplyCoupon = async () => {
   const code = couponCode.trim()
@@ -1639,87 +1682,107 @@ const handleCardPay = async () => {
               </div>
             )}
 
-            <div className="checkout-payment-methods">
-  {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
-    <div>Preparing payment methods...</div>
-  )}
+            {requiresPayment ? (
+  <div className="checkout-payment-methods">
+    {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
+      <div>Preparing payment methods...</div>
+    )}
 
-  {!cardReady && !appleGoogleReady && !revolutPayReady && !paymentLoading && (
-    <div>Payment methods unavailable or still loading.</div>
-  )}
+    {!cardReady && !appleGoogleReady && !revolutPayReady && !paymentLoading && (
+      <div>Payment methods unavailable or still loading.</div>
+    )}
 
-  <div className="checkout-payment-option">
-    <label className="checkout-payment-option-label">
-      <input
-        type="radio"
-        name="payment_method"
-        value="wallet"
-        checked={selectedPaymentMethod === 'wallet'}
-        onChange={() => setSelectedPaymentMethod('wallet')}
-        disabled={isFinalizingOrder}
-      />
-      <span>Google Pay</span>
-    </label>
+    <div className="checkout-payment-option">
+      <label className="checkout-payment-option-label">
+        <input
+          type="radio"
+          name="payment_method"
+          value="wallet"
+          checked={selectedPaymentMethod === 'wallet'}
+          onChange={() => setSelectedPaymentMethod('wallet')}
+          disabled={isFinalizingOrder}
+        />
+        <span>Google Pay</span>
+      </label>
 
-    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : 'is-hidden'}`}>
-      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-      {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
+      <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : 'is-hidden'}`}>
+        <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+        {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
+      </div>
+    </div>
+
+    <div className="checkout-payment-option">
+      <label className="checkout-payment-option-label">
+        <input
+          type="radio"
+          name="payment_method"
+          value="revolut_pay"
+          checked={selectedPaymentMethod === 'revolut_pay'}
+          onChange={() => setSelectedPaymentMethod('revolut_pay')}
+          disabled={isFinalizingOrder}
+        />
+        <span>Revolut Pay</span>
+      </label>
+
+      <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : 'is-hidden'}`}>
+        <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+        {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
+      </div>
+    </div>
+
+    <div className="checkout-payment-option">
+      <label className="checkout-payment-option-label">
+        <input
+          type="radio"
+          name="payment_method"
+          value="card"
+          checked={selectedPaymentMethod === 'card'}
+          onChange={() => setSelectedPaymentMethod('card')}
+          disabled={isFinalizingOrder}
+        />
+        <span>Pay by card</span>
+      </label>
+
+      <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : 'is-hidden'}`}>
+        <div ref={cardContainerRef} id="revolut-card-field"></div>
+        {!cardReady && <div>Card payment unavailable or still loading.</div>}
+        <button
+          type="button"
+          onClick={handleCardPay}
+          disabled={paymentLoading || !cardReady || isFinalizingOrder}
+          className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
+        >
+          {(paymentLoading || isFinalizingOrder) ? (
+            <>
+              <span className="checkout-button-spinner"></span>
+              <span>Processing</span>
+            </>
+          ) : (
+            'Pay now'
+          )}
+        </button>
+      </div>
     </div>
   </div>
-
-  <div className="checkout-payment-option">
-    <label className="checkout-payment-option-label">
-      <input
-        type="radio"
-        name="payment_method"
-        value="revolut_pay"
-        checked={selectedPaymentMethod === 'revolut_pay'}
-        onChange={() => setSelectedPaymentMethod('revolut_pay')}
-        disabled={isFinalizingOrder}
-      />
-      <span>Revolut Pay</span>
-    </label>
-
-    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : 'is-hidden'}`}>
-      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-      {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
-    </div>
+) : (
+  <div className="checkout-free-order">
+    <button
+      type="button"
+      onClick={handleFreeOrder}
+      disabled={paymentLoading || isFinalizingOrder}
+      className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
+    >
+      {(paymentLoading || isFinalizingOrder) ? (
+        <>
+          <span className="checkout-button-spinner"></span>
+          <span>Processing</span>
+        </>
+      ) : (
+        'Place order'
+      )}
+    </button>
   </div>
-
-  <div className="checkout-payment-option">
-    <label className="checkout-payment-option-label">
-      <input
-        type="radio"
-        name="payment_method"
-        value="card"
-        checked={selectedPaymentMethod === 'card'}
-        onChange={() => setSelectedPaymentMethod('card')}
-        disabled={isFinalizingOrder}
-      />
-      <span>Pay by card</span>
-    </label>
-
-    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : 'is-hidden'}`}>
-      <div ref={cardContainerRef} id="revolut-card-field"></div>
-      {!cardReady && <div>Card payment unavailable or still loading.</div>}
-      <button
-        type="button"
-        onClick={handleCardPay}
-        disabled={paymentLoading || !cardReady || isFinalizingOrder}
-        className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
-      >
-        {(paymentLoading || isFinalizingOrder) ? (
-          <>
-            <span className="checkout-button-spinner"></span>
-            <span>Processing</span>
-          </>
-        ) : (
-          'Pay now'
-        )}
-      </button>
-    </div>
-  </div>
-</div>
+)}
           </div>
         </section>
       </aside>
