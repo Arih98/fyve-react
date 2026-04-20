@@ -48,14 +48,16 @@
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  gap: 150px;
+  gap: 70px;
   white-space: nowrap;
   font-size: clamp(16px, 1.4vw, 22px);
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
 .footer-heading {
   font-weight: 500;
+  font-size: clamp(16px, 1.4vw, 22px);
+  text-transform: uppercase;
 }
 
 .footer-links a {
