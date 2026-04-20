@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useRef, useState, useCallback } from 'react'
 import { CartContext } from '../CartContext'
-import React, { useContext, useEffect, useRef, useState, useCallback } from 'react'
-import { CartContext } from '../CartContext'
 import {
   getCheckoutPrefill,
   getCheckoutData,
