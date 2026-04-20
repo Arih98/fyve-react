@@ -1319,9 +1319,6 @@ const handleCardPay = async () => {
     <div className="checkout-flow">
       <section className="checkout-section">
           <h1>Checkout</h1>
-          <button type="button" onClick={clearSavedCheckoutDraft}>
-            Clear saved test details
-          </button>
         </section>
 
         <section className="checkout-section">

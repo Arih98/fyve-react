@@ -90,6 +90,21 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 16px;
+}
+
+.checkout-section input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  font: inherit;
+  background: #fff;
+}
+
+.checkout-section input:focus {
+  outline: none;
+  border-color: #4A494A;
 }
 
 .checkout-payment-methods {
@@ -211,5 +226,9 @@ input[readonly] {
 
   .checkout-main {
     max-width: 100%;
+  }
+
+    .checkout-section {
+    padding: 24px;
   }
 }
