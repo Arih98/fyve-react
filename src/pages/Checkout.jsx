@@ -26,6 +26,12 @@ function mergeEmptyFields(current, incoming) {
   return next
 }
 
+function decodeHtmlEntities(value) {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = value || ''
+  return textarea.value
+}
+
 const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.com'
   ? 'fyve_checkout_draft_dev_v2'
   : 'fyve_checkout_draft_live_v2'
@@ -1011,7 +1017,7 @@ const handleApplyCoupon = async () => {
     setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
   } catch (err) {
-    setCouponMessage(err?.message || 'Failed to apply coupon')
+    setCouponMessage(decodeHtmlEntities(err?.message || 'Failed to apply coupon'))
   } finally {
     setCouponLoading(false)
   }
@@ -1041,7 +1047,7 @@ const handleRemoveCoupon = async (code) => {
     setPaymentMethodsOpen(false)
     setRevolutPublicKey('')
   } catch (err) {
-    setCouponMessage(err?.message || 'Failed to remove coupon')
+    setCouponMessage(decodeHtmlEntities(err?.message || 'Failed to remove coupon'))
   } finally {
     setCouponLoading(false)
   }
