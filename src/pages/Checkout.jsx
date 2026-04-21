@@ -1327,32 +1327,31 @@ const handleCardPay = async () => {
 {fieldErrors.billing_first_name && (
   <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
 )}
-<input
-  ref={firstNameRef}
-  type="text"
-  placeholder="First name"
-  value={billing.first_name}
-  onChange={(e) => {
-    setBilling((prev) => ({ ...prev, first_name: e.target.value }))
-    setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
-  }}
-  required
-/>
+<div className="checkout-row">
+  <input
+    ref={firstNameRef}
+    type="text"
+    placeholder="First name"
+    value={billing.first_name}
+    onChange={(e) => {
+      setBilling((prev) => ({ ...prev, first_name: e.target.value }))
+      setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
+    }}
+    required
+  />
 
-{fieldErrors.billing_last_name && (
-  <div className="checkout-field-error">{fieldErrors.billing_last_name}</div>
-)}
-<input
-  ref={lastNameRef}
-  type="text"
-  placeholder="Last name"
-  value={billing.last_name}
-  onChange={(e) => {
-    setBilling((prev) => ({ ...prev, last_name: e.target.value }))
-    setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
-  }}
-  required
-/>
+  <input
+    ref={lastNameRef}
+    type="text"
+    placeholder="Last name"
+    value={billing.last_name}
+    onChange={(e) => {
+      setBilling((prev) => ({ ...prev, last_name: e.target.value }))
+      setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
+    }}
+    required
+  />
+</div>
 
 <input
   type="text"
@@ -1387,47 +1386,43 @@ const handleCardPay = async () => {
 {fieldErrors.billing_city && (
   <div className="checkout-field-error">{fieldErrors.billing_city}</div>
 )}
-<input
-  ref={cityRef}
-  type="text"
-  placeholder="Town / City"
-  value={billing.city}
-  onChange={(e) => {
-    setBilling((prev) => ({ ...prev, city: e.target.value }))
-    setFieldErrors((prev) => ({ ...prev, billing_city: '' }))
-  }}
-  required
-/>
+<div className="checkout-row checkout-row-3">
+  <input
+    ref={cityRef}
+    type="text"
+    placeholder="Town / City"
+    value={billing.city}
+    onChange={(e) => {
+      setBilling((prev) => ({ ...prev, city: e.target.value }))
+      setFieldErrors((prev) => ({ ...prev, billing_city: '' }))
+    }}
+    required
+  />
 
-{fieldErrors.billing_state && (
-  <div className="checkout-field-error">{fieldErrors.billing_state}</div>
-)}
-<input
-  ref={stateRef}
-  type="text"
-  placeholder="State"
-  value={billing.state}
-  onChange={(e) => {
-    setBilling((prev) => ({ ...prev, state: e.target.value }))
-    setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
-  }}
-  required
-/>
+  <input
+    ref={stateRef}
+    type="text"
+    placeholder="State"
+    value={billing.state}
+    onChange={(e) => {
+      setBilling((prev) => ({ ...prev, state: e.target.value }))
+      setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
+    }}
+    required
+  />
 
-{fieldErrors.billing_postcode && (
-  <div className="checkout-field-error">{fieldErrors.billing_postcode}</div>
-)}
-<input
-  ref={postcodeRef}
-  type="text"
-  placeholder="ZIP Code"
-  value={billing.postcode}
-  onChange={(e) => {
-    setBilling((prev) => ({ ...prev, postcode: e.target.value }))
-    setFieldErrors((prev) => ({ ...prev, billing_postcode: '' }))
-  }}
-  required
-/>
+  <input
+    ref={postcodeRef}
+    type="text"
+    placeholder="ZIP Code"
+    value={billing.postcode}
+    onChange={(e) => {
+      setBilling((prev) => ({ ...prev, postcode: e.target.value }))
+      setFieldErrors((prev) => ({ ...prev, billing_postcode: '' }))
+    }}
+    required
+  />
+</div>
 
           <input
             type="text"

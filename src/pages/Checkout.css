@@ -71,7 +71,17 @@
 .checkout-main {
   flex: 1 1 0;
   min-width: 0;
-  max-width: 720px;
+  max-width: 620px;
+}
+
+.checkout-row {
+  display: flex;
+  gap: 12px;
+}
+
+.checkout-row input {
+  flex: 1;
+  min-width: 0;
 }
 
 .checkout-sidebar {
@@ -99,9 +109,16 @@
 
 .checkout-section h1 {
   font-family: 'Quasimoda', sans-serif;
-  font-weight: 200;
-  font-size: 32px;
-  letter-spacing: 1px;
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -0.4px;
+}
+
+.checkout-section h2 {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -0.4px;
 }
 
 .checkout-section input {
@@ -238,6 +255,10 @@ input[readonly] {
 
   .checkout-main {
     max-width: 100%;
+  }
+
+  .checkout-row {
+    flex-direction: column;
   }
 
   .checkout-section {
