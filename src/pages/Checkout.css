@@ -1,3 +1,21 @@
+.checkout-billing-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.checkout-billing-toggle input {
+  width: auto;
+}
+
+.checkout-billing-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
 .checkout-summary-totals {
   display: flex;
   flex-direction: column;
