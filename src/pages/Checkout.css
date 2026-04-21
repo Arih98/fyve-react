@@ -281,6 +281,20 @@
 .checkout-payment-option-body.is-active {
   background: #f4f4f4;
   border-top: 1.5px solid rgb(218, 216, 210);
+  padding: 20px 18px;
+}
+
+#revolut-pay-button {
+  margin: 12px 0;
+}
+
+#revolut-card-field {
+  margin-top: 12px;
+}
+
+.checkout-pay-button {
+  margin-top: 24px;
+  margin-bottom: 12px;
 }
 
 .checkout-payment-option-title {
