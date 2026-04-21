@@ -234,11 +234,16 @@
 }
 
 .checkout-pay-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 18px;
+  border: 1px solid #4A494A;
+  border-radius: 999px;
+  background: #4A494A;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .checkout-button-spinner {
