@@ -189,7 +189,6 @@
   flex-direction: column;
   gap: 0;
   border: 1px solid #dcdcdc;
-  border-radius: 14px;
   background: #fff;
   overflow: hidden;
 }
@@ -217,6 +216,7 @@
   padding: 16px 18px;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #4A494A;
 }
 
 .checkout-payment-option-title {
