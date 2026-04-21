@@ -17,7 +17,7 @@
   height: 45px;
   width: auto;
   cursor: pointer;
-  transform: scaleX(-1) translateX(13px);
+  transform: scaleX(-1) translateX(10px);
 }
 
 @media (min-width: 769px) {

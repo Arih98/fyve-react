@@ -1434,19 +1434,118 @@ const shippingAddress = {
   }
 }
 
-if (loading || cartLoading) {
-  return (
-    <div className="checkout-page">
-      <div className="checkout-main">
-        <div className="checkout-flow">
-          <section className="checkout-section">
-            <h1>Checkout</h1>
-            <div>Loading checkout...</div>
-          </section>
-        </div>
+const renderCheckoutSkeleton = () => (
+  <div className="checkout-page checkout-page-skeleton">
+    <div className="checkout-main">
+      <div className="checkout-flow">
+        <section className="checkout-section">
+          <div className="checkout-skeleton checkout-skeleton-title"></div>
+        </section>
+
+        <section className="checkout-section">
+          <div className="checkout-skeleton checkout-skeleton-heading"></div>
+
+          <div className="checkout-row">
+            <div className="checkout-skeleton checkout-skeleton-input"></div>
+            <div className="checkout-skeleton checkout-skeleton-input"></div>
+          </div>
+
+          <div className="checkout-skeleton checkout-skeleton-input"></div>
+          <div className="checkout-skeleton checkout-skeleton-input"></div>
+          <div className="checkout-skeleton checkout-skeleton-input"></div>
+
+          <div className="checkout-row checkout-row-3">
+            <div className="checkout-skeleton checkout-skeleton-input"></div>
+            <div className="checkout-skeleton checkout-skeleton-input"></div>
+            <div className="checkout-skeleton checkout-skeleton-input"></div>
+          </div>
+
+          <div className="checkout-skeleton checkout-skeleton-input"></div>
+          <div className="checkout-skeleton checkout-skeleton-input"></div>
+        </section>
+
+        <section className="checkout-section">
+          <div className="checkout-skeleton checkout-skeleton-heading"></div>
+
+          <div className="checkout-payment-methods">
+            <div className="checkout-payment-option">
+              <div className="checkout-payment-option-label">
+                <div className="checkout-skeleton checkout-skeleton-radio"></div>
+                <div className="checkout-skeleton checkout-skeleton-payment-label"></div>
+              </div>
+            </div>
+
+            <div className="checkout-payment-option">
+              <div className="checkout-payment-option-label">
+                <div className="checkout-skeleton checkout-skeleton-radio"></div>
+                <div className="checkout-skeleton checkout-skeleton-payment-label"></div>
+              </div>
+            </div>
+
+            <div className="checkout-payment-option">
+              <div className="checkout-payment-option-label">
+                <div className="checkout-skeleton checkout-skeleton-radio"></div>
+                <div className="checkout-skeleton checkout-skeleton-payment-label"></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="checkout-skeleton checkout-skeleton-button"></div>
+        </section>
       </div>
     </div>
-  )
+
+    <aside className="checkout-sidebar">
+      <section className="checkout-section checkout-order-summary">
+        <div className="checkout-skeleton checkout-skeleton-heading"></div>
+
+        <div className="checkout-summary-item">
+          <div className="checkout-summary-item-main">
+            <div className="checkout-skeleton checkout-skeleton-image"></div>
+            <div className="checkout-summary-item-info">
+              <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-wide"></div>
+              <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+            </div>
+          </div>
+          <div className="checkout-skeleton checkout-skeleton-price"></div>
+        </div>
+
+        <div className="checkout-summary-item">
+          <div className="checkout-summary-item-main">
+            <div className="checkout-skeleton checkout-skeleton-image"></div>
+            <div className="checkout-summary-item-info">
+              <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-wide"></div>
+              <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+            </div>
+          </div>
+          <div className="checkout-skeleton checkout-skeleton-price"></div>
+        </div>
+
+        <div className="checkout-summary-totals">
+          <div className="checkout-skeleton checkout-skeleton-input"></div>
+
+          <div className="checkout-summary-row">
+            <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+            <div className="checkout-skeleton checkout-skeleton-price"></div>
+          </div>
+
+          <div className="checkout-summary-row">
+            <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+            <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-medium"></div>
+          </div>
+
+          <div className="checkout-summary-row checkout-summary-total">
+            <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+            <div className="checkout-skeleton checkout-skeleton-price checkout-skeleton-price-large"></div>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+)
+
+if (loading || cartLoading) {
+  return renderCheckoutSkeleton()
 }
 
   if (!cartItems?.length) {
