@@ -453,8 +453,8 @@ input[readonly] {
 }
 
 .checkout-summary-total span:first-child {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   color: #4A494A;
 }
 
@@ -531,6 +531,6 @@ input[readonly] {
   }
 
   .checkout-section {
-    padding: 24px;
+    padding: 0;
   }
 }
