@@ -739,6 +739,10 @@ input[readonly] {
   letter-spacing: -0.4px;
 }
 
+.checkout-billing-toggle {
+  font-size: 12px;
+}
+
 .checkout-section input:not([type=checkbox]):not([type=radio]) {
     background: #fff;
     border: 1.5px solid #dad8d2;
