@@ -428,15 +428,18 @@ input[readonly] {
   -webkit-appearance: none;
   width: 22px;
   height: 22px;
-  aspect-ratio: 1 / 1;
   flex: 0 0 22px;
-  display: inline-block;
+  min-width: 22px;
+  min-height: 22px;
+  max-width: 22px;
+  max-height: 22px;
   box-sizing: border-box;
   border: 1.5px solid rgb(218, 216, 210);
   border-radius: 4px;
   background: #fff;
   cursor: pointer;
   position: relative;
+  display: inline-block;
 }
 
 .checkout-billing-toggle input[type="checkbox"]:checked {
