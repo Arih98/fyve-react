@@ -1663,9 +1663,9 @@ if (loading || cartLoading) {
     </label>
 
     <div
-  ref={walletBodyRef}
-  className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
->
+      ref={walletBodyRef}
+      className={`checkout-payment-option-body checkout-payment-option-body-wallet ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
+    >
       <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
       {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
     </div>
@@ -1685,9 +1685,9 @@ if (loading || cartLoading) {
     </label>
 
     <div
-  ref={revolutPayBodyRef}
-  className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
->
+      ref={revolutPayBodyRef}
+      className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
+    >
       <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
       {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
     </div>
@@ -1707,9 +1707,9 @@ if (loading || cartLoading) {
     </label>
 
     <div
-  ref={cardBodyRef}
-  className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : ''}`}
->
+      ref={cardBodyRef}
+      className={`checkout-payment-option-body checkout-payment-option-body-card ${selectedPaymentMethod === 'card' ? 'is-active' : ''}`}
+    >
       <div ref={cardContainerRef} id="revolut-card-field"></div>
       {!cardReady && <div>Card payment unavailable or still loading.</div>}
       <button
