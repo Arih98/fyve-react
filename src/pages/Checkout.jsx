@@ -1522,9 +1522,18 @@ if (loading || cartLoading) {
   ref={cardInnerRef}
   className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card"
 >
-    <div className="checkout-card-field-shell">
+<div className="checkout-card-field-shell">
   <div ref={cardContainerRef} id="revolut-card-field"></div>
-  {!cardReady && <div className="checkout-card-skeleton" aria-hidden="true"></div>}
+  {!cardReady && (
+    <div className="checkout-card-skeleton" aria-hidden="true">
+      <div className="checkout-card-skeleton-icon"></div>
+      <div className="checkout-card-skeleton-number"></div>
+      <div className="checkout-card-skeleton-meta">
+        <div className="checkout-card-skeleton-expiry"></div>
+        <div className="checkout-card-skeleton-cvv"></div>
+      </div>
+    </div>
+  )}
 </div>
 
     <label className="checkout-billing-toggle">
