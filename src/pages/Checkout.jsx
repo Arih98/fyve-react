@@ -1821,10 +1821,6 @@ if (loading || cartLoading) {
               </div>
             </div>
 
-            <div className="checkout-summary-row">
-              <span>Tax</span>
-              <span>{formatWooMoney(checkoutData?.totals?.total_tax || cart?.totals?.total_tax, checkoutData?.totals || cart?.totals)}</span>
-            </div>
 {!!(checkoutData?.totals?.total_discount || cart?.totals?.total_discount) &&
  Number(checkoutData?.totals?.total_discount || cart?.totals?.total_discount) > 0 && (
   <div className="checkout-summary-row">
