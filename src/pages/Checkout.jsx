@@ -1390,7 +1390,7 @@ const handleCardPay = async () => {
   <input
     ref={cityRef}
     type="text"
-    placeholder="Town / City"
+    placeholder="City"
     value={billing.city}
     onChange={(e) => {
       setBilling((prev) => ({ ...prev, city: e.target.value }))
@@ -1542,7 +1542,7 @@ const handleCardPay = async () => {
             <input
               ref={shippingCityRef}
               type="text"
-              placeholder="Town / City"
+              placeholder="City"
               value={shipping.city}
               onChange={(e) => {
                 setShipping((prev) => ({ ...prev, city: e.target.value }))
