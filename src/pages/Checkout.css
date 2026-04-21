@@ -196,7 +196,6 @@
   display: flex;
   flex-direction: column;
   background: #fff;
-  border: 1.5px solid rgb(218, 216, 210);
   overflow: hidden;
 }
 
@@ -218,16 +217,16 @@
   width: 100%;
   box-sizing: border-box;
   background: #fff;
+  border: 1.5px solid rgb(218, 216, 210);
 }
 
-.checkout-payment-option.is-selected::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1.5px solid #4A494A;
-  border-radius: inherit;
-  pointer-events: none;
+.checkout-payment-option.is-selected .checkout-payment-option-label {
+  border-color: #4A494A;
   z-index: 2;
+}
+
+.checkout-payment-option + .checkout-payment-option .checkout-payment-option-label {
+  margin-top: -1.5px;
 }
 
 .checkout-payment-option-body {
