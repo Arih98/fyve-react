@@ -1479,50 +1479,6 @@ if (loading || cartLoading) {
     <div>Payment methods unavailable or still loading.</div>
   )}
 
-  <div className={`checkout-payment-option ${selectedPaymentMethod === 'wallet' ? 'is-selected' : ''}`}>
-    <label className="checkout-payment-option-label">
-      <input
-        type="radio"
-        name="payment_method"
-        value="wallet"
-        checked={selectedPaymentMethod === 'wallet'}
-        onChange={() => setSelectedPaymentMethod('wallet')}
-        disabled={isFinalizingOrder}
-      />
-      <span className="checkout-payment-option-title">Google Pay</span>
-    </label>
-
-    <div
-      ref={walletBodyRef}
-      className={`checkout-payment-option-body checkout-payment-option-body-wallet ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
-    >
-      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-      {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
-    </div>
-  </div>
-
-  <div className={`checkout-payment-option ${selectedPaymentMethod === 'revolut_pay' ? 'is-selected' : ''}`}>
-    <label className="checkout-payment-option-label">
-      <input
-        type="radio"
-        name="payment_method"
-        value="revolut_pay"
-        checked={selectedPaymentMethod === 'revolut_pay'}
-        onChange={() => setSelectedPaymentMethod('revolut_pay')}
-        disabled={isFinalizingOrder}
-      />
-      <span className="checkout-payment-option-title">Revolut Pay</span>
-    </label>
-
-    <div
-      ref={revolutPayBodyRef}
-      className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
-    >
-      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-      {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
-    </div>
-  </div>
-
   <div className={`checkout-payment-option ${selectedPaymentMethod === 'card' ? 'is-selected' : ''}`}>
     <label className="checkout-payment-option-label">
       <input
@@ -1674,6 +1630,50 @@ if (loading || cartLoading) {
     )}
   </button>
 </div>
+  </div>
+
+  <div className={`checkout-payment-option ${selectedPaymentMethod === 'wallet' ? 'is-selected' : ''}`}>
+    <label className="checkout-payment-option-label">
+      <input
+        type="radio"
+        name="payment_method"
+        value="wallet"
+        checked={selectedPaymentMethod === 'wallet'}
+        onChange={() => setSelectedPaymentMethod('wallet')}
+        disabled={isFinalizingOrder}
+      />
+      <span className="checkout-payment-option-title">Google Pay</span>
+    </label>
+
+    <div
+      ref={walletBodyRef}
+      className={`checkout-payment-option-body checkout-payment-option-body-wallet ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
+    >
+      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+      {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
+    </div>
+  </div>
+
+  <div className={`checkout-payment-option ${selectedPaymentMethod === 'revolut_pay' ? 'is-selected' : ''}`}>
+    <label className="checkout-payment-option-label">
+      <input
+        type="radio"
+        name="payment_method"
+        value="revolut_pay"
+        checked={selectedPaymentMethod === 'revolut_pay'}
+        onChange={() => setSelectedPaymentMethod('revolut_pay')}
+        disabled={isFinalizingOrder}
+      />
+      <span className="checkout-payment-option-title">Revolut Pay</span>
+    </label>
+
+    <div
+      ref={revolutPayBodyRef}
+      className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
+    >
+      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+      {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
+    </div>
   </div>
 </div>
   ) : (
