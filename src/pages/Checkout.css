@@ -211,6 +211,7 @@
 .checkout-payment-option:last-child {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+  overflow: hidden;
 }
 
 .checkout-payment-option:last-child .checkout-payment-option-body.is-active {
