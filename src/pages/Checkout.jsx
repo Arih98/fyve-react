@@ -441,21 +441,13 @@ const setAccordionHeight = useCallback((element, isOpen) => {
     return
   }
 
-  element.style.height = 'auto'
-  const nextHeight = element.scrollHeight
-  element.style.height = nextHeight + 'px'
+  element.style.height = element.scrollHeight + 'px'
 }, [])
 
 useLayoutEffect(() => {
   setAccordionHeight(walletBodyRef.current, selectedPaymentMethod === 'wallet')
   setAccordionHeight(revolutPayBodyRef.current, selectedPaymentMethod === 'revolut_pay')
   setAccordionHeight(cardBodyRef.current, selectedPaymentMethod === 'card')
-
-  if (selectedPaymentMethod === 'card') {
-    requestAnimationFrame(() => {
-      setAccordionHeight(cardBodyRef.current, true)
-    })
-  }
 }, [
   selectedPaymentMethod,
   appleGoogleReady,
