@@ -189,7 +189,6 @@
   flex-direction: column;
   gap: 0;
   border: 1px solid #dcdcdc;
-  border-radius: 5px;
   background: #fff;
   overflow: hidden;
 }
