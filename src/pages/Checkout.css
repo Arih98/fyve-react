@@ -221,7 +221,7 @@
 }
 
 .checkout-payment-option.is-selected .checkout-payment-option-label {
-  border-top: #4A494A;
+  border-color: #4A494A;
 }
 
 .checkout-payment-option-title {
