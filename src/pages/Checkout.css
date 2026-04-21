@@ -66,17 +66,6 @@
   position: relative;
 }
 
-.checkout-page::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: rgb(218, 216, 210);
-  transform: translateX(-50%);
-}
-
 .checkout-page-processing {
   pointer-events: none;
 }
@@ -95,9 +84,20 @@
 }
 
 .checkout-main {
+  position: relative;
   flex: 1 1 0;
   min-width: 0;
   max-width: 620px;
+}
+
+.checkout-main::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -24px;
+  width: 1px;
+  height: 100%;
+  background: rgb(218, 216, 210);
 }
 
 .checkout-row {
@@ -467,10 +467,10 @@ input[readonly] {
     padding: 24px 16px 40px;
   }
 
-  .checkout-page::after {
+  .checkout-main::after {
     display: none;
   }
-
+  
   .checkout-sidebar {
     width: 100%;
     flex: unset;
