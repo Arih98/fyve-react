@@ -223,19 +223,20 @@
 }
 
 .checkout-payment-option.is-selected .checkout-payment-option-label {
+  position: relative;
   z-index: 2;
+  border: 1.5px solid #4A494A;
 }
 
-.checkout-payment-option.is-selected .checkout-payment-option-label::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1.5px solid #4A494A;
-  pointer-events: none;
+.checkout-payment-option + .checkout-payment-option {
+  margin-top: -1.5px;
 }
 
 .checkout-payment-option.is-selected {
   z-index: 3;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
 }
 
 .checkout-payment-option-body {
