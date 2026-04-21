@@ -236,13 +236,7 @@
   border-bottom-right-radius: 6px;
 }
 
-.checkout-payment-option:first-child.is-selected .checkout-payment-option-label::after {
-  border-top-left-radius: 7.5px;
-  border-top-right-radius: 7.5px;
-}
-
 .checkout-payment-option:first-child {
-  border-top: 1.5px solid rgb(218, 216, 210);
   border-top: 1.5px solid rgb(218, 216, 210);
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
