@@ -382,9 +382,15 @@ input[readonly] {
 
 .checkout-summary-item-main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   flex: 1;
+}
+
+.checkout-summary-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .checkout-summary-item-image {
