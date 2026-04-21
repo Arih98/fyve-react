@@ -188,7 +188,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1.5px solid #4A494A;
+  border: 1px solid #dcdcdc;
   border-radius: 5px;
   background: #fff;
   overflow: hidden;
@@ -222,7 +222,6 @@
 
 .checkout-payment-option.is-selected .checkout-payment-option-label {
   border-top: #4A494A;
-  border-bottom: #4A494A;
 }
 
 .checkout-payment-option-title {
