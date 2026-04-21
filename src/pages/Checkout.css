@@ -284,21 +284,21 @@
 }
 
 .checkout-payment-option-body-wallet.is-active {
-  min-height: 80px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  min-height: 100px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .checkout-payment-option-body-revolut.is-active {
-  min-height: 100px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  min-height: 0px;
+  padding-top: 22px;
+  padding-bottom: 22px;
 }
 
 .checkout-payment-option-body-card.is-active {
-  min-height: 140px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  min-height: 175px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .checkout-payment-option-title {
