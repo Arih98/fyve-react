@@ -199,15 +199,23 @@
   border-left: 1.5px solid rgb(218, 216, 210);
   border-right: 1.5px solid rgb(218, 216, 210);
   border-bottom: 1.5px solid rgb(218, 216, 210);
-  overflow: hidden;
+  overflow: visible;
 }
+
+.checkout-payment-option:first-child {
+  border-top: 1.5px solid rgb(218, 216, 210);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.checkout-payment-option:last-child {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 
 .checkout-payment-option.is-selected {
   z-index: 3;
-}
-
-.checkout-payment-option + .checkout-payment-option {
-  margin-top: 0;
 }
 
 .checkout-payment-option-label {
@@ -220,23 +228,27 @@
   width: 100%;
   box-sizing: border-box;
   background: #fff;
-}
-
-.checkout-payment-option.is-selected .checkout-payment-option-label {
-  position: relative;
-  z-index: 2;
-  border: 1.5px solid #4A494A;
-}
-
-.checkout-payment-option + .checkout-payment-option {
-  margin-top: -1.5px;
+  z-index: 1;
 }
 
 .checkout-payment-option.is-selected {
   z-index: 3;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
+}
+
+.checkout-payment-option.is-selected .checkout-payment-option-label {
+  z-index: 2;
+}
+
+.checkout-payment-option.is-selected .checkout-payment-option-label::after {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  right: -1.5px;
+  bottom: -1.5px;
+  left: -1.5px;
+  border: 1.5px solid #4A494A;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .checkout-payment-option-body {
@@ -249,12 +261,6 @@
 .checkout-payment-option-body.is-active {
   padding: 16px 18px 18px;
   background: #f4f4f4;
-  border-top: 1.5px solid rgb(218, 216, 210);
-}
-
-.checkout-payment-option:first-child {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
   border-top: 1.5px solid rgb(218, 216, 210);
 }
 
