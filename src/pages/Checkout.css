@@ -276,13 +276,6 @@
   border-top-right-radius: 7.5px;
 }
 
-.checkout-payment-option:last-child.is-selected .checkout-payment-option-label::after {
-  top: -1.5px;
-  right: -1.5px;
-  bottom: -1.5px;
-  left: -1.5px;
-}
-
 .checkout-payment-option.is-selected .checkout-payment-option-label {
   z-index: 2;
 }
