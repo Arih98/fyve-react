@@ -204,8 +204,6 @@
 
 .checkout-payment-option:first-child {
   border-top: 1.5px solid rgb(218, 216, 210);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
 }
 
 .checkout-payment-option:last-child {
