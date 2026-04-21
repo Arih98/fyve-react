@@ -112,6 +112,11 @@
   width: 100%;
   text-align: center;
 }
+
+.footer-brand {
+  width: 100%;
+}
+
   .footer-london {
     font-size: 12px;
     letter-spacing: 1em;
