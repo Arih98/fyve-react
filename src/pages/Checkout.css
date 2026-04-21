@@ -236,6 +236,7 @@
 .checkout-pay-button {
   width: 100%;
   min-height: 52px;
+  margin-top: 24px;
   padding: 14px 18px;
   border: 1px solid #4A494A;
   border-radius: 999px;
