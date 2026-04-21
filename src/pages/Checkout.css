@@ -188,24 +188,25 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
   background: #fff;
-  overflow: hidden;
 }
 
 .checkout-payment-option {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: #fff;
-  transition: background-color 0.2s ease;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .checkout-payment-option + .checkout-payment-option {
-  border-top: 1px solid #dcdcdc;
+  margin-top: -1px;
 }
 
 .checkout-payment-option-label {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -214,43 +215,33 @@
   width: 100%;
   box-sizing: border-box;
   background: #fff;
-  position: relative;
-}
-
-.checkout-payment-option.is-selected .checkout-payment-option-label::before,
-.checkout-payment-option.is-selected .checkout-payment-option-label::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: #4A494A;
 }
 
 .checkout-payment-option.is-selected .checkout-payment-option-label::before {
-  left: 0;
-}
-
-.checkout-payment-option.is-selected .checkout-payment-option-label::after {
-  right: 0;
-}
-
-.checkout-payment-option-title {
-  font: inherit;
-  color: #4A494A;
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid #4A494A;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .checkout-payment-option-body {
   overflow: hidden;
   height: 0;
   padding: 0 18px;
-  transition: height 0.25s ease, padding 0.25s ease, border-color 0.25s ease;
+  transition: height 0.25s ease, padding 0.25s ease;
 }
 
 .checkout-payment-option-body.is-active {
   padding: 16px 18px 18px;
   background: #f4f4f4;
   border-top: 1px solid #e5e5e5;
+}
+
+.checkout-payment-option-title {
+  font: inherit;
+  color: #4A494A;
 }
 
 #revolut-card-field {
