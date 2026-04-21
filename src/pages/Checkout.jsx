@@ -1522,8 +1522,10 @@ if (loading || cartLoading) {
   ref={cardInnerRef}
   className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card"
 >
-    <div ref={cardContainerRef} id="revolut-card-field"></div>
-    {!cardReady && <div>Card payment unavailable or still loading.</div>}
+    <div className="checkout-card-field-shell">
+  <div ref={cardContainerRef} id="revolut-card-field"></div>
+  {!cardReady && <div className="checkout-card-skeleton" aria-hidden="true"></div>}
+</div>
 
     <label className="checkout-billing-toggle">
       <input
