@@ -452,6 +452,18 @@ input[readonly] {
   font: inherit;
 }
 
+.checkout-summary-total span:first-child {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4A494A;
+}
+
+.checkout-summary-total span:last-child {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+}
+
 .checkout-billing-toggle input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
