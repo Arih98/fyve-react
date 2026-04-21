@@ -12,6 +12,10 @@
   margin-top: 12px;
 }
 
+.checkout-section input::placeholder {
+  font-size: 17px;
+}
+
 .checkout-summary-totals {
   display: flex;
   flex-direction: column;
@@ -153,7 +157,7 @@
 }
 
 .checkout-section input:not([type="checkbox"]):not([type="radio"]) {
-  padding: 12px 14px;
+  padding: 18px 14px;
   border: 1.5px solid rgb(218, 216, 210);
   border-radius: 4px;
   font: inherit;
