@@ -469,13 +469,6 @@ input[readonly] {
   overflow: hidden;
 }
 
-#revolut-card-field {
-  padding: 12px 16px;
-  background: #fff;
-  border: none;
-  min-height: 72px;
-}
-
 .checkout-card-skeleton {
   position: absolute;
   inset: 0;
