@@ -241,7 +241,7 @@
   border-radius: 999px;
   background: #4A494A;
   color: #fff;
-  font: inherit;
+  font-family: 'Quasimoda', sans-serif;
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
