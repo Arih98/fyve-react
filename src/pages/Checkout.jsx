@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState, useCallback } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react'
 import { CartContext } from '../CartContext'
 import {
   getCheckoutPrefill,
@@ -443,11 +443,11 @@ const setAccordionHeight = useCallback((element, isOpen) => {
   }
 }, [])
 
-useEffect(() => {
+useLayoutEffect(() => {
   setAccordionHeight(walletBodyRef.current, selectedPaymentMethod === 'wallet')
   setAccordionHeight(revolutPayBodyRef.current, selectedPaymentMethod === 'revolut_pay')
   setAccordionHeight(cardBodyRef.current, selectedPaymentMethod === 'card')
-}, [selectedPaymentMethod, appleGoogleReady, revolutPayReady, cardReady, paymentLoading, setAccordionHeight])
+}, [selectedPaymentMethod, appleGoogleReady, revolutPayReady, cardReady, paymentLoading, useDifferentBilling, setAccordionHeight])
 
 const focusFirstInvalidField = useCallback((errors) => {
 const firstKey = Object.keys(errors)[0]
