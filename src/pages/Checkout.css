@@ -201,7 +201,7 @@
   border-left: 1.5px solid rgb(218, 216, 210);
   border-right: 1.5px solid rgb(218, 216, 210);
   border-bottom: 1.5px solid rgb(218, 216, 210);
-  overflow: visible;
+  overflow: hidden;
 }
 
 .checkout-payment-option:first-child {
