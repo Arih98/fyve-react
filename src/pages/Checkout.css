@@ -291,8 +291,8 @@
 .checkout-payment-option-body {
   overflow: hidden;
   height: 0;
-  padding: 0 18px;
-  transition: height 0.25s ease, padding 0.25s ease;
+  padding: 0;
+  transition: height 0.25s ease;
 }
 
 .checkout-payment-option-body.is-active {
@@ -300,20 +300,23 @@
   border-top: 1.5px solid rgb(218, 216, 210);
 }
 
-.checkout-payment-option-body-wallet.is-active {
-  min-height: 100px;
+.checkout-payment-option-body-inner {
+  padding-left: 18px;
+  padding-right: 18px;
+  box-sizing: border-box;
+}
+
+.checkout-payment-option-body-inner-wallet {
   padding-top: 5px;
   padding-bottom: 5px;
 }
 
-.checkout-payment-option-body-revolut.is-active {
-  min-height: 130px;
+.checkout-payment-option-body-inner-revolut {
   padding-top: 22px;
   padding-bottom: 22px;
 }
 
-.checkout-payment-option-body-card.is-active {
-  min-height: 175px;
+.checkout-payment-option-body-inner-card {
   padding-top: 20px;
   padding-bottom: 20px;
 }

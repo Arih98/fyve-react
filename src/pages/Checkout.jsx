@@ -1496,139 +1496,141 @@ if (loading || cartLoading) {
   ref={cardBodyRef}
   className={`checkout-payment-option-body checkout-payment-option-body-card ${selectedPaymentMethod === 'card' ? 'is-active' : ''}`}
 >
-  <div ref={cardContainerRef} id="revolut-card-field"></div>
-  {!cardReady && <div>Card payment unavailable or still loading.</div>}
+  <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card">
+    <div ref={cardContainerRef} id="revolut-card-field"></div>
+    {!cardReady && <div>Card payment unavailable or still loading.</div>}
 
-  <label className="checkout-billing-toggle">
-    <input
-      type="checkbox"
-      checked={!useDifferentBilling}
-      onChange={(e) => {
-        const checked = e.target.checked
-        setUseDifferentBilling(!checked)
-
-        if (checked) {
-          setFieldErrors((prev) => ({
-            ...prev,
-            billing_first_name: '',
-            billing_last_name: '',
-            billing_address_1: '',
-            billing_city: '',
-            billing_state: '',
-            billing_postcode: ''
-          }))
-        }
-      }}
-      disabled={isFinalizingOrder}
-    />
-    Use shipping address as billing address
-  </label>
-
-  {useDifferentBilling && (
-    <div className="checkout-billing-fields">
-      {fieldErrors.billing_first_name && (
-        <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
-      )}
-      <div className="checkout-row">
-        <input
-  ref={firstNameRef}
-  type="text"
-  placeholder="Billing first name"
-  value={billing.first_name}
-          onChange={(e) => {
-            setBilling((prev) => ({ ...prev, first_name: e.target.value }))
-            setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
-          }}
-        />
-
-<input
-  ref={lastNameRef}
-  type="text"
-  placeholder="Billing last name"
-  value={billing.last_name}
-          onChange={(e) => {
-            setBilling((prev) => ({ ...prev, last_name: e.target.value }))
-            setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
-          }}
-        />
-      </div>
-
-      {fieldErrors.billing_address_1 && (
-        <div className="checkout-field-error">{fieldErrors.billing_address_1}</div>
-      )}
-<input
-  ref={address1Ref}
-  type="text"
-  placeholder="Billing street address"
-  value={billing.address_1}
-        onChange={(e) => {
-          setBilling((prev) => ({ ...prev, address_1: e.target.value }))
-          setFieldErrors((prev) => ({ ...prev, billing_address_1: '' }))
-        }}
-      />
-
+    <label className="checkout-billing-toggle">
       <input
-        type="text"
-        placeholder="Apartment, suite, unit, etc. (optional)"
-        value={billing.address_2}
-        onChange={(e) => setBilling((prev) => ({ ...prev, address_2: e.target.value }))}
+        type="checkbox"
+        checked={!useDifferentBilling}
+        onChange={(e) => {
+          const checked = e.target.checked
+          setUseDifferentBilling(!checked)
+
+          if (checked) {
+            setFieldErrors((prev) => ({
+              ...prev,
+              billing_first_name: '',
+              billing_last_name: '',
+              billing_address_1: '',
+              billing_city: '',
+              billing_state: '',
+              billing_postcode: ''
+            }))
+          }
+        }}
+        disabled={isFinalizingOrder}
       />
+      Use shipping address as billing address
+    </label>
 
-      {fieldErrors.billing_city && (
-        <div className="checkout-field-error">{fieldErrors.billing_city}</div>
-      )}
-      <div className="checkout-row checkout-row-3">
-<input
-  ref={cityRef}
-  type="text"
-  placeholder="Billing city"
-  value={billing.city}
+    {useDifferentBilling && (
+      <div className="checkout-billing-fields">
+        {fieldErrors.billing_first_name && (
+          <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
+        )}
+        <div className="checkout-row">
+          <input
+            ref={firstNameRef}
+            type="text"
+            placeholder="Billing first name"
+            value={billing.first_name}
+            onChange={(e) => {
+              setBilling((prev) => ({ ...prev, first_name: e.target.value }))
+              setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
+            }}
+          />
+
+          <input
+            ref={lastNameRef}
+            type="text"
+            placeholder="Billing last name"
+            value={billing.last_name}
+            onChange={(e) => {
+              setBilling((prev) => ({ ...prev, last_name: e.target.value }))
+              setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
+            }}
+          />
+        </div>
+
+        {fieldErrors.billing_address_1 && (
+          <div className="checkout-field-error">{fieldErrors.billing_address_1}</div>
+        )}
+        <input
+          ref={address1Ref}
+          type="text"
+          placeholder="Billing street address"
+          value={billing.address_1}
           onChange={(e) => {
-            setBilling((prev) => ({ ...prev, city: e.target.value }))
-            setFieldErrors((prev) => ({ ...prev, billing_city: '' }))
+            setBilling((prev) => ({ ...prev, address_1: e.target.value }))
+            setFieldErrors((prev) => ({ ...prev, billing_address_1: '' }))
           }}
         />
 
-<input
-  ref={stateRef}
-  type="text"
-  placeholder="Billing state"
-  value={billing.state}
-          onChange={(e) => {
-            setBilling((prev) => ({ ...prev, state: e.target.value }))
-            setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
-          }}
+        <input
+          type="text"
+          placeholder="Apartment, suite, unit, etc. (optional)"
+          value={billing.address_2}
+          onChange={(e) => setBilling((prev) => ({ ...prev, address_2: e.target.value }))}
         />
 
-<input
-  ref={postcodeRef}
-  type="text"
-  placeholder="Billing ZIP Code"
-  value={billing.postcode}
-          onChange={(e) => {
-            setBilling((prev) => ({ ...prev, postcode: e.target.value }))
-            setFieldErrors((prev) => ({ ...prev, billing_postcode: '' }))
-          }}
-        />
+        {fieldErrors.billing_city && (
+          <div className="checkout-field-error">{fieldErrors.billing_city}</div>
+        )}
+        <div className="checkout-row checkout-row-3">
+          <input
+            ref={cityRef}
+            type="text"
+            placeholder="Billing city"
+            value={billing.city}
+            onChange={(e) => {
+              setBilling((prev) => ({ ...prev, city: e.target.value }))
+              setFieldErrors((prev) => ({ ...prev, billing_city: '' }))
+            }}
+          />
+
+          <input
+            ref={stateRef}
+            type="text"
+            placeholder="Billing state"
+            value={billing.state}
+            onChange={(e) => {
+              setBilling((prev) => ({ ...prev, state: e.target.value }))
+              setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
+            }}
+          />
+
+          <input
+            ref={postcodeRef}
+            type="text"
+            placeholder="Billing ZIP Code"
+            value={billing.postcode}
+            onChange={(e) => {
+              setBilling((prev) => ({ ...prev, postcode: e.target.value }))
+              setFieldErrors((prev) => ({ ...prev, billing_postcode: '' }))
+            }}
+          />
+        </div>
       </div>
-    </div>
-  )}
-
-  <button
-    type="button"
-    onClick={handleCardPay}
-    disabled={paymentLoading || !cardReady || isFinalizingOrder}
-    className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
-  >
-    {(paymentLoading || isFinalizingOrder) ? (
-      <>
-        <span className="checkout-button-spinner"></span>
-        <span>Processing</span>
-      </>
-    ) : (
-      'Pay now'
     )}
-  </button>
+
+    <button
+      type="button"
+      onClick={handleCardPay}
+      disabled={paymentLoading || !cardReady || isFinalizingOrder}
+      className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
+    >
+      {(paymentLoading || isFinalizingOrder) ? (
+        <>
+          <span className="checkout-button-spinner"></span>
+          <span>Processing</span>
+        </>
+      ) : (
+        'Pay now'
+      )}
+    </button>
+  </div>
 </div>
   </div>
 
@@ -1646,13 +1648,14 @@ if (loading || cartLoading) {
     </label>
 
     <div
-      ref={walletBodyRef}
-      className={`checkout-payment-option-body checkout-payment-option-body-wallet ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
-    >
-      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-      {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
-    </div>
+  ref={walletBodyRef}
+  className={`checkout-payment-option-body checkout-payment-option-body-wallet ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
+>
+  <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-wallet">
+    <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+    {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
   </div>
+</div>
 
   <div className={`checkout-payment-option ${selectedPaymentMethod === 'revolut_pay' ? 'is-selected' : ''}`}>
     <label className="checkout-payment-option-label">
@@ -1668,13 +1671,14 @@ if (loading || cartLoading) {
     </label>
 
     <div
-      ref={revolutPayBodyRef}
-      className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
-    >
-      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-      {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
-    </div>
+  ref={revolutPayBodyRef}
+  className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
+>
+  <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-revolut">
+    <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+    {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
   </div>
+</div>
 </div>
   ) : (
     <div className="checkout-free-order">
