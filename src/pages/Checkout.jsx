@@ -1046,16 +1046,6 @@ case 'error': {
   finalizeOrderBeforeRedirect
 ])
 
-const setAccordionHeight = (el, isOpen) => {
-  if (!el) return
-
-  if (isOpen) {
-    el.style.height = el.scrollHeight + 'px'
-  } else {
-    el.style.height = '0px'
-  }
-}
-
 const handleFreeOrder = async () => {
   try {
     setPaymentLoading(true)
