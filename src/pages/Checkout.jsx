@@ -1593,86 +1593,86 @@ const handleCardPay = async () => {
 
   {requiresPayment ? (
     <div className="checkout-payment-methods">
-      {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
-        <div>Preparing payment methods...</div>
-      )}
+  {paymentLoading && !cardReady && !appleGoogleReady && !revolutPayReady && (
+    <div>Preparing payment methods...</div>
+  )}
 
-      {!cardReady && !appleGoogleReady && !revolutPayReady && !paymentLoading && (
-        <div>Payment methods unavailable or still loading.</div>
-      )}
+  {!cardReady && !appleGoogleReady && !revolutPayReady && !paymentLoading && (
+    <div>Payment methods unavailable or still loading.</div>
+  )}
 
-      <div className="checkout-payment-option">
-        <label className="checkout-payment-option-label">
-          <input
-            type="radio"
-            name="payment_method"
-            value="wallet"
-            checked={selectedPaymentMethod === 'wallet'}
-            onChange={() => setSelectedPaymentMethod('wallet')}
-            disabled={isFinalizingOrder}
-          />
-          <span>Google Pay</span>
-        </label>
+  <div className={`checkout-payment-option ${selectedPaymentMethod === 'wallet' ? 'is-selected' : ''}`}>
+    <label className="checkout-payment-option-label">
+      <input
+        type="radio"
+        name="payment_method"
+        value="wallet"
+        checked={selectedPaymentMethod === 'wallet'}
+        onChange={() => setSelectedPaymentMethod('wallet')}
+        disabled={isFinalizingOrder}
+      />
+      <span className="checkout-payment-option-title">Google Pay</span>
+    </label>
 
-        <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : 'is-hidden'}`}>
-          <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
-          {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
-        </div>
-      </div>
-
-      <div className="checkout-payment-option">
-        <label className="checkout-payment-option-label">
-          <input
-            type="radio"
-            name="payment_method"
-            value="revolut_pay"
-            checked={selectedPaymentMethod === 'revolut_pay'}
-            onChange={() => setSelectedPaymentMethod('revolut_pay')}
-            disabled={isFinalizingOrder}
-          />
-          <span>Revolut Pay</span>
-        </label>
-
-        <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : 'is-hidden'}`}>
-          <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-          {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
-        </div>
-      </div>
-
-      <div className="checkout-payment-option">
-        <label className="checkout-payment-option-label">
-          <input
-            type="radio"
-            name="payment_method"
-            value="card"
-            checked={selectedPaymentMethod === 'card'}
-            onChange={() => setSelectedPaymentMethod('card')}
-            disabled={isFinalizingOrder}
-          />
-          <span>Pay by card</span>
-        </label>
-
-        <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : 'is-hidden'}`}>
-          <div ref={cardContainerRef} id="revolut-card-field"></div>
-          {!cardReady && <div>Card payment unavailable or still loading.</div>}
-          <button
-            type="button"
-            onClick={handleCardPay}
-            disabled={paymentLoading || !cardReady || isFinalizingOrder}
-            className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
-          >
-            {(paymentLoading || isFinalizingOrder) ? (
-              <>
-                <span className="checkout-button-spinner"></span>
-                <span>Processing</span>
-              </>
-            ) : (
-              'Pay now'
-            )}
-          </button>
-        </div>
-      </div>
+    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : 'is-hidden'}`}>
+      <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
+      {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
     </div>
+  </div>
+
+  <div className={`checkout-payment-option ${selectedPaymentMethod === 'revolut_pay' ? 'is-selected' : ''}`}>
+    <label className="checkout-payment-option-label">
+      <input
+        type="radio"
+        name="payment_method"
+        value="revolut_pay"
+        checked={selectedPaymentMethod === 'revolut_pay'}
+        onChange={() => setSelectedPaymentMethod('revolut_pay')}
+        disabled={isFinalizingOrder}
+      />
+      <span className="checkout-payment-option-title">Revolut Pay</span>
+    </label>
+
+    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : 'is-hidden'}`}>
+      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+      {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
+    </div>
+  </div>
+
+  <div className={`checkout-payment-option ${selectedPaymentMethod === 'card' ? 'is-selected' : ''}`}>
+    <label className="checkout-payment-option-label">
+      <input
+        type="radio"
+        name="payment_method"
+        value="card"
+        checked={selectedPaymentMethod === 'card'}
+        onChange={() => setSelectedPaymentMethod('card')}
+        disabled={isFinalizingOrder}
+      />
+      <span className="checkout-payment-option-title">Pay by card</span>
+    </label>
+
+    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : 'is-hidden'}`}>
+      <div ref={cardContainerRef} id="revolut-card-field"></div>
+      {!cardReady && <div>Card payment unavailable or still loading.</div>}
+      <button
+        type="button"
+        onClick={handleCardPay}
+        disabled={paymentLoading || !cardReady || isFinalizingOrder}
+        className={`checkout-pay-button ${paymentLoading || isFinalizingOrder ? 'is-loading' : ''}`}
+      >
+        {(paymentLoading || isFinalizingOrder) ? (
+          <>
+            <span className="checkout-button-spinner"></span>
+            <span>Processing</span>
+          </>
+        ) : (
+          'Pay now'
+        )}
+      </button>
+    </div>
+  </div>
+</div>
   ) : (
     <div className="checkout-free-order">
       <button

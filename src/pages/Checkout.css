@@ -183,24 +183,40 @@
 .checkout-payment-methods {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .checkout-payment-option {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.checkout-payment-option.is-selected {
+  border-color: #4A494A;
+  background: #faf8f7;
 }
 
 .checkout-payment-option-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
+  padding: 16px 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.checkout-payment-option-title {
+  font: inherit;
+  color: #4A494A;
 }
 
 .checkout-payment-option-body {
-  padding-left: 28px;
+  padding: 0 18px 18px 18px;
+  border-top: 1px solid #ece7e4;
 }
 
 .checkout-payment-option-body.is-hidden {
