@@ -1672,6 +1672,7 @@ if (loading || cartLoading) {
       {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
     </div>
   </div>
+  </div>
 </div>
   ) : (
     <div className="checkout-free-order">
