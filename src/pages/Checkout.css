@@ -214,14 +214,25 @@
   width: 100%;
   box-sizing: border-box;
   background: #fff;
+  position: relative;
 }
 
-.checkout-payment-option + .checkout-payment-option .checkout-payment-option-label {
-  margin-top: -1px;
+.checkout-payment-option.is-selected .checkout-payment-option-label::before,
+.checkout-payment-option.is-selected .checkout-payment-option-label::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #4A494A;
 }
 
-.checkout-payment-option.is-selected .checkout-payment-option-label {
-  box-shadow: inset 0 0 0 1px #4A494A;
+.checkout-payment-option.is-selected .checkout-payment-option-label::before {
+  left: 0;
+}
+
+.checkout-payment-option.is-selected .checkout-payment-option-label::after {
+  right: 0;
 }
 
 .checkout-payment-option-title {
