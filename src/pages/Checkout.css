@@ -183,19 +183,25 @@
 .checkout-payment-methods {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.checkout-payment-option {
+  gap: 0;
   border: 1px solid #dcdcdc;
   border-radius: 14px;
   background: #fff;
   overflow: hidden;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.checkout-payment-option {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.checkout-payment-option + .checkout-payment-option {
+  border-top: 1px solid #dcdcdc;
 }
 
 .checkout-payment-option.is-selected {
-  border-color: #4A494A;
   background: #faf8f7;
 }
 
