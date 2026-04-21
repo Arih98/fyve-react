@@ -264,6 +264,13 @@
   z-index: 2;
 }
 
+.checkout-payment-option:last-child.is-selected .checkout-payment-option-label::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
 .checkout-payment-option-body {
   overflow: hidden;
   height: 0;
