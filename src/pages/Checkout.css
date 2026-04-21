@@ -257,11 +257,6 @@
   border-top: 1.5px solid rgb(218, 216, 210);
 }
 
-.checkout-payment-option:last-child {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
 .checkout-payment-option-title {
   font: inherit;
   color: #4A494A;
