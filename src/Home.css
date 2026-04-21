@@ -507,7 +507,7 @@
     z-index: 20;
     display: block;
     opacity: 0;
-    transform: scaleX(-1);
+    transform: scaleX(-1) translateX(13px);
   }
 
   .home-mobile-top-logo img {
