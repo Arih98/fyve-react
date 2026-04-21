@@ -1325,9 +1325,20 @@ const handleCardPay = async () => {
   }
 }
 
-  if (loading || cartLoading) {
-    return <div>Loading checkout...</div>
-  }
+if (loading || cartLoading) {
+  return (
+    <div className="checkout-page">
+      <div className="checkout-main">
+        <div className="checkout-flow">
+          <section className="checkout-section">
+            <h1>Checkout</h1>
+            <div>Loading checkout...</div>
+          </section>
+        </div>
+      </div>
+    </div>
+  )
+}
 
   if (!cartItems?.length) {
     return <div>Your cart is empty.</div>
