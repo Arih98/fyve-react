@@ -436,18 +436,35 @@ const effectiveBilling = useDifferentBilling ? billing : shipping
 const setAccordionHeight = useCallback((element, isOpen) => {
   if (!element) return
 
-  if (isOpen) {
-    element.style.height = element.scrollHeight + 'px'
-  } else {
+  if (!isOpen) {
     element.style.height = '0px'
+    return
   }
+
+  element.style.height = 'auto'
+  const nextHeight = element.scrollHeight
+  element.style.height = nextHeight + 'px'
 }, [])
 
 useLayoutEffect(() => {
   setAccordionHeight(walletBodyRef.current, selectedPaymentMethod === 'wallet')
   setAccordionHeight(revolutPayBodyRef.current, selectedPaymentMethod === 'revolut_pay')
   setAccordionHeight(cardBodyRef.current, selectedPaymentMethod === 'card')
-}, [selectedPaymentMethod, appleGoogleReady, revolutPayReady, cardReady, paymentLoading, useDifferentBilling, setAccordionHeight])
+
+  if (selectedPaymentMethod === 'card') {
+    requestAnimationFrame(() => {
+      setAccordionHeight(cardBodyRef.current, true)
+    })
+  }
+}, [
+  selectedPaymentMethod,
+  appleGoogleReady,
+  revolutPayReady,
+  cardReady,
+  paymentLoading,
+  useDifferentBilling,
+  setAccordionHeight
+])
 
 const focusFirstInvalidField = useCallback((errors) => {
 const firstKey = Object.keys(errors)[0]
