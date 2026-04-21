@@ -428,12 +428,16 @@ const [couponCode, setCouponCode] = useState('')
 const [couponLoading, setCouponLoading] = useState(false)
 const [couponMessage, setCouponMessage] = useState('')
 
+const walletInnerRef = useRef(null)
+const revolutPayInnerRef = useRef(null)
+const cardInnerRef = useRef(null)
+
 const checkoutTotalMinor = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
 const requiresPayment = checkoutTotalMinor > 0
 
 const effectiveBilling = useDifferentBilling ? billing : shipping
 
-const setAccordionHeight = useCallback((element, isOpen) => {
+const setAccordionHeight = useCallback((element, innerElement, isOpen) => {
   if (!element) return
 
   if (!isOpen) {
@@ -441,13 +445,38 @@ const setAccordionHeight = useCallback((element, isOpen) => {
     return
   }
 
-  element.style.height = element.scrollHeight + 'px'
+  const nextHeight = innerElement ? innerElement.scrollHeight : element.scrollHeight
+  element.style.height = nextHeight + 'px'
 }, [])
 
 useLayoutEffect(() => {
-  setAccordionHeight(walletBodyRef.current, selectedPaymentMethod === 'wallet')
-  setAccordionHeight(revolutPayBodyRef.current, selectedPaymentMethod === 'revolut_pay')
-  setAccordionHeight(cardBodyRef.current, selectedPaymentMethod === 'card')
+  setAccordionHeight(
+    walletBodyRef.current,
+    walletInnerRef.current,
+    selectedPaymentMethod === 'wallet'
+  )
+
+  setAccordionHeight(
+    revolutPayBodyRef.current,
+    revolutPayInnerRef.current,
+    selectedPaymentMethod === 'revolut_pay'
+  )
+
+  setAccordionHeight(
+    cardBodyRef.current,
+    cardInnerRef.current,
+    selectedPaymentMethod === 'card'
+  )
+
+  if (selectedPaymentMethod === 'card') {
+    requestAnimationFrame(() => {
+      setAccordionHeight(
+        cardBodyRef.current,
+        cardInnerRef.current,
+        true
+      )
+    })
+  }
 }, [
   selectedPaymentMethod,
   appleGoogleReady,
@@ -455,6 +484,7 @@ useLayoutEffect(() => {
   cardReady,
   paymentLoading,
   useDifferentBilling,
+  fieldErrors,
   setAccordionHeight
 ])
 
@@ -1488,7 +1518,10 @@ if (loading || cartLoading) {
   ref={cardBodyRef}
   className={`checkout-payment-option-body checkout-payment-option-body-card ${selectedPaymentMethod === 'card' ? 'is-active' : ''}`}
 >
-  <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card">
+  <div
+  ref={cardInnerRef}
+  className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card"
+>
     <div ref={cardContainerRef} id="revolut-card-field"></div>
     {!cardReady && <div>Card payment unavailable or still loading.</div>}
 
@@ -1643,7 +1676,10 @@ if (loading || cartLoading) {
     ref={walletBodyRef}
     className={`checkout-payment-option-body checkout-payment-option-body-wallet ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
   >
-    <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-wallet">
+    <div
+  ref={walletInnerRef}
+  className="checkout-payment-option-body-inner checkout-payment-option-body-inner-wallet"
+>
       <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
       {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
     </div>
@@ -1667,7 +1703,10 @@ if (loading || cartLoading) {
     ref={revolutPayBodyRef}
     className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
   >
-    <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-revolut">
+    <div
+  ref={revolutPayInnerRef}
+  className="checkout-payment-option-body-inner checkout-payment-option-body-inner-revolut"
+>
       <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
       {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
     </div>
