@@ -452,12 +452,12 @@ input[readonly] {
   height: 10px;
   border: solid #fff;
   border-width: 0 2px 2px 0;
-  transform: translate(-50%, -60%) rotate(45deg) scale(0);
+  transform: translate(-60%, -60%) rotate(45deg) scale(0);
   transition: transform 0.15s ease;
 }
 
 .checkout-billing-toggle input[type="checkbox"]:checked::after {
-  transform: translate(-50%, -60%) rotate(45deg) scale(1);
+  transform: translate(-60%, -60%) rotate(45deg) scale(1);
 }
 
 @media (max-width: 768px) {
