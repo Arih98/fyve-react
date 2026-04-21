@@ -204,10 +204,6 @@
   border-top: none;
 }
 
-.checkout-payment-option.is-selected {
-  background: #f4f4f4;
-}
-
 .checkout-payment-option-label {
   display: flex;
   align-items: center;
@@ -240,9 +236,8 @@
 }
 
 .checkout-payment-option-body.is-active {
-  padding: 0 18px 18px 18px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  padding: 16px 18px 18px;
+  background: #f4f4f4;
 }
 
 #revolut-card-field {
