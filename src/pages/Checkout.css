@@ -189,6 +189,8 @@
   flex-direction: column;
   gap: 0;
   background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .checkout-payment-option {
@@ -230,10 +232,7 @@
 .checkout-payment-option.is-selected .checkout-payment-option-label::after {
   content: '';
   position: absolute;
-  top: -1.5px;
-  right: -1.5px;
-  bottom: -1.5px;
-  left: -1.5px;
+  inset: 0;
   border: 1.5px solid #4A494A;
   pointer-events: none;
   z-index: 2;
