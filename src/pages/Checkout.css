@@ -163,11 +163,13 @@
   font: inherit;
   background: #fff;
   box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .checkout-section input:focus {
   outline: none;
   border-color: #4A494A;
+  box-shadow: 0 0 0 1.5px #4A494A;
 }
 
 .checkout-payment-option input[type="radio"] {
