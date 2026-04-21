@@ -179,6 +179,10 @@ export default function Checkout() {
   const appleGoogleContainerRef = useRef(null)
   const revolutPayContainerRef = useRef(null)
 
+  const walletBodyRef = useRef(null)
+  const revolutPayBodyRef = useRef(null)
+  const cardBodyRef = useRef(null)
+
   const cardFieldInstanceRef = useRef(null)
   const paymentRequestInstanceRef = useRef(null)
   const revolutPayInstanceRef = useRef(null)
@@ -425,6 +429,22 @@ const [couponMessage, setCouponMessage] = useState('')
 
 const checkoutTotalMinor = Number(checkoutData?.totals?.total_price || cart?.totals?.total_price || 0)
 const requiresPayment = checkoutTotalMinor > 0
+
+const setAccordionHeight = useCallback((element, isOpen) => {
+  if (!element) return
+
+  if (isOpen) {
+    element.style.height = element.scrollHeight + 'px'
+  } else {
+    element.style.height = '0px'
+  }
+}, [])
+
+useEffect(() => {
+  setAccordionHeight(walletBodyRef.current, selectedPaymentMethod === 'wallet')
+  setAccordionHeight(revolutPayBodyRef.current, selectedPaymentMethod === 'revolut_pay')
+  setAccordionHeight(cardBodyRef.current, selectedPaymentMethod === 'card')
+}, [selectedPaymentMethod, appleGoogleReady, revolutPayReady, cardReady, paymentLoading, setAccordionHeight])
 
 const focusFirstInvalidField = useCallback((errors) => {
 const firstKey = Object.keys(errors)[0]
@@ -1026,6 +1046,16 @@ case 'error': {
   finalizeOrderBeforeRedirect
 ])
 
+const setAccordionHeight = (el, isOpen) => {
+  if (!el) return
+
+  if (isOpen) {
+    el.style.height = el.scrollHeight + 'px'
+  } else {
+    el.style.height = '0px'
+  }
+}
+
 const handleFreeOrder = async () => {
   try {
     setPaymentLoading(true)
@@ -1614,7 +1644,10 @@ const handleCardPay = async () => {
       <span className="checkout-payment-option-title">Google Pay</span>
     </label>
 
-    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : 'is-hidden'}`}>
+    <div
+  ref={walletBodyRef}
+  className={`checkout-payment-option-body ${selectedPaymentMethod === 'wallet' ? 'is-active' : ''}`}
+>
       <div ref={appleGoogleContainerRef} id="revolut-payment-request"></div>
       {!appleGoogleReady && <div>Google Pay unavailable or still loading.</div>}
     </div>
@@ -1633,7 +1666,10 @@ const handleCardPay = async () => {
       <span className="checkout-payment-option-title">Revolut Pay</span>
     </label>
 
-    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : 'is-hidden'}`}>
+    <div
+  ref={revolutPayBodyRef}
+  className={`checkout-payment-option-body ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
+>
       <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
       {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
     </div>
@@ -1652,7 +1688,10 @@ const handleCardPay = async () => {
       <span className="checkout-payment-option-title">Pay by card</span>
     </label>
 
-    <div className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : 'is-hidden'}`}>
+    <div
+  ref={cardBodyRef}
+  className={`checkout-payment-option-body ${selectedPaymentMethod === 'card' ? 'is-active' : ''}`}
+>
       <div ref={cardContainerRef} id="revolut-card-field"></div>
       {!cardReady && <div>Card payment unavailable or still loading.</div>}
       <button

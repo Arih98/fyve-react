@@ -221,16 +221,16 @@
 }
 
 .checkout-payment-option-body {
-  padding: 0 18px 18px 18px;
-  border-top: 1px solid #ece7e4;
-}
-
-.checkout-payment-option-body.is-hidden {
-  display: none;
+  overflow: hidden;
+  height: 0;
+  padding: 0 18px;
+  border-top: 1px solid transparent;
+  transition: height 0.25s ease, padding 0.25s ease, border-color 0.25s ease;
 }
 
 .checkout-payment-option-body.is-active {
-  display: block;
+  padding: 0 18px 18px 18px;
+  border-top-color: #ece7e4;
 }
 
 .checkout-pay-button {
