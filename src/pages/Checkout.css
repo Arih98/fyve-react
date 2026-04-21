@@ -141,22 +141,20 @@
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
+  min-width: 18px;
+  min-height: 18px;
   border: 2px solid #dcdcdc;
   border-radius: 50%;
   background-color: #fff;
   cursor: pointer;
   position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .checkout-payment-option input[type="radio"]:checked {
   border: 5px solid #4A494A;
   background-color: #fff;
-}
-
-.checkout-payment-option-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .checkout-payment-methods {
