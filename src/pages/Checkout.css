@@ -439,7 +439,7 @@ input[readonly] {
 }
 
 .checkout-billing-toggle input[type="checkbox"]:checked {
-  background: #fff;
+  background-color: #4A494A;
   border-color: #4A494A;
 }
 
@@ -458,20 +458,6 @@ input[readonly] {
 
 .checkout-billing-toggle input[type="checkbox"]:checked::after {
   transform: translate(-60%, -60%) rotate(45deg) scale(1);
-}
-
-.checkout-billing-toggle input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: #4A494A;
-  border-radius: 2px;
-  transform: scale(0);
-  transition: transform 0.15s ease;
-}
-
-.checkout-billing-toggle input[type="checkbox"]:checked::before {
-  transform: scale(1);
 }
 
 @media (max-width: 768px) {
