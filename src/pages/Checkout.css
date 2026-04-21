@@ -147,9 +147,9 @@
   max-height: 20px;
   flex: 0 0 20px;
   display: inline-block;
-  border: 2px solid #dcdcdc;
+  border: 1.5px solid #dcdcdc;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: #4A494A;
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
@@ -165,7 +165,7 @@
   left: 50%;
   width: 8px;
   height: 8px;
-  background-color: #4A494A;
+  background-color: #fff;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
   transition: transform 0.15s ease;
