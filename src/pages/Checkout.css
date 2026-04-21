@@ -290,7 +290,7 @@
 }
 
 .checkout-payment-option-body-revolut.is-active {
-  min-height: 0px;
+  min-height: 130px;
   padding-top: 22px;
   padding-bottom: 22px;
 }
