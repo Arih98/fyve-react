@@ -281,6 +281,9 @@
 .checkout-payment-option-body.is-active {
   background: #f4f4f4;
   border-top: 1.5px solid rgb(218, 216, 210);
+  min-height: 195px;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .checkout-payment-option-title {
