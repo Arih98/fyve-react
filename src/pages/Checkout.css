@@ -384,12 +384,20 @@ input[readonly] {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
 }
 
 .checkout-summary-item-image {
   width: 64px;
   height: 64px;
   object-fit: cover;
+}
+
+.checkout-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .checkout-summary-coupon-block {
