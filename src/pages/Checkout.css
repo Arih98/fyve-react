@@ -236,10 +236,9 @@
 }
 
 .checkout-payment-option-body.is-active {
-  padding: 0 18px 18px 18px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  padding: 16px 18px 18px;
   background: #f4f4f4;
+  border-top: 1px solid #e5e5e5;
 }
 
 #revolut-card-field {
