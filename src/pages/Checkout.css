@@ -243,6 +243,8 @@
   background: #4A494A;
   color: #fff;
   font-family: 'Quasimoda', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
