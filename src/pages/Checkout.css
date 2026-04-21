@@ -380,6 +380,18 @@ input[readonly] {
   pointer-events: none;
 }
 
+.checkout-summary-item-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.checkout-summary-item-image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
 .checkout-summary-coupon-block {
   display: flex;
   flex-direction: column;
