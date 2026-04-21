@@ -200,6 +200,10 @@
   transition: background-color 0.2s ease;
 }
 
+.checkout-payment-option + .checkout-payment-option {
+  border-top: 1px solid #e5e5e5;
+}
+
 .checkout-payment-option.is-selected {
   background: #f4f4f4;
 }
@@ -212,6 +216,7 @@
   padding: 16px 18px;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #dcdcdc;
 }
 
 .checkout-payment-option.is-selected .checkout-payment-option-label {
