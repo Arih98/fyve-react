@@ -1583,7 +1583,7 @@ const handleCardPay = async () => {
           </section>
         )}
         <section className="checkout-section">
-  <h2>{requiresPayment ? 'Payment methods' : 'Place order'}</h2>
+  <h2>{requiresPayment ? 'Payment' : 'Place order'}</h2>
 
   {error && (
     <div className="checkout-error">
