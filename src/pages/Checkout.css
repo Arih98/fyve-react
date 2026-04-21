@@ -201,7 +201,7 @@
 }
 
 .checkout-payment-option + .checkout-payment-option {
-  border-top: 1px solid #dcdcdc;
+  border-top: 1px solid #4A494A;
 }
 
 .checkout-payment-option.is-selected {
@@ -216,7 +216,6 @@
   padding: 16px 18px;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #4A494A;
 }
 
 .checkout-payment-option-title {
@@ -228,13 +227,11 @@
   overflow: hidden;
   height: 0;
   padding: 0 18px;
-  border-top: 1px solid transparent;
   transition: height 0.25s ease, padding 0.25s ease, border-color 0.25s ease;
 }
 
 .checkout-payment-option-body.is-active {
   padding: 0 18px 18px 18px;
-  border-top-color: #ece7e4;
   margin-top: 20px;
   margin-bottom: 20px;
 }
