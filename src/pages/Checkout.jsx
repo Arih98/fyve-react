@@ -752,35 +752,52 @@ if (!cardSession?.revolut_order_token) {
   if (cancelled) return
 
   const cardField = cardCheckout.createCardField({
-    target: cardContainerRef.current,
-    locale: 'en',
-    hidePostcodeField: true,
-    name: fullName || undefined,
-    email: snapshot.contact.email || undefined,
-    phone: snapshot.contact.phone || undefined,
-    billingAddress,
-    shippingAddress,
-    onSuccess: async () => {
-      try {
-        setIsFinalizingOrder(true)
-        await finalizeOrderBeforeRedirect()
-      } catch (error) {
-        setIsFinalizingOrder(false)
-        setPaymentLoading(false)
-        setError(error?.message || 'Failed to finalise order')
-      }
+  target: cardContainerRef.current,
+  locale: 'en',
+  hidePostcodeField: true,
+  name: fullName || undefined,
+  email: snapshot.contact.email || undefined,
+  phone: snapshot.contact.phone || undefined,
+  billingAddress,
+  shippingAddress,
+  styles: {
+    default: {
+      color: '#4A494A',
+      backgroundColor: '#ffffff',
+      fontSize: '16px'
     },
-    onError: (error) => {
-      setPaymentLoading(false)
-      setIsFinalizingOrder(false)
-      setError(error?.message || 'Card payment failed')
+    focused: {
+      color: '#4A494A',
+      backgroundColor: '#ffffff'
     },
-    onCancel: () => {
-      setPaymentLoading(false)
-      setIsFinalizingOrder(false)
-      setError('Card payment cancelled')
+    invalid: {
+      color: '#c62828'
+    },
+    completed: {
+      color: '#4A494A'
     }
-  })
+  },
+  onSuccess: async () => {
+    try {
+      setIsFinalizingOrder(true)
+      await finalizeOrderBeforeRedirect()
+    } catch (error) {
+      setIsFinalizingOrder(false)
+      setPaymentLoading(false)
+      setError(error?.message || 'Failed to finalise order')
+    }
+  },
+  onError: (error) => {
+    setPaymentLoading(false)
+    setIsFinalizingOrder(false)
+    setError(error?.message || 'Card payment failed')
+  },
+  onCancel: () => {
+    setPaymentLoading(false)
+    setIsFinalizingOrder(false)
+    setError('Card payment cancelled')
+  }
+})
 
   cardFieldInstanceRef.current = cardField
   setCardReady(true)
