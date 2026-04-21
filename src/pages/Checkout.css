@@ -41,6 +41,10 @@
   padding-top: 12px;
 }
 
+.checkout-mobile-summary {
+  display: none;
+}
+
 .checkout-apply-button {
   background: none;
   border: none;
@@ -506,6 +510,14 @@ input[readonly] {
 }
 
 @media (max-width: 768px) {
+.checkout-mobile-summary {
+    display: block;
+  }
+
+  .checkout-sidebar {
+    display: none;
+  }
+
   .checkout-page {
     flex-direction: column;
     gap: 32px;

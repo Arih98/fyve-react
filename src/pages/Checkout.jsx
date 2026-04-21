@@ -136,6 +136,112 @@ export default function Checkout() {
     phone: ''
   })
 
+const renderOrderSummary = () => (
+  <section className="checkout-section checkout-order-summary">
+    <h2>Order summary</h2>
+
+    {cartItems.map((item) => {
+      const imageSrc =
+        item.images?.[0]?.thumbnail ||
+        item.images?.[0]?.src ||
+        '/api/Uploads/fallback-image.png'
+
+      return (
+        <div key={item.key} className="checkout-summary-item">
+          <div className="checkout-summary-item-main">
+            <img
+              src={imageSrc}
+              alt={item.name}
+              className="checkout-summary-item-image"
+            />
+            <div className="checkout-summary-item-info">
+              <div>{item.name}</div>
+              <div>Qty: {item.quantity}</div>
+            </div>
+          </div>
+
+          <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
+        </div>
+      )
+    })}
+
+    <div className="checkout-summary-totals">
+      <div className="checkout-summary-coupon-block">
+        <label className="checkout-summary-coupon-label">Coupon code</label>
+
+        <div className="checkout-summary-coupon-row">
+          <input
+            type="text"
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value)}
+            placeholder="Enter coupon code"
+            disabled={couponLoading || isFinalizingOrder}
+          />
+          <button
+            type="button"
+            className="checkout-apply-button"
+            onClick={handleApplyCoupon}
+            disabled={couponLoading || isFinalizingOrder}
+          >
+            {couponLoading ? 'Applying...' : 'Apply'}
+          </button>
+        </div>
+
+        {couponMessage && (
+          <div className="checkout-coupon-message">{couponMessage}</div>
+        )}
+
+        {!!cart?.coupons?.length && (
+          <div className="checkout-applied-coupons">
+            {cart.coupons.map((coupon) => (
+              <div key={coupon.code} className="checkout-applied-coupon">
+                <span>{coupon.code}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveCoupon(coupon.code)}
+                  disabled={couponLoading || isFinalizingOrder}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="checkout-summary-row">
+        <span>Subtotal</span>
+        <span>{formatWooMoney(checkoutData?.totals?.total_items || cart?.totals?.total_items, checkoutData?.totals || cart?.totals)}</span>
+      </div>
+
+      <div className="checkout-summary-row checkout-summary-shipment">
+        <span>Shipment</span>
+        <div className="checkout-summary-shipping-value">
+          {(cart?.shipping_rates?.[0]?.shipping_rates?.[0]?.name) || 'Free shipping'}
+        </div>
+      </div>
+
+      {!!(checkoutData?.totals?.total_discount || cart?.totals?.total_discount) &&
+        Number(checkoutData?.totals?.total_discount || cart?.totals?.total_discount) > 0 && (
+          <div className="checkout-summary-row">
+            <span>Discount</span>
+            <span>
+              -{formatWooMoney(
+                checkoutData?.totals?.total_discount || cart?.totals?.total_discount,
+                checkoutData?.totals || cart?.totals
+              )}
+            </span>
+          </div>
+        )}
+
+      <div className="checkout-summary-row checkout-summary-total">
+        <span>Total</span>
+        <span>{formatWooMoney(checkoutData?.totals?.total_price || cart?.totals?.total_price, checkoutData?.totals || cart?.totals)}</span>
+      </div>
+    </div>
+  </section>
+)
+
   const [billing, setBilling] = useState({
     first_name: '',
     last_name: '',
@@ -1699,6 +1805,10 @@ if (loading || cartLoading) {
       </div>
     </div>
 
+<div className="checkout-mobile-summary">
+  {renderOrderSummary()}
+</div>
+
   {selectedPaymentMethod === 'card' && (
   <button
     type="button"
@@ -1741,109 +1851,8 @@ if (loading || cartLoading) {
   </div>
 
   <aside className="checkout-sidebar">
-        <section className="checkout-section">
-          <h2>Order summary</h2>
-
-          {cartItems.map((item) => {
-            const imageSrc =
-              item.images?.[0]?.thumbnail ||
-              item.images?.[0]?.src ||
-              '/api/Uploads/fallback-image.png'
-
-            return (
-              <div key={item.key} className="checkout-summary-item">
-                <div className="checkout-summary-item-main">
-                  <img
-                    src={imageSrc}
-                    alt={item.name}
-                    className="checkout-summary-item-image"
-                  />
-                  <div className="checkout-summary-item-info">
-                    <div>{item.name}</div>
-                    <div>Qty: {item.quantity}</div>
-                  </div>
-                </div>
-
-                <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
-              </div>
-            )
-          })}
-
-          <div className="checkout-summary-totals">
-            <div className="checkout-summary-coupon-block">
-  <label className="checkout-summary-coupon-label">Coupon code</label>
-
-  <div className="checkout-summary-coupon-row">
-    <input
-      type="text"
-      value={couponCode}
-      onChange={(e) => setCouponCode(e.target.value)}
-      placeholder="Enter coupon code"
-      disabled={couponLoading || isFinalizingOrder}
-    />
-    <button
-      type="button"
-      className="checkout-apply-button"
-      onClick={handleApplyCoupon}
-      disabled={couponLoading || isFinalizingOrder}
-    >
-      {couponLoading ? 'Applying...' : 'Apply'}
-    </button>
-  </div>
-
-  {couponMessage && (
-    <div className="checkout-coupon-message">{couponMessage}</div>
-  )}
-
-  {!!cart?.coupons?.length && (
-    <div className="checkout-applied-coupons">
-      {cart.coupons.map((coupon) => (
-        <div key={coupon.code} className="checkout-applied-coupon">
-          <span>{coupon.code}</span>
-          <button
-            type="button"
-            onClick={() => handleRemoveCoupon(coupon.code)}
-            disabled={couponLoading || isFinalizingOrder}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
-            <div className="checkout-summary-row">
-              <span>Subtotal</span>
-              <span>{formatWooMoney(checkoutData?.totals?.total_items || cart?.totals?.total_items, checkoutData?.totals || cart?.totals)}</span>
-            </div>
-
-            <div className="checkout-summary-row checkout-summary-shipment">
-              <span>Shipment</span>
-              <div className="checkout-summary-shipping-value">
-                {(cart?.shipping_rates?.[0]?.shipping_rates?.[0]?.name) || 'Free shipping'}
-              </div>
-            </div>
-
-{!!(checkoutData?.totals?.total_discount || cart?.totals?.total_discount) &&
- Number(checkoutData?.totals?.total_discount || cart?.totals?.total_discount) > 0 && (
-  <div className="checkout-summary-row">
-    <span>Discount</span>
-    <span>
-      -{formatWooMoney(
-        checkoutData?.totals?.total_discount || cart?.totals?.total_discount,
-        checkoutData?.totals || cart?.totals
-      )}
-    </span>
-  </div>
-)}
-            <div className="checkout-summary-row checkout-summary-total">
-              <span>Total</span>
-              <span>{formatWooMoney(checkoutData?.totals?.total_price || cart?.totals?.total_price, checkoutData?.totals || cart?.totals)}</span>
-            </div>
-          </div>
-        </section>
-      </aside>
+  {renderOrderSummary()}
+</aside>
       {isFinalizingOrder && (
   <div className="checkout-processing-overlay" aria-hidden="true"></div>
 )}
