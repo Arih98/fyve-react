@@ -107,10 +107,11 @@
     padding: 60px 20px 40px;
   }
 
-  .footer-fyve {
-    font-size: 100vw;
-  }
-
+.footer-fyve {
+  font-size: clamp(120px, 24vw, 260px);
+  width: 100%;
+  text-align: center;
+}
   .footer-london {
     font-size: 12px;
     letter-spacing: 1em;
