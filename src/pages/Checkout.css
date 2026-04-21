@@ -202,7 +202,7 @@
 }
 
 .checkout-payment-option + .checkout-payment-option {
-  border-top: 1px solid #4A494A;
+  border-top: 1px solid #e5e5e5;
 }
 
 .checkout-payment-option.is-selected {
@@ -217,6 +217,11 @@
   padding: 16px 18px;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #dcdcdc;
+}
+
+.checkout-payment-option.is-selected .checkout-payment-option-label {
+  border-color: #4A494A;
 }
 
 .checkout-payment-option-title {
