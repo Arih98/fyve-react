@@ -116,8 +116,8 @@
 }
 
 .checkout-sidebar {
-  flex: 0 0 380px;
-  width: 380px;
+  flex: 0 0 450px;
+  width: 450px;
   min-width: 0;
   position: sticky;
   top: 32px;
