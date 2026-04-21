@@ -207,6 +207,7 @@
 
 .checkout-payment-option.is-selected {
   background: #f4f4f4;
+  border: 1px solid #4A494A;
 }
 
 .checkout-payment-option-label {
@@ -235,6 +236,12 @@
   padding: 0 18px 18px 18px;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+#revolut-card-field {
+  padding: 12px 16px;
+  border: 1px solid #d8d1cc;
+  background: #fff;
 }
 
 .checkout-pay-button {
