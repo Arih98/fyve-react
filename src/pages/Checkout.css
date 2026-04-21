@@ -264,13 +264,6 @@
   z-index: 2;
 }
 
-.checkout-payment-option:last-child.is-selected .checkout-payment-option-label {
-  margin-left: -1.5px;
-  margin-right: -1.5px;
-  margin-top: -1.5px;
-  width: calc(100% + 3px);
-}
-
 .checkout-payment-option:last-child.is-selected .checkout-payment-option-label::after {
   top: 0;
   right: 0;
