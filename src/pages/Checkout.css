@@ -461,14 +461,6 @@ input[readonly] {
   transform: translate(-50%, -60%) rotate(45deg) scale(1);
 }
 
-.checkout-card-field-shell {
-  position: relative;
-  border: 1.5px solid rgb(218, 216, 210);
-  background: #fff;
-  min-height: 72px;
-  overflow: hidden;
-}
-
 .checkout-card-skeleton {
   position: absolute;
   inset: 0;
