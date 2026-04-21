@@ -432,6 +432,7 @@ input[readonly] {
 
   .checkout-page::after {
     display: none;
+  }
 
   .checkout-sidebar {
     width: 100%;
