@@ -1490,6 +1490,42 @@ const renderCheckoutSkeleton = () => (
             </div>
           </div>
 
+          <div className="checkout-mobile-summary">
+            <section className="checkout-section checkout-order-summary">
+              <div className="checkout-skeleton checkout-skeleton-heading"></div>
+
+              <div className="checkout-summary-item">
+                <div className="checkout-summary-item-main">
+                  <div className="checkout-skeleton checkout-skeleton-image"></div>
+                  <div className="checkout-summary-item-info">
+                    <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-wide"></div>
+                    <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+                  </div>
+                </div>
+                <div className="checkout-skeleton checkout-skeleton-price"></div>
+              </div>
+
+              <div className="checkout-summary-totals">
+                <div className="checkout-skeleton checkout-skeleton-input"></div>
+
+                <div className="checkout-summary-row">
+                  <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+                  <div className="checkout-skeleton checkout-skeleton-price"></div>
+                </div>
+
+                <div className="checkout-summary-row">
+                  <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+                  <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-medium"></div>
+                </div>
+
+                <div className="checkout-summary-row checkout-summary-total">
+                  <div className="checkout-skeleton checkout-skeleton-line checkout-skeleton-line-short"></div>
+                  <div className="checkout-skeleton checkout-skeleton-price checkout-skeleton-price-large"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+
           <div className="checkout-skeleton checkout-skeleton-button"></div>
         </section>
       </div>

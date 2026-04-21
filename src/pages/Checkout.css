@@ -618,6 +618,47 @@ input[readonly] {
 }
 
 @media (max-width: 768px) {
+  .checkout-page-skeleton .checkout-flow,
+  .checkout-page-skeleton .checkout-section,
+  .checkout-page-skeleton .checkout-payment-methods,
+  .checkout-page-skeleton .checkout-payment-option,
+  .checkout-page-skeleton .checkout-payment-option-label,
+  .checkout-page-skeleton .checkout-payment-option-body,
+  .checkout-page-skeleton .checkout-mobile-summary {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .checkout-page-skeleton .checkout-row {
+    width: 100%;
+  }
+
+  .checkout-page-skeleton .checkout-skeleton-input,
+  .checkout-page-skeleton .checkout-skeleton-button,
+  .checkout-page-skeleton .checkout-payment-option,
+  .checkout-page-skeleton .checkout-payment-option-label {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .checkout-page-skeleton .checkout-skeleton-payment-label {
+    width: 140px;
+    max-width: calc(100% - 32px);
+  }
+
+  .checkout-page-skeleton .checkout-section {
+    padding: 0;
+  }
+
+  .checkout-page-skeleton .checkout-payment-option-label {
+    padding: 16px 18px;
+  }
+
+.checkout-page-skeleton .checkout-main {
+  width: 100%;
+}
+
  .checkout-page-skeleton {
     flex-direction: column;
     gap: 32px;
@@ -655,9 +696,9 @@ input[readonly] {
   }
 
 
-.checkout-mobile-summary {
-    display: block;
-  }
+.checkout-page-skeleton .checkout-mobile-summary {
+  display: block;
+}
 
   .checkout-sidebar {
     display: none;
