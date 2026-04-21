@@ -121,6 +121,10 @@
   letter-spacing: -0.4px;
 }
 
+.text-size-h6 {
+      display: none;
+}
+
 .checkout-section input {
   width: 100%;
   padding: 12px 14px;
