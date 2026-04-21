@@ -533,4 +533,24 @@ input[readonly] {
   .checkout-section {
     padding: 0;
   }
+
+  .checkout-section h2 {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.4px;
+}
+
+.checkout-section input:not([type=checkbox]):not([type=radio]) {
+    background: #fff;
+    border: 1.5px solid #dad8d2;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font: inherit;
+    padding: 14px 14px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+  .checkout-section input::placeholder {
+    font-size: 14px;
+  }
 }
