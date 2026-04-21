@@ -3,7 +3,7 @@ export function formatWooMoney(amount, money = {}) {
   const currencyCode = money.currency_code || 'USD'
   const value = Number(amount || 0) / Math.pow(10, minorUnit)
 
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currencyCode,
     minimumFractionDigits: minorUnit,
