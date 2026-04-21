@@ -231,6 +231,7 @@
 .checkout-payment-option-body.is-active {
   padding: 0 18px 18px 18px;
   border-top-color: #ece7e4;
+  margin-bottom: 20px;
 }
 
 .checkout-pay-button {
