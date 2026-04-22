@@ -562,12 +562,12 @@ useLayoutEffect(() => {
     selectedPaymentMethod === 'wallet'
   )
 
-  setAccordionHeight(
-    revolutPayBodyRef.current,
-    revolutPayInnerRef.current,
-    selectedPaymentMethod === 'revolut_pay',
-    10
-  )
+setAccordionHeight(
+  revolutPayBodyRef.current,
+  revolutPayInnerRef.current,
+  selectedPaymentMethod === 'revolut_pay',
+  window.innerWidth <= 768 ? 24 : 0
+)
 
   setAccordionHeight(
     cardBodyRef.current,
@@ -1131,6 +1131,19 @@ return { publicId: result.revolut_order_token }
         revolutPayInstanceRef.current = payments.revolutPay
         setRevolutPayReady(true)
         setPaymentLoading(false)
+
+        requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    if (selectedPaymentMethod === 'revolut_pay' && window.innerWidth <= 768) {
+      setAccordionHeight(
+        revolutPayBodyRef.current,
+        revolutPayInnerRef.current,
+        true,
+        24
+      )
+    }
+  })
+})
 
         payments.revolutPay.on('payment', (event) => {
           switch (event?.type) {
