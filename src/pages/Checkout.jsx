@@ -1096,7 +1096,7 @@ await updateCheckoutCustomer({
     postcode: liveBilling.postcode,
     country: liveBilling.country,
     email: live.contact.email,
-    phone: live.contact.phone
+    phone: normalizeUsPhone(live.contact.phone) || ''
   },
   shippingAddress: {
     first_name: live.shipping.first_name,
@@ -1196,7 +1196,7 @@ await updateCheckoutCustomer({
     postcode: liveBilling.postcode,
     country: liveBilling.country,
     email: live.contact.email,
-    phone: live.contact.phone
+    phone: normalizeUsPhone(live.contact.phone) || ''
   },
   shippingAddress: {
     first_name: live.shipping.first_name,
@@ -1352,7 +1352,7 @@ const handleFreeOrder = async () => {
     postcode: effectiveBilling.postcode,
     country: effectiveBilling.country,
     email: contact.email,
-    phone: normalizeUsPhone(live.contact.phone) || ''
+    phone: normalizeUsPhone(contact.phone) || ''
   },
   shippingAddress: {
     first_name: shipping.first_name,
@@ -1491,7 +1491,7 @@ const handleCardPay = async () => {
     postcode: effectiveBilling.postcode,
     country: effectiveBilling.country,
     email: contact.email,
-    phone: normalizeUsPhone(live.contact.phone) || ''
+    phone: normalizeUsPhone(contact.phone) || ''
   },
   shippingAddress: {
     first_name: shipping.first_name,
@@ -1517,7 +1517,7 @@ const handleCardPay = async () => {
     postcode: effectiveBilling.postcode,
     country: effectiveBilling.country,
     email: contact.email,
-    phone: normalizeUsPhone(live.contact.phone) || ''
+    phone: normalizeUsPhone(contact.phone) || ''
   },
   shipping: {
     first_name: shipping.first_name,
@@ -1560,7 +1560,7 @@ const shippingAddress = {
     cardFieldInstanceRef.current.submit({
       name: `${effectiveBilling.first_name} ${effectiveBilling.last_name}`.trim() || undefined,
       email: contact.email || undefined,
-      phone: normalizeUsPhone(live.contact.phone) || '' || undefined,
+      phone: normalizeUsPhone(contact.phone) || undefined,
       billingAddress,
       shippingAddress
     })
