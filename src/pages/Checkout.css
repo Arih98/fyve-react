@@ -764,26 +764,6 @@ input[readonly] {
   .checkout-section input::placeholder {
     font-size: 14px;
   }
-  .checkout-payment-option-body {
-  overflow: hidden;
-}
-
-.checkout-payment-option-body-inner-revolut {
-  overflow: visible;
-}
-
-  .checkout-payment-option-body-revolut {
-    overflow-y: hidden;
-  }
-
-    .checkout-payment-option-body,
-  .checkout-payment-option-body-revolut,
-  .checkout-payment-option-body-inner,
-  .checkout-payment-option-body-inner-revolut {
-    overflow: hidden !important;
-    overflow-y: hidden !important;
-    overflow-x: hidden !important;
-  }
 
   #revolut-pay-button {
     overflow: visible !important;
@@ -800,4 +780,20 @@ input[readonly] {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
+  .checkout-payment-option-body-revolut {
+    overflow: hidden !important;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
+
+  .checkout-payment-option-body-inner-revolut {
+    overflow: hidden !important;
+  }
+
+  #revolut-pay-button {
+    overflow: visible !important;
+  }
+  .checkout-revolut-pay-shell {
+    overflow: hidden;
+    border-radius: 6px;}
 }

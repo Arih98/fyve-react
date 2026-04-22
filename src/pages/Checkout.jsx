@@ -1940,17 +1940,19 @@ if (loading || cartLoading) {
         </label>
 
         <div
-          ref={revolutPayBodyRef}
-          className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
-        >
-          <div
-            ref={revolutPayInnerRef}
-            className="checkout-payment-option-body-inner checkout-payment-option-body-inner-revolut"
-          >
-            <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
-            {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
-          </div>
-        </div>
+  ref={revolutPayBodyRef}
+  className={`checkout-payment-option-body checkout-payment-option-body-revolut ${selectedPaymentMethod === 'revolut_pay' ? 'is-active' : ''}`}
+>
+  <div
+    ref={revolutPayInnerRef}
+    className="checkout-payment-option-body-inner checkout-payment-option-body-inner-revolut"
+  >
+    <div className="checkout-revolut-pay-shell">
+      <div ref={revolutPayContainerRef} id="revolut-pay-button"></div>
+    </div>
+    {!revolutPayReady && <div>Revolut Pay unavailable or still loading.</div>}
+  </div>
+</div>
       </div>
     </div>
 
