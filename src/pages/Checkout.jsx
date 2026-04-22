@@ -153,6 +153,22 @@ function normalizeUsState(value) {
   return input
 }
 
+function normalizeUsPhone(raw) {
+  const digits = String(raw || '').replace(/\D+/g, '')
+  if (digits === '') return ''
+  const trimmed = digits.length === 11 && digits[0] === '1' ? digits.slice(1) : digits
+  if (trimmed.length !== 10) return ''
+  return trimmed
+}
+
+function sanitizeUsPhoneInput(raw) {
+  const digits = String(raw || '').replace(/\D+/g, '')
+  if (digits.length === 11 && digits[0] === '1') {
+    return digits.slice(1, 11)
+  }
+  return digits.slice(0, 10)
+}
+
 function getCheckoutValidationErrors({ contact, shipping, billing, useDifferentBilling }) {
   const errors = {}
 
@@ -167,6 +183,14 @@ function getCheckoutValidationErrors({ contact, shipping, billing, useDifferentB
     errors.contact_email = 'Please enter your email address'
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim())) {
     errors.contact_email = 'Please enter a valid email address'
+  }
+
+  if (contact.phone.trim()) {
+    const normalizedPhone = normalizeUsPhone(contact.phone)
+
+    if (!normalizedPhone) {
+      errors.contact_phone = 'Please enter a valid US phone number (10 digits)'
+    }
   }
 
   if (useDifferentBilling) {
@@ -533,7 +557,7 @@ const revolutResult = await createRevolutOrder({
   draft_order_key: latestCheckout.order_key || '',
   validation_mode: 'payment',
   billing_email: snapshot.contact.email,
-  billing_phone: snapshot.contact.phone || '',
+  billing_phone: normalizeUsPhone(snapshot.contact.phone) || '',
   billing_first_name: snapshotBilling.first_name,
   billing_last_name: snapshotBilling.last_name,
   billing_address_1: snapshotBilling.address_1,
@@ -937,7 +961,7 @@ const cardSession = await createRevolutOrder({
   draft_order_key: draftOrderKey || checkoutData?.order_key || '',
   validation_mode: 'mount',
   billing_email: snapshot.contact.email,
-  billing_phone: snapshot.contact.phone || '',
+  billing_phone: normalizeUsPhone(snapshot.contact.phone) || '',
   billing_first_name: snapshotBilling.first_name,
   billing_last_name: snapshotBilling.last_name,
   billing_address_1: snapshotBilling.address_1,
@@ -992,7 +1016,7 @@ if (!cardSession?.revolut_order_token) {
     hidePostcodeField: true,
     name: fullName || undefined,
     email: snapshot.contact.email || undefined,
-    phone: snapshot.contact.phone || undefined,
+    phone: normalizeUsPhone(snapshot.contact.phone) || undefined,
     billingAddress,
     shippingAddress,
     styles: {
@@ -1207,7 +1231,7 @@ return { publicId: result.revolut_order_token }
           customer: {
             name: fullName || undefined,
             email: snapshot.contact.email || undefined,
-            phone: snapshot.contact.phone || undefined,
+            phone: normalizeUsPhone(snapshot.contact.phone) || undefined,
             billingAddress,
             shippingAddress
           },
@@ -1328,7 +1352,7 @@ const handleFreeOrder = async () => {
     postcode: effectiveBilling.postcode,
     country: effectiveBilling.country,
     email: contact.email,
-    phone: contact.phone
+    phone: normalizeUsPhone(live.contact.phone) || ''
   },
   shippingAddress: {
     first_name: shipping.first_name,
@@ -1467,7 +1491,7 @@ const handleCardPay = async () => {
     postcode: effectiveBilling.postcode,
     country: effectiveBilling.country,
     email: contact.email,
-    phone: contact.phone
+    phone: normalizeUsPhone(live.contact.phone) || ''
   },
   shippingAddress: {
     first_name: shipping.first_name,
@@ -1493,7 +1517,7 @@ const handleCardPay = async () => {
     postcode: effectiveBilling.postcode,
     country: effectiveBilling.country,
     email: contact.email,
-    phone: contact.phone
+    phone: normalizeUsPhone(live.contact.phone) || ''
   },
   shipping: {
     first_name: shipping.first_name,
@@ -1536,7 +1560,7 @@ const shippingAddress = {
     cardFieldInstanceRef.current.submit({
       name: `${effectiveBilling.first_name} ${effectiveBilling.last_name}`.trim() || undefined,
       email: contact.email || undefined,
-      phone: contact.phone || undefined,
+      phone: normalizeUsPhone(live.contact.phone) || '' || undefined,
       billingAddress,
       shippingAddress
     })
@@ -1839,12 +1863,24 @@ if (loading || cartLoading) {
     />
   </div>
 
-  <input
-    type="text"
-    placeholder="Phone"
-    value={contact.phone}
-    onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
-  />
+{fieldErrors.contact_phone && (
+  <div className="checkout-field-error">{fieldErrors.contact_phone}</div>
+)}
+
+<input
+  type="text"
+  inputMode="numeric"
+  autoComplete="tel"
+  placeholder="Phone"
+  value={contact.phone}
+  onChange={(e) => {
+    setContact((prev) => ({ ...prev, phone: sanitizeUsPhoneInput(e.target.value) }))
+    setFieldErrors((prev) => ({ ...prev, contact_phone: '' }))
+  }}
+  onBlur={(e) => {
+    setContact((prev) => ({ ...prev, phone: sanitizeUsPhoneInput(e.target.value) }))
+  }}
+/>
 
   {fieldErrors.contact_email && (
     <div className="checkout-field-error">{fieldErrors.contact_email}</div>
