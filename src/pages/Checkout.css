@@ -924,7 +924,7 @@ input[readonly] {
   border-radius: 4px;
   box-sizing: border-box;
   font: inherit;
-  padding: 11px 14px;
+  padding: 10px 14px;
   transition: border-color .15s ease, box-shadow .15s ease;
   width: 100%;
 }
