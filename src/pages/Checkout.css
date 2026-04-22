@@ -792,7 +792,7 @@ input[readonly] {
 }
 
 .checkout-card-skeleton {
-  min-height: 60px;
+  min-height: 55px;
   padding: 0 16px;
   gap: 16px;
 }
