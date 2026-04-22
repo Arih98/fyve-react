@@ -1872,34 +1872,39 @@ if (loading || cartLoading) {
             Use shipping address as billing address
           </label>
 
-          {useDifferentBilling && (
-            <div className="checkout-billing-fields">
-              {fieldErrors.billing_first_name && (
-                <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
-              )}
-              <div className="checkout-row">
-                <input
-                  ref={firstNameRef}
-                  type="text"
-                  placeholder="Billing first name"
-                  value={billing.first_name}
-                  onChange={(e) => {
-                    setBilling((prev) => ({ ...prev, first_name: e.target.value }))
-                    setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
-                  }}
-                />
+{useDifferentBilling && (
+  <div className="checkout-billing-fields">
+    <div className="checkout-static-field">
+      United States (US)
+    </div>
 
-                <input
-                  ref={lastNameRef}
-                  type="text"
-                  placeholder="Billing last name"
-                  value={billing.last_name}
-                  onChange={(e) => {
-                    setBilling((prev) => ({ ...prev, last_name: e.target.value }))
-                    setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
-                  }}
-                />
-              </div>
+    {fieldErrors.billing_first_name && (
+      <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
+    )}
+
+    <div className="checkout-row">
+      <input
+        ref={firstNameRef}
+        type="text"
+        placeholder="Billing first name"
+        value={billing.first_name}
+        onChange={(e) => {
+          setBilling((prev) => ({ ...prev, first_name: e.target.value }))
+          setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
+        }}
+      />
+
+      <input
+        ref={lastNameRef}
+        type="text"
+        placeholder="Billing last name"
+        value={billing.last_name}
+        onChange={(e) => {
+          setBilling((prev) => ({ ...prev, last_name: e.target.value }))
+          setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
+        }}
+      />
+    </div>
 
               {fieldErrors.billing_address_1 && (
                 <div className="checkout-field-error">{fieldErrors.billing_address_1}</div>

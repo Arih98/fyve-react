@@ -373,8 +373,9 @@
   padding: 18px 14px;
   border: 1.5px solid #e8e7e6;
   border-radius: 4px;
-  background: #fff;
+  background: #f9f9f9;
   box-sizing: border-box;
+  font: inherit;
   color: #4A494A;
   user-select: none;
   -webkit-user-select: none;
