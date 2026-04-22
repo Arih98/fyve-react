@@ -9,7 +9,7 @@ export function getCheckoutData() {
 }
 
 export function updateCheckoutCustomer(payload) {
-  return apiRequest('/wc/store/v1/cart/update-customer', {
+  return apiRequest('/fyve-checkout/v1/update-customer', {
     method: 'POST',
     body: JSON.stringify(payload)
   })
