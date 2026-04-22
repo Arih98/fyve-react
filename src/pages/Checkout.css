@@ -135,7 +135,7 @@
 
 .checkout-card-skeleton {
   width: 100%;
-  min-height: 72px;
+  min-height: 65px;
   display: flex;
   align-items: center;
   justify-content: space-between;
