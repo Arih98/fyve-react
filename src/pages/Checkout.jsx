@@ -551,7 +551,15 @@ const setAccordionHeight = useCallback((element, innerElement, isOpen) => {
     return
   }
 
-  const nextHeight = innerElement ? innerElement.scrollHeight + 10 : element.scrollHeight
+const setAccordionHeight = useCallback((element, innerElement, isOpen, extraHeight = 0) => {
+  if (!element) return
+
+  if (!isOpen) {
+    element.style.height = '0px'
+    return
+  }
+
+  const nextHeight = innerElement ? innerElement.scrollHeight + extraHeight : element.scrollHeight
   element.style.height = nextHeight + 'px'
 }, [])
 
@@ -565,7 +573,8 @@ useLayoutEffect(() => {
   setAccordionHeight(
     revolutPayBodyRef.current,
     revolutPayInnerRef.current,
-    selectedPaymentMethod === 'revolut_pay'
+    selectedPaymentMethod === 'revolut_pay',
+    10
   )
 
   setAccordionHeight(
