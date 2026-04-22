@@ -32,9 +32,9 @@ function decodeHtmlEntities(value) {
   return textarea.value
 }
 
-const CHECKOUT_DRAFT_STORAGE_KEY = window.location.hostname === 'dev.fyvelondon.com'
-  ? 'fyve_checkout_draft_dev_v2'
-  : 'fyve_checkout_draft_live_v2'
+const CHECKOUT_DRAFT_STORAGE_KEY = 'fyve_checkout_draft_v3'
+
+const API_BASE = 'https://fyvelondon.com'
 
 function normalizeUsState(value) {
   const input = String(value || '').trim()
@@ -297,10 +297,12 @@ const renderOrderSummary = () => (
   const revolutPayInstanceRef = useRef(null)
 
   const latestWooOrderIdRef = useRef(null)
-  const currentRevolutModeRef = useRef(window.location.hostname === 'dev.fyvelondon.com' ? 'sandbox' : 'prod')
+  const currentRevolutModeRef = useRef('sandbox')
   const paymentSnapshotRef = useRef(null)
   const totalAmountMinorRef = useRef(0)
   const currencyRef = useRef('GBP')
+
+  const frontendUrlRef = useRef(window.location.origin)
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
 
@@ -339,7 +341,7 @@ const finalizeOrderBeforeRedirect = useCallback(async () => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
   for (let attempt = 0; attempt < 4; attempt += 1) {
-    const response = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/order-status/${wooOrderId}`, {
+    const response = await fetch(`${API_BASE}/wp-json/fyve-checkout/v1/order-status/${wooOrderId}`, {
       method: 'GET',
       credentials: 'include'
     })
@@ -372,7 +374,7 @@ const finalizeOrderBeforeRedirect = useCallback(async () => {
     await sleep(2000)
   }
 
-  const confirmResponse = await fetch(`https://fyvelondon.com/wp-json/fyve-checkout/v1/confirm-revolut-payment/${wooOrderId}`, {
+  const confirmResponse = await fetch(`${API_BASE}/wp-json/fyve-checkout/v1/confirm-revolut-payment/${wooOrderId}`, {
     method: 'POST',
     credentials: 'include'
   })
@@ -417,16 +419,7 @@ const initializePaymentMethods = useCallback(async () => {
   totalAmountMinorRef.current = Number(latestCheckout?.totals?.total_price || cart?.totals?.total_price || 0)
   currencyRef.current = String(latestCheckout?.totals?.currency_code || cart?.totals?.currency_code || 'GBP').toUpperCase()
 
-  const publicKey = window.location.hostname === 'dev.fyvelondon.com'
-    ? 'pk_dET7Wo5zuMrGJQtsyNUP1ia6YV7HmWTK87KxlTiTVrNRpv8W'
-    : 'pk_4Vz86AUZwd356oEaE8mTXaymLyMSushzlPa6rx6cKnMQBQOI'
-
-  if (!publicKey) {
-    throw new Error('Missing Revolut public API key')
-  }
-
   latestWooOrderIdRef.current = latestCheckout.order_id || null
-  setRevolutPublicKey(publicKey)
   setPaymentMethodsOpen(true)
 }, [cart])
 
@@ -678,6 +671,7 @@ const draft = {
   useEffect(() => {
   if (loading || cartLoading) return
   if (!cartItems?.length) return
+
   if (!requiresPayment) {
     clearMountedPaymentMethods()
     setPaymentMethodsOpen(false)
@@ -685,8 +679,8 @@ const draft = {
     setPaymentLoading(false)
     return
   }
+
   if (paymentMethodsOpen) return
-  if (revolutPublicKey) return
 
   ;(async () => {
     try {
@@ -702,7 +696,6 @@ const draft = {
   cartItems,
   requiresPayment,
   paymentMethodsOpen,
-  revolutPublicKey,
   initializePaymentMethods,
   clearMountedPaymentMethods
 ])
@@ -888,9 +881,9 @@ const shippingAddress = {
 }
 
         const payments = await RevolutCheckout.payments({
-          publicToken: revolutPublicKey,
+          publicToken: cardSession.revolut_public_key,
           locale: 'en',
-          mode
+          mode: currentRevolutModeRef.current
         })
 
         if (cancelled) return
@@ -919,6 +912,14 @@ const shippingAddress = {
   shipping_country: snapshot.shipping.country
 })
 
+if (!cardSession?.revolut_public_key) {
+  throw new Error('Missing Revolut public API key')
+}
+
+currentRevolutModeRef.current = cardSession.revolut_mode === 'sandbox' ? 'sandbox' : 'prod'
+frontendUrlRef.current = cardSession.frontend_url || window.location.origin
+setRevolutPublicKey(cardSession.revolut_public_key)
+
 if (!cardSession?.revolut_order_token) {
   setCardReady(false)
   setCardAvailable(false)
@@ -926,7 +927,10 @@ if (!cardSession?.revolut_order_token) {
   setCardAvailable(true)
   latestWooOrderIdRef.current = cardSession.wc_order_id || latestWooOrderIdRef.current
 
-  const cardCheckout = await RevolutCheckout(cardSession.revolut_order_token, mode)
+    const cardCheckout = await RevolutCheckout(
+    cardSession.revolut_order_token,
+    currentRevolutModeRef.current
+  )
 
   if (cancelled) return
 
@@ -1156,9 +1160,9 @@ return { publicId: result.revolut_order_token }
             shippingAddress
           },
           mobileRedirectUrls: {
-            success: `${window.location.origin}/checkout/success?order_id=${encodeURIComponent(latestWooOrderIdRef.current || '')}`,
-            failure: `${window.location.origin}/checkout`,
-            cancel: `${window.location.origin}/checkout`
+            success: `${frontendUrlRef.current}/checkout/success?order_id=${encodeURIComponent(latestWooOrderIdRef.current || '')}`,
+            failure: `${frontendUrlRef.current}/checkout`,
+            cancel: `${frontendUrlRef.current}/checkout`
           }
         }
 
