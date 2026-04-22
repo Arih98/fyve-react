@@ -207,6 +207,7 @@
 }
 
 .checkout-section input::placeholder {
+  font-family: 'Quasimoda', sans-serif;
   font-size: 17px;
 }
 
@@ -337,14 +338,14 @@
 }
 
 .checkout-section h1 {
-  font-family: 'Quasimoda', sans-serif;
+  font-family: "ArizonaFlare", sans-serif;
   font-weight: 600;
   font-size: 28px;
   letter-spacing: -0.4px;
 }
 
 .checkout-section h2 {
-  font-family: 'Quasimoda', sans-serif;
+  font-family: "ArizonaFlare", sans-serif;
   font-weight: 600;
   font-size: 28px;
   letter-spacing: -0.4px;
