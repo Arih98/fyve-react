@@ -764,4 +764,11 @@ input[readonly] {
   .checkout-section input::placeholder {
     font-size: 14px;
   }
+  .checkout-payment-option-body {
+  overflow: hidden;
+}
+
+.checkout-payment-option-body-inner-revolut {
+  overflow: visible;
+}
 }
