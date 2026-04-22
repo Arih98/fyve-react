@@ -551,7 +551,7 @@ const setAccordionHeight = useCallback((element, innerElement, isOpen) => {
     return
   }
 
-  const nextHeight = innerElement ? innerElement.scrollHeight : element.scrollHeight
+  const nextHeight = innerElement ? innerElement.scrollHeight + 10 : element.scrollHeight
   element.style.height = nextHeight + 'px'
 }, [])
 
