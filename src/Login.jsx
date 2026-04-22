@@ -27,7 +27,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(form);
+      await login(form.email, form.password);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || 'Sign in failed');
