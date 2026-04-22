@@ -879,36 +879,6 @@ const shippingAddress = {
 }
 
 const cardSession = await createRevolutOrder({
-  draft_order_id: draftOrderId || checkoutData?.order_id || null,
-  draft_order_key: draftOrderKey || checkoutData?.order_key || '',
-  validation_mode: 'mount',
-  billing_email: snapshot.contact.email,
-  billing_phone: snapshot.contact.phone || '',
-  billing_first_name: snapshotBilling.first_name,
-  billing_last_name: snapshotBilling.last_name,
-  billing_address_1: snapshotBilling.address_1,
-  billing_address_2: snapshotBilling.address_2,
-  billing_city: snapshotBilling.city,
-  billing_state: normalizeUsState(snapshotBilling.state),
-  billing_postcode: snapshotBilling.postcode,
-  billing_country: snapshotBilling.country,
-  shipping_first_name: snapshot.shipping.first_name,
-  shipping_last_name: snapshot.shipping.last_name,
-  shipping_address_1: snapshot.shipping.address_1,
-  shipping_address_2: snapshot.shipping.address_2,
-  shipping_city: snapshot.shipping.city,
-  shipping_state: normalizeUsState(snapshot.shipping.state),
-  shipping_postcode: snapshot.shipping.postcode,
-  shipping_country: snapshot.shipping.country
-})
-
-if (!cardSession?.revolut_public_key) {
-  throw new Error('Missing Revolut public API key')
-}
-
-currentRevolutModeRef.current = cardSession.revolut_mode === 'sandbox' ? 'sandbox' : 'prod'
-frontendUrlRef.current = cardSession.frontend_url || window.location.origin
-setRevolutPublicKey(cardSession.revolut_public_key)
 
 const payments = await RevolutCheckout.payments({
   publicToken: cardSession.revolut_public_key,
