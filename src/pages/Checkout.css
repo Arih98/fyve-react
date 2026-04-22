@@ -270,7 +270,7 @@
 
 .checkout-section input:not([type="checkbox"]):not([type="radio"]) {
   padding: 18px 14px;
-  border: 1.5px solid rgb(218, 216, 210);
+  border: 1.5px solid #e8e7e6;
   border-radius: 4px;
   font: inherit;
   background: #fff;
@@ -295,7 +295,7 @@
   max-height: 20px;
   flex: 0 0 20px;
   display: inline-block;
-  border: 1.5px solid rgb(218, 216, 210);
+  border: 1.5px solid #e8e7e6;
   border-radius: 50%;
   background-color: #fff;
   cursor: pointer;
@@ -448,7 +448,7 @@
 
 #revolut-card-field {
   padding: 12px 16px;
-  border: 1.5px solid rgb(218, 216, 210);
+  border: 1.5px solid #e8e7e6;
   background: #fff;
 }
 
@@ -587,7 +587,7 @@ input[readonly] {
   max-width: 22px;
   max-height: 22px;
   box-sizing: border-box;
-  border: 1.5px solid rgb(218, 216, 210);
+  border: 1.5px solid #e8e7e6;
   border-radius: 4px;
   background: #fff;
   cursor: pointer;
@@ -737,6 +737,15 @@ input[readonly] {
   font-weight: 600;
   font-size: 20px;
   letter-spacing: -0.4px;
+}
+
+.checkout-billing-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 18px;
+  max-height: 18px;
 }
 
 .checkout-billing-toggle {
