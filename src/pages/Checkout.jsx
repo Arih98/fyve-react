@@ -599,6 +599,7 @@ const cityRef = useRef(null)
 const stateRef = useRef(null)
 const postcodeRef = useRef(null)
 const emailRef = useRef(null)
+const phoneRef = useRef(null)
 
 const shippingFirstNameRef = useRef(null)
 const shippingLastNameRef = useRef(null)
@@ -676,21 +677,22 @@ const firstKey = Object.keys(errors)[0]
 
   if (!firstKey) return
 
-  const refMap = {
-    billing_first_name: firstNameRef,
-    billing_last_name: lastNameRef,
-    billing_address_1: address1Ref,
-    billing_city: cityRef,
-    billing_state: stateRef,
-    billing_postcode: postcodeRef,
-    contact_email: emailRef,
-    shipping_first_name: shippingFirstNameRef,
-    shipping_last_name: shippingLastNameRef,
-    shipping_address_1: shippingAddress1Ref,
-    shipping_city: shippingCityRef,
-    shipping_state: shippingStateRef,
-    shipping_postcode: shippingPostcodeRef
-  }
+const refMap = {
+  billing_first_name: firstNameRef,
+  billing_last_name: lastNameRef,
+  billing_address_1: address1Ref,
+  billing_city: cityRef,
+  billing_state: stateRef,
+  billing_postcode: postcodeRef,
+  contact_email: emailRef,
+  contact_phone: phoneRef,
+  shipping_first_name: shippingFirstNameRef,
+  shipping_last_name: shippingLastNameRef,
+  shipping_address_1: shippingAddress1Ref,
+  shipping_city: shippingCityRef,
+  shipping_state: shippingStateRef,
+  shipping_postcode: shippingPostcodeRef
+}
 
   const ref = refMap[firstKey]
 
@@ -874,7 +876,7 @@ if (typeof savedDraft.useDifferentBilling === 'boolean') {
           setContact((prev) => ({
             ...prev,
             email: prev.email || prefill?.billing?.email || '',
-            phone: prev.phone || prefill?.billing?.phone || ''
+            phone: prev.phone || sanitizeUsPhoneInput(prefill?.billing?.phone || '')
           }))
 
 setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
@@ -1868,6 +1870,7 @@ if (loading || cartLoading) {
 )}
 
 <input
+  ref={phoneRef}
   type="text"
   inputMode="numeric"
   autoComplete="tel"
