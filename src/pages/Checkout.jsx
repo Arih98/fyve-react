@@ -1238,18 +1238,15 @@ if (revolutPayMounted) {
     }
 }, [
   paymentMethodsOpen,
-  clearMountedPaymentMethods,
-  createRevolutPaymentOrder,
-  applyServerValidationErrors,
-  focusFirstInvalidField,
   draftOrderId,
   draftOrderKey,
-  checkoutData,
-  contact,
-  billing,
-  shipping,
-  useDifferentBilling,
-  finalizeOrderBeforeRedirect
+  requiresPayment,
+  clearMountedPaymentMethods,
+  applyServerValidationErrors,
+  focusFirstInvalidField,
+  finalizeOrderBeforeRedirect,
+  setAccordionHeight,
+  selectedPaymentMethod
 ])
 
 const handleFreeOrder = async () => {
