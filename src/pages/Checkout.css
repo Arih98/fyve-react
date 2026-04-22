@@ -211,6 +211,10 @@
   font-size: 17px;
 }
 
+.checkout-order-summary {
+  font-family: 'Quasimoda', sans-serif;
+}
+
 .checkout-summary-totals {
   display: flex;
   flex-direction: column;
