@@ -543,7 +543,7 @@ const requiresPayment = checkoutTotalMinor > 0
 
 const effectiveBilling = useDifferentBilling ? billing : shipping
 
-const setAccordionHeight = useCallback((element, innerElement, isOpen) => {
+const setAccordionHeight = useCallback((element, innerElement, isOpen, extraHeight = 0) => {
   if (!element) return
 
   if (!isOpen) {
@@ -551,7 +551,9 @@ const setAccordionHeight = useCallback((element, innerElement, isOpen) => {
     return
   }
 
-const setAccordionHeight = useCallback((element, innerElement, isOpen, extraHeight = 0) => {
+  const nextHeight = innerElement ? innerElement.scrollHeight + extraHeight : element.scrollHeight
+  element.style.height = nextHeight + 'px'
+}, [])
   if (!element) return
 
   if (!isOpen) {
