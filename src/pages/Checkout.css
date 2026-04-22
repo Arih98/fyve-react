@@ -936,7 +936,7 @@ input[readonly] {
   -moz-appearance: none;
   padding: 11px 40px 11px 14px;
   border: 1.5px solid #dad8d2;
-  border-radius: 7px;
+  border-radius: 4px;
   font: inherit;
   color: #4A494A;
   background-color: #fff;
@@ -966,7 +966,7 @@ input[readonly] {
 .checkout-section input:not([type=checkbox]):not([type=radio]) {
     background: #fff;
     border: 1.5px solid #dad8d2;
-    border-radius: 4px;
+    border-radius: 7px;
     box-sizing: border-box;
     font: inherit;
     padding: 11px 14px;
