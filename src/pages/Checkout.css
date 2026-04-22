@@ -795,6 +795,8 @@ input[readonly] {
     overflow: visible !important;
   }
   .checkout-revolut-pay-shell {
-    overflow: visible;
-    border-radius: 6px;}
+    overflow-x: visible;
+    overflow-y: hidden;
+    border-radius: 6px;
+  }
 }
