@@ -36,6 +36,60 @@ const CHECKOUT_DRAFT_STORAGE_KEY = 'fyve_checkout_draft_v3'
 
 const API_BASE = 'https://fyvelondon.com'
 
+const US_STATES = [
+  { code: 'AL', name: 'Alabama' },
+  { code: 'AK', name: 'Alaska' },
+  { code: 'AZ', name: 'Arizona' },
+  { code: 'AR', name: 'Arkansas' },
+  { code: 'CA', name: 'California' },
+  { code: 'CO', name: 'Colorado' },
+  { code: 'CT', name: 'Connecticut' },
+  { code: 'DE', name: 'Delaware' },
+  { code: 'FL', name: 'Florida' },
+  { code: 'GA', name: 'Georgia' },
+  { code: 'HI', name: 'Hawaii' },
+  { code: 'ID', name: 'Idaho' },
+  { code: 'IL', name: 'Illinois' },
+  { code: 'IN', name: 'Indiana' },
+  { code: 'IA', name: 'Iowa' },
+  { code: 'KS', name: 'Kansas' },
+  { code: 'KY', name: 'Kentucky' },
+  { code: 'LA', name: 'Louisiana' },
+  { code: 'ME', name: 'Maine' },
+  { code: 'MD', name: 'Maryland' },
+  { code: 'MA', name: 'Massachusetts' },
+  { code: 'MI', name: 'Michigan' },
+  { code: 'MN', name: 'Minnesota' },
+  { code: 'MS', name: 'Mississippi' },
+  { code: 'MO', name: 'Missouri' },
+  { code: 'MT', name: 'Montana' },
+  { code: 'NE', name: 'Nebraska' },
+  { code: 'NV', name: 'Nevada' },
+  { code: 'NH', name: 'New Hampshire' },
+  { code: 'NJ', name: 'New Jersey' },
+  { code: 'NM', name: 'New Mexico' },
+  { code: 'NY', name: 'New York' },
+  { code: 'NC', name: 'North Carolina' },
+  { code: 'ND', name: 'North Dakota' },
+  { code: 'OH', name: 'Ohio' },
+  { code: 'OK', name: 'Oklahoma' },
+  { code: 'OR', name: 'Oregon' },
+  { code: 'PA', name: 'Pennsylvania' },
+  { code: 'RI', name: 'Rhode Island' },
+  { code: 'SC', name: 'South Carolina' },
+  { code: 'SD', name: 'South Dakota' },
+  { code: 'TN', name: 'Tennessee' },
+  { code: 'TX', name: 'Texas' },
+  { code: 'UT', name: 'Utah' },
+  { code: 'VT', name: 'Vermont' },
+  { code: 'VA', name: 'Virginia' },
+  { code: 'WA', name: 'Washington' },
+  { code: 'WV', name: 'West Virginia' },
+  { code: 'WI', name: 'Wisconsin' },
+  { code: 'WY', name: 'Wyoming' },
+  { code: 'DC', name: 'District of Columbia' }
+]
+
 function normalizeUsState(value) {
   const input = String(value || '').trim()
   const upper = input.toUpperCase()
@@ -1755,17 +1809,22 @@ if (loading || cartLoading) {
       required
     />
 
-    <input
-      ref={shippingStateRef}
-      type="text"
-      placeholder="State"
-      value={shipping.state}
-      onChange={(e) => {
-        setShipping((prev) => ({ ...prev, state: e.target.value }))
-        setFieldErrors((prev) => ({ ...prev, shipping_state: '' }))
-      }}
-      required
-    />
+<select
+  ref={shippingStateRef}
+  value={shipping.state}
+  onChange={(e) => {
+    setShipping((prev) => ({ ...prev, state: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, shipping_state: '' }))
+  }}
+  required
+>
+  <option value="">State</option>
+  {US_STATES.map((state) => (
+    <option key={state.code} value={state.code}>
+      {state.name}
+    </option>
+  ))}
+</select>
 
     <input
       ref={shippingPostcodeRef}
@@ -1940,16 +1999,21 @@ if (loading || cartLoading) {
                   }}
                 />
 
-                <input
-                  ref={stateRef}
-                  type="text"
-                  placeholder="Billing state"
-                  value={billing.state}
-                  onChange={(e) => {
-                    setBilling((prev) => ({ ...prev, state: e.target.value }))
-                    setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
-                  }}
-                />
+<select
+  ref={stateRef}
+  value={billing.state}
+  onChange={(e) => {
+    setBilling((prev) => ({ ...prev, state: e.target.value }))
+    setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
+  }}
+>
+  <option value="">Billing state</option>
+  {US_STATES.map((state) => (
+    <option key={state.code} value={state.code}>
+      {state.name}
+    </option>
+  ))}
+</select>
 
                 <input
                   ref={postcodeRef}
