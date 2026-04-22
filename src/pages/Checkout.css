@@ -792,7 +792,7 @@ input[readonly] {
 }
 
 .checkout-card-skeleton {
-  min-height: 72px;
+  min-height: 60px;
   padding: 0 16px;
   gap: 16px;
 }
@@ -807,23 +807,23 @@ input[readonly] {
 
 .checkout-card-skeleton-icon {
   width: 42px;
-  height: 32px;
+  height: 22px;
   flex-basis: 42px;
 }
 
 .checkout-card-skeleton-number {
   width: 140px;
-  height: 24px;
+  height: 22px;
 }
 
 .checkout-card-skeleton-date {
   width: 72px;
-  height: 24px;
+  height: 22px;
 }
 
 .checkout-card-skeleton-cvv {
   width: 44px;
-  height: 24px;
+  height: 22px;
 }
 
   .checkout-sidebar {
