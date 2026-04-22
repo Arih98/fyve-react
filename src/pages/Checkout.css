@@ -308,7 +308,7 @@
   gap: 12px;
 }
 
-.checkout-row input {
+.checkout-row > * {
   flex: 1;
   min-width: 0;
 }
