@@ -772,7 +772,7 @@ input[readonly] {
   overflow: visible;
 }
 
-.checkout-payment-option-body-revolut {
-  overflow-y: hidden;
-}
+  .checkout-payment-option-body-revolut {
+    overflow-y: hidden;
+  }
 }

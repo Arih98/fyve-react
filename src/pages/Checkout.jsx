@@ -554,16 +554,6 @@ const setAccordionHeight = useCallback((element, innerElement, isOpen, extraHeig
   const nextHeight = innerElement ? innerElement.scrollHeight + extraHeight : element.scrollHeight
   element.style.height = nextHeight + 'px'
 }, [])
-  if (!element) return
-
-  if (!isOpen) {
-    element.style.height = '0px'
-    return
-  }
-
-  const nextHeight = innerElement ? innerElement.scrollHeight + extraHeight : element.scrollHeight
-  element.style.height = nextHeight + 'px'
-}, [])
 
 useLayoutEffect(() => {
   setAccordionHeight(
