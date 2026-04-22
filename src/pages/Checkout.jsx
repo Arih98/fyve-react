@@ -879,14 +879,6 @@ const shippingAddress = {
 }
 
 const cardSession = await createRevolutOrder({
-
-const payments = await RevolutCheckout.payments({
-  publicToken: cardSession.revolut_public_key,
-  locale: 'en',
-  mode: currentRevolutModeRef.current
-})
-
-if (cancelled) return
   draft_order_id: draftOrderId || checkoutData?.order_id || null,
   draft_order_key: draftOrderKey || checkoutData?.order_key || '',
   validation_mode: 'mount',
@@ -918,6 +910,14 @@ currentRevolutModeRef.current = cardSession.revolut_mode === 'sandbox' ? 'sandbo
 frontendUrlRef.current = cardSession.frontend_url || window.location.origin
 setRevolutPublicKey(cardSession.revolut_public_key)
 
+const payments = await RevolutCheckout.payments({
+  publicToken: cardSession.revolut_public_key,
+  locale: 'en',
+  mode: currentRevolutModeRef.current
+})
+
+if (cancelled) return
+
 if (!cardSession?.revolut_order_token) {
   setCardReady(false)
   setCardAvailable(false)
@@ -925,7 +925,7 @@ if (!cardSession?.revolut_order_token) {
   setCardAvailable(true)
   latestWooOrderIdRef.current = cardSession.wc_order_id || latestWooOrderIdRef.current
 
-    const cardCheckout = await RevolutCheckout(
+  const cardCheckout = await RevolutCheckout(
     cardSession.revolut_order_token,
     currentRevolutModeRef.current
   )
@@ -933,52 +933,52 @@ if (!cardSession?.revolut_order_token) {
   if (cancelled) return
 
   const cardField = cardCheckout.createCardField({
-  target: cardContainerRef.current,
-  locale: 'en',
-  hidePostcodeField: true,
-  name: fullName || undefined,
-  email: snapshot.contact.email || undefined,
-  phone: snapshot.contact.phone || undefined,
-  billingAddress,
-  shippingAddress,
-  styles: {
-    default: {
-      color: '#4A494A',
-      backgroundColor: '#ffffff',
-      fontSize: '16px'
+    target: cardContainerRef.current,
+    locale: 'en',
+    hidePostcodeField: true,
+    name: fullName || undefined,
+    email: snapshot.contact.email || undefined,
+    phone: snapshot.contact.phone || undefined,
+    billingAddress,
+    shippingAddress,
+    styles: {
+      default: {
+        color: '#4A494A',
+        backgroundColor: '#ffffff',
+        fontSize: '16px'
+      },
+      focused: {
+        color: '#4A494A',
+        backgroundColor: '#ffffff'
+      },
+      invalid: {
+        color: '#c62828'
+      },
+      completed: {
+        color: '#4A494A'
+      }
     },
-    focused: {
-      color: '#4A494A',
-      backgroundColor: '#ffffff'
+    onSuccess: async () => {
+      try {
+        setIsFinalizingOrder(true)
+        await finalizeOrderBeforeRedirect()
+      } catch (error) {
+        setIsFinalizingOrder(false)
+        setPaymentLoading(false)
+        setError(error?.message || 'Failed to finalise order')
+      }
     },
-    invalid: {
-      color: '#c62828'
-    },
-    completed: {
-      color: '#4A494A'
-    }
-  },
-  onSuccess: async () => {
-    try {
-      setIsFinalizingOrder(true)
-      await finalizeOrderBeforeRedirect()
-    } catch (error) {
-      setIsFinalizingOrder(false)
+    onError: (error) => {
       setPaymentLoading(false)
-      setError(error?.message || 'Failed to finalise order')
+      setIsFinalizingOrder(false)
+      setError(error?.message || 'Card payment failed')
+    },
+    onCancel: () => {
+      setPaymentLoading(false)
+      setIsFinalizingOrder(false)
+      setError('Card payment cancelled')
     }
-  },
-  onError: (error) => {
-    setPaymentLoading(false)
-    setIsFinalizingOrder(false)
-    setError(error?.message || 'Card payment failed')
-  },
-  onCancel: () => {
-    setPaymentLoading(false)
-    setIsFinalizingOrder(false)
-    setError('Card payment cancelled')
-  }
-})
+  })
 
   cardFieldInstanceRef.current = cardField
   setCardReady(true)
