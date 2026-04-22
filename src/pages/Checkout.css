@@ -411,13 +411,14 @@
 .checkout-payment-option-body {
   overflow: hidden;
   height: 0;
-  padding: 0;
-  transition: height 0.25s ease;
+  opacity: 0;
+  transition: height 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
 }
 
 .checkout-payment-option-body.is-active {
   background: #f4f4f4;
   border-top: 1.5px solid rgb(218, 216, 210);
+  opacity: 1;
 }
 
 .checkout-payment-option-body-inner {
@@ -758,7 +759,7 @@ input[readonly] {
     border-radius: 4px;
     box-sizing: border-box;
     font: inherit;
-    padding: 12px 14px;
+    padding: 11px 14px;
     transition: border-color .15s ease, box-shadow .15s ease;
 }
   .checkout-section input::placeholder {
@@ -770,7 +771,7 @@ input[readonly] {
     max-height: none !important;
   }
 
-  .checkout-payment-option-body-revolut::-webkit-scrollbar,
+.checkout-payment-option-body-revolut::-webkit-scrollbar,
 .checkout-payment-option-body-inner-revolut::-webkit-scrollbar {
   display: none;
 }
