@@ -565,8 +565,7 @@ useLayoutEffect(() => {
 setAccordionHeight(
   revolutPayBodyRef.current,
   revolutPayInnerRef.current,
-  selectedPaymentMethod === 'revolut_pay',
-  window.innerWidth <= 768 ? 24 : 0
+  selectedPaymentMethod === 'revolut_pay'
 )
 
   setAccordionHeight(
