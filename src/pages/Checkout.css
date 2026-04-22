@@ -775,4 +775,29 @@ input[readonly] {
   .checkout-payment-option-body-revolut {
     overflow-y: hidden;
   }
+
+    .checkout-payment-option-body,
+  .checkout-payment-option-body-revolut,
+  .checkout-payment-option-body-inner,
+  .checkout-payment-option-body-inner-revolut {
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+  }
+
+  #revolut-pay-button {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  .checkout-payment-option-body-revolut::-webkit-scrollbar,
+.checkout-payment-option-body-inner-revolut::-webkit-scrollbar {
+  display: none;
+}
+
+.checkout-payment-option-body-revolut,
+.checkout-payment-option-body-inner-revolut {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 }
