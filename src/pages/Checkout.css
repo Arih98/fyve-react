@@ -474,6 +474,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  border-radius: 7px;
   cursor: pointer;
   padding: 16px 18px;
   width: 100%;
