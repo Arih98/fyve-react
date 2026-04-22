@@ -829,13 +829,12 @@ if (hasShippingPrefill) {
     }
   }, [])
 
-  useEffect(() => {
+    useEffect(() => {
     if (!paymentMethodsOpen) {
       clearMountedPaymentMethods()
       return
     }
 
-    if (!revolutPublicKey) return
     if (!cardContainerRef.current) return
     if (!appleGoogleContainerRef.current) return
     if (!revolutPayContainerRef.current) return
@@ -846,7 +845,6 @@ if (hasShippingPrefill) {
       try {
         clearMountedPaymentMethods()
 
-        const mode = currentRevolutModeRef.current
         const snapshot = paymentSnapshotRef.current
 
         if (!snapshot) {
@@ -880,11 +878,11 @@ const shippingAddress = {
   streetLine2: snapshot.shipping.address_2 || undefined
 }
 
-        const payments = await RevolutCheckout.payments({
-          publicToken: cardSession.revolut_public_key,
-          locale: 'en',
-          mode: currentRevolutModeRef.current
-        })
+const payments = await RevolutCheckout.payments({
+  publicToken: cardSession.revolut_public_key,
+  locale: 'en',
+  mode: currentRevolutModeRef.current
+})
 
         if (cancelled) return
 
