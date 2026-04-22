@@ -896,6 +896,11 @@ input[readonly] {
     padding: 24px 16px 40px;
   }
 
+    .checkout-mobile-summary {
+    display: block;
+    width: 100%;
+  }
+
   .checkout-main::after {
     display: none;
   }
