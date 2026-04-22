@@ -765,38 +765,4 @@ input[readonly] {
   .checkout-section input::placeholder {
     font-size: 14px;
   }
-
-  #revolut-pay-button {
-    overflow: visible !important;
-    max-height: none !important;
-  }
-
-.checkout-payment-option-body-revolut::-webkit-scrollbar,
-.checkout-payment-option-body-inner-revolut::-webkit-scrollbar {
-  display: none;
-}
-
-.checkout-payment-option-body-revolut,
-.checkout-payment-option-body-inner-revolut {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-  .checkout-payment-option-body-revolut {
-    overflow: hidden !important;
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
-  }
-
-  .checkout-payment-option-body-inner-revolut {
-    overflow: hidden !important;
-  }
-
-  #revolut-pay-button {
-    overflow: visible !important;
-  }
-  .checkout-revolut-pay-shell {
-    overflow-x: visible;
-    overflow-y: hidden;
-    border-radius: 6px;
-  }
 }
