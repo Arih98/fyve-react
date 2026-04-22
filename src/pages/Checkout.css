@@ -771,4 +771,8 @@ input[readonly] {
 .checkout-payment-option-body-inner-revolut {
   overflow: visible;
 }
+
+.checkout-payment-option-body-revolut {
+  overflow-y: hidden;
+}
 }
