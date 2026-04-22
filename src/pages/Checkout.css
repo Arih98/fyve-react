@@ -135,21 +135,21 @@
 
 .checkout-card-skeleton {
   width: 100%;
-  min-height: 60px;
+  height: 50.2px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 0 22px;
-  border: 1.5px solid #d8d5cf;
-  background: #f3f3f3;
+  gap: 18px;
+  padding: 0 16px;
+  border: 1.5px solid #e8e7e6;
+  background: #fff;
   box-sizing: border-box;
 }
 
 .checkout-card-skeleton-left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -157,34 +157,38 @@
 .checkout-card-skeleton-right {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 14px;
   flex: 0 0 auto;
 }
 
+.checkout-card-skeleton-icon,
+.checkout-card-skeleton-number,
+.checkout-card-skeleton-date,
+.checkout-card-skeleton-cvv {
+  height: 18px;
+  border-radius: 4px;
+}
+
 .checkout-card-skeleton-icon {
-  width: 60px;
-  height: 32px;
-  border-radius: 6px;
-  flex: 0 0 60px;
+  width: 42px;
+  flex: 0 0 42px;
 }
 
 .checkout-card-skeleton-number {
-  width: 260px;
+  width: 170px;
   max-width: 100%;
-  height: 32px;
-  border-radius: 6px;
 }
 
 .checkout-card-skeleton-date {
-  width: 120px;
-  height: 32px;
-  border-radius: 6px;
+  width: 54px;
 }
 
 .checkout-card-skeleton-cvv {
-  width: 72px;
-  height: 32px;
-  border-radius: 6px;
+  width: 40px;
+}
+
+.checkout-card-skeleton .checkout-skeleton {
+  background: #dcdcdc;
 }
 
 .checkout-billing-toggle {
@@ -792,38 +796,41 @@ input[readonly] {
 }
 
 .checkout-card-skeleton {
-  min-height: 55px;
-  padding: 0 16px;
-  gap: 16px;
+  height: 50.2px;
+  padding: 0 14px;
+  gap: 12px;
 }
 
 .checkout-card-skeleton-left {
-  gap: 14px;
+  gap: 12px;
 }
 
 .checkout-card-skeleton-right {
-  gap: 14px;
+  gap: 12px;
+}
+
+.checkout-card-skeleton-icon,
+.checkout-card-skeleton-number,
+.checkout-card-skeleton-date,
+.checkout-card-skeleton-cvv {
+  height: 18px;
 }
 
 .checkout-card-skeleton-icon {
-  width: 42px;
-  height: 22px;
-  flex-basis: 42px;
+  width: 36px;
+  flex-basis: 36px;
 }
 
 .checkout-card-skeleton-number {
-  width: 140px;
-  height: 22px;
+  width: 110px;
 }
 
 .checkout-card-skeleton-date {
-  width: 72px;
-  height: 22px;
+  width: 44px;
 }
 
 .checkout-card-skeleton-cvv {
-  width: 44px;
-  height: 22px;
+  width: 34px;
 }
 
   .checkout-sidebar {
