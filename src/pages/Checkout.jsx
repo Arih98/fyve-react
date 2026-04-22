@@ -883,11 +883,9 @@ setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
 
 setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
 
-          const hasShippingPrefill = Object.values(prefill?.shipping || {}).some(Boolean)
-
-if (hasShippingPrefill) {
-  setUseDifferentBilling(false)
-}
+setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
+setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
+hasPrefilledRef.current = true
 
           hasPrefilledRef.current = true
         }
