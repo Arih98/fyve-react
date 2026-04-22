@@ -1715,13 +1715,9 @@ if (loading || cartLoading) {
     />
   </div>
 
-  <input
-    type="text"
-    placeholder="Country / Region"
-    value="United States (US)"
-    readOnly
-    tabIndex={-1}
-  />
+<div className="checkout-static-field">
+  United States (US)
+</div>
 
   {fieldErrors.shipping_address_1 && (
     <div className="checkout-field-error">{fieldErrors.shipping_address_1}</div>
