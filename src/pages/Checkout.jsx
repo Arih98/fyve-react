@@ -1874,10 +1874,6 @@ if (loading || cartLoading) {
 
 {useDifferentBilling && (
   <div className="checkout-billing-fields">
-    <div className="checkout-static-field">
-      United States (US)
-    </div>
-
     {fieldErrors.billing_first_name && (
       <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
     )}
@@ -1904,6 +1900,10 @@ if (loading || cartLoading) {
           setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
         }}
       />
+    </div>
+
+    <div className="checkout-static-field">
+      United States (US)
     </div>
 
               {fieldErrors.billing_address_1 && (
