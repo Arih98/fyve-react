@@ -1162,58 +1162,64 @@ return { publicId: result.revolut_order_token }
           }
         }
 
+let revolutPayMounted = false
+
 try {
   payments.revolutPay.mount(revolutPayContainerRef.current, revolutPayOptions)
   revolutPayInstanceRef.current = payments.revolutPay
   setRevolutPayReady(true)
   setRevolutPayAvailable(true)
+  revolutPayMounted = true
 } catch (err) {
   setRevolutPayReady(false)
   setRevolutPayAvailable(false)
 }
+
 setPaymentLoading(false)
 
-        requestAnimationFrame(() => {
+if (revolutPayMounted) {
   requestAnimationFrame(() => {
-    if (selectedPaymentMethod === 'revolut_pay' && window.innerWidth <= 768) {
-      setAccordionHeight(
-        revolutPayBodyRef.current,
-        revolutPayInnerRef.current,
-        true,
-        24
-      )
+    requestAnimationFrame(() => {
+      if (selectedPaymentMethod === 'revolut_pay' && window.innerWidth <= 768) {
+        setAccordionHeight(
+          revolutPayBodyRef.current,
+          revolutPayInnerRef.current,
+          true,
+          24
+        )
+      }
+    })
+  })
+
+  payments.revolutPay.on('payment', (event) => {
+    switch (event?.type) {
+      case 'success':
+        ;(async () => {
+          try {
+            setIsFinalizingOrder(true)
+            await finalizeOrderBeforeRedirect()
+          } catch (error) {
+            setIsFinalizingOrder(false)
+            setPaymentLoading(false)
+            setError(error?.message || 'Failed to finalise order')
+          }
+        })()
+        break
+      case 'error': {
+        const message = event?.error?.message || 'Revolut Pay payment failed'
+        if (message !== 'Please complete the required fields') {
+          setError(message)
+        }
+        break
+      }
+      case 'cancel':
+        setError('Revolut Pay payment cancelled')
+        break
+      default:
+        break
     }
   })
-})
-
-        payments.revolutPay.on('payment', (event) => {
-          switch (event?.type) {
-case 'success':
-  ;(async () => {
-    try {
-      setIsFinalizingOrder(true)
-      await finalizeOrderBeforeRedirect()
-    } catch (error) {
-      setIsFinalizingOrder(false)
-      setPaymentLoading(false)
-      setError(error?.message || 'Failed to finalise order')
-    }
-  })()
-  break
-case 'error': {
-  const message = event?.error?.message || 'Revolut Pay payment failed'
-  if (message !== 'Please complete the required fields') {
-    setError(message)
-  }
-  break
 }
-            case 'cancel':
-              setError('Revolut Pay payment cancelled')
-              break
-            default:
-              break
-          }
-        })
 } catch (err) {
   if (!cancelled) {
     setPaymentLoading(false)
