@@ -1495,14 +1495,31 @@ const shippingAddress = {
   }
 }
 
-const renderPaymentMethodSkeleton = (type = 'default') => (
-  <div className={`checkout-payment-method-skeleton checkout-payment-method-skeleton-${type}`}>
-    <div className="checkout-skeleton checkout-payment-method-skeleton-main"></div>
-    {(type === 'card' || type === 'revolut') && (
-      <div className="checkout-skeleton checkout-payment-method-skeleton-sub"></div>
-    )}
-  </div>
-)
+const renderPaymentMethodSkeleton = (type = 'default') => {
+  if (type === 'card') {
+    return (
+      <div className="checkout-card-skeleton">
+        <div className="checkout-card-skeleton-left">
+          <div className="checkout-skeleton checkout-card-skeleton-icon"></div>
+          <div className="checkout-skeleton checkout-card-skeleton-number"></div>
+        </div>
+        <div className="checkout-card-skeleton-right">
+          <div className="checkout-skeleton checkout-card-skeleton-date"></div>
+          <div className="checkout-skeleton checkout-card-skeleton-cvv"></div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className={`checkout-payment-method-skeleton checkout-payment-method-skeleton-${type}`}>
+      <div className="checkout-skeleton checkout-payment-method-skeleton-main"></div>
+      {type === 'revolut' && (
+        <div className="checkout-skeleton checkout-payment-method-skeleton-sub"></div>
+      )}
+    </div>
+  )
+}
 
 const renderCheckoutSkeleton = () => (
   <div className="checkout-page checkout-page-skeleton">
@@ -1827,7 +1844,11 @@ if (loading || cartLoading) {
           ref={cardInnerRef}
           className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card"
         >
-          <div ref={cardContainerRef} id="revolut-card-field"></div>
+          <div
+  ref={cardContainerRef}
+  id="revolut-card-field"
+  className={!cardReady ? 'revolut-card-field-loading' : ''}
+></div>
           {cardAvailable && !cardReady && renderPaymentMethodSkeleton('card')}
 
           <label className="checkout-billing-toggle">

@@ -133,6 +133,60 @@
   margin-bottom: 16px;
 }
 
+.checkout-card-skeleton {
+  width: 100%;
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 22px;
+  border: 1.5px solid #d8d5cf;
+  background: #f3f3f3;
+  box-sizing: border-box;
+}
+
+.checkout-card-skeleton-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.checkout-card-skeleton-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex: 0 0 auto;
+}
+
+.checkout-card-skeleton-icon {
+  width: 60px;
+  height: 46px;
+  border-radius: 8px;
+  flex: 0 0 60px;
+}
+
+.checkout-card-skeleton-number {
+  width: 260px;
+  max-width: 100%;
+  height: 34px;
+  border-radius: 6px;
+}
+
+.checkout-card-skeleton-date {
+  width: 120px;
+  height: 34px;
+  border-radius: 6px;
+}
+
+.checkout-card-skeleton-cvv {
+  width: 72px;
+  height: 34px;
+  border-radius: 6px;
+}
+
 .checkout-billing-toggle {
   display: flex;
   align-items: center;
@@ -480,6 +534,15 @@
   background: #fff;
 }
 
+#revolut-card-field.revolut-card-field-loading {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .checkout-pay-button {
   width: 100%;
   min-height: 52px;
@@ -726,6 +789,41 @@ input[readonly] {
 
 .checkout-page-skeleton .checkout-mobile-summary {
   display: block;
+}
+
+.checkout-card-skeleton {
+  min-height: 72px;
+  padding: 0 16px;
+  gap: 16px;
+}
+
+.checkout-card-skeleton-left {
+  gap: 14px;
+}
+
+.checkout-card-skeleton-right {
+  gap: 14px;
+}
+
+.checkout-card-skeleton-icon {
+  width: 42px;
+  height: 32px;
+  flex-basis: 42px;
+}
+
+.checkout-card-skeleton-number {
+  width: 140px;
+  height: 24px;
+}
+
+.checkout-card-skeleton-date {
+  width: 72px;
+  height: 24px;
+}
+
+.checkout-card-skeleton-cvv {
+  width: 44px;
+  height: 24px;
 }
 
   .checkout-sidebar {
