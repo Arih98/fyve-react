@@ -22,11 +22,7 @@ export const AuthProvider = ({ children }) => {
     refreshUser();
   }, [refreshUser]);
 
-  const login = async (values) => {
-    const data = await loginUser(values);
-    setUser(data.user || null);
-    return data;
-  };
+const login = async (values) => {
 
   const signup = async (values) => {
     const data = await registerUser(values);
