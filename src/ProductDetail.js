@@ -661,7 +661,7 @@ return (
   disabled={!productForOptions}
 >
 <span className="size-picker-trigger-label">
-  Select a size
+  {selectedAttributes[attrName] || 'Select a size'}
 </span>
     <span className="size-picker-trigger-icon">+</span>
   </button>
