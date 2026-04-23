@@ -646,7 +646,7 @@ return (
     onClick={() => setIsSizePanelOpen(true)}
   >
     <span className="size-picker-trigger-label">
-      {selectedAttributes[attrName] ? selectedAttributes[attrName] : 'Select a size'}
+      Select a size
     </span>
     <span className="size-picker-trigger-icon">+</span>
   </button>
