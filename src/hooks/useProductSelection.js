@@ -69,12 +69,17 @@ return [
 
   const initialAttrs = {};
 
-  initialVariation?.attributes.forEach((attr) => {
-    const termName = String(attr.term_name || '').trim();
-    if (termName && !termName.startsWith('Any')) {
-      initialAttrs[attr.attribute_name] = termName;
-    }
-  });
+initialVariation?.attributes.forEach((attr) => {
+  const termName = String(attr.term_name || '').trim();
+
+  if (
+    termName &&
+    !termName.startsWith('Any') &&
+    !isSizeAttribute(attr.attribute_name)
+  ) {
+    initialAttrs[attr.attribute_name] = termName;
+  }
+});
 
   const colorKey =
     Object.keys(initialAttrs).find(isColorAttribute) ||
@@ -157,10 +162,10 @@ return [
 
     attributeNames.forEach((attr) => {
       const avail = getAvailableOptions(attr);
-      if (selectedAttributes[attr] && !avail.includes(selectedAttributes[attr])) {
-        updatedSelected[attr] = avail[0] || undefined;
-        changed = true;
-      }
+if (selectedAttributes[attr] && !avail.includes(selectedAttributes[attr])) {
+  updatedSelected[attr] = undefined;
+  changed = true;
+}
     });
 
     if (changed) {
