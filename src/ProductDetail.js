@@ -36,6 +36,7 @@ const ProductDetail = () => {
   const scrollDirection = useScrollDirection();
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [viewerImageIndex, setViewerImageIndex] = useState(0);
+  const [isSizePanelOpen, setIsSizePanelOpen] = useState(false);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
 
@@ -108,7 +109,6 @@ const {
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
   const getColorClassName = (term) => {
   const value = String(term || '').trim().toLowerCase();
-  const [isSizePanelOpen, setIsSizePanelOpen] = useState(false);
 
   if (value === 'sand') return 'sand';
   if (value === 'ivory') return 'ivory';
