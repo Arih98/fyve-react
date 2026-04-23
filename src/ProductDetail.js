@@ -624,116 +624,127 @@ return (
 
       {product.product_type === 'variable' && (
   <div className="product-attributes">
-    {attributeNames.map(attrName => {
-      const options = getOrderedOptions(attrName);
+    {attributeNames
+      .filter(attrName => !isSizeAttribute(attrName))
+      .map(attrName => {
+        const options = getOrderedOptions(attrName);
+
+        return (
+          <div key={attrName} className="attribute-group">
+            <label className="attribute-label">{attrName}</label>
+
+            {isColorAttribute(attrName) && (
+              <div className="color-options">
+                {options.map(term => (
+                  <div key={term} className="color-option">
+                    <button
+                      onClick={() => {
+                        handleAttributeChange(attrName, term);
+                        setCartError(null);
+                      }}
+                      className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
+                    />
+                    <span className="color-label">{term}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+    {(() => {
+      const sizeAttrName = attributeNames.find(isSizeAttribute);
+      if (!sizeAttrName) return null;
+
+      const options = getOrderedOptions(sizeAttrName);
 
       return (
-        <div key={attrName} className="attribute-group">
-          {!isSizeAttribute(attrName) && (
-  <label className="attribute-label">{attrName}</label>
-)}
+        <div className="attribute-group">
+          <div className="size-picker">
+            <button
+              type="button"
+              className="size-picker-trigger"
+              onClick={() => {
+                if (productForOptions) {
+                  setIsSizePanelOpen(true);
+                }
+              }}
+              disabled={!productForOptions}
+            >
+              <span className="size-picker-trigger-label">
+                {selectedAttributes[sizeAttrName] || 'Select a size'}
+              </span>
 
-          {isColorAttribute(attrName) ? (
-            <div className="color-options">
-              {options.map(term => (
-                <div key={term} className="color-option">
-                  <button
-                    onClick={() => {
-                      handleAttributeChange(attrName, term);
-                      setCartError(null);
-                    }}
-                    className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
-                  />
-                  <span className="color-label">{term}</span>
+              <span className="size-picker-trigger-icon">
+                <span className="chevron" />
+              </span>
+            </button>
+
+            {isSizePanelOpen && (
+              <div
+                className="size-panel-backdrop"
+                onClick={() => setIsSizePanelOpen(false)}
+              >
+                <div
+                  className="size-panel"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Select a size"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="size-panel-header">
+                    <h3 className="size-panel-title">Size</h3>
+                    <button
+                      type="button"
+                      className="size-panel-close"
+                      onClick={() => setIsSizePanelOpen(false)}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="size-panel-options" role="listbox" aria-label="Select a size">
+                    {options.map(term => (
+                      <button
+                        key={term}
+                        type="button"
+                        role="option"
+                        aria-selected={selectedAttributes[sizeAttrName] === term}
+                        className={`size-panel-option ${selectedAttributes[sizeAttrName] === term ? 'selected' : ''}`}
+                        onClick={() => {
+                          handleAttributeChange(sizeAttrName, term);
+                          setCartError(null);
+                        }}
+                      >
+                        <span className="size-panel-option-value">{term}</span>
+                        {selectedAttributes[sizeAttrName] === term && (
+                          <span className="size-panel-option-tick">✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="size-panel-footer">
+                    <button
+                      type="button"
+                      className="size-panel-add-button"
+                      disabled={!selectedAttributes[sizeAttrName] || isOutOfStock}
+                      onClick={() => {
+                        handleAddToCart();
+                        setIsSizePanelOpen(false);
+                      }}
+                    >
+                      {isOutOfStock ? 'Out of Stock' : 'Add to Bag'}
+                    </button>
+                  </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="size-picker">
-<button
-  type="button"
-  className="size-picker-trigger"
-  onClick={() => {
-    if (productForOptions) {
-      setIsSizePanelOpen(true);
-    }
-  }}
-  disabled={!productForOptions}
->
-  <span className="size-picker-trigger-label">
-    {selectedAttributes[attrName] || 'Select a size'}
-  </span>
-
-  <span className="size-picker-trigger-icon">
-    <span className="chevron" />
-  </span>
-</button>
-
-  {isSizePanelOpen && (
-    <div
-      className="size-panel-backdrop"
-      onClick={() => setIsSizePanelOpen(false)}
-    >
-      <div
-        className="size-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Select a size"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="size-panel-header">
-          <h3 className="size-panel-title">Size</h3>
-          <button
-            type="button"
-            className="size-panel-close"
-            onClick={() => setIsSizePanelOpen(false)}
-          >
-            ×
-          </button>
-        </div>
-
-        <div className="size-panel-options" role="listbox" aria-label="Select a size">
-  {productForOptions && options.map(term => (
-    <button
-  key={term}
-  type="button"
-  role="option"
-  aria-selected={selectedAttributes[attrName] === term}
-  className={`size-panel-option ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-  onClick={() => {
-    handleAttributeChange(attrName, term);
-    setCartError(null);
-  }}
->
-  <span className="size-panel-option-value">{term}</span>
-  {selectedAttributes[attrName] === term && (
-    <span className="size-panel-option-tick">✓</span>
-  )}
-</button>
-  ))}
-</div>
-
-<div className="size-panel-footer">
-  <button
-    type="button"
-    className="size-panel-add-button"
-    disabled={!selectedAttributes[attrName] || isOutOfStock}
-    onClick={() => {
-      handleAddToCart();
-      setIsSizePanelOpen(false);
-    }}
-  >
-    {isOutOfStock ? 'Out of Stock' : 'Add to Bag'}
-  </button>
-</div>
-      </div>
-    </div>
-  )}
-</div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       );
-    })}
+    })()}
   </div>
 )}
 
