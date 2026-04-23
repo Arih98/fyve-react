@@ -207,6 +207,24 @@ gsap.to(icon, {
 
 const getOrderedOptions = useCallback((attrName) => {
   const rawOptions = getAvailableOptions(attrName) || [];
+
+  if (isSizeAttribute(attrName)) {
+    const variationOrder = (product?.variations || [])
+      .map(variation => {
+        const match = (variation.attributes || []).find(
+          attr => attr.attribute_name === attrName
+        );
+        return match?.term_name || null;
+      })
+      .filter(Boolean);
+
+    const uniqueVariationOrder = [...new Set(variationOrder)];
+
+    if (uniqueVariationOrder.length) {
+      return uniqueVariationOrder.filter(option => rawOptions.includes(option));
+    }
+  }
+
   const attributeMeta = product?.attributes?.find(
     attr => attr.attribute_name === attrName
   );
@@ -224,7 +242,7 @@ const getOrderedOptions = useCallback((attrName) => {
     const bIndex = orderMap.has(b) ? orderMap.get(b) : Number.MAX_SAFE_INTEGER;
     return aIndex - bIndex;
   });
-}, [getAvailableOptions, product?.attributes]);
+}, [getAvailableOptions, isSizeAttribute, product?.variations, product?.attributes]);
 
 useEffect(() => {
   setIsDescriptionOpen(false);
