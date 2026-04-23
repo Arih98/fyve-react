@@ -673,23 +673,37 @@ return (
         </div>
 
         <div className="size-panel-options" role="listbox" aria-label="Select a size">
-          {options.map(term => (
-            <button
-              key={term}
-              type="button"
-              role="option"
-              aria-selected={selectedAttributes[attrName] === term}
-              className={`size-panel-option ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-              onClick={() => {
-                handleAttributeChange(attrName, term);
-                setCartError(null);
-                setIsSizePanelOpen(false);
-              }}
-            >
-              <span className="size-panel-option-value">{term}</span>
-            </button>
-          ))}
-        </div>
+  {options.map(term => (
+    <button
+      key={term}
+      type="button"
+      role="option"
+      aria-selected={selectedAttributes[attrName] === term}
+      className={`size-panel-option ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+      onClick={() => {
+        handleAttributeChange(attrName, term);
+        setCartError(null);
+        setIsSizePanelOpen(false);
+      }}
+    >
+      <span className="size-panel-option-value">{term}</span>
+    </button>
+  ))}
+</div>
+
+<div className="size-panel-footer">
+  <button
+    type="button"
+    className="size-panel-add-button"
+    disabled={!selectedAttributes[attrName] || isOutOfStock}
+    onClick={() => {
+      handleAddToCart();
+      setIsSizePanelOpen(false);
+    }}
+  >
+    {isOutOfStock ? 'Out of Stock' : 'Add to Bag'}
+  </button>
+</div>
       </div>
     </div>
   )}
