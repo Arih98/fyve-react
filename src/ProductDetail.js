@@ -612,7 +612,7 @@ return (
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
       <h1 className="product-title">{displayTitle}</h1>
 
-      {product.product_type === 'variable' && productForOptions && (
+      {product.product_type === 'variable' && (
   <div className="product-attributes">
     {attributeNames.map(attrName => {
       const options = getOrderedOptions(attrName);
@@ -640,14 +640,19 @@ return (
             </div>
           ) : (
             <div className="size-picker">
-  <button
-    type="button"
-    className="size-picker-trigger"
-    onClick={() => setIsSizePanelOpen(true)}
-  >
-    <span className="size-picker-trigger-label">
-      Select a size
-    </span>
+<button
+  type="button"
+  className="size-picker-trigger"
+  onClick={() => {
+    if (productForOptions) {
+      setIsSizePanelOpen(true);
+    }
+  }}
+  disabled={!productForOptions}
+>
+<span className="size-picker-trigger-label">
+  Select a size
+</span>
     <span className="size-picker-trigger-icon">+</span>
   </button>
 
@@ -675,7 +680,7 @@ return (
         </div>
 
         <div className="size-panel-options" role="listbox" aria-label="Select a size">
-  {options.map(term => (
+  {productForOptions && options.map(term => (
     <button
       key={term}
       type="button"
