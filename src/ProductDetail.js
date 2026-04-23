@@ -652,10 +652,10 @@ return (
   }}
   disabled={!productForOptions}
 >
-<span className="size-picker-trigger-label">
-  Select a size
+<span className="size-picker-trigger-inner">
+  <span className="size-picker-trigger-label">Select a size</span>
+  <span className="size-picker-trigger-icon">▾</span>
 </span>
-    <span className="size-picker-trigger-icon">+</span>
   </button>
 
   {isSizePanelOpen && (
