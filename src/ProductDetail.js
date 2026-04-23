@@ -652,10 +652,10 @@ return (
   }}
   disabled={!productForOptions}
 >
-<span className="size-picker-trigger-inner">
-  <span className="size-picker-trigger-label">Select a size</span>
-  <span className="size-picker-trigger-icon">▾</span>
+<span className="size-picker-trigger-label">
+  Select a size
 </span>
+    <span className="size-picker-trigger-icon">+</span>
   </button>
 
   {isSizePanelOpen && (
@@ -761,7 +761,7 @@ return (
 <button
   onClick={handleAddToCart}
   disabled={isAddDisabled}
-  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''} ${isMobile && isSizePanelOpen ? 'hidden-while-size-panel-open' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
   {!isOutOfStock && (
