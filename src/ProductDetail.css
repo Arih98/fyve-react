@@ -901,9 +901,8 @@
   .related-product-price {
     font-size: 13px;
   }
-    body.size-panel-open .mobile-header.first-header {
-    transform: translateY(100%) !important;
-    pointer-events: none;
+  body.size-panel-open .mobile-header.first-header {
+    display: none !important;
   }
 }
 
