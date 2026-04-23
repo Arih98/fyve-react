@@ -660,11 +660,14 @@ return (
   }}
   disabled={!productForOptions}
 >
-<span className="size-picker-trigger-label">
-  {selectedAttributes[attrName] || 'Select a size'}
-</span>
-    <span className="size-picker-trigger-icon">+</span>
-  </button>
+  <span className="size-picker-trigger-label">
+    {selectedAttributes[attrName] || 'Select a size'}
+  </span>
+
+  <span className="size-picker-trigger-icon">
+    <span className={`chevron ${isSizePanelOpen ? 'open' : ''}`} />
+  </span>
+</button>
 
   {isSizePanelOpen && (
     <div

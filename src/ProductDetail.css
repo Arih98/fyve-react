@@ -354,6 +354,25 @@
   color: #4a494a;
 }
 
+.size-picker-trigger-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #4a494a;
+  border-bottom: 2px solid #4a494a;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.chevron.open {
+  transform: rotate(-135deg);
+}
+
 .size-option {
   flex: 0 0 auto;
 }
