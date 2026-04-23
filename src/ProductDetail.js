@@ -49,9 +49,10 @@ const ProductDetail = () => {
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
   const { product: loadedProduct, loading, error } = useProduct(resolvedProductId);
   const product = loadedProduct ?? fallbackProduct ?? null;
+  const productForOptions = loadedProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
-  const selectedVariationIdFromApi = product?.selected_variation_id ? String(product.selected_variation_id) : '';
+  const selectedVariationIdFromApi = productForOptions?.selected_variation_id ? String(productForOptions.selected_variation_id) : '';
   const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
   const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
   const hideGalleryProgress = !showGalleryProgress;
@@ -65,7 +66,7 @@ const {
   isColorAttribute,
   isSizeAttribute
 } = useProductSelection({
-  product,
+  product: productForOptions,
   location,
   searchParams,
   initialColorValue,
@@ -209,7 +210,7 @@ const getOrderedOptions = useCallback((attrName) => {
   const rawOptions = getAvailableOptions(attrName) || [];
 
   if (isSizeAttribute(attrName)) {
-    const variationOrder = (product?.variations || [])
+    const variationOrder = (productForOptions?.variations || [])
       .map(variation => {
         const match = (variation.attributes || []).find(
           attr => attr.attribute_name === attrName
@@ -225,7 +226,7 @@ const getOrderedOptions = useCallback((attrName) => {
     }
   }
 
-  const attributeMeta = product?.attributes?.find(
+  const attributeMeta = productForOptions?.attributes?.find(
     attr => attr.attribute_name === attrName
   );
 
@@ -242,7 +243,7 @@ const getOrderedOptions = useCallback((attrName) => {
     const bIndex = orderMap.has(b) ? orderMap.get(b) : Number.MAX_SAFE_INTEGER;
     return aIndex - bIndex;
   });
-}, [getAvailableOptions, isSizeAttribute, product?.variations, product?.attributes]);
+}, [getAvailableOptions, isSizeAttribute, productForOptions?.variations, productForOptions?.attributes]);
 
 useEffect(() => {
   setIsDescriptionOpen(false);
@@ -606,7 +607,7 @@ return (
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
       <h1 className="product-title">{displayTitle}</h1>
 
-      {product.product_type === 'variable' && (
+      {product.product_type === 'variable' && productForOptions && (
   <div className="product-attributes">
     {attributeNames.map(attrName => {
       const options = getOrderedOptions(attrName);
