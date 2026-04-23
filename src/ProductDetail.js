@@ -351,7 +351,7 @@ const remainingStockForSelection =
     : Math.max(0, Number(availableStock) - existingQuantityInCart);
 
 const isOutOfStock =
-  remainingStockForSelection !== null && remainingStockForSelection <= 0;
+  hasSelectedSize && remainingStockForSelection !== null && remainingStockForSelection <= 0;
 
 const isAddDisabled = isOutOfStock;
 
@@ -461,7 +461,7 @@ useEffect(() => {
 
 useEffect(() => {
   setIsSizePanelOpen(false);
-}, [product?.id, current?.sku, selectedAttributes]);
+}, [product?.id, colorValue]);
 
 useEffect(() => {
   if (!product) return;
