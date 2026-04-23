@@ -665,7 +665,7 @@ return (
   </span>
 
   <span className="size-picker-trigger-icon">
-    <span className={`chevron ${isSizePanelOpen ? 'open' : ''}`} />
+    <span className="chevron" />
   </span>
 </button>
 
