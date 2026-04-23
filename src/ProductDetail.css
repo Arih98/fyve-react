@@ -222,7 +222,8 @@
   font-size: 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   cursor: pointer;
 }
 
@@ -230,11 +231,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.size-picker-trigger-icon {
-  font-size: 18px;
-  line-height: 1;
+  text-align: center;
 }
 
 .size-panel-backdrop {
@@ -355,6 +352,8 @@
 }
 
 .size-picker-trigger-icon {
+  position: absolute;
+  right: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -366,11 +365,6 @@
   border-right: 2px solid #4a494a;
   border-bottom: 2px solid #4a494a;
   transform: rotate(45deg);
-  transition: transform 0.2s ease;
-}
-
-.chevron.open {
-  transform: rotate(-135deg);
 }
 
 .size-option {
