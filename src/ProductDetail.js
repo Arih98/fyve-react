@@ -96,17 +96,11 @@ const {
     ) || product.variations[0] || null;
   }, [isVariableProduct, product, initialColorValue]);
 
-  const effectiveVariation = currentVariation || fallbackVariation;
+const effectiveVariation = currentVariation || fallbackVariation;
 const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
 const hasSelectedSize = Boolean(sizeValue);
+const current = product ? (isVariableProduct ? effectiveVariation : product) : null;
 
-const current = product
-  ? isVariableProduct
-    ? hasSelectedSize
-      ? effectiveVariation
-      : product
-    : product
-  : null;
   const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const availableStock = availableStockRaw === null ? null : Number(availableStockRaw);
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
