@@ -458,6 +458,14 @@ useEffect(() => {
 }, [product?.id, colorValue]);
 
 useEffect(() => {
+  document.body.classList.toggle('size-panel-open', isMobile && isSizePanelOpen)
+
+  return () => {
+    document.body.classList.remove('size-panel-open')
+  }
+}, [isMobile, isSizePanelOpen])
+
+useEffect(() => {
   if (!product) return;
   if (product.product_type === 'variable' && !effectiveVariation) return;
 
@@ -761,7 +769,7 @@ return (
 <button
   onClick={handleAddToCart}
   disabled={isAddDisabled}
-  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''} ${isMobile && isSizePanelOpen ? 'hidden-while-size-panel-open' : ''}`}
+  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
   {!isOutOfStock && (

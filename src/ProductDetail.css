@@ -901,10 +901,8 @@
   .related-product-price {
     font-size: 13px;
   }
-
-  .add-to-cart-button.hidden-while-size-panel-open {
-    opacity: 0;
-    visibility: hidden;
+    body.size-panel-open .mobile-header.first-header {
+    transform: translateY(100%) !important;
     pointer-events: none;
   }
 }
