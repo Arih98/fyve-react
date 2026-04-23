@@ -619,7 +619,9 @@ return (
 
       return (
         <div key={attrName} className="attribute-group">
-          <label className="attribute-label">{attrName}</label>
+          {!isSizeAttribute(attrName) && (
+  <label className="attribute-label">{attrName}</label>
+)}
 
           {isColorAttribute(attrName) ? (
             <div className="color-options">
@@ -644,7 +646,7 @@ return (
     onClick={() => setIsSizePanelOpen(true)}
   >
     <span className="size-picker-trigger-label">
-      {selectedAttributes[attrName] || 'Select size'}
+      {selectedAttributes[attrName] ? selectedAttributes[attrName] : 'Select a size'}
     </span>
     <span className="size-picker-trigger-icon">+</span>
   </button>
