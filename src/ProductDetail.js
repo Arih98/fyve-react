@@ -205,6 +205,27 @@ gsap.to(icon, {
 
 }, [isDescriptionOpen, isDeliveryOpen, displayDescription]);
 
+const getOrderedOptions = useCallback((attrName) => {
+  const rawOptions = getAvailableOptions(attrName) || [];
+  const attributeMeta = product?.attributes?.find(
+    attr => attr.attribute_name === attrName
+  );
+
+  if (!attributeMeta?.options?.length) {
+    return rawOptions;
+  }
+
+  const orderMap = new Map(
+    attributeMeta.options.map((option, index) => [option.term_name, index])
+  );
+
+  return [...rawOptions].sort((a, b) => {
+    const aIndex = orderMap.has(a) ? orderMap.get(a) : Number.MAX_SAFE_INTEGER;
+    const bIndex = orderMap.has(b) ? orderMap.get(b) : Number.MAX_SAFE_INTEGER;
+    return aIndex - bIndex;
+  });
+}, [getAvailableOptions, product?.attributes]);
+
 useEffect(() => {
   setIsDescriptionOpen(false);
   setIsDeliveryOpen(false);
@@ -568,51 +589,51 @@ return (
       <h1 className="product-title">{displayTitle}</h1>
 
       {product.product_type === 'variable' && (
-        <div className="product-attributes">
-          {attributeNames.map(attrName => {
-            const options = getAvailableOptions(attrName);
+  <div className="product-attributes">
+    {attributeNames.map(attrName => {
+      const options = getOrderedOptions(attrName);
 
-            return (
-              <div key={attrName} className="attribute-group">
-                <label className="attribute-label">{attrName}</label>
+      return (
+        <div key={attrName} className="attribute-group">
+          <label className="attribute-label">{attrName}</label>
 
-                {isColorAttribute(attrName) ? (
-                  <div className="color-options">
-                    {options.map(term => (
-                      <div key={term} className="color-option">
-                        <button
-                          onClick={() => {
-                            handleAttributeChange(attrName, term);
-                            setCartError(null);
-                          }}
-                          className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
-                        />
-                        <span className="color-label">{term}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="size-options">
-                    {options.map(term => (
-                      <div key={term} className="size-option">
-                        <button
-                          onClick={() => {
-                            handleAttributeChange(attrName, term);
-                            setCartError(null);
-                          }}
-                          className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-                        >
-                          {term}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {isColorAttribute(attrName) ? (
+            <div className="color-options">
+              {options.map(term => (
+                <div key={term} className="color-option">
+                  <button
+                    onClick={() => {
+                      handleAttributeChange(attrName, term);
+                      setCartError(null);
+                    }}
+                    className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
+                  />
+                  <span className="color-label">{term}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="size-options">
+              {options.map(term => (
+                <div key={term} className="size-option">
+                  <button
+                    onClick={() => {
+                      handleAttributeChange(attrName, term);
+                      setCartError(null);
+                    }}
+                    className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+                  >
+                    {term}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      );
+    })}
+  </div>
+)}
 
       {cartError && <p className="cart-error">{cartError}</p>}
 
