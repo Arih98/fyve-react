@@ -632,21 +632,26 @@ return (
               ))}
             </div>
           ) : (
-            <div className="size-options">
-              {options.map(term => (
-                <div key={term} className="size-option">
-                  <button
-                    onClick={() => {
-                      handleAttributeChange(attrName, term);
-                      setCartError(null);
-                    }}
-                    className={`size-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-                  >
-                    {term}
-                  </button>
-                </div>
-              ))}
-            </div>
+            <div className="size-dropdown-wrap">
+  <select
+    value={selectedAttributes[attrName] || ''}
+    onChange={(e) => {
+      handleAttributeChange(attrName, e.target.value);
+      setCartError(null);
+    }}
+    className="size-dropdown"
+  >
+    <option value="" disabled>
+      Select size
+    </option>
+
+    {options.map(term => (
+      <option key={term} value={term}>
+        {term}
+      </option>
+    ))}
+  </select>
+</div>
           )}
         </div>
       );
