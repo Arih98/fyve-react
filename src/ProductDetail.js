@@ -697,11 +697,10 @@ return (
       role="option"
       aria-selected={selectedAttributes[attrName] === term}
       className={`size-panel-option ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-      onClick={() => {
-        handleAttributeChange(attrName, term);
-        setCartError(null);
-        setIsSizePanelOpen(false);
-      }}
+onClick={() => {
+  handleAttributeChange(attrName, term);
+  setCartError(null);
+}}
     >
       <span className="size-panel-option-value">{term}</span>
     </button>
