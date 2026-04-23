@@ -67,7 +67,7 @@ const {
   isColorAttribute,
   isSizeAttribute
 } = useProductSelection({
-  product: productForOptions,
+  product,
   location,
   searchParams,
   initialColorValue,
