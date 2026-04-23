@@ -204,6 +204,16 @@
   gap: 5px;
 }
 
+.size-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
 .size-picker {
   width: 100%;
   margin-top: 8px;
@@ -237,15 +247,9 @@
   line-height: 1;
 }
 
-.size-panel-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 9999;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
+  .size-panel-backdrop {
+    align-items: center;
+  }
 
 .size-panel {
   width: 100%;
@@ -778,10 +782,6 @@
     gap: 12px;
     margin-top: 10px;
     flex-wrap: wrap;
-  }
-
-  .size-panel-backdrop {
-    align-items: center;
   }
 
   .size-panel {
