@@ -692,18 +692,21 @@ return (
         <div className="size-panel-options" role="listbox" aria-label="Select a size">
   {productForOptions && options.map(term => (
     <button
-      key={term}
-      type="button"
-      role="option"
-      aria-selected={selectedAttributes[attrName] === term}
-      className={`size-panel-option ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
-onClick={() => {
-  handleAttributeChange(attrName, term);
-  setCartError(null);
-}}
-    >
-      <span className="size-panel-option-value">{term}</span>
-    </button>
+  key={term}
+  type="button"
+  role="option"
+  aria-selected={selectedAttributes[attrName] === term}
+  className={`size-panel-option ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+  onClick={() => {
+    handleAttributeChange(attrName, term);
+    setCartError(null);
+  }}
+>
+  <span className="size-panel-option-value">{term}</span>
+  {selectedAttributes[attrName] === term && (
+    <span className="size-panel-option-tick">✓</span>
+  )}
+</button>
   ))}
 </div>
 

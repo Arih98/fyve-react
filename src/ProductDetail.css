@@ -342,6 +342,18 @@
   display: block;
 }
 
+.size-panel-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.size-panel-option-tick {
+  font-size: 18px;
+  line-height: 1;
+  color: #4a494a;
+}
+
 .size-option {
   flex: 0 0 auto;
 }
