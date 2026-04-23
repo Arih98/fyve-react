@@ -164,15 +164,6 @@
   margin: 0 0 12px;
 }
 
-.product-variation-description,
-.product-description {
-  font-family: 'Quasimoda', sans-serif;
-  font-weight: 400;
-  font-size: 1.2em;
-  line-height: 1.4;
-  color: #4a494a;
-}
-
 .product-price,
 .product-sku,
 .product-stock {
@@ -501,6 +492,20 @@
   overflow: hidden;
 }
 
+.product-variation-description,
+.product-description {
+  margin: 0;
+}
+
+.accordion-description-content,
+.accordion-description-content p {
+  font-family: 'Quasimoda', sans-serif;
+  font-weight: 400;
+  font-size: 1.2em;
+  line-height: 1.4;
+  color: #4a494a;
+}
+
 .accordion-description-content {
   font-family: 'Quasimoda', sans-serif;
   padding: 0 0 18px 0;
@@ -523,97 +528,97 @@
 }
 
 @media (max-width: 768px) {
-.product-detail-container {
-  flex-direction: column;
-  margin-top: 0;
-  padding: 76px 0 110px;
-  width: 100%;
-}
+  .product-detail-container {
+    flex-direction: column;
+    margin-top: 0;
+    padding: 76px 0 110px;
+    width: 100%;
+  }
 
-.images-container {
-  width: 100%;
-  max-width: 100%;
-  position: relative;
-  z-index: 1;
-}
+  .images-container {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    z-index: 1;
+  }
 
-.product-image-gallery {
-  gap: 10px;
-  position: relative;
-}
+  .product-image-gallery {
+    gap: 10px;
+    position: relative;
+  }
 
-.product-image-gallery-track {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-snap-stop: always;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-  padding-left: 0;
-  padding-right: 0;
-  box-sizing: border-box;
-}
+  .product-image-gallery-track {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
 
-.product-image-gallery-track::-webkit-scrollbar {
-  display: none;
-}
+  .product-image-gallery-track::-webkit-scrollbar {
+    display: none;
+  }
 
-.product-gallery-image-wrapper,
-.product-main-image-wrapper {
-  flex: 0 0 100%;
-  width: 100%;
-  min-width: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  aspect-ratio: 3 / 3;
-}
+  .product-gallery-image-wrapper,
+  .product-main-image-wrapper {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    aspect-ratio: 3 / 3;
+  }
 
-.product-gallery-image-box {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #f7f7f7;
-  overflow: hidden;
-  position: relative;
-  z-index: 2;
-}
+  .product-gallery-image-box {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f7f7f7;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
 
-.product-gallery-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
+  .product-gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
 
-.product-gallery-progress {
-  display: block;
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30%;
-  height: 3px;
-  background: #d9d9d9;
-  border-radius: 999px;
-  overflow: hidden;
-  z-index: 5;
-}
+  .product-gallery-progress {
+    display: block;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    height: 3px;
+    background: #d9d9d9;
+    border-radius: 999px;
+    overflow: hidden;
+    z-index: 5;
+  }
 
-.product-gallery-progress-bar {
-  height: 100%;
-  background: #4a494a;
-  border-radius: 999px;
-  transition: width 0.2s ease;
-}
+  .product-gallery-progress-bar {
+    height: 100%;
+    background: #4a494a;
+    border-radius: 999px;
+    transition: width 0.2s ease;
+  }
 
   .details-container {
     width: 100%;
@@ -638,8 +643,8 @@
     margin-bottom: 10px;
   }
 
-  .product-variation-description,
-  .product-description {
+  .accordion-description-content,
+  .accordion-description-content p {
     font-size: 1em;
     line-height: 1.45;
   }
@@ -654,39 +659,39 @@
 
   .attribute-label,
   .quantity-label {
-  font-size: 0.95em;
-  font-family: 'Quasimoda', sans-serif;
-  font-size: 1em;
-  font-weight: 700;
+    font-size: 0.95em;
+    font-family: 'Quasimoda', sans-serif;
+    font-size: 1em;
+    font-weight: 700;
   }
 
-.color-options {
-  gap: 12px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
+  .color-options {
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
 
-.size-options {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 12px;
-  margin-top: 10px;
-  overflow-x: auto;
-  overflow-y: visible;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  width: 100%;
-}
+  .size-options {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin-top: 10px;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+  }
 
-.size-option {
-  flex: 0 0 auto;
-  min-width: 44px;
-}
+  .size-option {
+    flex: 0 0 auto;
+    min-width: 44px;
+  }
 
-.size-options::-webkit-scrollbar {
-  display: none;
-}
+  .size-options::-webkit-scrollbar {
+    display: none;
+  }
 
   .color-button,
   .size-button {
@@ -704,15 +709,15 @@
     font-size: 12px;
   }
 
-.quantity-controls.pdp-quantity-controls button {
-  width: 42px;
-  height: 42px;
-}
+  .quantity-controls.pdp-quantity-controls button {
+    width: 42px;
+    height: 42px;
+  }
 
-.quantity-controls.pdp-quantity-controls .quantity-input {
-  width: 20px;
-  font-size: 13px;
-}
+  .quantity-controls.pdp-quantity-controls .quantity-input {
+    width: 20px;
+    font-size: 13px;
+  }
 
   .add-to-cart-button {
     margin-top: 20px;
