@@ -97,7 +97,16 @@ const {
   }, [isVariableProduct, product, initialColorValue]);
 
   const effectiveVariation = currentVariation || fallbackVariation;
-  const current = product ? (isVariableProduct ? effectiveVariation : product) : null;
+const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
+const hasSelectedSize = Boolean(sizeValue);
+
+const current = product
+  ? isVariableProduct
+    ? hasSelectedSize
+      ? effectiveVariation
+      : product
+    : product
+  : null;
   const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const availableStock = availableStockRaw === null ? null : Number(availableStockRaw);
   const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
@@ -327,7 +336,6 @@ useEffect(() => {
   };
 }, [isMobile, displayImages.length, current?.sku, product?.id]);
 
-const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
 const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
 const currentItemId = current?.id || product?.id;
 const currentVariationKey = `${sizeValue}-${colorValue}`;
