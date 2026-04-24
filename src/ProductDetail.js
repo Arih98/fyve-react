@@ -159,9 +159,6 @@ const displayMainDescription = loadedProduct?.description || fallbackProduct?.de
 
 const displayMaterialsDescription =
   effectiveVariation?.description ||
-  effectiveVariation?.variation_description ||
-  effectiveVariation?.short_description ||
-  effectiveVariation?.shortDescription ||
   loadedProduct?.short_description ||
   loadedProduct?.shortDescription ||
   fallbackProduct?.short_description ||
