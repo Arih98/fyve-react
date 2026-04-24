@@ -614,11 +614,15 @@ body.size-panel-open {
   transform: translate(-50%, -50%);
 }
 
-.product-short-description {
+.product-main-description {
+  margin: 14px 0 22px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: #4A494A;
-  margin: 18px 0 4px;
+}
+
+.product-main-description p {
+  margin: 0;
 }
 
 .product-description-accordion {

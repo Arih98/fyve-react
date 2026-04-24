@@ -155,18 +155,28 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
 
-const displayDescription = product?.product_type === 'variable'
+const displayMainDescription = product?.product_type === 'variable'
   ? (
-      effectiveVariation?.variation_description ||
       effectiveVariation?.description ||
-      effectiveVariation?.short_description ||
       product?.description ||
-      product?.short_description ||
       ''
     )
   : (
       product?.description ||
+      ''
+    );
+
+const displayMaterialsDescription = product?.product_type === 'variable'
+  ? (
+      effectiveVariation?.short_description ||
+      effectiveVariation?.shortDescription ||
       product?.short_description ||
+      product?.shortDescription ||
+      ''
+    )
+  : (
+      product?.short_description ||
+      product?.shortDescription ||
       ''
     );
 
@@ -217,7 +227,7 @@ gsap.to(icon, {
   animateAccordion(isDescriptionOpen, descriptionPanelRef.current, descriptionIconRef.current);
   animateAccordion(isDeliveryOpen, deliveryPanelRef.current, deliveryIconRef.current);
 
-}, [isDescriptionOpen, isDeliveryOpen, displayDescription]);
+}, [isDescriptionOpen, isDeliveryOpen, displayMaterialsDescription]);
 
 const getOrderedOptions = useCallback((attrName) => {
   const rawOptions = getAvailableOptions(attrName) || [];
@@ -644,6 +654,13 @@ return (
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
       <h1 className="product-title">{displayTitle}</h1>
 
+      {displayMainDescription && (
+  <div
+    className="product-main-description"
+    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayMainDescription) }}
+  />
+)}
+
       {product.product_type === 'variable' && (
   <div className="product-attributes">
     {attributeNames
@@ -828,7 +845,7 @@ onClick={async () => {
             ? 'product-variation-description accordion-description-content'
             : 'product-description accordion-description-content'
         }
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayDescription || '') }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayMaterialsDescription || '') }}
       />
     </div>
   </div>
