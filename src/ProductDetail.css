@@ -213,7 +213,7 @@
   width: 100%;
   height: 38px;
   padding: 0 18px;
-  border: 0.7px solid #4a494a;
+  border: 1px solid #4a494a;
   border-radius: 999px;
   background: #fff;
   color: #4a494a;
@@ -249,12 +249,14 @@
 .size-panel {
   width: 100%;
   max-width: 520px;
+  height: 420px;
   max-height: 80vh;
   background: #fff;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
   box-sizing: border-box;
-  touch-action: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .size-panel-header {
@@ -287,8 +289,9 @@
   display: flex;
   flex-direction: column;
   padding: 8px 0;
-  max-height: 60vh;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -369,8 +372,8 @@
 }
 
 .size-picker-chevron {
-  width: 22px;
-  height: 22px;
+  width: 25px;
+  height: 25px;
   display: block;
 }
 
@@ -953,5 +956,6 @@ body.size-panel-open {
   .size-panel {
     border-radius: 20px;
     max-width: 420px;
+    height: 420px;
   }
 }
