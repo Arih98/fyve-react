@@ -173,7 +173,7 @@
 }
 
 .product-price {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   margin-top: 6px;
   margin-bottom: 12px;
@@ -847,9 +847,16 @@ body.size-panel-open {
     margin-bottom: 10px;
   }
 
+.product-price {
+  font-size: 15px;
+  font-weight: 400;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
   .product-main-description {
   margin: 14px 0 22px;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.55;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
