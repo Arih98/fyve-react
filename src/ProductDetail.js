@@ -676,9 +676,9 @@ return (
                 {selectedAttributes[sizeAttrName] || 'Select a size'}
               </span>
 
-              <span className="size-picker-trigger-icon">
-                <span className="chevron" />
-              </span>
+<span className="size-picker-trigger-icon">
+  <img src="/assets/Chevron.svg" alt="" className="size-picker-chevron" />
+</span>
             </button>
 
             {isSizePanelOpen && (
@@ -719,7 +719,7 @@ return (
                       >
                         <span className="size-panel-option-value">{term}</span>
                         {selectedAttributes[sizeAttrName] === term && (
-                          <span className="size-panel-option-tick">✓</span>
+                          <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
                         )}
                       </button>
                     ))}

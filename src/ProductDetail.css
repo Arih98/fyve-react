@@ -346,9 +346,10 @@
 }
 
 .size-panel-option-tick {
-  font-size: 18px;
-  line-height: 1;
-  color: #4a494a;
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex: 0 0 18px;
 }
 
 .size-picker-trigger-icon {
@@ -358,12 +359,10 @@
   justify-content: center;
 }
 
-.chevron {
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid #4a494a;
-  border-bottom: 2px solid #4a494a;
-  transform: rotate(45deg);
+.size-picker-chevron {
+  width: 16px;
+  height: 16px;
+  display: block;
 }
 
 .size-option {
