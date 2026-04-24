@@ -48,8 +48,8 @@ const ProductDetail = () => {
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
   const { product: loadedProduct, loading, error } = useProduct(resolvedProductId);
-const product = loadedProduct ?? fallbackProduct ?? null;
-const productForOptions = loadedProduct ?? fallbackProduct ?? null;
+const product = fallbackProduct ?? loadedProduct ?? null;
+const productForOptions = fallbackProduct ?? loadedProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
   const selectedVariationIdFromApi = productForOptions?.selected_variation_id ? String(productForOptions.selected_variation_id) : '';
