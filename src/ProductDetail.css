@@ -852,7 +852,7 @@ body.size-panel-open {
   }
 
   .color-options {
-    gap: 12px;
+    gap: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
   }
