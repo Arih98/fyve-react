@@ -692,8 +692,12 @@ return (
                 >
                   <div className="size-panel-header">
                     <h3 className="size-panel-title">Size</h3>
-                    <button onClick={closeSizePanel} className="size-panel-close">
-  <img src="/assets/Close.svg" alt="Close" />
+                    <button
+  type="button"
+  className="size-panel-close"
+  onClick={() => setIsSizePanelOpen(false)}
+>
+  <img src="/assets/Close.svg" alt="" className="size-panel-close-icon" />
 </button>
                   </div>
 
