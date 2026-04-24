@@ -48,8 +48,8 @@ const ProductDetail = () => {
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
   const { product: loadedProduct, loading, error } = useProduct(resolvedProductId);
-const product = fallbackProduct ?? loadedProduct ?? null;
-const productForOptions = fallbackProduct ?? loadedProduct ?? null;
+const product = loadedProduct ?? fallbackProduct ?? null;
+const productForOptions = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
   const initialColorValue = (urlColor || location.state?.initialColor || '').trim().toLowerCase();
   const selectedVariationIdFromApi = productForOptions?.selected_variation_id ? String(productForOptions.selected_variation_id) : '';
@@ -155,21 +155,16 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
 
-const displayMainDescription = product?.description || '';
+const displayMainDescription = loadedProduct?.description || fallbackProduct?.description || '';
 
-const displayMaterialsDescription = product?.product_type === 'variable'
-  ? (
-      effectiveVariation?.short_description ||
-      effectiveVariation?.shortDescription ||
-      product?.short_description ||
-      product?.shortDescription ||
-      ''
-    )
-  : (
-      product?.short_description ||
-      product?.shortDescription ||
-      ''
-    );
+const displayMaterialsDescription =
+  effectiveVariation?.short_description ||
+  effectiveVariation?.shortDescription ||
+  loadedProduct?.short_description ||
+  loadedProduct?.shortDescription ||
+  fallbackProduct?.short_description ||
+  fallbackProduct?.shortDescription ||
+  '';
 
   useLayoutEffect(() => {
   const animateAccordion = (isOpen, panel, icon) => {
