@@ -692,13 +692,9 @@ return (
                 >
                   <div className="size-panel-header">
                     <h3 className="size-panel-title">Size</h3>
-                    <button
-                      type="button"
-                      className="size-panel-close"
-                      onClick={() => setIsSizePanelOpen(false)}
-                    >
-                      ×
-                    </button>
+                    <button onClick={closeSizePanel} className="size-panel-close">
+  <img src="/assets/Close.svg" alt="Close" />
+</button>
                   </div>
 
                   <div className="size-panel-options" role="listbox" aria-label="Select a size">
