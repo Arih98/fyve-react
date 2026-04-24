@@ -475,13 +475,14 @@ const menuItems = [
 ];
 
   const BurgerIcon = (
-  <button
-    type="button"
-className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}`}
-    onClick={handleToggleMenu}
-    aria-expanded={isMenuOpen}
-    aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-  >
+<button
+  type="button"
+  className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}`}
+  ref={burgerRef}
+  onClick={handleToggleMenu}
+  aria-expanded={isMenuOpen}
+  aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+>
     <span className="burger-glyph">
       <span className="hamburger-line top"></span>
       <span className="hamburger-line middle"></span>
