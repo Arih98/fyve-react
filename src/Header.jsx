@@ -19,10 +19,10 @@ const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
+const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
-const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const headerRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
@@ -40,7 +40,6 @@ const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
 const [isDesktopCartOpen, setIsDesktopCartOpen] = useState(false);
 const desktopCartRef = useRef(null);
-const usePdpHeaderVariant = isMobile && isProductDetailPage && !isMenuOpen;
 const [pdpMobileAddLabel, setPdpMobileAddLabel] = useState('Add to Bag');
 const [pdpMobileAddDisabled, setPdpMobileAddDisabled] = useState(false);
 
@@ -478,7 +477,7 @@ const menuItems = [
   const BurgerIcon = (
   <button
     type="button"
-className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' is-white' : ''}`}    ref={burgerRef}
+className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}`}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
