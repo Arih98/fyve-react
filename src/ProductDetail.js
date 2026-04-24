@@ -438,11 +438,12 @@ useEffect(() => {
   window.dispatchEvent(
     new CustomEvent('pdp:update-add-to-bag-label', {
       detail: {
-        label: pdpMobileButtonLabel
+        label: pdpMobileButtonLabel,
+        disabled: isAddDisabled
       }
     })
   );
-}, [pdpMobileButtonLabel]);
+}, [pdpMobileButtonLabel, isAddDisabled]);
 
 useEffect(() => {
   const handlePopState = (e) => {

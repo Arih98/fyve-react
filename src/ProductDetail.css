@@ -978,6 +978,9 @@ body.size-panel-open {
   body.size-panel-open .mobile-header.first-header {
     display: none !important;
   }
+  .add-to-cart-button {
+  display: none;
+}
 }
 
 @media (min-width: 769px) {

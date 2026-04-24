@@ -19,6 +19,7 @@ const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
+const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
 const isHomePage = location.pathname === '/';
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
@@ -39,6 +40,9 @@ const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
 const [isDesktopCartOpen, setIsDesktopCartOpen] = useState(false);
 const desktopCartRef = useRef(null);
+const usePdpHeaderVariant = isMobile && isProductDetailPage && !isMenuOpen;
+const [pdpMobileAddLabel, setPdpMobileAddLabel] = useState('Add to Bag');
+const [pdpMobileAddDisabled, setPdpMobileAddDisabled] = useState(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -145,6 +149,19 @@ const handleCartItemAdded = (e) => {
 }
   });
 };
+
+useEffect(() => {
+  const handlePdpLabelUpdate = (e) => {
+    setPdpMobileAddLabel(e.detail?.label || 'Add to Bag');
+    setPdpMobileAddDisabled(Boolean(e.detail?.disabled));
+  };
+
+  window.addEventListener('pdp:update-add-to-bag-label', handlePdpLabelUpdate);
+
+  return () => {
+    window.removeEventListener('pdp:update-add-to-bag-label', handlePdpLabelUpdate);
+  };
+}, []);
 
 useEffect(() => {
   totalBagQuantityRef.current = totalBagQuantity;
@@ -483,24 +500,36 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
   {useCartHeaderVariant ? (
-    <div className="cart-header-mobile-layout">
-      {cartItems.length > 0 && (
-        <div className="cart-header-checkout-container">
-          <button
-            className="cart-header-checkout-button cart-header-checkout-button-mobile"
-            onClick={() => navigate('/checkout')}
-          >
-            Checkout
-          </button>
-        </div>
-      )}
+  <div className="cart-header-mobile-layout">
+    {cartItems.length > 0 && (
+      <div className="cart-header-checkout-container">
+        <button
+          className="cart-header-checkout-button cart-header-checkout-button-mobile"
+          onClick={() => navigate('/checkout')}
+        >
+          Checkout
+        </button>
+      </div>
+    )}
+  </div>
+) : usePdpBottomAddVariant ? (
+  <div className="cart-header-mobile-layout pdp-header-mobile-layout">
+    <div className="cart-header-checkout-container">
+      <button
+        className="cart-header-checkout-button cart-header-checkout-button-mobile pdp-header-add-button"
+        disabled={pdpMobileAddDisabled}
+        onClick={() => window.dispatchEvent(new CustomEvent('pdp:add-to-cart'))}
+      >
+        {pdpMobileAddLabel}
+      </button>
     </div>
-  ) : (
+  </div>
+) : (
     <>
       <div className="header-logo mobile-hide-logo">
         <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
@@ -539,7 +568,7 @@ className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-o
     </>
   )}
 
-  {!useCartHeaderVariant && (
+  {!useCartHeaderVariant && !usePdpBottomAddVariant && (
     <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
       <div className="custom-search-inner">
         <input
