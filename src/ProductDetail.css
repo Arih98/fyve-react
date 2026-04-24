@@ -173,7 +173,7 @@
 }
 
 .product-price {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   margin-top: 6px;
   margin-bottom: 12px;
@@ -622,7 +622,7 @@ body.size-panel-open {
 
 .product-main-description {
   margin: 14px 0 22px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.55;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
@@ -842,14 +842,14 @@ body.size-panel-open {
   }
 
   .product-detail-container .product-title {
-    font-size: 1.3em;
+    font-size: 1.4em;
     line-height: 1.15;
     margin-bottom: 10px;
   }
 
   .product-main-description {
   margin: 14px 0 22px;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.55;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
