@@ -751,10 +751,11 @@ return (
                       type="button"
                       className="size-panel-add-button"
                       disabled={!selectedAttributes[sizeAttrName] || isOutOfStock}
-                      onClick={() => {
-                        handleAddToCart();
-                        setIsSizePanelOpen(false);
-                      }}
+onClick={async () => {
+  await handleAddToCart()
+  setIsSizePanelOpen(false)
+  window.history.back()
+}}
                     >
                       {isOutOfStock ? 'Out of Stock' : 'Add to Bag'}
                     </button>
