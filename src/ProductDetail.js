@@ -638,9 +638,13 @@ return (
     }}
   >
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
-      <h1 className="product-title">{displayTitle}</h1>
+<h1 className="product-title">{displayTitle}</h1>
 
-      {displayMainDescription && (
+<div className="product-price">
+  ${currentTotalPrice}
+</div>
+
+{displayMainDescription && (
   <div
     className="product-main-description"
     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayMainDescription) }}
