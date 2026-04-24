@@ -614,6 +614,13 @@ body.size-panel-open {
   transform: translate(-50%, -50%);
 }
 
+.product-short-description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4A494A;
+  margin: 18px 0 4px;
+}
+
 .product-description-accordion {
   width: 100%;
   border-bottom: 1px solid #d9d4cc;

@@ -155,9 +155,20 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
 
-  const displayDescription = product?.product_type === 'variable'
-  ? (effectiveVariation?.description || effectiveVariation?.shortDescription || effectiveVariation?.short_description || product?.description || product?.shortDescription || '')
-  : (product?.description || product?.shortDescription || '');
+const displayDescription = product?.product_type === 'variable'
+  ? (
+      effectiveVariation?.variation_description ||
+      effectiveVariation?.description ||
+      effectiveVariation?.short_description ||
+      product?.description ||
+      product?.short_description ||
+      ''
+    )
+  : (
+      product?.description ||
+      product?.short_description ||
+      ''
+    );
 
   useLayoutEffect(() => {
   const animateAccordion = (isOpen, panel, icon) => {
@@ -793,7 +804,7 @@ onClick={async () => {
 }}
     aria-expanded={isDescriptionOpen}
   >
-    <span className="product-description-accordion-title">Materials</span>
+    <span className="product-description-accordion-title">Description</span>
     <span
       ref={descriptionIconRef}
       className="product-description-accordion-icon"
