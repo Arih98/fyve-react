@@ -797,9 +797,6 @@ onClick={async () => {
   className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
-  {!isOutOfStock && (
-    <span className="add-to-cart-price">${currentTotalPrice}</span>
-  )}
 </button>
             <div className="product-description-accordion">
   <button
