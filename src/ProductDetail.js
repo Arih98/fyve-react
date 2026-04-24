@@ -432,7 +432,7 @@ await addItem({
 
 const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
 const addToCartLabel = isOutOfStock ? 'Out of Stock' : 'Add to Cart';
-const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : `Add to Bag • $${currentTotalPrice}`;
+const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : 'Add to Bag';
 
 useEffect(() => {
   window.dispatchEvent(
