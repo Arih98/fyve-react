@@ -164,11 +164,11 @@
   margin: 0 0 12px;
 }
 
+.product-price,
 .product-sku,
 .product-stock {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 300;
-  font-size: 16px;
   color: #4a494a;
 }
 
