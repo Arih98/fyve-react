@@ -84,20 +84,22 @@ const clickLockRef = useRef(false);
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
 
   const display = products.map((product) => ({
-    ...product,
-    displayId: product.displayId || product.id,
-    parentId: product.parentId || product.id,
-    selectedColor: product.selectedColor || null,
-    gallery: Array.isArray(product.gallery) && product.gallery.length > 0
-      ? product.gallery
-      : product.thumbnail
-        ? [product.thumbnail, product.hoverImage].filter(Boolean)
-        : [],
-    title: product.title || product.name,
-    image: product.thumbnail,
-    rawPrice: product.price,
-    price: product.price
-  }));
+  ...product,
+  displayId: product.displayId || product.id,
+  parentId: product.parentId || product.id,
+  selectedColor: product.selectedColor || null,
+  description: product.description || '',
+  short_description: product.short_description || '',
+  gallery: Array.isArray(product.gallery) && product.gallery.length > 0
+    ? product.gallery
+    : product.thumbnail
+      ? [product.thumbnail, product.hoverImage].filter(Boolean)
+      : [],
+  title: product.title || product.name,
+  image: product.thumbnail,
+  rawPrice: product.price,
+  price: product.price
+}));
 
   const handleProductClick = (item) => {
   if (clickLockRef.current) return;
@@ -108,7 +110,9 @@ const clickLockRef = useRef(false);
         ? item.gallery[0]
         : placeholderImage;
 
-const targetProduct = products.find((p) => p.id === item.parentId);
+const targetProduct =
+  display.find((p) => String(p.parentId) === String(item.parentId)) ||
+  products.find((p) => String(p.id) === String(item.parentId));
 if (!targetProduct) {
   clickLockRef.current = false;
   return;
