@@ -328,8 +328,8 @@
   background: #4a494a;
   color: #fff;
   font-family: 'Quasimoda', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 15px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
