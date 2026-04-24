@@ -155,16 +155,7 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
     ? (effectiveVariation?.title || effectiveVariation?.name)
     : (product?.title || product?.name || '');
 
-const displayMainDescription = product?.product_type === 'variable'
-  ? (
-      effectiveVariation?.description ||
-      product?.description ||
-      ''
-    )
-  : (
-      product?.description ||
-      ''
-    );
+const displayMainDescription = product?.description || '';
 
 const displayMaterialsDescription = product?.product_type === 'variable'
   ? (
