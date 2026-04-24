@@ -829,13 +829,7 @@ onClick={async () => {
   >
     <div className="product-description-accordion-inner">
       <div
-        className={
-          effectiveVariation?.description ||
-          effectiveVariation?.shortDescription ||
-          effectiveVariation?.short_description
-            ? 'product-variation-description accordion-description-content'
-            : 'product-description accordion-description-content'
-        }
+        className="product-description accordion-description-content"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayMaterialsDescription || '') }}
       />
     </div>
