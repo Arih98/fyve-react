@@ -439,6 +439,20 @@ useEffect(() => {
 }, [pdpMobileButtonLabel]);
 
 useEffect(() => {
+  const handlePopState = (e) => {
+    if (isSizePanelOpen) {
+      setIsSizePanelOpen(false)
+    }
+  }
+
+  window.addEventListener('popstate', handlePopState)
+
+  return () => {
+    window.removeEventListener('popstate', handlePopState)
+  }
+}, [isSizePanelOpen])
+
+useEffect(() => {
   const handleExternalAddToCart = () => {
     handleAddToCart();
   };
@@ -663,10 +677,14 @@ return (
               type="button"
               className="size-picker-trigger"
               onClick={() => {
-                if (productForOptions) {
-                  setIsSizePanelOpen(true);
-                }
-              }}
+  if (!productForOptions) return
+
+  if (!isSizePanelOpen) {
+    window.history.pushState({ sizePanel: true }, '')
+  }
+
+  setIsSizePanelOpen(true)
+}}
               disabled={!productForOptions}
             >
               <span className="size-picker-trigger-label">
@@ -679,10 +697,13 @@ return (
             </button>
 
             {isSizePanelOpen && (
-              <div
-                className="size-panel-backdrop"
-                onClick={() => setIsSizePanelOpen(false)}
-              >
+<div
+  className="size-panel-backdrop"
+  onClick={() => {
+    setIsSizePanelOpen(false)
+    window.history.back()
+  }}
+>
                 <div
                   className="size-panel"
                   role="dialog"
@@ -692,10 +713,13 @@ return (
                 >
                   <div className="size-panel-header">
                     <h3 className="size-panel-title">Size</h3>
-                    <button
+<button
   type="button"
   className="size-panel-close"
-  onClick={() => setIsSizePanelOpen(false)}
+  onClick={() => {
+    setIsSizePanelOpen(false)
+    window.history.back()
+  }}
 >
   <img src="/assets/Close.svg" alt="" className="size-panel-close-icon" />
 </button>
