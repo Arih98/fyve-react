@@ -158,6 +158,8 @@ const displayImages = gallery.length > 0 ? gallery : [mainImage];
 const displayMainDescription = loadedProduct?.description || fallbackProduct?.description || '';
 
 const displayMaterialsDescription =
+  effectiveVariation?.description ||
+  effectiveVariation?.variation_description ||
   effectiveVariation?.short_description ||
   effectiveVariation?.shortDescription ||
   loadedProduct?.short_description ||
