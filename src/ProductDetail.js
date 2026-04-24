@@ -7,7 +7,6 @@ import './ProductDetail.css';
 import { useProduct } from './hooks/useProduct';
 import { useProductSelection } from './hooks/useProductSelection';
 import { useStoredProducts } from './hooks/useStoredProducts';
-import { useQuantity } from './hooks/useQuantity';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
 import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
@@ -103,7 +102,6 @@ const current = product ? (isVariableProduct ? effectiveVariation : product) : n
 
   const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const availableStock = availableStockRaw === null ? null : Number(availableStockRaw);
-  const { quantity, increaseQuantity, decreaseQuantity } = useQuantity(current?.sku);
 
   const relatedProducts = useRelatedProducts(product, effectiveVariation, allProducts, isColorAttribute);
   const handleRelatedClick = useRelatedProductNavigation(allProducts);
@@ -369,7 +367,7 @@ const isAddDisabled = isOutOfStock;
       return;
     }
 
-    if (freshStock > 0 && quantity > remainingStock) {
+    if (freshStock > 0 && remainingStock < 1) {
       setCartError(
         remainingStock === 1
           ? 'Only 1 more available'
@@ -386,11 +384,11 @@ const isAddDisabled = isOutOfStock;
           }))
         : [];
 
-    await addItem({
-      id: Number(currentItemId),
-      quantity,
-      variation: variationPayload
-    });
+await addItem({
+  id: Number(currentItemId),
+  quantity: 1,
+  variation: variationPayload
+});
 
     const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
     const sourceRect = sourceImageEl?.getBoundingClientRect();
@@ -419,7 +417,6 @@ const isAddDisabled = isOutOfStock;
 }, [
   product,
   current,
-  quantity,
   selectedAttributes,
   isSizeAttribute,
   isColorAttribute,
@@ -427,7 +424,7 @@ const isAddDisabled = isOutOfStock;
   addItem
 ]);
 
-const currentTotalPrice = (Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0) * quantity).toFixed(2);
+const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
 const addToCartLabel = isOutOfStock ? 'Out of Stock' : 'Add to Cart';
 const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : `Add to Bag • $${currentTotalPrice}`;
 
@@ -750,37 +747,6 @@ return (
 
       {cartError && <p className="cart-error">{cartError}</p>}
 
-      <div className="quantity-selector">
-  <label className="quantity-label">Quantity</label>
-  <div className="quantity-controls pdp-quantity-controls">
-    <button
-      onClick={decreaseQuantity}
-      className="quantity-minus"
-      disabled={quantity <= 1}
-      type="button"
-    >
-      <span className="minus-line"></span>
-    </button>
-
-    <input
-      type="number"
-      className="quantity-input"
-      value={quantity}
-      min="1"
-      readOnly
-    />
-
-    <button
-      onClick={() => increaseQuantity(remainingStockForSelection)}
-      className="quantity-plus"
-      disabled={remainingStockForSelection !== null && quantity >= remainingStockForSelection}
-      type="button"
-    >
-      <span className="plus-horizontal"></span>
-      <span className="plus-vertical"></span>
-    </button>
-  </div>
-</div>
 
 <button
   onClick={handleAddToCart}
