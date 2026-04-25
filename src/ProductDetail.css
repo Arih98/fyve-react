@@ -848,7 +848,7 @@ body.size-panel-open {
   font-size: 15px;
   font-weight: 400;
   margin-top: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
   .product-main-description {
@@ -856,6 +856,8 @@ body.size-panel-open {
   line-height: 1.55;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
+  margin: 0;
+  margin-right: 60px;
 }
 
   .accordion-description-content,
