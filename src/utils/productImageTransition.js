@@ -1,30 +1,6 @@
 let activeClone = null;
 let activeAnimation = null;
 
-const waitForElement = (getEl, { maxFrames = 90 } = {}) =>
-  new Promise((resolve) => {
-    let frame = 0;
-
-    const check = () => {
-      const el = getEl?.();
-
-      if (el && el.isConnected) {
-        resolve(el);
-        return;
-      }
-
-      frame += 1;
-      if (frame >= maxFrames) {
-        resolve(null);
-        return;
-      }
-
-      requestAnimationFrame(check);
-    };
-
-    check();
-  });
-
 const waitForNextFrame = () =>
   new Promise((resolve) => {
     requestAnimationFrame(() => resolve());
@@ -212,25 +188,18 @@ export const startProductImageTransition = async ({
 
   activeClone = clone;
 
-  await waitForImageReady(clone);
+  const stableTargetPromise = waitForStableElementRect(toElementGetter, {
+  maxAttempts: 90,
+  maxFramesPerAttempt: 20,
+  stableFrames: 2
+});
 
-  fromElement.style.opacity = '0';
-  clone.style.opacity = '1';
+await waitForImageReady(clone);
 
-  const initialTarget = await waitForElement(toElementGetter);
+fromElement.style.opacity = '0';
+clone.style.opacity = '1';
 
-  if (!initialTarget) {
-    fromElement.style.opacity = '';
-    clone.remove();
-    if (activeClone === clone) activeClone = null;
-    return;
-  }
-
-  const stableTarget = await waitForStableElementRect(toElementGetter, {
-    maxAttempts: 90,
-    maxFramesPerAttempt: 20,
-    stableFrames: 2
-  });
+const stableTarget = await stableTargetPromise;
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
     fromElement.style.opacity = '';
