@@ -175,8 +175,8 @@
 .product-price {
   font-size: 18px;
   font-weight: 400;
-  margin-top: 6px;
-  margin-bottom: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .product-attributes {
@@ -855,7 +855,6 @@ body.size-panel-open {
 }
 
   .product-main-description {
-  margin: 14px 0 22px;
   font-size: 16px;
   line-height: 1.55;
   color: #4A494A;
