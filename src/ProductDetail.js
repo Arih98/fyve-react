@@ -36,6 +36,7 @@ const ProductDetail = () => {
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [viewerImageIndex, setViewerImageIndex] = useState(0);
   const [isSizePanelOpen, setIsSizePanelOpen] = useState(false);
+  const sizePanelHistoryRef = useRef(false);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
 
@@ -353,8 +354,28 @@ const isOutOfStock =
 
 const isAddDisabled = isOutOfStock;
 
+const openSizePanel = useCallback(() => {
+  if (!productForOptions) return;
+
+  if (!isSizePanelOpen) {
+    window.history.pushState({ sizePanel: true }, '');
+    sizePanelHistoryRef.current = true;
+  }
+
+  setIsSizePanelOpen(true);
+}, [productForOptions, isSizePanelOpen]);
+
+const closeSizePanel = useCallback(() => {
+  setIsSizePanelOpen(false);
+
+  if (sizePanelHistoryRef.current) {
+    sizePanelHistoryRef.current = false;
+    window.history.back();
+  }
+}, []);
+
   const handleAddToCart = useCallback(async () => {
-  if (!product || !current) return;
+  if (!product || !current) return false;
 
   try {
     const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
@@ -370,16 +391,16 @@ const isAddDisabled = isOutOfStock;
 
     if (freshStock > 0 && remainingStock <= 0) {
       setCartError('No more stock available for this selection');
-      return;
+return false;
     }
 
     if (freshStock > 0 && remainingStock < 1) {
-      setCartError(
-        remainingStock === 1
-          ? 'Only 1 more available'
-          : `Only ${remainingStock} more available`
-      );
-      return;
+setCartError(
+  remainingStock === 1
+    ? 'Only 1 more available'
+    : `Only ${remainingStock} more available`
+);
+return false;
     }
 
     const variationPayload =
@@ -415,11 +436,13 @@ await addItem({
       })
     );
 
-    setCartError(null);
-  } catch (err) {
-    console.error(err);
-    setCartError('Failed to add to cart');
-  }
+setCartError(null);
+return true;
+} catch (err) {
+  console.error(err);
+  setCartError('Failed to add to cart');
+  return false;
+}
 }, [
   product,
   current,
@@ -446,22 +469,33 @@ useEffect(() => {
 }, [pdpMobileButtonLabel, isAddDisabled]);
 
 useEffect(() => {
-  const handlePopState = (e) => {
-    if (isSizePanelOpen) {
-      setIsSizePanelOpen(false)
-    }
-  }
+  const handlePopState = () => {
+    sizePanelHistoryRef.current = false;
+    setIsSizePanelOpen(false);
+  };
 
-  window.addEventListener('popstate', handlePopState)
+  window.addEventListener('popstate', handlePopState);
 
   return () => {
-    window.removeEventListener('popstate', handlePopState)
-  }
-}, [isSizePanelOpen])
+    window.removeEventListener('popstate', handlePopState);
+  };
+}, []);
 
 useEffect(() => {
-  const handleExternalAddToCart = () => {
-    handleAddToCart();
+  const handleExternalAddToCart = async () => {
+    const sizeAttrName = attributeNames.find(isSizeAttribute);
+    const needsSizeSelection = product?.product_type === 'variable' && sizeAttrName && !hasSelectedSize;
+
+    if (needsSizeSelection) {
+      openSizePanel();
+      return;
+    }
+
+    const added = await handleAddToCart();
+
+    if (added && isSizePanelOpen) {
+      closeSizePanel();
+    }
   };
 
   window.addEventListener('pdp:add-to-cart', handleExternalAddToCart);
@@ -469,7 +503,16 @@ useEffect(() => {
   return () => {
     window.removeEventListener('pdp:add-to-cart', handleExternalAddToCart);
   };
-}, [handleAddToCart]);
+}, [
+  handleAddToCart,
+  isSizePanelOpen,
+  closeSizePanel,
+  openSizePanel,
+  attributeNames,
+  isSizeAttribute,
+  product?.product_type,
+  hasSelectedSize
+]);
 
 useEffect(() => {
   setIsSizePanelOpen(false);
@@ -694,15 +737,7 @@ return (
             <button
               type="button"
               className="size-picker-trigger"
-              onClick={() => {
-  if (!productForOptions) return
-
-  if (!isSizePanelOpen) {
-    window.history.pushState({ sizePanel: true }, '')
-  }
-
-  setIsSizePanelOpen(true)
-}}
+onClick={openSizePanel}
               disabled={!productForOptions}
             >
               <span className="size-picker-trigger-label">
@@ -717,10 +752,7 @@ return (
             {isSizePanelOpen && (
 <div
   className="size-panel-backdrop"
-  onClick={() => {
-    setIsSizePanelOpen(false)
-    window.history.back()
-  }}
+onClick={closeSizePanel}
 >
                 <div
                   className="size-panel"
@@ -734,10 +766,7 @@ return (
 <button
   type="button"
   className="size-panel-close"
-  onClick={() => {
-    setIsSizePanelOpen(false)
-    window.history.back()
-  }}
+onClick={closeSizePanel}
 >
   <img src="/assets/Close.svg" alt="" className="size-panel-close-icon" />
 </button>
@@ -770,9 +799,11 @@ return (
                       className="size-panel-add-button"
                       disabled={!selectedAttributes[sizeAttrName] || isOutOfStock}
 onClick={async () => {
-  await handleAddToCart()
-  setIsSizePanelOpen(false)
-  window.history.back()
+  const added = await handleAddToCart();
+
+  if (added) {
+    closeSizePanel();
+  }
 }}
                     >
                       {isOutOfStock ? 'Out of Stock' : 'Add to Bag'}
