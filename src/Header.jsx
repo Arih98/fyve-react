@@ -44,7 +44,7 @@ const showBurgerCartBadge =
   isMobile &&
   !isMenuOpen &&
   displayedBagQuantity > 0 &&
-  (isCartPage || isCheckoutPage);
+  (isCartPage || isCheckoutPage || isProductDetailPage);
 
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
