@@ -10,10 +10,9 @@ const ProductCard = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-const titleWords = String(item.title || '').trim().split(/\s+/).filter(Boolean);
+  const titleWords = String(item.title || '').trim().split(/\s+/).filter(Boolean);
 const firstTitleLine = titleWords.slice(0, 2).join(' ');
-const secondTitleLine = titleWords.slice(2, 5).join(' ');
-const remainingTitleLine = titleWords.slice(5).join(' ');
+const secondTitleLine = titleWords.slice(2).join(' ');
 
   const imageSrc =
     item.gallery && item.gallery.length > 0
@@ -59,13 +58,10 @@ const remainingTitleLine = titleWords.slice(5).join(' ');
 </div>
 
       <div className="product-info">
-<h3 className="product-title">
+        <h3 className="product-title">
   <span className="product-title-line">{firstTitleLine}</span>
   {secondTitleLine && (
     <span className="product-title-line">{secondTitleLine}</span>
-  )}
-  {remainingTitleLine && (
-    <span className="product-title-line">{remainingTitleLine}</span>
   )}
 </h3>
         <ProductPrice price={item.price} />
