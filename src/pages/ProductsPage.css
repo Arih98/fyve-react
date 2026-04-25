@@ -217,6 +217,10 @@
   margin: 0;
 }
 
+.product-card .product-title-line {
+  display: block;
+}
+
   .products-container {
     padding-top: 95px;
   }
