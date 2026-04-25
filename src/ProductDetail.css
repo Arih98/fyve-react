@@ -430,9 +430,6 @@
 }
 
 body.size-panel-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
   touch-action: none;
 }
 

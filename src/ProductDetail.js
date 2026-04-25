@@ -37,6 +37,7 @@ const ProductDetail = () => {
   const [viewerImageIndex, setViewerImageIndex] = useState(0);
   const [isSizePanelOpen, setIsSizePanelOpen] = useState(false);
   const sizePanelHistoryRef = useRef(false);
+  const sizePanelScrollYRef = useRef(0);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
 
@@ -519,12 +520,40 @@ useEffect(() => {
 }, [product?.id, colorValue]);
 
 useEffect(() => {
-  document.body.classList.toggle('size-panel-open', isMobile && isSizePanelOpen)
+  if (!isMobile || !isSizePanelOpen) {
+    return;
+  }
+
+  const scrollY = window.scrollY;
+  sizePanelScrollYRef.current = scrollY;
+
+  const originalPosition = document.body.style.position;
+  const originalTop = document.body.style.top;
+  const originalLeft = document.body.style.left;
+  const originalRight = document.body.style.right;
+  const originalWidth = document.body.style.width;
+  const originalOverflow = document.body.style.overflow;
+
+  document.body.classList.add('size-panel-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
 
   return () => {
-    document.body.classList.remove('size-panel-open')
-  }
-}, [isMobile, isSizePanelOpen])
+    document.body.classList.remove('size-panel-open');
+    document.body.style.position = originalPosition;
+    document.body.style.top = originalTop;
+    document.body.style.left = originalLeft;
+    document.body.style.right = originalRight;
+    document.body.style.width = originalWidth;
+    document.body.style.overflow = originalOverflow;
+
+    window.scrollTo(0, sizePanelScrollYRef.current);
+  };
+}, [isMobile, isSizePanelOpen]);
 
 useEffect(() => {
   if (!product) return;
