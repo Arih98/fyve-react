@@ -32,16 +32,20 @@ const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
+
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
   [cartItems]
 );
+
+const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
+
 const showBurgerCartBadge =
   isMobile &&
   !isMenuOpen &&
   displayedBagQuantity > 0 &&
   (isCartPage || isCheckoutPage);
-const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
+
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
 const [isDesktopCartOpen, setIsDesktopCartOpen] = useState(false);
