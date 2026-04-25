@@ -890,8 +890,8 @@ body.locked {
 
 .mobile-header .a-burger .burger-cart-count {
   position: absolute;
-  top: -1px;
-  right: -1px;
+  top: -2px;
+  right: -2px;
   pointer-events: none;
   z-index: 5;
 }
