@@ -883,6 +883,19 @@ body.locked {
   top: 14px;
 }
 
+.mobile-header .a-burger.has-cart-badge {
+  position: relative !important;
+  overflow: visible;
+}
+
+.mobile-header .a-burger .burger-cart-count {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  pointer-events: none;
+  z-index: 5;
+}
+
   .mobile-header .mobile-nav-icons {
     display: contents;
     margin: 0 !important;

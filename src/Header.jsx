@@ -18,6 +18,7 @@ const Header = () => {
 const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
+const isCheckoutPage = location.pathname.startsWith('/checkout');
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
@@ -35,6 +36,11 @@ const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
   [cartItems]
 );
+const showBurgerCartBadge =
+  isMobile &&
+  !isMenuOpen &&
+  displayedBagQuantity > 0 &&
+  (isCartPage || isCheckoutPage);
 const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantity);
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);
@@ -475,23 +481,29 @@ const menuItems = [
 ];
 
   const BurgerIcon = (
-<button
-  type="button"
-  className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}`}
-  ref={burgerRef}
-  onClick={handleToggleMenu}
-  aria-expanded={isMenuOpen}
-  aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
->
+  <button
+    type="button"
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}${showBurgerCartBadge ? ' has-cart-badge' : ''}`}
+    ref={burgerRef}
+    onClick={handleToggleMenu}
+    aria-expanded={isMenuOpen}
+    aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+  >
     <span className="burger-glyph">
       <span className="hamburger-line top"></span>
       <span className="hamburger-line middle"></span>
       <span className="hamburger-line bottom"></span>
       <svg className="x-svg" width="19" height="19" viewBox="0 0 19 19">
         <line className="x-line left" x1="1.5" y1="17.5" x2="17.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
-<line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
+        <line className="x-line right" x1="17.5" y1="17.5" x2="1.5" y2="1.5" stroke="currentColor" strokeWidth="2.2" />
       </svg>
     </span>
+
+    {showBurgerCartBadge && (
+      <span className="header-bag-count burger-cart-count">
+        {displayedBagQuantity}
+      </span>
+    )}
   </button>
 );
 
