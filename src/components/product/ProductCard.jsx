@@ -12,8 +12,8 @@ const ProductCard = ({
   const [imageLoaded, setImageLoaded] = useState(false);
 const titleWords = String(item.title || '').trim().split(/\s+/).filter(Boolean);
 const firstTitleLine = titleWords.slice(0, 2).join(' ');
-const secondTitleLine = titleWords.slice(2, 4).join(' ');
-const remainingTitleLine = titleWords.slice(4).join(' ');
+const secondTitleLine = titleWords.slice(2, 5).join(' ');
+const remainingTitleLine = titleWords.slice(5).join(' ');
 
   const imageSrc =
     item.gallery && item.gallery.length > 0
