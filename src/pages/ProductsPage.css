@@ -214,7 +214,8 @@
   font-size: 15px !important;
   line-height: 1.4em;
   color: #4a494a;
-  margin: 0;
+  max-width: 170px;
+  margin: 0 auto;
 }
 
 .product-card .product-title-line {
