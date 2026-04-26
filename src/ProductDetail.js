@@ -894,12 +894,9 @@ onClick={closeSizePanel}
       <span className="size-panel-option-value">{term}</span>
 
       <span className="size-panel-option-meta">
-        {optionOutOfStock && (
-  <span className="size-panel-option-stock">Out of stock</span>
-)}
-
-{!optionOutOfStock &&
+        {!optionOutOfStock &&
   stockState.remainingStock !== null &&
+  stockState.remainingStock > 0 &&
   stockState.remainingStock <= 3 && (
     <span className="size-panel-option-stock">
       {stockState.remainingStock === 1
