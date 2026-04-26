@@ -892,6 +892,7 @@ body.size-panel-open {
   line-height: 1.45;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
+  letter-spacing: -0.05px;
   margin: 0;
 }
 
