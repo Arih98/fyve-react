@@ -376,6 +376,33 @@
   flex: 0 0 18px;
 }
 
+.size-panel-option.out-of-stock {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.size-panel-option.out-of-stock:hover {
+  background: #fff;
+}
+
+.size-panel-option:disabled {
+  cursor: not-allowed;
+}
+
+.size-panel-option-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.size-panel-option-stock {
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8a8a8a;
+  white-space: nowrap;
+}
+
 .size-picker-trigger-icon {
   position: static;
   display: flex;

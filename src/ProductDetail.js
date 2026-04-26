@@ -355,6 +355,75 @@ const isOutOfStock =
 
 const isAddDisabled = isOutOfStock;
 
+const getVariationForSizeOption = useCallback((sizeAttrName, sizeTerm) => {
+  if (!Array.isArray(productForOptions?.variations)) return null;
+
+  return productForOptions.variations.find((variation) => {
+    const attrs = Array.isArray(variation.attributes) ? variation.attributes : [];
+
+    return attributeNames.every((attrName) => {
+      const expectedValue = isSizeAttribute(attrName)
+        ? sizeTerm
+        : selectedAttributes[attrName];
+
+      if (!expectedValue) return true;
+
+      return attrs.some((attr) =>
+        String(attr.attribute_name || '').trim().toLowerCase() === String(attrName || '').trim().toLowerCase() &&
+        String(attr.term_name || attr.term_slug || '').trim().toLowerCase() === String(expectedValue || '').trim().toLowerCase()
+      );
+    });
+  }) || null;
+}, [
+  productForOptions?.variations,
+  attributeNames,
+  isSizeAttribute,
+  selectedAttributes
+]);
+
+const getSizeOptionStockState = useCallback((sizeAttrName, sizeTerm) => {
+  const variation = getVariationForSizeOption(sizeAttrName, sizeTerm);
+
+  if (!variation) {
+    return {
+      variation: null,
+      isOutOfStock: true,
+      remainingStock: 0
+    };
+  }
+
+  const stockStatus = String(variation.stock_status || variation.stockStatus || '').toLowerCase();
+
+  if (stockStatus === 'outofstock' || stockStatus === 'out_of_stock') {
+    return {
+      variation,
+      isOutOfStock: true,
+      remainingStock: 0
+    };
+  }
+
+  const rawStock = variation.stockQuantity ?? variation.stock_quantity ?? null;
+
+  if (rawStock === null || rawStock === undefined || rawStock === '') {
+    return {
+      variation,
+      isOutOfStock: false,
+      remainingStock: null
+    };
+  }
+
+  const stock = Number(rawStock);
+  const existingItem = cartItems.find((item) => Number(item.id) === Number(variation.id));
+  const existingQuantity = existingItem?.quantity || 0;
+  const remainingStock = Math.max(0, stock - existingQuantity);
+
+  return {
+    variation,
+    isOutOfStock: remainingStock <= 0,
+    remainingStock
+  };
+}, [getVariationForSizeOption, cartItems]);
+
 const openSizePanel = useCallback(() => {
   if (!productForOptions) return;
 
@@ -802,24 +871,50 @@ onClick={closeSizePanel}
                   </div>
 
                   <div className="size-panel-options" role="listbox" aria-label="Select a size">
-                    {options.map(term => (
-                      <button
-                        key={term}
-                        type="button"
-                        role="option"
-                        aria-selected={selectedAttributes[sizeAttrName] === term}
-                        className={`size-panel-option ${selectedAttributes[sizeAttrName] === term ? 'selected' : ''}`}
-                        onClick={() => {
-                          handleAttributeChange(sizeAttrName, term);
-                          setCartError(null);
-                        }}
-                      >
-                        <span className="size-panel-option-value">{term}</span>
-                        {selectedAttributes[sizeAttrName] === term && (
-                          <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
-                        )}
-                      </button>
-                    ))}
+                    {options.map(term => {
+  const stockState = getSizeOptionStockState(sizeAttrName, term);
+  const optionOutOfStock = stockState.isOutOfStock;
+  const optionSelected = selectedAttributes[sizeAttrName] === term;
+
+  return (
+    <button
+      key={term}
+      type="button"
+      role="option"
+      aria-selected={optionSelected}
+      disabled={optionOutOfStock}
+      className={`size-panel-option ${optionSelected ? 'selected' : ''} ${optionOutOfStock ? 'out-of-stock' : ''}`}
+      onClick={() => {
+        if (optionOutOfStock) return;
+
+        handleAttributeChange(sizeAttrName, term);
+        setCartError(null);
+      }}
+    >
+      <span className="size-panel-option-value">{term}</span>
+
+      <span className="size-panel-option-meta">
+        {optionOutOfStock && (
+  <span className="size-panel-option-stock">Out of stock</span>
+)}
+
+{!optionOutOfStock &&
+  stockState.remainingStock !== null &&
+  stockState.remainingStock <= 3 && (
+    <span className="size-panel-option-stock">
+      {stockState.remainingStock === 1
+        ? '1 left'
+        : `${stockState.remainingStock} left`}
+    </span>
+  )}
+
+{optionSelected && !optionOutOfStock && (
+  <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
+)}
+      </span>
+    </button>
+  );
+})}
                   </div>
 
                   <div className="size-panel-footer">
