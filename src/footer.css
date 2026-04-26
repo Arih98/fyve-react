@@ -109,17 +109,19 @@
   }
 
   .footer-brand {
-    width: 100%;
-    max-width: 100%;
+    width: calc(100% + 40px);
+    max-width: none;
+    margin-left: -20px;
+    margin-right: -20px;
     overflow: hidden;
   }
 
   .footer-fyve {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    font-size: clamp(130px, 25.5vw, 260px);
-    line-height: 0.8;
+    display: inline-block;
+    width: auto;
+    max-width: none;
+    font-size: clamp(130px, 32vw, 260px);
+    line-height: 0.78;
     text-align: center;
     white-space: nowrap;
   }
@@ -128,5 +130,27 @@
     font-size: 12px;
     letter-spacing: 1em;
     margin-top: -0.5em;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    white-space: normal;
+    gap: 16px 24px;
+    justify-content: center;
+  }
+
+  .footer-form {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footer-form input {
+    min-width: 0;
+    width: 140px;
+  }
+
+  .footer-form-message {
+    white-space: normal;
+    text-align: center;
   }
 }
