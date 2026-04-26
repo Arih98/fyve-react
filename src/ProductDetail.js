@@ -171,7 +171,12 @@ const displayMaterialsDescription =
   fallbackProduct?.shortDescription ||
   '';
 
-  const sizeChart = product?.size_chart || null;
+  const sizeChart =
+  loadedProduct?.size_chart ||
+  product?.size_chart ||
+  fallbackProduct?.size_chart ||
+  null;
+
 const sizeChartRows = Array.isArray(sizeChart?.sizes) ? sizeChart.sizes : [];
 const hasSizeChart = sizeChartRows.length > 0;
 
@@ -185,6 +190,14 @@ const showSizeChartMeasurement1 =
 const showSizeChartMeasurement2 =
   sizeChartMeasurement2Title !== '' ||
   sizeChartRows.some(row => String(row?.measurement_2 || '').trim() !== '');
+
+console.log('React size chart check:', {
+  loadedProductSizeChart: loadedProduct?.size_chart,
+  productSizeChart: product?.size_chart,
+  fallbackProductSizeChart: fallbackProduct?.size_chart,
+  sizeChart,
+  hasSizeChart
+});
 
   useLayoutEffect(() => {
   const animateAccordion = (isOpen, panel, icon) => {
