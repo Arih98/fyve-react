@@ -12,37 +12,28 @@
     #f1dbd1 46%,
     #f1dbd1 100%
   );
-  box-sizing: border-box;
-  overflow-x: clip;
 }
 
 .footer-brand {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
   font-size: 28px;
   letter-spacing: 2px;
   line-height: 1;
   margin-bottom: 1em;
 }
 
-.footer-fyve-svg {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  aspect-ratio: 1000 / 180;
-  overflow: hidden;
-}
-
-.footer-fyve-svg text {
+.footer-fyve {
   font-family: quasimoda, sans-serif !important;
   font-weight: 200;
-  font-size: 180px;
-  fill: #4A494A;
+  font-size: clamp(160px, 26vw, 520px);
+  color: #4A494A;
+}
+
+.kern-e {
+  display: inline-block;
+  transform: translateX(-0.08em);
 }
 
 .footer-london {
@@ -114,47 +105,28 @@
 @media (max-width: 768px) {
   .footer {
     padding: 60px 20px 40px;
+    overflow-x: hidden;
   }
 
   .footer-brand {
     width: 100%;
     max-width: 100%;
+    overflow: hidden;
   }
 
-  .footer-fyve-svg {
+  .footer-fyve {
+    display: block;
     width: 100%;
-    aspect-ratio: 1000 / 165;
-  }
-
-  .footer-fyve-svg text {
-    font-size: 175px;
+    max-width: 100%;
+    font-size: clamp(130px, 25.5vw, 260px);
+    line-height: 0.8;
+    text-align: center;
+    white-space: nowrap;
   }
 
   .footer-london {
     font-size: 12px;
     letter-spacing: 1em;
     margin-top: -0.5em;
-  }
-
-  .footer-links {
-    flex-wrap: wrap;
-    white-space: normal;
-    gap: 16px 24px;
-    justify-content: center;
-  }
-
-  .footer-form {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .footer-form input {
-    min-width: 0;
-    width: 140px;
-  }
-
-  .footer-form-message {
-    white-space: normal;
-    text-align: center;
   }
 }

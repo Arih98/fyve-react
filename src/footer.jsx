@@ -40,9 +40,9 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-brand">
-<svg className="footer-fyve-svg" viewBox="0 0 1000 180" preserveAspectRatio="none" aria-label="FYVE">
-  <text x="-20" y="145" textLength="1040" lengthAdjust="spacingAndGlyphs">FYVE</text>
-</svg>
+        <span className="footer-fyve">
+          FYV<span className="kern-e">E</span>
+        </span>
         <span className="footer-london">LONDON</span>
       </div>
 
