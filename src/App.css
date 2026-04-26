@@ -18,6 +18,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+html {
+  overflow-anchor: none;
+}
+
 @layer components {
   .btn {
     @apply px-4 py-2 rounded-lg font-medium transition-colors;

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
 const scrollPositions = new Map();
@@ -28,7 +28,7 @@ export default function ScrollManager() {
     };
   }, [location.pathname, location.search]);
 
-    useEffect(() => {
+  useLayoutEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
     if (location.pathname === '/') {
@@ -59,11 +59,6 @@ export default function ScrollManager() {
 
       const savedY = scrollPositions.get(pageKey) ?? 0;
       window.scrollTo(0, savedY);
-      return;
-    }
-
-        if (location.state?.fromProductGrid) {
-      window.scrollTo(0, 0);
       return;
     }
 
