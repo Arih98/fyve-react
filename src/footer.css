@@ -103,6 +103,7 @@
 
 @media (max-width: 768px) {
   .footer {
+    min-height: 620px;
     background: linear-gradient(
     to bottom,
     #fff 0%,
@@ -110,7 +111,7 @@
     #f1dbd1 27%,
     #f1dbd1 100%
   );
-    padding: 60px 20px 40px;
+    padding: 90px 20px 70px;
     overflow-x: hidden;
   }
 
