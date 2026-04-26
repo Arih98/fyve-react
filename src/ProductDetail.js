@@ -864,33 +864,57 @@ return (
       {product.product_type === 'variable' && (
   <div className="product-attributes">
     {attributeNames
-      .filter(attrName => !isSizeAttribute(attrName))
-      .map(attrName => {
-        const options = getOrderedOptions(attrName);
+  .filter(attrName => !isSizeAttribute(attrName))
+  .map(attrName => {
+    const options = getOrderedOptions(attrName);
+    const isSwatchAttribute =
+      isColorAttribute(attrName) ||
+      String(attrName || '').toLowerCase().includes('stiching') ||
+      String(attrName || '').toLowerCase().includes('stitching') ||
+      String(attrName || '').toLowerCase().includes('colour') ||
+      String(attrName || '').toLowerCase().includes('color');
 
-        return (
-          <div key={attrName} className="attribute-group">
-            <label className="attribute-label">{attrName}</label>
+    return (
+      <div key={attrName} className="attribute-group">
+        <label className="attribute-label">{attrName}</label>
 
-            {isColorAttribute(attrName) && (
-              <div className="color-options">
-                {options.map(term => (
-                  <div key={term} className="color-option">
-                    <button
-                      onClick={() => {
-                        handleAttributeChange(attrName, term);
-                        setCartError(null);
-                      }}
-                      className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
-                    />
-                    <span className="color-label">{term}</span>
-                  </div>
-                ))}
+        {isSwatchAttribute ? (
+          <div className="color-options">
+            {options.map(term => (
+              <div key={term} className="color-option">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleAttributeChange(attrName, term);
+                    setCartError(null);
+                  }}
+                  className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
+                  aria-label={`${attrName} ${term}`}
+                />
+                <span className="color-label">{term}</span>
               </div>
-            )}
+            ))}
           </div>
-        );
-      })}
+        ) : (
+          <div className="attribute-pill-options">
+            {options.map(term => (
+              <button
+                key={term}
+                type="button"
+                onClick={() => {
+                  handleAttributeChange(attrName, term);
+                  setCartError(null);
+                }}
+                className={`attribute-pill-button ${selectedAttributes[attrName] === term ? 'selected' : ''}`}
+              >
+                {term}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  })}
 
     {(() => {
       const sizeAttrName = attributeNames.find(isSizeAttribute);
