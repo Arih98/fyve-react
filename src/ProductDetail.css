@@ -277,7 +277,7 @@
   margin: 0;
   font-family: 'Quasimoda', sans-serif;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 18px;
   color: #4a494a;
 }
 
@@ -377,8 +377,16 @@
 }
 
 .size-panel-option.out-of-stock {
-  opacity: 0.38;
+  opacity: 1;
   cursor: not-allowed;
+}
+
+.size-panel-option.out-of-stock .size-panel-option-value {
+  opacity: 0.38;
+}
+
+.size-panel-option.out-of-stock .size-panel-option-stock {
+  opacity: 1;
 }
 
 .size-panel-option.out-of-stock:hover {

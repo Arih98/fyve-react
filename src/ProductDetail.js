@@ -894,21 +894,26 @@ onClick={closeSizePanel}
       <span className="size-panel-option-value">{term}</span>
 
       <span className="size-panel-option-meta">
-        {!optionOutOfStock &&
-  stockState.remainingStock !== null &&
-  stockState.remainingStock > 0 &&
-  stockState.remainingStock <= 3 && (
-    <span className="size-panel-option-stock">
-      {stockState.remainingStock === 1
-        ? '1 left'
-        : `${stockState.remainingStock} left`}
-    </span>
-  )}
+  {(() => {
+    const stockLabel = optionOutOfStock
+      ? 'Out of stock'
+      : stockState.remainingStock !== null &&
+          stockState.remainingStock > 0 &&
+          stockState.remainingStock <= 3
+        ? stockState.remainingStock === 1
+          ? '1 left'
+          : `${stockState.remainingStock} left`
+        : '';
 
-{optionSelected && !optionOutOfStock && (
-  <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
-)}
-      </span>
+    return stockLabel ? (
+      <span className="size-panel-option-stock">{stockLabel}</span>
+    ) : null;
+  })()}
+
+  {optionSelected && !optionOutOfStock && (
+    <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
+  )}
+</span>
     </button>
   );
 })}
