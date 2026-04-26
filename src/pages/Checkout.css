@@ -636,7 +636,7 @@ input[readonly] {
 .checkout-summary-item-main {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 20px;
   flex: 1;
   min-width: 0;
 }
@@ -657,6 +657,9 @@ input[readonly] {
   overflow: visible;
   background: #f4f4f4;
   border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  box-sizing: border-box;
 }
 
 .checkout-summary-item-qty {
@@ -665,7 +668,7 @@ input[readonly] {
   right: -7px;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: 25%;
   background: #4A494A;
   color: #fff;
   display: flex;
@@ -949,6 +952,7 @@ input[readonly] {
     .checkout-mobile-summary {
     display: block;
     width: 100%;
+    padding-top: 16px;
   }
 
   .checkout-main::after {
