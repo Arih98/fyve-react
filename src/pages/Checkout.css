@@ -659,6 +659,14 @@ input[readonly] {
   gap: 12px;
 }
 
+.checkout-summary-item-variation {
+  font-family: quasimoda, sans-serif;
+  font-size: 13px;
+  color: #4A494A;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
 .checkout-summary-coupon-block {
   display: flex;
   flex-direction: column;

@@ -218,13 +218,20 @@ const renderOrderSummary = () => (
   <section className="checkout-section checkout-order-summary">
     <h2>Order summary</h2>
 
-    {cartItems.map((item) => {
-      const imageSrc =
-        item.images?.[0]?.thumbnail ||
-        item.images?.[0]?.src ||
-        '/api/Uploads/fallback-image.png'
+{cartItems.map((item) => {
+  const imageSrc =
+    item.images?.[0]?.thumbnail ||
+    item.images?.[0]?.src ||
+    '/api/Uploads/fallback-image.png'
 
-      return (
+  const variationSize = item.variation?.find((attr) => {
+    const label = String(attr.attribute || attr.name || '').toLowerCase()
+    return label.includes('size') || label.includes('pa_size')
+  })
+
+  const sizeValue = variationSize?.value || variationSize?.display || ''
+
+  return (
         <div key={item.key} className="checkout-summary-item">
           <div className="checkout-summary-item-main">
             <img
@@ -232,10 +239,11 @@ const renderOrderSummary = () => (
               alt={item.name}
               className="checkout-summary-item-image"
             />
-            <div className="checkout-summary-item-info">
-              <div>{item.name}</div>
-              <div>Qty: {item.quantity}</div>
-            </div>
+<div className="checkout-summary-item-info">
+  <div>{item.name}</div>
+  {sizeValue && <div className="checkout-summary-item-variation">Size: {sizeValue}</div>}
+  <div>Qty: {item.quantity}</div>
+</div>
           </div>
 
           <div>{formatWooMoney(item.totals?.line_total, cart?.totals)}</div>
