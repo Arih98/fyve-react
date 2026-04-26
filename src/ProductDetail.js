@@ -15,7 +15,7 @@ import FullscreenGallery from './FullscreenGallery';
 
 
 const ProductDetail = () => {
-  const { cartItems, addItem } = useContext(CartContext);
+  const { cartItems, addItem, loading: cartLoading } = useContext(CartContext);
   const location = useLocation();
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
@@ -379,7 +379,7 @@ const remainingStockForSelection =
 const isOutOfStock =
   hasSelectedSize && remainingStockForSelection !== null && remainingStockForSelection <= 0;
 
-const isAddDisabled = isOutOfStock;
+const isAddDisabled = isOutOfStock || cartLoading;
 
 const getVariationForSizeOption = useCallback((sizeAttrName, sizeTerm) => {
   if (!Array.isArray(productForOptions?.variations)) return null;
@@ -542,9 +542,9 @@ window.dispatchEvent(new CustomEvent('cart:item-add-confirmed'));
 setCartError(null);
 return true;
 } catch (err) {
-  console.error(err);
+  console.error('Add to cart failed:', err);
   window.dispatchEvent(new CustomEvent('cart:item-add-failed'));
-  setCartError('Failed to add to cart');
+  setCartError(err.message || 'Failed to add to cart');
   return false;
 }
 }, [
