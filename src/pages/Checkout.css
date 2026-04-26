@@ -638,12 +638,14 @@ input[readonly] {
   align-items: flex-start;
   gap: 12px;
   flex: 1;
+  min-width: 0;
 }
 
 .checkout-summary-item-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .checkout-summary-item-image-wrap {
@@ -685,6 +687,10 @@ input[readonly] {
 
 .checkout-summary-item-title {
   font-family: "ArizonaFlare", sans-serif;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .checkout-summary-coupon-label {
