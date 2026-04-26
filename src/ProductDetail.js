@@ -171,6 +171,21 @@ const displayMaterialsDescription =
   fallbackProduct?.shortDescription ||
   '';
 
+  const sizeChart = product?.size_chart || null;
+const sizeChartRows = Array.isArray(sizeChart?.sizes) ? sizeChart.sizes : [];
+const hasSizeChart = sizeChartRows.length > 0;
+
+const sizeChartMeasurement1Title = String(sizeChart?.measurement_1_title || '').trim();
+const sizeChartMeasurement2Title = String(sizeChart?.measurement_2_title || '').trim();
+
+const showSizeChartMeasurement1 =
+  sizeChartMeasurement1Title !== '' ||
+  sizeChartRows.some(row => String(row?.measurement_1 || '').trim() !== '');
+
+const showSizeChartMeasurement2 =
+  sizeChartMeasurement2Title !== '' ||
+  sizeChartRows.some(row => String(row?.measurement_2 || '').trim() !== '');
+
   useLayoutEffect(() => {
   const animateAccordion = (isOpen, panel, icon) => {
     if (!panel || !icon) return;
@@ -220,21 +235,6 @@ animateAccordion(isDescriptionOpen, descriptionPanelRef.current, descriptionIcon
 animateAccordion(isDeliveryOpen, deliveryPanelRef.current, deliveryIconRef.current);
 
 }, [isSizeGuideOpen, isDescriptionOpen, isDeliveryOpen, displayMaterialsDescription, sizeChartRows.length]);
-
-const sizeChart = product?.size_chart || null;
-const sizeChartRows = Array.isArray(sizeChart?.sizes) ? sizeChart.sizes : [];
-const hasSizeChart = sizeChartRows.length > 0;
-
-const sizeChartMeasurement1Title = String(sizeChart?.measurement_1_title || '').trim();
-const sizeChartMeasurement2Title = String(sizeChart?.measurement_2_title || '').trim();
-
-const showSizeChartMeasurement1 =
-  sizeChartMeasurement1Title !== '' ||
-  sizeChartRows.some(row => String(row?.measurement_1 || '').trim() !== '');
-
-const showSizeChartMeasurement2 =
-  sizeChartMeasurement2Title !== '' ||
-  sizeChartRows.some(row => String(row?.measurement_2 || '').trim() !== '');
 
 const getOrderedOptions = useCallback((attrName) => {
   const rawOptions = getAvailableOptions(attrName) || [];
