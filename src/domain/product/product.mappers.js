@@ -107,6 +107,7 @@ shortDescription: raw.short_description || "",
     stockStatus: raw.stock_status || "out_of_stock",
     product_type: raw.product_type,
     variations,
+    size_chart: raw.size_chart || null,
     selectedColor: null,
     variationId: null
   };
@@ -199,6 +200,7 @@ export function mapProductForDetail(raw) {
     stockQuantity: raw.stock_quantity ?? null,
     stockStatus: raw.stock_status || "out_of_stock",
     attributes: Array.isArray(raw.attributes) ? raw.attributes : [],
-    variations: Array.isArray(raw.variations) ? raw.variations : []
+    variations: Array.isArray(raw.variations) ? raw.variations : [],
+    size_chart: raw.size_chart || null
   };
 }

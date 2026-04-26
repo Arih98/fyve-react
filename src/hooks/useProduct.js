@@ -26,12 +26,8 @@ export function useProduct(productId) {
 
         if (!active) return;
 
-const mappedProduct = {
-  ...mapProductForDetail(rawProduct),
-  size_chart: rawProduct?.size_chart || null
-};
-
-setProduct(mappedProduct);
+        const mappedProduct = mapProductForDetail(rawProduct);
+        setProduct(mappedProduct);
       } catch (err) {
         if (!active) return;
         setError(err);
