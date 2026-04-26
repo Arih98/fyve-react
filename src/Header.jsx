@@ -32,6 +32,14 @@ const submenuRefs = useRef(new Map());
 const [menuVisualActive, setMenuVisualActive] = useState(false);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
+const cartAddedPopupRef = useRef(null);
+const cartAddedPopupImageTargetRef = useRef(null);
+const cartAddedPopupTimeoutRef = useRef(null);
+const cartAddedFlyingImageRef = useRef(null);
+const cartAddedPopupAnimationRef = useRef(null);
+const [isCartAddedPopupOpen, setIsCartAddedPopupOpen] = useState(false);
+const [cartAddedPopupItem, setCartAddedPopupItem] = useState(null);
+const [isCartAddedPopupImageVisible, setIsCartAddedPopupImageVisible] = useState(false);
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -67,97 +75,120 @@ const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' 
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
 
+const closeCartAddedPopup = () => {
+  clearTimeout(cartAddedPopupTimeoutRef.current);
+  setIsCartAddedPopupOpen(false);
+  setIsCartAddedPopupImageVisible(false);
+};
+
+const hideCartAddedPopupLater = () => {
+  clearTimeout(cartAddedPopupTimeoutRef.current);
+
+  cartAddedPopupTimeoutRef.current = setTimeout(() => {
+    setIsCartAddedPopupOpen(false);
+    setIsCartAddedPopupImageVisible(false);
+  }, 2600);
+};
+
 const handleCartItemAdded = (e) => {
-  const bagEl = bagIconButtonRef.current;
   const startRect = e.detail?.startRect;
   const sourceSelector = e.detail?.sourceSelector;
+  const sourceImageEl = sourceSelector ? document.querySelector(sourceSelector) : null;
+  const item = e.detail?.item || {};
 
-  if (!bagEl || !startRect || !sourceSelector) return;
+  if (cartAddedPopupAnimationRef.current) {
+    cartAddedPopupAnimationRef.current.kill();
+    cartAddedPopupAnimationRef.current = null;
+  }
 
-  const sourceImageEl = document.querySelector(sourceSelector);
+  if (cartAddedFlyingImageRef.current) {
+    cartAddedFlyingImageRef.current.remove();
+    cartAddedFlyingImageRef.current = null;
+  }
 
-  if (!sourceImageEl) return;
+  setCartAddedPopupItem({
+    title: item.title || '',
+    image: item.image || sourceImageEl?.src || '/api/Uploads/fallback-image.png'
+  });
 
-  isCartAddAnimatingRef.current = true;
-
-  const bagImgEl = bagEl.querySelector('img');
-  const bagRect = (bagImgEl || bagEl).getBoundingClientRect();
-
-  const flyingImage = sourceImageEl.cloneNode(true);
-  flyingImage.classList.add('flying-cart-image');
-  flyingImage.style.position = 'fixed';
-  flyingImage.style.top = `${startRect.top}px`;
-  flyingImage.style.left = `${startRect.left}px`;
-  flyingImage.style.width = `${startRect.width}px`;
-  flyingImage.style.height = `${startRect.height}px`;
-  flyingImage.style.margin = '0';
-  flyingImage.style.pointerEvents = 'none';
-  flyingImage.style.zIndex = '100000';
-  flyingImage.style.transformOrigin = 'center center';
-  flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
-  flyingImage.style.background = 'transparent';
-  flyingImage.style.boxShadow = 'none';
-  flyingImage.style.border = 'none';
-  flyingImage.style.outline = 'none';
-  flyingImage.style.opacity = '1';
-  document.body.appendChild(flyingImage);
-
-  const targetSize = 20;
-  const targetLeft = bagRect.left + (bagRect.width / 2) - (targetSize / 2);
-  const targetTop = bagRect.top + (bagRect.height / 2) - (targetSize / 2);
-  const flightDuration = 1.1;
-
-  gsap.to(flyingImage, {
-    top: targetTop,
-    left: targetLeft,
-    width: targetSize,
-    height: targetSize,
-    scale: 0.2,
-    opacity: 1,
-    duration: flightDuration,
-    ease: 'power2.inOut',
-    onComplete: () => {
-  setDisplayedBagQuantity(totalBagQuantityRef.current);
+  setIsCartAddedPopupImageVisible(false);
+  setIsCartAddedPopupOpen(true);
 
   requestAnimationFrame(() => {
-    gsap.fromTo(
-      bagEl,
-      { scale: 1 },
-      {
-        scale: 1.16,
-        duration: 0.18,
-        ease: 'power2.out',
-        yoyo: true,
-        repeat: 1
+    requestAnimationFrame(() => {
+      const targetEl = cartAddedPopupImageTargetRef.current;
+
+      if (!targetEl || !sourceImageEl || !startRect) {
+        setIsCartAddedPopupImageVisible(true);
+        hideCartAddedPopupLater();
+        return;
       }
-    );
 
-    if (bagCountRef.current) {
-      gsap.fromTo(
-        bagCountRef.current,
-        { scale: 0.7 },
-        {
-          scale: 1,
-          duration: 0.28,
-          ease: 'back.out(2.4)'
+      const targetRect = targetEl.getBoundingClientRect();
+
+      const flyingImage = sourceImageEl.cloneNode(true);
+      flyingImage.classList.add('flying-cart-image');
+      flyingImage.style.position = 'fixed';
+      flyingImage.style.top = `${startRect.top}px`;
+      flyingImage.style.left = `${startRect.left}px`;
+      flyingImage.style.width = `${startRect.width}px`;
+      flyingImage.style.height = `${startRect.height}px`;
+      flyingImage.style.margin = '0';
+      flyingImage.style.pointerEvents = 'none';
+      flyingImage.style.zIndex = '100000';
+      flyingImage.style.transformOrigin = 'center center';
+      flyingImage.style.willChange = 'transform, top, left, width, height, opacity';
+      flyingImage.style.background = 'transparent';
+      flyingImage.style.boxShadow = 'none';
+      flyingImage.style.border = 'none';
+      flyingImage.style.outline = 'none';
+      flyingImage.style.opacity = '1';
+
+      document.body.appendChild(flyingImage);
+      cartAddedFlyingImageRef.current = flyingImage;
+
+      const tween = gsap.to(flyingImage, {
+        top: targetRect.top,
+        left: targetRect.left,
+        width: targetRect.width,
+        height: targetRect.height,
+        opacity: 1,
+        duration: 0.72,
+        ease: 'power3.inOut',
+        onComplete: () => {
+          setIsCartAddedPopupImageVisible(true);
+          flyingImage.remove();
+
+          if (cartAddedFlyingImageRef.current === flyingImage) {
+            cartAddedFlyingImageRef.current = null;
+          }
+
+          if (cartAddedPopupAnimationRef.current === tween) {
+            cartAddedPopupAnimationRef.current = null;
+          }
+
+          hideCartAddedPopupLater();
         }
-      );
-    }
-  });
+      });
 
-  gsap.to(flyingImage, {
-    opacity: 0,
-    duration: 0.2,
-    ease: 'power2.out',
-    onComplete: () => {
-      flyingImage.remove();
-      isCartAddAnimatingRef.current = false;
-      setDisplayedBagQuantity(totalBagQuantityRef.current);
-    }
-  });
-}
+      cartAddedPopupAnimationRef.current = tween;
+    });
   });
 };
+
+useEffect(() => {
+  return () => {
+    clearTimeout(cartAddedPopupTimeoutRef.current);
+
+    if (cartAddedPopupAnimationRef.current) {
+      cartAddedPopupAnimationRef.current.kill();
+    }
+
+    if (cartAddedFlyingImageRef.current) {
+      cartAddedFlyingImageRef.current.remove();
+    }
+  };
+}, []);
 
 useEffect(() => {
   const handlePdpLabelUpdate = (e) => {
@@ -602,6 +633,52 @@ const menuItems = [
     </div>
   )}
 </div>
+
+{isCartAddedPopupOpen && (
+  <div className="cart-added-popup" ref={cartAddedPopupRef}>
+    <div className="cart-added-popup-image-target" ref={cartAddedPopupImageTargetRef}>
+      {cartAddedPopupItem?.image && (
+        <img
+          src={cartAddedPopupItem.image}
+          alt=""
+          className={`cart-added-popup-image ${isCartAddedPopupImageVisible ? 'is-visible' : ''}`}
+        />
+      )}
+    </div>
+
+    <div className="cart-added-popup-content">
+      <p className="cart-added-popup-kicker">Added to bag</p>
+
+      {cartAddedPopupItem?.title && (
+        <p className="cart-added-popup-title">{cartAddedPopupItem.title}</p>
+      )}
+
+      <div className="cart-added-popup-actions">
+        <button
+          type="button"
+          className="cart-added-popup-link"
+          onClick={() => {
+            closeCartAddedPopup();
+            navigate('/cart');
+          }}
+        >
+          View bag
+        </button>
+
+        <button
+          type="button"
+          className="cart-added-popup-checkout"
+          onClick={() => {
+            closeCartAddedPopup();
+            navigate('/checkout');
+          }}
+        >
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       <div
   className={`mobile-menu${(menuState === 'open' || (!isMobile && menuState === 'closing')) ? ' active' : ''}${(!isMobile && menuState === 'closing') ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>

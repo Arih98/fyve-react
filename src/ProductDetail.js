@@ -491,20 +491,24 @@ await addItem({
     const sourceRect = sourceImageEl?.getBoundingClientRect();
 
     window.dispatchEvent(
-      new CustomEvent('cart:item-added', {
-        detail: {
-          sourceSelector: '[data-pdp-primary-image="true"]',
-          startRect: sourceRect
-            ? {
-                top: sourceRect.top,
-                left: sourceRect.left,
-                width: sourceRect.width,
-                height: sourceRect.height
-              }
-            : null
-        }
-      })
-    );
+  new CustomEvent('cart:item-added', {
+    detail: {
+      sourceSelector: '[data-pdp-primary-image="true"]',
+      startRect: sourceRect
+        ? {
+            top: sourceRect.top,
+            left: sourceRect.left,
+            width: sourceRect.width,
+            height: sourceRect.height
+          }
+        : null,
+      item: {
+        title: displayTitle,
+        image: displayImages[0] || product?.thumbnail || '/api/Uploads/fallback-image.png'
+      }
+    }
+  })
+);
 
 setCartError(null);
 return true;
@@ -520,7 +524,9 @@ return true;
   isSizeAttribute,
   isColorAttribute,
   cartItems,
-  addItem
+  addItem,
+  displayTitle,
+  displayImages
 ]);
 
 const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
