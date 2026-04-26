@@ -529,7 +529,7 @@ body.size-panel-open {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 500;
   font-size: 13px;
-  text-transform: uppercase;
+  text-transform: none;
   color: #fff;
   background-color: #4a494a;
   padding: 15px 20px;

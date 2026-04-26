@@ -938,7 +938,7 @@ onClick={async () => {
   }
 }}
                     >
-                      {isOutOfStock ? 'Out of Stock' : 'Add to Bag'}
+                      {isOutOfStock ? 'Out of Stock' : 'Add to bag'}
                     </button>
                   </div>
                 </div>
