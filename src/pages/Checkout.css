@@ -639,6 +639,7 @@ input[readonly] {
   gap: 20px;
   flex: 1;
   min-width: 0;
+  padding-bottom: 15px;
 }
 
 .checkout-summary-item-info {
