@@ -87,8 +87,10 @@ const clickLockRef = useRef(false);
   ...product,
   displayId: product.displayId || product.id,
   parentId: product.parentId || product.id,
-  selectedColor: product.selectedColor || null,
-  description: product.description || '',
+selectedColor: product.selectedColor || null,
+selectedStichingColor: product.selectedStichingColor || null,
+selectedStitchingColor: product.selectedStitchingColor || product.selectedStichingColor || null,
+description: product.description || '',
   short_description: product.short_description || '',
   gallery: Array.isArray(product.gallery) && product.gallery.length > 0
     ? product.gallery

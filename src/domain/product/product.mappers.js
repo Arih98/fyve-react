@@ -39,6 +39,20 @@ function getVariationColor(variation) {
   return colorAttr?.term_name || colorAttr?.option || null;
 }
 
+function getVariationAttributeValue(variation, names = []) {
+  const attrs = Array.isArray(variation?.attributes) ? variation.attributes : [];
+  const normalizedNames = names.map(name => String(name || "").trim().toLowerCase());
+
+  const match = attrs.find((attr) => {
+    const label = String(attr.attribute_name || attr.name || "").trim().toLowerCase();
+    const slug = String(attr.slug || attr.attribute_slug || "").trim().toLowerCase();
+
+    return normalizedNames.includes(label) || normalizedNames.includes(slug);
+  });
+
+  return match?.term_name || match?.option || match?.term_slug || null;
+}
+
 function getVariationImageGallery(variation, product) {
   const variationGallery = Array.isArray(variation?.gallery) ? variation.gallery : [];
   const productGallery = Array.isArray(product?.gallery) ? product.gallery : [];
@@ -128,25 +142,36 @@ export function mapProductsForList(rawProducts = []) {
       return;
     }
 
-    const seenColors = new Set();
+    const seenCombinations = new Set();
 
     raw.variations.forEach((variation) => {
       const color = getVariationColor(variation);
+      const stichingColor = getVariationAttributeValue(variation, [
+        "stiching color",
+        "stiching-color",
+        "pa_stiching-color",
+        "stitching color",
+        "stitching-color",
+        "pa_stitching-color"
+      ]);
 
-      if (!color) return;
+      const colorKey = color ? color.trim().toLowerCase() : "default-color";
+      const stichingKey = stichingColor ? stichingColor.trim().toLowerCase() : "default-stiching";
+      const combinationKey = `${colorKey}-${stichingKey}`;
 
-      const colorKey = color.trim().toLowerCase();
-      if (seenColors.has(colorKey)) return;
-      seenColors.add(colorKey);
+      if (seenCombinations.has(combinationKey)) return;
+      seenCombinations.add(combinationKey);
 
       const variationPrice = normalizePrice(variation);
       const variationGallery = getVariationImageGallery(variation, raw);
 
       output.push({
         ...base,
-        displayId: `${raw.id}-${colorKey}`,
+        displayId: `${raw.id}-${combinationKey}`,
         variationId: variation.id,
-        selectedColor: color,
+        selectedColor: color || null,
+        selectedStichingColor: stichingColor || null,
+        selectedStitchingColor: stichingColor || null,
         title: variation.title || raw.title || raw.name || "",
         name: variation.title || raw.title || raw.name || "",
         price: variationPrice,
@@ -156,34 +181,45 @@ export function mapProductsForList(rawProducts = []) {
       });
     });
 
-    if (!seenColors.size) {
-  const firstVariation = Array.isArray(raw.variations) && raw.variations.length > 0
-    ? raw.variations[0]
-    : null;
+    if (!seenCombinations.size) {
+      const firstVariation = Array.isArray(raw.variations) && raw.variations.length > 0
+        ? raw.variations[0]
+        : null;
 
-  if (firstVariation) {
-    const variationPrice = normalizePrice(firstVariation);
-    const variationGallery = getVariationImageGallery(firstVariation, raw);
+      if (firstVariation) {
+        const variationPrice = normalizePrice(firstVariation);
+        const variationGallery = getVariationImageGallery(firstVariation, raw);
+        const color = getVariationColor(firstVariation);
+        const stichingColor = getVariationAttributeValue(firstVariation, [
+          "stiching color",
+          "stiching-color",
+          "pa_stiching-color",
+          "stitching color",
+          "stitching-color",
+          "pa_stitching-color"
+        ]);
 
-    output.push({
-      ...base,
-      displayId: `${raw.id}-default`,
-      variationId: firstVariation.id,
-      selectedColor: null,
-      title: firstVariation.title || raw.title || raw.name || "",
-      name: firstVariation.title || raw.title || raw.name || "",
-      price: variationPrice,
-      thumbnail: variationGallery[0] || base.thumbnail,
-      hoverImage: variationGallery[1] || variationGallery[0] || base.hoverImage,
-      gallery: variationGallery.length > 0 ? variationGallery : base.gallery
-    });
-  } else {
-    output.push({
-      ...base,
-      displayId: `${raw.id}-default`
-    });
-  }
-}
+        output.push({
+          ...base,
+          displayId: `${raw.id}-default`,
+          variationId: firstVariation.id,
+          selectedColor: color || null,
+          selectedStichingColor: stichingColor || null,
+          selectedStitchingColor: stichingColor || null,
+          title: firstVariation.title || raw.title || raw.name || "",
+          name: firstVariation.title || raw.title || raw.name || "",
+          price: variationPrice,
+          thumbnail: variationGallery[0] || base.thumbnail,
+          hoverImage: variationGallery[1] || variationGallery[0] || base.hoverImage,
+          gallery: variationGallery.length > 0 ? variationGallery : base.gallery
+        });
+      } else {
+        output.push({
+          ...base,
+          displayId: `${raw.id}-default`
+        });
+      }
+    }
   });
 
   return output;
