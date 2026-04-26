@@ -1101,7 +1101,6 @@ onClick={async () => {
       </div>
     </div>
   </div>
-)}
 
 <div className="product-description-accordion">
   <button
