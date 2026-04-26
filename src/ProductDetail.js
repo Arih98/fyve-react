@@ -25,12 +25,15 @@ const ProductDetail = () => {
   const galleryRefs = useRef(new Map());
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-  const descriptionPanelRef = useRef(null);
-  const descriptionIconRef = useRef(null);
-  const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
-  const deliveryPanelRef = useRef(null);
-  const deliveryIconRef = useRef(null);
+const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+const descriptionPanelRef = useRef(null);
+const descriptionIconRef = useRef(null);
+const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+const sizeGuidePanelRef = useRef(null);
+const sizeGuideIconRef = useRef(null);
+const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
+const deliveryPanelRef = useRef(null);
+const deliveryIconRef = useRef(null);
   const allProducts = useStoredProducts();
   const scrollDirection = useScrollDirection();
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
@@ -212,10 +215,26 @@ gsap.to(icon, {
     }
   };
 
-  animateAccordion(isDescriptionOpen, descriptionPanelRef.current, descriptionIconRef.current);
-  animateAccordion(isDeliveryOpen, deliveryPanelRef.current, deliveryIconRef.current);
+animateAccordion(isSizeGuideOpen, sizeGuidePanelRef.current, sizeGuideIconRef.current);
+animateAccordion(isDescriptionOpen, descriptionPanelRef.current, descriptionIconRef.current);
+animateAccordion(isDeliveryOpen, deliveryPanelRef.current, deliveryIconRef.current);
 
-}, [isDescriptionOpen, isDeliveryOpen, displayMaterialsDescription]);
+}, [isSizeGuideOpen, isDescriptionOpen, isDeliveryOpen, displayMaterialsDescription, sizeChartRows.length]);
+
+const sizeChart = product?.size_chart || null;
+const sizeChartRows = Array.isArray(sizeChart?.sizes) ? sizeChart.sizes : [];
+const hasSizeChart = sizeChartRows.length > 0;
+
+const sizeChartMeasurement1Title = String(sizeChart?.measurement_1_title || '').trim();
+const sizeChartMeasurement2Title = String(sizeChart?.measurement_2_title || '').trim();
+
+const showSizeChartMeasurement1 =
+  sizeChartMeasurement1Title !== '' ||
+  sizeChartRows.some(row => String(row?.measurement_1 || '').trim() !== '');
+
+const showSizeChartMeasurement2 =
+  sizeChartMeasurement2Title !== '' ||
+  sizeChartRows.some(row => String(row?.measurement_2 || '').trim() !== '');
 
 const getOrderedOptions = useCallback((attrName) => {
   const rawOptions = getAvailableOptions(attrName) || [];
@@ -257,6 +276,7 @@ const getOrderedOptions = useCallback((attrName) => {
 }, [getAvailableOptions, isSizeAttribute, productForOptions?.variations, productForOptions?.attributes]);
 
 useEffect(() => {
+  setIsSizeGuideOpen(false);
   setIsDescriptionOpen(false);
   setIsDeliveryOpen(false);
 }, [current?.sku, product?.id]);
@@ -999,12 +1019,85 @@ onClick={async () => {
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
-            <div className="product-description-accordion">
+
+{hasSizeChart && (
+  <div className="product-description-accordion">
+    <button
+      type="button"
+      className="product-description-accordion-toggle"
+      onClick={() => {
+        setIsSizeGuideOpen(prev => !prev);
+        setIsDescriptionOpen(false);
+        setIsDeliveryOpen(false);
+      }}
+      aria-expanded={isSizeGuideOpen}
+    >
+      <span className="product-description-accordion-title">Size Guide</span>
+      <span
+        ref={sizeGuideIconRef}
+        className="product-description-accordion-icon"
+        aria-hidden="true"
+      >
+        <span />
+        <span />
+      </span>
+    </button>
+
+    <div
+      ref={sizeGuidePanelRef}
+      className="product-description-accordion-panel"
+    >
+      <div className="product-description-accordion-inner">
+        <div className="accordion-description-content size-guide-content">
+          {sizeChart?.title && (
+            <h3 className="size-guide-title">{sizeChart.title}</h3>
+          )}
+
+          <div className="size-guide-table-wrap">
+            <table className="size-guide-table">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  {showSizeChartMeasurement1 && (
+                    <th>{sizeChartMeasurement1Title || 'Measurement 1'}</th>
+                  )}
+                  {showSizeChartMeasurement2 && (
+                    <th>{sizeChartMeasurement2Title || 'Measurement 2'}</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {sizeChartRows.map((row, index) => (
+                  <tr key={`${row.size}-${index}`}>
+                    <td>{row.size}</td>
+                    {showSizeChartMeasurement1 && (
+                      <td>{row.measurement_1 || ''}</td>
+                    )}
+                    {showSizeChartMeasurement2 && (
+                      <td>{row.measurement_2 || ''}</td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {sizeChart?.custom_text && (
+            <p className="size-guide-custom-text">{sizeChart.custom_text}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+<div className="product-description-accordion">
   <button
     type="button"
     className="product-description-accordion-toggle"
-    onClick={() => {
+onClick={() => {
   setIsDescriptionOpen(prev => !prev);
+  setIsSizeGuideOpen(false);
   setIsDeliveryOpen(false);
 }}
     aria-expanded={isDescriptionOpen}
@@ -1036,8 +1129,9 @@ onClick={async () => {
   <button
     type="button"
     className="product-description-accordion-toggle"
-    onClick={() => {
+onClick={() => {
   setIsDeliveryOpen(prev => !prev);
+  setIsSizeGuideOpen(false);
   setIsDescriptionOpen(false);
 }}
     aria-expanded={isDeliveryOpen}
