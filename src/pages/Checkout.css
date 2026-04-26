@@ -644,7 +644,7 @@ input[readonly] {
 .checkout-summary-item-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0px;
   min-width: 0;
 }
 
@@ -658,16 +658,16 @@ input[readonly] {
   background: #f4f4f4;
   border-radius: 50%;
   border: 3px solid #fff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 2px 10px #00000014;
   box-sizing: border-box;
 }
 
 .checkout-summary-item-qty {
   position: absolute;
   top: -7px;
-  right: -7px;
-  width: 22px;
-  height: 22px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
   border-radius: 25%;
   background: #4A494A;
   color: #fff;
