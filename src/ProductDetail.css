@@ -953,7 +953,7 @@ body.size-panel-open {
 
   .accordion-description-content,
   .accordion-description-content p {
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: 1.45;
   }
 
