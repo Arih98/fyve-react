@@ -234,13 +234,15 @@ const renderOrderSummary = () => (
   return (
         <div key={item.key} className="checkout-summary-item">
           <div className="checkout-summary-item-main">
-            <img
-              src={imageSrc}
-              alt={item.name}
-              className="checkout-summary-item-image"
-            />
+<div className="checkout-summary-item-image-wrap">
+  <img
+    src={imageSrc}
+    alt={item.name}
+    className="checkout-summary-item-image"
+  />
+</div>
 <div className="checkout-summary-item-info">
-  <div>{item.name}</div>
+  <div className="checkout-summary-item-title">{item.name}</div>
   {sizeValue && <div className="checkout-summary-item-variation">Size: {sizeValue}</div>}
   <div>Qty: {item.quantity}</div>
 </div>
