@@ -111,23 +111,23 @@
 }
 
 @media (max-width: 768px) {
-  .footer {
+    .footer {
     padding: 60px 20px 40px;
     overflow-x: hidden;
   }
 
   .footer-brand {
-    width: calc(100% + 40px);
-    max-width: none;
-    margin-left: -20px;
-    margin-right: -20px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     overflow: hidden;
   }
 
   .footer-fyve-logo {
     display: block;
     width: 100%;
-    max-width: none;
+    max-width: 100%;
     height: auto;
   }
 
@@ -136,6 +136,7 @@
     letter-spacing: 1em;
     margin-top: -0.5em;
   }
+}
 
   .footer-links {
     flex-wrap: wrap;
