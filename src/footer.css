@@ -107,6 +107,15 @@
 }
 
 @media (max-width: 768px) {
+
+  .footer {
+    background: linear-gradient(180deg, #fff 0, #fff 46%, #f1dbd1 0, #f1dbd1);
+    box-sizing: border-box;
+    justify-content: space-between;
+    min-height: 420px;
+    padding: 60px 40px 95px;
+}
+
   .footer-links {
     display: grid;
     grid-template-columns: auto 1fr;

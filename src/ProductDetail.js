@@ -508,16 +508,10 @@ return false;
           }))
         : [];
 
-await addItem({
-  id: Number(currentItemId),
-  quantity: 1,
-  variation: variationPayload
-});
+const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
+const sourceRect = sourceImageEl?.getBoundingClientRect();
 
-    const sourceImageEl = document.querySelector('[data-pdp-primary-image="true"]');
-    const sourceRect = sourceImageEl?.getBoundingClientRect();
-
-    window.dispatchEvent(
+window.dispatchEvent(
   new CustomEvent('cart:item-added', {
     detail: {
       sourceSelector: '[data-pdp-primary-image="true"]',
@@ -537,10 +531,19 @@ await addItem({
   })
 );
 
+await addItem({
+  id: Number(currentItemId),
+  quantity: 1,
+  variation: variationPayload
+});
+
+window.dispatchEvent(new CustomEvent('cart:item-add-confirmed'));
+
 setCartError(null);
 return true;
 } catch (err) {
   console.error(err);
+  window.dispatchEvent(new CustomEvent('cart:item-add-failed'));
   setCartError('Failed to add to cart');
   return false;
 }

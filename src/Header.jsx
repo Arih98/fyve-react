@@ -41,6 +41,7 @@ const cartAddedPopupAnimationRef = useRef(null);
 const [isCartAddedPopupOpen, setIsCartAddedPopupOpen] = useState(false);
 const [cartAddedPopupItem, setCartAddedPopupItem] = useState(null);
 const [isCartAddedPopupImageVisible, setIsCartAddedPopupImageVisible] = useState(false);
+const [cartAddedPopupStatus, setCartAddedPopupStatus] = useState('adding');
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -107,6 +108,8 @@ const handleCartItemAdded = (e) => {
     cartAddedFlyingImageRef.current = null;
   }
 
+setCartAddedPopupStatus('adding');
+
 setCartAddedPopupItem({
   title: item.title || '',
   image: item.image || sourceImageEl?.src || '/api/Uploads/fallback-image.png'
@@ -123,11 +126,10 @@ setIsCartAddedPopupOpen(true);
     requestAnimationFrame(() => {
       const targetEl = cartAddedPopupImageTargetRef.current;
 
-      if (!targetEl || !sourceImageEl || !startRect) {
-        setIsCartAddedPopupImageVisible(true);
-        hideCartAddedPopupLater();
-        return;
-      }
+if (!targetEl || !sourceImageEl || !startRect) {
+  setIsCartAddedPopupImageVisible(true);
+  return;
+}
 
       const targetRect = targetEl.getBoundingClientRect();
 
@@ -170,18 +172,16 @@ setIsCartAddedPopupOpen(true);
   setIsCartAddedPopupImageVisible(true);
 
   requestAnimationFrame(() => {
-    flyingImage.remove();
+  flyingImage.remove();
 
-    if (cartAddedFlyingImageRef.current === flyingImage) {
-      cartAddedFlyingImageRef.current = null;
-    }
+  if (cartAddedFlyingImageRef.current === flyingImage) {
+    cartAddedFlyingImageRef.current = null;
+  }
 
-    if (cartAddedPopupAnimationRef.current === tween) {
-      cartAddedPopupAnimationRef.current = null;
-    }
-
-    hideCartAddedPopupLater();
-  });
+  if (cartAddedPopupAnimationRef.current === tween) {
+    cartAddedPopupAnimationRef.current = null;
+  }
+});
 }
       });
 
@@ -201,6 +201,26 @@ useEffect(() => {
     if (cartAddedFlyingImageRef.current) {
       cartAddedFlyingImageRef.current.remove();
     }
+  };
+}, []);
+
+useEffect(() => {
+  const handleCartAddConfirmed = () => {
+    setCartAddedPopupStatus('added');
+    hideCartAddedPopupLater();
+  };
+
+  const handleCartAddFailed = () => {
+    setCartAddedPopupStatus('error');
+    hideCartAddedPopupLater();
+  };
+
+  window.addEventListener('cart:item-add-confirmed', handleCartAddConfirmed);
+  window.addEventListener('cart:item-add-failed', handleCartAddFailed);
+
+  return () => {
+    window.removeEventListener('cart:item-add-confirmed', handleCartAddConfirmed);
+    window.removeEventListener('cart:item-add-failed', handleCartAddFailed);
   };
 }, []);
 
@@ -662,7 +682,11 @@ const menuItems = [
     </div>
 
     <div className="cart-added-popup-content">
-      <p className="cart-added-popup-kicker">Added to bag</p>
+      <p className={`cart-added-popup-kicker cart-added-popup-kicker-${cartAddedPopupStatus}`}>
+  {cartAddedPopupStatus === 'adding' && 'Adding to bag...'}
+  {cartAddedPopupStatus === 'added' && 'Added to bag'}
+  {cartAddedPopupStatus === 'error' && 'Could not add item'}
+</p>
 
       {cartAddedPopupItem?.title && (
         <p className="cart-added-popup-title">{cartAddedPopupItem.title}</p>

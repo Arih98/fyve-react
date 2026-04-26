@@ -201,6 +201,10 @@ body.locked {
   color: #ffffff;
 }
 
+.cart-added-popup-kicker-error {
+  color: #c62828;
+}
+
 .a-burger {
   position: relative;
   width: 40px;
