@@ -40,9 +40,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-brand">
-        <span className="footer-fyve">
-          FYV<span className="kern-e">E</span>
-        </span>
+        <img className="footer-fyve-logo" src="/assets/FYVE-WORDMARK.svg" alt="FYVE" />
         <span className="footer-london">LONDON</span>
       </div>
 

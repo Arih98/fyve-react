@@ -24,16 +24,24 @@
   margin-bottom: 1em;
 }
 
-.footer-fyve {
-  font-family: quasimoda, sans-serif !important;
-  font-weight: 200;
-  font-size: clamp(160px, 26vw, 520px);
-  color: #4A494A;
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 28px;
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 1em;
 }
 
-.kern-e {
-  display: inline-block;
-  transform: translateX(-0.08em);
+.footer-fyve-logo {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 .footer-london {
@@ -116,14 +124,11 @@
     overflow: hidden;
   }
 
-  .footer-fyve {
-    display: inline-block;
-    width: auto;
+  .footer-fyve-logo {
+    display: block;
+    width: 100%;
     max-width: none;
-    font-size: clamp(130px, 39vw, 420px);
-    line-height: 0.78;
-    text-align: center;
-    white-space: nowrap;
+    height: auto;
   }
 
   .footer-london {
