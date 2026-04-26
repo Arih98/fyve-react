@@ -958,7 +958,7 @@ body.size-panel-open {
     line-height: 1.45;
   }
 
-    .size-guide-table th,
+  .size-guide-table th,
   .size-guide-table td {
     padding: 9px 10px;
     font-size: 13px;
@@ -971,6 +971,14 @@ body.size-panel-open {
   .size-guide-custom-text {
     font-size: 13px;
   }
+
+  .size-guide-empty-text {
+  margin: 0;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #4a494a;
+}
 
   .product-attributes {
     margin-top: 18px;

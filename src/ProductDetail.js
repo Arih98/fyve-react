@@ -191,14 +191,6 @@ const showSizeChartMeasurement2 =
   sizeChartMeasurement2Title !== '' ||
   sizeChartRows.some(row => String(row?.measurement_2 || '').trim() !== '');
 
-console.log('React size chart check:', {
-  loadedProductSizeChart: loadedProduct?.size_chart,
-  productSizeChart: product?.size_chart,
-  fallbackProductSizeChart: fallbackProduct?.size_chart,
-  sizeChart,
-  hasSizeChart
-});
-
   useLayoutEffect(() => {
   const animateAccordion = (isOpen, panel, icon) => {
     if (!panel || !icon) return;
@@ -1033,8 +1025,7 @@ onClick={async () => {
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
 
-{hasSizeChart && (
-  <div className="product-description-accordion">
+<div className="product-description-accordion">
     <button
       type="button"
       className="product-description-accordion-toggle"
@@ -1062,43 +1053,51 @@ onClick={async () => {
     >
       <div className="product-description-accordion-inner">
         <div className="accordion-description-content size-guide-content">
-          {sizeChart?.title && (
-            <h3 className="size-guide-title">{sizeChart.title}</h3>
-          )}
+  {hasSizeChart ? (
+    <>
+      {sizeChart?.title && (
+        <h3 className="size-guide-title">{sizeChart.title}</h3>
+      )}
 
-          <div className="size-guide-table-wrap">
-            <table className="size-guide-table">
-              <thead>
-                <tr>
-                  <th>Size</th>
-                  {showSizeChartMeasurement1 && (
-                    <th>{sizeChartMeasurement1Title || 'Measurement 1'}</th>
-                  )}
-                  {showSizeChartMeasurement2 && (
-                    <th>{sizeChartMeasurement2Title || 'Measurement 2'}</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {sizeChartRows.map((row, index) => (
-                  <tr key={`${row.size}-${index}`}>
-                    <td>{row.size}</td>
-                    {showSizeChartMeasurement1 && (
-                      <td>{row.measurement_1 || ''}</td>
-                    )}
-                    {showSizeChartMeasurement2 && (
-                      <td>{row.measurement_2 || ''}</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      <div className="size-guide-table-wrap">
+        <table className="size-guide-table">
+          <thead>
+            <tr>
+              <th>Size</th>
+              {showSizeChartMeasurement1 && (
+                <th>{sizeChartMeasurement1Title || 'Measurement 1'}</th>
+              )}
+              {showSizeChartMeasurement2 && (
+                <th>{sizeChartMeasurement2Title || 'Measurement 2'}</th>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {sizeChartRows.map((row, index) => (
+              <tr key={`${row.size}-${index}`}>
+                <td>{row.size}</td>
+                {showSizeChartMeasurement1 && (
+                  <td>{row.measurement_1 || ''}</td>
+                )}
+                {showSizeChartMeasurement2 && (
+                  <td>{row.measurement_2 || ''}</td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-          {sizeChart?.custom_text && (
-            <p className="size-guide-custom-text">{sizeChart.custom_text}</p>
-          )}
-        </div>
+      {sizeChart?.custom_text && (
+        <p className="size-guide-custom-text">{sizeChart.custom_text}</p>
+      )}
+    </>
+  ) : (
+    <p className="size-guide-empty-text">
+      A size guide is not available for this product yet. Please contact us if you need help choosing a size.
+    </p>
+  )}
+</div>
       </div>
     </div>
   </div>
