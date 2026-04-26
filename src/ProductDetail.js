@@ -37,6 +37,7 @@ const ProductDetail = () => {
   const [viewerImageIndex, setViewerImageIndex] = useState(0);
   const [isSizePanelOpen, setIsSizePanelOpen] = useState(false);
   const sizePanelHistoryRef = useRef(false);
+  const pendingHeaderAddAfterSizeRef = useRef(false);
   const sizePanelScrollYRef = useRef(0);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
@@ -436,6 +437,7 @@ const openSizePanel = useCallback(() => {
 }, [productForOptions, isSizePanelOpen]);
 
 const closeSizePanel = useCallback(() => {
+  pendingHeaderAddAfterSizeRef.current = false;
   setIsSizePanelOpen(false);
 
   if (sizePanelHistoryRef.current) {
@@ -546,6 +548,7 @@ useEffect(() => {
 
 useEffect(() => {
   const handlePopState = () => {
+    pendingHeaderAddAfterSizeRef.current = false;
     sizePanelHistoryRef.current = false;
     setIsSizePanelOpen(false);
   };
@@ -562,10 +565,11 @@ useEffect(() => {
     const sizeAttrName = attributeNames.find(isSizeAttribute);
     const needsSizeSelection = product?.product_type === 'variable' && sizeAttrName && !hasSelectedSize;
 
-    if (needsSizeSelection) {
-      openSizePanel();
-      return;
-    }
+if (needsSizeSelection) {
+  pendingHeaderAddAfterSizeRef.current = true;
+  openSizePanel();
+  return;
+}
 
     const added = await handleAddToCart();
 
@@ -591,6 +595,40 @@ useEffect(() => {
 ]);
 
 useEffect(() => {
+  if (!pendingHeaderAddAfterSizeRef.current) return;
+  if (!hasSelectedSize) return;
+  if (!current) return;
+
+  let cancelled = false;
+
+  const addAfterSizeSelection = async () => {
+    pendingHeaderAddAfterSizeRef.current = false;
+
+    const added = await handleAddToCart();
+
+    if (cancelled) return;
+
+    if (added && isSizePanelOpen) {
+      closeSizePanel();
+    }
+  };
+
+  addAfterSizeSelection();
+
+  return () => {
+    cancelled = true;
+  };
+}, [
+  hasSelectedSize,
+  sizeValue,
+  current?.id,
+  handleAddToCart,
+  isSizePanelOpen,
+  closeSizePanel
+]);
+
+useEffect(() => {
+  pendingHeaderAddAfterSizeRef.current = false;
   setIsSizePanelOpen(false);
 }, [product?.id, colorValue]);
 
