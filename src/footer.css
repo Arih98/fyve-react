@@ -103,6 +103,13 @@
 
 @media (max-width: 768px) {
   .footer {
+    background: linear-gradient(
+    to bottom,
+    #fff 0%,
+    #fff 27%,
+    #f1dbd1 27%,
+    #f1dbd1 100%
+  );
     padding: 60px 20px 40px;
     overflow-x: hidden;
   }
@@ -125,7 +132,7 @@
   .footer-london {
     font-size: 12px;
     letter-spacing: 1em;
-    margin-top: -0.5em;
+    margin-top: 1.5em;
   }
 
   .footer-links {
