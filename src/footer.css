@@ -55,6 +55,11 @@
   text-transform: uppercase;
 }
 
+.footer-link-row,
+.footer-link-items {
+  display: contents;
+}
+
 .footer-heading {
   font-weight: 500;
   font-size: clamp(12px, 1vw, 16px);
@@ -102,59 +107,53 @@
 }
 
 @media (max-width: 768px) {
-  .footer {
-    min-height: 620px;
-    background: linear-gradient(
-    to bottom,
-    #fff 0%,
-    #fff 18%,
-    #f1dbd1 18%,
-    #f1dbd1 100%
-  );
-    padding: 60px 20px 95px;
-    overflow-x: hidden;
-  }
-
-  .footer-brand {
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    overflow: hidden;
-  }
-
-  .footer-fyve-logo {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-  }
-
-  .footer-london {
-    font-size: 12px;
-    letter-spacing: 1em;
-    margin-top: 1.5em;
-  }
-
   .footer-links {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: 28px;
+    column-gap: 28px;
+    width: 100%;
     white-space: normal;
-    gap: 16px 24px;
-    justify-content: center;
+    justify-content: stretch;
+    align-items: start;
+    text-align: left;
+  }
+
+  .footer-link-row {
+    display: contents;
+  }
+
+  .footer-link-items {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .footer-heading {
+    line-height: 1.2;
+  }
+
+  .footer-links a {
+    line-height: 1.2;
   }
 
   .footer-form {
     width: 100%;
-    justify-content: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
   }
 
   .footer-form input {
     min-width: 0;
-    width: 140px;
+    width: 120px;
   }
 
   .footer-form-message {
     white-space: normal;
-    text-align: center;
+    text-align: left;
   }
 }

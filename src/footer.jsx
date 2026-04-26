@@ -45,33 +45,41 @@ const Footer = () => {
       </div>
 
       <div className="footer-links">
-        <span className="footer-heading">Quick links:</span>
+  <div className="footer-link-row">
+    <span className="footer-heading">Quick links:</span>
 
-        <a href="/faq">FAQ</a>
-        <a href="/returns">Return Policy</a>
-        <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
+    <div className="footer-link-items">
+      <a href="/faq">FAQ</a>
+      <a href="/returns">Return Policy</a>
+      <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
+    </div>
+  </div>
 
-        <span className="footer-heading">Stay updated:</span>
+  <div className="footer-link-row">
+    <span className="footer-heading">Stay updated:</span>
 
-        <a href="https://www.instagram.com/fyvelondon/" target="_blank" rel="noopener noreferrer">
-          Instagram
-        </a>
+    <div className="footer-link-items footer-stay-updated">
+      <a href="https://www.instagram.com/fyvelondon/" target="_blank" rel="noopener noreferrer">
+        Instagram
+      </a>
 
-        <form className="footer-form" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <button type="submit" disabled={submitting}>
-            {submitting ? '...' : 'Submit'}
-          </button>
-        </form>
+      <form className="footer-form" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <button type="submit" disabled={submitting}>
+          {submitting ? '...' : 'Submit'}
+        </button>
+      </form>
 
-        {message && <span className="footer-form-message">{message}</span>}
-      </div>
+      {message && <span className="footer-form-message">{message}</span>}
+    </div>
+  </div>
+</div>
     </footer>
   )
 }
