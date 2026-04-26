@@ -34,6 +34,7 @@ const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
 const cartAddedPopupRef = useRef(null);
 const cartAddedPopupImageTargetRef = useRef(null);
+const cartAddedPopupImageRef = useRef(null);
 const cartAddedPopupTimeoutRef = useRef(null);
 const cartAddedFlyingImageRef = useRef(null);
 const cartAddedPopupAnimationRef = useRef(null);
@@ -106,13 +107,17 @@ const handleCartItemAdded = (e) => {
     cartAddedFlyingImageRef.current = null;
   }
 
-  setCartAddedPopupItem({
-    title: item.title || '',
-    image: item.image || sourceImageEl?.src || '/api/Uploads/fallback-image.png'
-  });
+setCartAddedPopupItem({
+  title: item.title || '',
+  image: item.image || sourceImageEl?.src || '/api/Uploads/fallback-image.png'
+});
 
-  setIsCartAddedPopupImageVisible(false);
-  setIsCartAddedPopupOpen(true);
+if (cartAddedPopupImageRef.current) {
+  cartAddedPopupImageRef.current.style.opacity = '0';
+}
+
+setIsCartAddedPopupImageVisible(false);
+setIsCartAddedPopupOpen(true);
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -156,19 +161,28 @@ const handleCartItemAdded = (e) => {
         duration: 0.72,
         ease: 'power3.inOut',
         onComplete: () => {
-          setIsCartAddedPopupImageVisible(true);
-          flyingImage.remove();
+  const popupImageEl = cartAddedPopupImageRef.current;
 
-          if (cartAddedFlyingImageRef.current === flyingImage) {
-            cartAddedFlyingImageRef.current = null;
-          }
+  if (popupImageEl) {
+    popupImageEl.style.opacity = '1';
+  }
 
-          if (cartAddedPopupAnimationRef.current === tween) {
-            cartAddedPopupAnimationRef.current = null;
-          }
+  setIsCartAddedPopupImageVisible(true);
 
-          hideCartAddedPopupLater();
-        }
+  requestAnimationFrame(() => {
+    flyingImage.remove();
+
+    if (cartAddedFlyingImageRef.current === flyingImage) {
+      cartAddedFlyingImageRef.current = null;
+    }
+
+    if (cartAddedPopupAnimationRef.current === tween) {
+      cartAddedPopupAnimationRef.current = null;
+    }
+
+    hideCartAddedPopupLater();
+  });
+}
       });
 
       cartAddedPopupAnimationRef.current = tween;
@@ -638,11 +652,12 @@ const menuItems = [
   <div className="cart-added-popup" ref={cartAddedPopupRef}>
     <div className="cart-added-popup-image-target" ref={cartAddedPopupImageTargetRef}>
       {cartAddedPopupItem?.image && (
-        <img
-          src={cartAddedPopupItem.image}
-          alt=""
-          className={`cart-added-popup-image ${isCartAddedPopupImageVisible ? 'is-visible' : ''}`}
-        />
+<img
+  ref={cartAddedPopupImageRef}
+  src={cartAddedPopupItem.image}
+  alt=""
+  className={`cart-added-popup-image ${isCartAddedPopupImageVisible ? 'is-visible' : ''}`}
+/>
       )}
     </div>
 
