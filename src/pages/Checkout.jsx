@@ -240,11 +240,11 @@ const renderOrderSummary = () => (
     alt={item.name}
     className="checkout-summary-item-image"
   />
+  <span className="checkout-summary-item-qty">{item.quantity}</span>
 </div>
 <div className="checkout-summary-item-info">
   <div className="checkout-summary-item-title">{item.name}</div>
   {sizeValue && <div className="checkout-summary-item-variation">Size: {sizeValue}</div>}
-  <div>Qty: {item.quantity}</div>
 </div>
           </div>
 
