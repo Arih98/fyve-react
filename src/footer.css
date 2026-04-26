@@ -120,7 +120,7 @@
     display: inline-block;
     width: auto;
     max-width: none;
-    font-size: clamp(130px, 32vw, 260px);
+    font-size: clamp(130px, 35vw, 260px);
     line-height: 0.78;
     text-align: center;
     white-space: nowrap;
