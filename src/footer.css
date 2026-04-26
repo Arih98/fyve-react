@@ -12,16 +12,7 @@
     #f1dbd1 46%,
     #f1dbd1 100%
   );
-}
-
-.footer-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 28px;
-  letter-spacing: 2px;
-  line-height: 1;
-  margin-bottom: 1em;
+  box-sizing: border-box;
 }
 
 .footer-brand {
@@ -111,7 +102,7 @@
 }
 
 @media (max-width: 768px) {
-    .footer {
+  .footer {
     padding: 60px 20px 40px;
     overflow-x: hidden;
   }
@@ -136,7 +127,6 @@
     letter-spacing: 1em;
     margin-top: -0.5em;
   }
-}
 
   .footer-links {
     flex-wrap: wrap;
