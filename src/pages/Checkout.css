@@ -654,7 +654,7 @@ input[readonly] {
   flex: 0 0 64px;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: #f7f7f7;
+  background: #e5e7eb;
 }
 
 .checkout-summary-item-image {
