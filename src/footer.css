@@ -107,11 +107,11 @@
     background: linear-gradient(
     to bottom,
     #fff 0%,
-    #fff 27%,
-    #f1dbd1 27%,
+    #fff 18%,
+    #f1dbd1 18%,
     #f1dbd1 100%
   );
-    padding: 90px 20px 70px;
+    padding: 60px 20px 95px;
     overflow-x: hidden;
   }
 
