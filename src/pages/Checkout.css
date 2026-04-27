@@ -972,8 +972,10 @@ input[readonly] {
 }
 
 .checkout-skeleton-link {
-  width: 44px;
-  height: 13px;
+  width: 54px;
+  height: 16px;
+  border-radius: 4px;
+  flex: 0 0 54px;
 }
 
 .checkout-page-skeleton .checkout-mobile-summary {

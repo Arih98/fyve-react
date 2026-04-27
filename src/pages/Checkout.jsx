@@ -425,6 +425,11 @@ const renderOrderSummary = () => (
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
   const { user, authLoading } = useAuth()
+  const checkoutDraftStorageKey = user?.id
+  ? `fyve_checkout_draft_user_${encodeURIComponent(String(user.id))}_v1`
+  : user?.email
+    ? `fyve_checkout_draft_user_${encodeURIComponent(user.email)}_v1`
+    : CHECKOUT_DRAFT_STORAGE_KEY
 
   const clearMountedPaymentMethods = useCallback(() => {
   setCardReady(false)
@@ -452,8 +457,8 @@ const renderOrderSummary = () => (
 }, [])
 
 const clearCheckoutDraftStorage = useCallback(() => {
-  localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
-}, [])
+  localStorage.removeItem(checkoutDraftStorageKey)
+}, [checkoutDraftStorageKey])
 
 const finalizeOrderBeforeRedirect = useCallback(async () => {
   const wooOrderId = latestWooOrderIdRef.current
@@ -550,7 +555,7 @@ const initializePaymentMethods = useCallback(async () => {
 }, [cart])
 
   const clearSavedCheckoutDraft = () => {
-    localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
+    localStorage.removeItem(checkoutDraftStorageKey)
 
     setContact({
       email: '',
@@ -778,8 +783,8 @@ const applyServerValidationErrors = useCallback((err) => {
     useDifferentBilling
   }
 
-  localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
-}, [contact, billing, shipping, useDifferentBilling])
+  localStorage.setItem(checkoutDraftStorageKey, JSON.stringify(draft))
+}, [contact, billing, shipping, useDifferentBilling, checkoutDraftStorageKey])
 
   useEffect(() => {
   if (loading || cartLoading) return
@@ -863,6 +868,8 @@ useEffect(() => {
 }, [selectedPaymentMethod, cardAvailable, walletAvailable, revolutPayAvailable])
 
   useEffect(() => {
+  if (authLoading) return
+
   let active = true
 
   async function loadCheckout() {
@@ -870,7 +877,7 @@ useEffect(() => {
       setLoading(true)
       setError('')
 
-      const savedDraftRaw = localStorage.getItem(CHECKOUT_DRAFT_STORAGE_KEY)
+      const savedDraftRaw = localStorage.getItem(checkoutDraftStorageKey)
 
       if (savedDraftRaw) {
         try {
@@ -948,7 +955,7 @@ useEffect(() => {
   return () => {
     active = false
   }
-}, [])
+}, [authLoading, checkoutDraftStorageKey])
 
     useEffect(() => {
     if (!paymentMethodsOpen) {
