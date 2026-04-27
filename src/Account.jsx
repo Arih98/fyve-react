@@ -6,18 +6,17 @@ const Account = () => {
   const navigate = useNavigate();
   const { user, logout, authLoading } = useAuth();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login', { replace: true });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  if (authLoading || !user) {
-    return null;
+const handleLogout = async () => {
+  try {
+    await logout();
+  } catch (err) {
+    console.error(err);
   }
+};
+
+if (authLoading || !user) {
+  return <div className="route-loading-space"></div>;
+}
 
   return (
     <div className="account-page">

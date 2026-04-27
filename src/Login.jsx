@@ -12,7 +12,7 @@ function getSafeRedirect(value) {
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, authLoading } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,10 @@ const Login = () => {
   const query = new URLSearchParams(location.search);
 const redirect = getSafeRedirect(query.get('redirect'));
 const from = getSafeRedirect(location.state?.from?.pathname || redirect);
+
+if (authLoading) {
+  return <div className="route-loading-space"></div>;
+}
 
 if (isAuthenticated) {
   return <Navigate to={from} replace />;
@@ -31,19 +35,17 @@ if (isAuthenticated) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      await login(form.email, form.password);
-      navigate(from, { replace: true });
-    } catch (err) {
-      setError(err.message || 'Sign in failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    await login(form.email, form.password);
+  } catch (err) {
+    setError(err.message || 'Sign in failed');
+    setLoading(false);
+  }
+};
 
   return (
     <div className="account-auth-page">
