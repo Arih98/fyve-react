@@ -6,26 +6,27 @@ const API_BASE = 'https://fyvelondon.com'
 
 export default function ReturnConfirmation() {
   const [searchParams] = useSearchParams()
-  const orderId = searchParams.get('order')
+  const orderId = searchParams.get('order_id') || searchParams.get('order')
+const token = searchParams.get('token') || ''
   const [status, setStatus] = useState('checking')
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!orderId) {
-      setStatus('error')
-      setError('Missing order number')
-      return
-    }
+if (!orderId || !token) {
+  setStatus('error')
+  setError('Missing return details')
+  return
+}
 
     let active = true
     let timeoutId = null
 
     const poll = async () => {
       try {
-        const response = await fetch(`${API_BASE}/wp-json/fyve/v1/return-status?order=${encodeURIComponent(orderId)}`, {
-          method: 'GET',
-          credentials: 'include'
-        })
+const response = await fetch(`${API_BASE}/wp-json/fyve/v1/return-status?order=${encodeURIComponent(orderId)}&token=${encodeURIComponent(token)}`, {
+  method: 'GET',
+  credentials: 'include'
+})
 
         const data = await response.json()
 
@@ -51,7 +52,7 @@ export default function ReturnConfirmation() {
       active = false
       if (timeoutId) window.clearTimeout(timeoutId)
     }
-  }, [orderId])
+  }, [orderId, token])
 
   return (
     <main className="return-confirmation-page">
