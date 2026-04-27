@@ -44,12 +44,12 @@ const Account = () => {
               </h1>
             </div>
 
-            <button className="account-logout-button" onClick={handleLogout}>
-              Logout
-            </button>
+<button className="account-logout-button account-logout-button-desktop" onClick={handleLogout}>
+  Logout
+</button>
           </div>
 
-          <div className="account-dashboard-panel">
+                    <div className="account-dashboard-panel">
             <h2>Account overview</h2>
 
             <div className="account-overview-grid">
@@ -74,6 +74,10 @@ const Account = () => {
               </div>
             </div>
           </div>
+
+          <button className="account-logout-button account-logout-button-mobile" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
     </div>

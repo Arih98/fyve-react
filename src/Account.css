@@ -108,6 +108,10 @@
   color: #ffffff;
 }
 
+.account-logout-button-mobile {
+  display: none;
+}
+
 .account-auth-button:disabled {
   opacity: 0.6;
   cursor: default;
@@ -847,5 +851,15 @@
 
 .account-order-summary-lines div {
   font-size: 0.95rem;
+}
+
+.account-logout-button-desktop {
+  display: none;
+}
+
+.account-logout-button-mobile {
+  display: inline-flex;
+  width: 100%;
+  margin-top: 24px;
 }
 }
