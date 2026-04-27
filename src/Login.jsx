@@ -52,7 +52,7 @@ if (isAuthenticated) {
 
         <form onSubmit={handleSubmit} className="account-auth-form">
           <div className="account-auth-field">
-            <label htmlFor="login-email">Email or username</label>
+            <label htmlFor="login-email">Email</label>
             <input
               id="login-email"
               name="email"
