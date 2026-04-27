@@ -29,6 +29,7 @@ import AccountOrderDetail from './AccountOrderDetail'
 import Checkout from './pages/Checkout'
 import CheckoutSuccess from './CheckoutSuccess'
 import Returns from './pages/Returns'
+import ReturnConfirmation from './pages/ReturnConfirmation'
 import Footer from './Footer';
 
 const ProductDetailWrapper = () => {
@@ -115,6 +116,7 @@ function AppContent() {
 <Route path="/checkout" element={<Checkout />} />
 <Route path="/checkout/success" element={<CheckoutSuccess />} />
 <Route path="/returns" element={<Returns />} />
+<Route path="/return-confirmation" element={<ReturnConfirmation />} />
 <Route path="/login" element={<Login />} />
 <Route path="/signup" element={<Signup />} />
               <Route
