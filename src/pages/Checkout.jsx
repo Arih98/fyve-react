@@ -1633,9 +1633,6 @@ const renderCheckoutSkeleton = () => (
   <div className="checkout-page checkout-page-skeleton">
     <div className="checkout-main">
       <div className="checkout-flow">
-        <section className="checkout-section">
-          <div className="checkout-skeleton checkout-skeleton-title"></div>
-        </section>
 
         <section className="checkout-section">
           <div className="checkout-skeleton checkout-skeleton-heading"></div>
@@ -1775,7 +1772,7 @@ const renderCheckoutSkeleton = () => (
   </div>
 )
 
-if (loading || cartLoading) {
+if (loading || cartLoading || authLoading) {
   return renderCheckoutSkeleton()
 }
 
