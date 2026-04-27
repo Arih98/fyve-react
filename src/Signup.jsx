@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate, Navigate, Link } from 'react-router-dom';
+import { useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+
+function getSafeRedirect(value) {
+  if (!value) return '/account'
+  if (!value.startsWith('/')) return '/account'
+  if (value.startsWith('//')) return '/account'
+  return value
+}
 
 const Signup = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signup, isAuthenticated } = useAuth();
   const [form, setForm] = useState({
     firstName: '',
@@ -14,8 +22,12 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const query = new URLSearchParams(location.search);
+  const redirect = getSafeRedirect(query.get('redirect'));
+  const from = getSafeRedirect(location.state?.from?.pathname || redirect);
+
   if (isAuthenticated) {
-    return <Navigate to="/account" replace />;
+    return <Navigate to={from} replace />;
   }
 
   const handleChange = (e) => {
@@ -30,7 +42,7 @@ const Signup = () => {
 
     try {
       await signup(form);
-      navigate('/account', { replace: true });
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || 'Account creation failed');
     } finally {
@@ -105,7 +117,7 @@ const Signup = () => {
         </form>
 
         <p className="account-auth-footer">
-          Already have an account? <Link to="/login">Sign in</Link>
+          Already have an account? <Link to={`/login?redirect=${encodeURIComponent(from)}`}>Sign in</Link>
         </p>
       </div>
     </div>

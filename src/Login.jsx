@@ -90,7 +90,7 @@ if (isAuthenticated) {
         </p>
 
         <p className="account-auth-footer">
-          Don’t have an account? <Link to="/signup">Create one</Link>
+          Don’t have an account? <Link to={`/signup?redirect=${encodeURIComponent(from)}`}>Create one</Link>
         </p>
       </div>
     </div>
