@@ -190,18 +190,48 @@ export default function AccountOrderDetail() {
   };
 
   if (authLoading || loading) {
-    return (
-      <div className="account-section-page">
-        <div className="account-shell">
-          <AccountTabs />
+  return (
+    <div className="account-section-page">
+      <div className="account-shell">
+        <AccountTabs />
 
-          <div className="account-section-inner">
-            <p className="account-page-subtitle">Loading order...</p>
+        <div className="account-section-inner">
+          <div className="account-skeleton account-skeleton-title"></div>
+          <div className="account-skeleton account-skeleton-subtitle"></div>
+
+          <div className="account-skeleton-detail-layout">
+            <div className="account-skeleton-detail-main">
+              <div className="account-skeleton-detail-panel">
+                <div className="account-skeleton account-skeleton-card-title"></div>
+
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <div className="account-skeleton-item" key={index}>
+                    <div className="account-skeleton account-skeleton-image"></div>
+
+                    <div className="account-skeleton-item-lines">
+                      <div className="account-skeleton account-skeleton-line-lg"></div>
+                      <div className="account-skeleton account-skeleton-line-md"></div>
+                      <div className="account-skeleton account-skeleton-line-sm"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="account-skeleton-detail-sidebar">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div className="account-skeleton-detail-panel" key={index}>
+                  <div className="account-skeleton account-skeleton-card-title"></div>
+                  <div className="account-skeleton account-skeleton-line-md"></div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   if (error) {
     return (

@@ -54,7 +54,20 @@ const AccountOrders = () => {
           <h1 className="account-page-title">Orders</h1>
           <p className="account-page-subtitle">View your order history and manage returns.</p>
 
-          {loading ? <p className="account-page-subtitle">Loading orders...</p> : null}
+          {loading ? (
+  <div className="account-skeleton-panel" aria-hidden="true">
+    {Array.from({ length: 4 }).map((_, index) => (
+      <div className="account-skeleton-order-row" key={index}>
+        <div className="account-skeleton"></div>
+        <div className="account-skeleton"></div>
+        <div className="account-skeleton"></div>
+        <div className="account-skeleton"></div>
+        <div className="account-skeleton"></div>
+        <div className="account-skeleton"></div>
+      </div>
+    ))}
+  </div>
+) : null}
           {error ? <p className="account-auth-error">{error}</p> : null}
 
           {!loading && !error && orders.length === 0 ? (

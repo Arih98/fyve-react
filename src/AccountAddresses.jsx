@@ -81,19 +81,38 @@ const AccountAddresses = () => {
   };
 
   if (loading) {
-    return (
-      <div className="account-section-page">
-        <div className="account-shell">
-          <AccountTabs />
+  return (
+    <div className="account-section-page">
+      <div className="account-shell">
+        <AccountTabs />
 
-          <div className="account-section-inner">
-            <h1 className="account-page-title">Addresses</h1>
-            <p className="account-page-subtitle">Loading addresses...</p>
+        <div className="account-section-inner">
+          <div className="account-skeleton account-skeleton-title"></div>
+          <div className="account-skeleton account-skeleton-subtitle"></div>
+
+          <div className="account-addresses-form">
+            <div className="account-address-grid">
+              {Array.from({ length: 2 }).map((_, cardIndex) => (
+                <div className="account-skeleton-card" key={cardIndex}>
+                  <div className="account-skeleton account-skeleton-card-title"></div>
+
+                  <div className="account-skeleton-form">
+                    {Array.from({ length: cardIndex === 0 ? 11 : 9 }).map((__, fieldIndex) => (
+                      <div className="account-skeleton-field" key={fieldIndex}>
+                        <div className="account-skeleton account-skeleton-label"></div>
+                        <div className="account-skeleton account-skeleton-input"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="account-section-page">
