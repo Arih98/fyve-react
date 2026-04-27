@@ -70,7 +70,7 @@ body::-webkit-scrollbar {
 }
 
 .route-loading-space {
-  min-height: 70vh;
+  min-height: 100vh;
 }
 
 .account-auth-page,

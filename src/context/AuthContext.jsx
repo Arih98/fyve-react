@@ -8,6 +8,8 @@ export const AuthProvider = ({ children }) => {
   const [authLoading, setAuthLoading] = useState(true);
 
   const refreshUser = useCallback(async () => {
+    setAuthLoading(true);
+
     try {
       const data = await getCurrentUser();
       setUser(data.user || null);
@@ -22,21 +24,39 @@ export const AuthProvider = ({ children }) => {
     refreshUser();
   }, [refreshUser]);
 
-const login = async (email, password) => {
-  const data = await loginUser(email, password);
-  setUser(data.user || null);
-  return data;
-};
+  const login = async (email, password) => {
+    setAuthLoading(true);
+
+    try {
+      const data = await loginUser(email, password);
+      setUser(data.user || null);
+      return data;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
   const signup = async (values) => {
-    const data = await registerUser(values);
-    setUser(data.user || null);
-    return data;
+    setAuthLoading(true);
+
+    try {
+      const data = await registerUser(values);
+      setUser(data.user || null);
+      return data;
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const logout = async () => {
-    await logoutUser();
-    setUser(null);
+    setAuthLoading(true);
+
+    try {
+      await logoutUser();
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   return (
