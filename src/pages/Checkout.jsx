@@ -13,6 +13,8 @@ import {
 import { formatWooMoney } from '../utils/formatMoney'
 import './Checkout.css'
 import RevolutCheckout from '@revolut/checkout'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }
@@ -167,6 +169,35 @@ function sanitizeUsPhoneInput(raw) {
     return digits.slice(1, 11)
   }
   return digits.slice(0, 10)
+}
+
+function buildCheckoutAddressPayload({ contact, billing, shipping, useDifferentBilling }) {
+  const effectiveBilling = useDifferentBilling ? billing : shipping
+
+  return {
+    billing: {
+      first_name: effectiveBilling.first_name,
+      last_name: effectiveBilling.last_name,
+      address_1: effectiveBilling.address_1,
+      address_2: effectiveBilling.address_2,
+      city: effectiveBilling.city,
+      state: normalizeUsState(effectiveBilling.state),
+      postcode: effectiveBilling.postcode,
+      country: effectiveBilling.country,
+      email: contact.email,
+      phone: normalizeUsPhone(contact.phone) || ''
+    },
+    shipping: {
+      first_name: shipping.first_name,
+      last_name: shipping.last_name,
+      address_1: shipping.address_1,
+      address_2: shipping.address_2,
+      city: shipping.city,
+      state: normalizeUsState(shipping.state),
+      postcode: shipping.postcode,
+      country: shipping.country
+    }
+  }
 }
 
 function getCheckoutValidationErrors({ contact, shipping, billing, useDifferentBilling }) {
@@ -393,6 +424,7 @@ const renderOrderSummary = () => (
   const frontendUrlRef = useRef(window.location.origin)
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
+  const { user } = useAuth()
 
   const clearMountedPaymentMethods = useCallback(() => {
   setCardReady(false)
@@ -417,6 +449,10 @@ const renderOrderSummary = () => (
     revolutPayInstanceRef.current.destroy()
     revolutPayInstanceRef.current = null
   }
+}, [])
+
+const clearCheckoutDraftStorage = useCallback(() => {
+  localStorage.removeItem(CHECKOUT_DRAFT_STORAGE_KEY)
 }, [])
 
 const finalizeOrderBeforeRedirect = useCallback(async () => {
@@ -455,6 +491,7 @@ const finalizeOrderBeforeRedirect = useCallback(async () => {
     if (paid || status === 'processing' || status === 'completed') {
       await clearCheckoutCart().catch(() => {})
       await refreshCart({ silent: true }).catch(() => {})
+      clearCheckoutDraftStorage()
       window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
       return
     }
@@ -488,12 +525,13 @@ const finalizeOrderBeforeRedirect = useCallback(async () => {
   if (confirmed || status === 'processing' || status === 'completed') {
     await clearCheckoutCart().catch(() => {})
     await refreshCart({ silent: true }).catch(() => {})
+    clearCheckoutDraftStorage()
     window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
     return
   }
 
   throw new Error('Your payment is still being finalised. Please refresh this page in a moment.')
-}, [refreshCart])
+}, [refreshCart, clearCheckoutDraftStorage])
 
 const initializePaymentMethods = useCallback(async () => {
   setPaymentLoading(true)
@@ -559,41 +597,23 @@ const initializePaymentMethods = useCallback(async () => {
   }
 
   const latestCheckout = await getCheckoutData()
+  const addressPayload = buildCheckoutAddressPayload(snapshot)
 
-  const snapshotBilling = snapshot.useDifferentBilling ? snapshot.billing : snapshot.shipping
+  const revolutResult = await createRevolutOrder({
+    draft_order_id: latestCheckout.order_id || null,
+    draft_order_key: latestCheckout.order_key || '',
+    validation_mode: 'payment',
+    ...addressPayload
+  })
 
-const revolutResult = await createRevolutOrder({
-  draft_order_id: latestCheckout.order_id || null,
-  draft_order_key: latestCheckout.order_key || '',
-  validation_mode: 'payment',
-  billing_email: snapshot.contact.email,
-  billing_phone: normalizeUsPhone(snapshot.contact.phone) || '',
-  billing_first_name: snapshotBilling.first_name,
-  billing_last_name: snapshotBilling.last_name,
-  billing_address_1: snapshotBilling.address_1,
-  billing_address_2: snapshotBilling.address_2,
-  billing_city: snapshotBilling.city,
-  billing_state: normalizeUsState(snapshotBilling.state),
-  billing_postcode: snapshotBilling.postcode,
-  billing_country: snapshotBilling.country,
-  shipping_first_name: snapshot.shipping.first_name,
-  shipping_last_name: snapshot.shipping.last_name,
-  shipping_address_1: snapshot.shipping.address_1,
-  shipping_address_2: snapshot.shipping.address_2,
-  shipping_city: snapshot.shipping.city,
-  shipping_state: normalizeUsState(snapshot.shipping.state),
-  shipping_postcode: snapshot.shipping.postcode,
-  shipping_country: snapshot.shipping.country
-})
+  if (revolutResult?.free_order) {
+    latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
+    return revolutResult
+  }
 
-if (revolutResult?.free_order) {
-  latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
-  return revolutResult
-}
-
-if (!revolutResult?.revolut_order_token) {
-  throw new Error('Missing Revolut order token')
-}
+  if (!revolutResult?.revolut_order_token) {
+    throw new Error('Missing Revolut order token')
+  }
 
   latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
 
@@ -617,6 +637,7 @@ const shippingAddress1Ref = useRef(null)
 const shippingCityRef = useRef(null)
 const shippingStateRef = useRef(null)
 const shippingPostcodeRef = useRef(null)
+const hasLoadedCheckoutRef = useRef(false)
 
 const [couponCode, setCouponCode] = useState('')
 const [couponLoading, setCouponLoading] = useState(false)
@@ -748,15 +769,17 @@ const applyServerValidationErrors = useCallback((err) => {
 }, [focusFirstInvalidField])
 
   useEffect(() => {
-const draft = {
-  contact,
-  billing,
-  shipping,
-  useDifferentBilling
-}
+  if (!hasLoadedCheckoutRef.current) return
 
-    localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
-  }, [contact, billing, shipping, useDifferentBilling])
+  const draft = {
+    contact,
+    billing,
+    shipping,
+    useDifferentBilling
+  }
+
+  localStorage.setItem(CHECKOUT_DRAFT_STORAGE_KEY, JSON.stringify(draft))
+}, [contact, billing, shipping, useDifferentBilling])
 
   useEffect(() => {
   if (loading || cartLoading) return
@@ -826,96 +849,92 @@ useEffect(() => {
 }, [selectedPaymentMethod, cardAvailable, walletAvailable, revolutPayAvailable])
 
   useEffect(() => {
-    let active = true
+  let active = true
 
-    async function loadCheckout() {
-      try {
-        setLoading(true)
-        setError('')
+  async function loadCheckout() {
+    try {
+      setLoading(true)
+      setError('')
 
-        const savedDraftRaw = localStorage.getItem(CHECKOUT_DRAFT_STORAGE_KEY)
+      const savedDraftRaw = localStorage.getItem(CHECKOUT_DRAFT_STORAGE_KEY)
 
-        if (savedDraftRaw) {
-          try {
-            const savedDraft = JSON.parse(savedDraftRaw)
+      if (savedDraftRaw) {
+        try {
+          const savedDraft = JSON.parse(savedDraftRaw)
 
-            if (savedDraft.contact) {
-              setContact((prev) => ({
-                ...prev,
-                ...savedDraft.contact
-              }))
-            }
-
-if (savedDraft.billing) {
-  setBilling((prev) => ({
-    ...prev,
-    ...savedDraft.billing
-  }))
-}
-
-if (savedDraft.shipping) {
-  setShipping((prev) => ({
-    ...prev,
-    ...savedDraft.shipping
-  }))
-}
-
-if (typeof savedDraft.useDifferentBilling === 'boolean') {
-  setUseDifferentBilling(savedDraft.useDifferentBilling)
-}
-
-          } catch (err) {
-            console.error(err)
+          if (savedDraft.contact) {
+            setContact((prev) => ({
+              ...prev,
+              ...savedDraft.contact
+            }))
           }
-        }
 
-        const prefillData = await getCheckoutPrefill().catch(() => null)
-        const checkoutResponse = await getCheckoutData().catch(() => null)
+          if (savedDraft.billing) {
+            setBilling((prev) => ({
+              ...prev,
+              ...savedDraft.billing
+            }))
+          }
 
-        if (!active) return
+          if (savedDraft.shipping) {
+            setShipping((prev) => ({
+              ...prev,
+              ...savedDraft.shipping
+            }))
+          }
 
-        if (checkoutResponse) {
-          setCheckoutData(checkoutResponse)
-          setDraftOrderId(checkoutResponse.order_id || null)
-          setDraftOrderKey(checkoutResponse.order_key || '')
-        }
-
-        if (prefillData && !hasPrefilledRef.current) {
-          const prefill = prefillData.prefill || prefillData
-
-          setContact((prev) => ({
-            ...prev,
-            email: prev.email || prefill?.billing?.email || '',
-            phone: prev.phone || sanitizeUsPhoneInput(prefill?.billing?.phone || '')
-          }))
-
-setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
-
-setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
-
-setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
-setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
-hasPrefilledRef.current = true
-
-          hasPrefilledRef.current = true
-        }
-      } catch (err) {
-        if (active) {
-          setError(err.message || 'Failed to load checkout')
-        }
-      } finally {
-        if (active) {
-          setLoading(false)
+          if (typeof savedDraft.useDifferentBilling === 'boolean') {
+            setUseDifferentBilling(savedDraft.useDifferentBilling)
+          }
+        } catch (err) {
+          console.error(err)
         }
       }
-    }
 
-    loadCheckout()
+      const prefillData = await getCheckoutPrefill().catch(() => null)
+      const checkoutResponse = await getCheckoutData().catch(() => null)
 
-    return () => {
-      active = false
+      if (!active) return
+
+      if (checkoutResponse) {
+        setCheckoutData(checkoutResponse)
+        setDraftOrderId(checkoutResponse.order_id || null)
+        setDraftOrderKey(checkoutResponse.order_key || '')
+      }
+
+      if (prefillData?.prefill && !hasPrefilledRef.current) {
+        const prefill = prefillData.prefill
+
+        setContact((prev) => ({
+          ...prev,
+          email: prev.email || prefill?.billing?.email || '',
+          phone: prev.phone || sanitizeUsPhoneInput(prefill?.billing?.phone || '')
+        }))
+
+        setBilling((prev) => mergeEmptyFields(prev, prefill?.billing || {}))
+        setShipping((prev) => mergeEmptyFields(prev, prefill?.shipping || {}))
+
+        hasPrefilledRef.current = true
+      }
+
+      hasLoadedCheckoutRef.current = true
+    } catch (err) {
+      if (active) {
+        setError(err.message || 'Failed to load checkout')
+      }
+    } finally {
+      if (active) {
+        setLoading(false)
+      }
     }
-  }, [])
+  }
+
+  loadCheckout()
+
+  return () => {
+    active = false
+  }
+}, [])
 
     useEffect(() => {
     if (!paymentMethodsOpen) {
@@ -966,28 +985,13 @@ const shippingAddress = {
   streetLine2: snapshot.shipping.address_2 || undefined
 }
 
+const addressPayload = buildCheckoutAddressPayload(snapshot)
+
 const cardSession = await createRevolutOrder({
   draft_order_id: draftOrderId || checkoutData?.order_id || null,
   draft_order_key: draftOrderKey || checkoutData?.order_key || '',
   validation_mode: 'mount',
-  billing_email: snapshot.contact.email,
-  billing_phone: normalizeUsPhone(snapshot.contact.phone) || '',
-  billing_first_name: snapshotBilling.first_name,
-  billing_last_name: snapshotBilling.last_name,
-  billing_address_1: snapshotBilling.address_1,
-  billing_address_2: snapshotBilling.address_2,
-  billing_city: snapshotBilling.city,
-  billing_state: normalizeUsState(snapshotBilling.state),
-  billing_postcode: snapshotBilling.postcode,
-  billing_country: snapshotBilling.country,
-  shipping_first_name: snapshot.shipping.first_name,
-  shipping_last_name: snapshot.shipping.last_name,
-  shipping_address_1: snapshot.shipping.address_1,
-  shipping_address_2: snapshot.shipping.address_2,
-  shipping_city: snapshot.shipping.city,
-  shipping_state: normalizeUsState(snapshot.shipping.state),
-  shipping_postcode: snapshot.shipping.postcode,
-  shipping_country: snapshot.shipping.country
+  ...addressPayload
 })
 
 if (!cardSession?.revolut_public_key) {
@@ -1125,6 +1129,7 @@ const result = await createRevolutPaymentOrder()
 if (result?.free_order) {
   await clearCheckoutCart().catch(() => {})
   await refreshCart({ silent: true }).catch(() => {})
+  clearCheckoutDraftStorage()
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   return
 }
@@ -1225,6 +1230,7 @@ const result = await createRevolutPaymentOrder()
 if (result?.free_order) {
   await clearCheckoutCart().catch(() => {})
   await refreshCart({ silent: true }).catch(() => {})
+  clearCheckoutDraftStorage()
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   return
 }
@@ -1334,7 +1340,8 @@ if (revolutPayMounted) {
   focusFirstInvalidField,
   finalizeOrderBeforeRedirect,
   setAccordionHeight,
-  selectedPaymentMethod
+  selectedPaymentMethod,
+  clearCheckoutDraftStorage
 ])
 
 const handleFreeOrder = async () => {
@@ -1383,8 +1390,9 @@ const handleFreeOrder = async () => {
     }
 
     await clearCheckoutCart().catch(() => {})
-    await refreshCart({ silent: true }).catch(() => {})
-    window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
+await refreshCart({ silent: true }).catch(() => {})
+clearCheckoutDraftStorage()
+window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   } catch (err) {
     if (applyServerValidationErrors(err)) {
       setPaymentLoading(false)
@@ -1765,9 +1773,22 @@ if (loading || cartLoading) {
     <div className={`checkout-page ${isFinalizingOrder ? 'checkout-page-processing' : ''}`}>
   <div className="checkout-main">
     <div className="checkout-flow">
-      <section className="checkout-section">
-          <h1>Checkout</h1>
-        </section>
+<section className="checkout-section">
+  <h1>Checkout</h1>
+
+  {user && (
+    <div className="checkout-account-strip">
+      <div>
+        <span className="checkout-account-strip-label">Signed in as</span>
+        <span className="checkout-account-strip-email">{user.email}</span>
+      </div>
+
+      <Link to="/account" className="checkout-account-strip-link">
+        Account
+      </Link>
+    </div>
+  )}
+</section>
 
         <section className="checkout-section">
   <h2>Shipping address</h2>

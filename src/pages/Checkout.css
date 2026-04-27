@@ -812,6 +812,47 @@ input[readonly] {
   transform: translate(-60%, -60%) rotate(45deg) scale(1);
 }
 
+.checkout-account-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1.5px solid #dad8d2;
+  border-radius: 7px;
+  background: #fff;
+  font-family: 'Quasimoda', sans-serif;
+}
+
+.checkout-account-strip > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.checkout-account-strip-label {
+  font-size: 12px;
+  color: #4A494A;
+  opacity: 0.65;
+}
+
+.checkout-account-strip-email {
+  font-size: 15px;
+  color: #4A494A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkout-account-strip-link {
+  color: #4A494A;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+
 @media (max-width: 768px) {
   .checkout-page-skeleton .checkout-flow,
   .checkout-page-skeleton .checkout-section,
@@ -938,6 +979,18 @@ input[readonly] {
 
 .checkout-card-skeleton-cvv {
   width: 34px;
+}
+
+.checkout-account-strip {
+  padding: 12px 14px;
+}
+
+.checkout-account-strip-email {
+  font-size: 14px;
+}
+
+.checkout-account-strip-link {
+  font-size: 13px;
 }
 
   .checkout-sidebar {
