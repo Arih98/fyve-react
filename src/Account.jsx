@@ -5,18 +5,21 @@ import { useAuth } from './context/AuthContext';
 const Account = () => {
   const navigate = useNavigate();
   const { user, logout, authLoading } = useAuth();
+  const [loggingOut, setLoggingOut] = React.useState(false);
 
   const handleLogout = async () => {
     try {
+      setLoggingOut(true);
       await logout();
       navigate('/login', { replace: true });
     } catch (err) {
       console.error(err);
+      setLoggingOut(false);
     }
   };
 
-  if (authLoading || !user) {
-    return null;
+  if (authLoading || loggingOut || !user) {
+    return <div className="route-loading-space"></div>;
   }
 
   return (
@@ -33,9 +36,9 @@ const Account = () => {
             </p>
           </div>
 
-          <button className="account-logout-button" onClick={handleLogout}>
-            Logout
-          </button>
+<button className="account-logout-button" onClick={handleLogout} disabled={loggingOut}>
+  {loggingOut ? 'Logging out...' : 'Logout'}
+</button>
         </div>
 
         <div className="account-grid">
