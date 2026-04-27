@@ -316,9 +316,10 @@
   display: inline-flex;
   align-items: center;
   min-height: 52px;
-  color: rgba(0, 0, 0, 0.68);
+  color: #4A494A;
   font-family: quasimoda, sans-serif;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: 400;
   text-decoration: none;
   white-space: nowrap;
 }
