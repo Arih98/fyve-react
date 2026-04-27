@@ -70,7 +70,7 @@ body::-webkit-scrollbar {
 }
 
 .route-loading-space {
-  min-height: calc(100vh - var(--announcement-height));
+  min-height: 100vh;
 }
 
 .account-auth-page,
