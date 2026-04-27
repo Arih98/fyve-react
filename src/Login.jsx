@@ -84,13 +84,13 @@ if (isAuthenticated) {
           </button>
         </form>
 
-        <p className="account-auth-footer">
-          <Link to="/forgot-password">Forgot your password?</Link>
-        </p>
+<p className="account-auth-footer">
+  <Link to="/forgot-password">Forgot your password?</Link>
+</p>
 
-        <p className="account-auth-footer">
-          Don’t have an account? <Link to={`/signup?redirect=${encodeURIComponent(from)}`}>Create one</Link>
-        </p>
+<p className="account-auth-footer account-auth-create-footer">
+  Don’t have an account? <Link to={`/signup?redirect=${encodeURIComponent(from)}`}>Create one</Link>
+</p>
       </div>
     </div>
   );
