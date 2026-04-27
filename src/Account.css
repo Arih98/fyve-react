@@ -529,6 +529,7 @@
 }
 
 .account-overview-grid span {
+  font-family: 'Quasimoda';
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -633,6 +634,7 @@
   display: inline-flex;
   margin-bottom: 28px;
   color: #4A494A;
+  font-family: 'Quasimoda';
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
