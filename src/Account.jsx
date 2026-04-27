@@ -2,6 +2,14 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
+}
+
 const Account = () => {
   const navigate = useNavigate();
   const { user, logout, authLoading } = useAuth();
@@ -19,6 +27,9 @@ const Account = () => {
     return null;
   }
 
+  const displayName = user.first_name || user.username || 'User';
+  const greeting = getGreeting();
+
   return (
     <div className="account-page">
       <div className="account-page-inner">
@@ -26,7 +37,7 @@ const Account = () => {
           <div>
             <p className="account-page-eyebrow">My Account</p>
             <h1 className="account-page-title">
-              Welcome, {user.first_name || user.username || 'User'}
+              {greeting}, {displayName}
             </h1>
             <p className="account-page-subtitle">
               Manage your account details, orders and saved addresses.
@@ -47,11 +58,11 @@ const Account = () => {
             <p><strong>Username:</strong> {user.username}</p>
           </div>
 
-<div className="account-card">
-  <h2>Orders</h2>
-  <p>View your order history, order details and eligible returns.</p>
-  <Link to="/account/orders" className="account-card-link">View orders</Link>
-</div>
+          <div className="account-card">
+            <h2>Orders</h2>
+            <p>View your order history, order details and eligible returns.</p>
+            <Link to="/account/orders" className="account-card-link">View orders</Link>
+          </div>
 
           <div className="account-card">
             <h2>Addresses</h2>
