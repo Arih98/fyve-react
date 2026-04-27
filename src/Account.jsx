@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
 const Account = () => {
   const navigate = useNavigate();
   const { user, logout, authLoading } = useAuth();
-  const [loggingOut, setLoggingOut] = React.useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -36,9 +36,9 @@ const Account = () => {
             </p>
           </div>
 
-<button className="account-logout-button" onClick={handleLogout} disabled={loggingOut}>
-  {loggingOut ? 'Logging out...' : 'Logout'}
-</button>
+          <button className="account-logout-button" onClick={handleLogout} disabled={loggingOut}>
+            {loggingOut ? 'Logging out...' : 'Logout'}
+          </button>
         </div>
 
         <div className="account-grid">
