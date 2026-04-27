@@ -16,6 +16,8 @@
 .account-section-inner {
   width: 100%;
   max-width: 1320px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .account-auth-card,
@@ -649,7 +651,68 @@
   color: rgba(0, 0, 0, 0.72);
 }
 
+.account-section-page,
+.account-page,
+.account-shell,
+.account-page-inner,
+.account-section-inner,
+.account-order-detail-layout,
+.account-order-detail-main,
+.account-order-detail-sidebar,
+.account-order-detail-panel,
+.account-order-detail-item-info {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.account-order-detail-panel,
+.account-order-detail-item-info,
+.account-order-address,
+.account-order-summary-lines,
+.account-order-payment-method {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 @media (max-width: 768px) {
+  .account-shell,
+.account-page-inner,
+.account-section-inner {
+  max-width: 100%;
+}
+
+.account-order-detail-layout {
+  width: 100%;
+  overflow: hidden;
+}
+
+.account-order-detail-panel {
+  width: 100%;
+  max-width: 100%;
+}
+
+.account-order-detail-panel-header {
+  align-items: flex-start;
+}
+
+.account-order-detail-panel-header h2 {
+  min-width: 0;
+}
+
+.account-order-summary-lines div {
+  min-width: 0;
+}
+
+.account-order-summary-lines strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.account-order-address span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
   .account-address-grid {
     grid-template-columns: 1fr;
   }
