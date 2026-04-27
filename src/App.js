@@ -116,6 +116,7 @@ function AppContent() {
 <Route path="/checkout" element={<Checkout />} />
 <Route path="/checkout/success" element={<CheckoutSuccess />} />
 <Route path="/returns" element={<Returns />} />
+<Route path="/returns/confirmation" element={<ReturnConfirmation />} />
 <Route path="/return-confirmation" element={<ReturnConfirmation />} />
 <Route path="/login" element={<Login />} />
 <Route path="/signup" element={<Signup />} />
