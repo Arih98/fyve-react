@@ -28,6 +28,8 @@
 .account-page-title {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3.5rem);
+  font-family: "ArizonaFlare", sans-serif;;
+  letter-spacing: -1.8px;
   line-height: 1;
 }
 
@@ -56,12 +58,12 @@
 
 .account-auth-field input {
   width: 100%;
-  height: 52px;
+  height: 60px;
   border: 1px solid rgba(0, 0, 0, 0.14);
-  border-radius: 14px;
+  border-radius: 5px;
   padding: 0 16px;
   font: inherit;
-  background: #ffffff;
+  background: #f4f4f4;
   box-sizing: border-box;
 }
 
