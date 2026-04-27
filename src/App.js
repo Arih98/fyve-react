@@ -160,7 +160,6 @@ function AppContent() {
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password" element={<ResetPassword />} />
 <Route path="/cart" element={<Cart />} />
-              <Route path="/cart" element={<Cart />} />
             </Route>
           </Routes>
         </AuthProvider>
