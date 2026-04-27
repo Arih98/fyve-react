@@ -61,18 +61,21 @@
 
 .account-auth-field input {
   width: 100%;
-  height: 60px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  height: 55px;
+  border: 1.5px solid #e8e7e6;
   border-radius: 5px;
   padding: 0 16px;
   font: inherit;
   background: #f4f4f4;
   box-sizing: border-box;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .account-auth-field input:focus {
   outline: none;
-  border: 2px solid #4A494A;
+  border-color: #4A494A;
+  box-shadow: 0 0 0 1.5px #4A494A;
+  background: #fff;
 }
 
 .account-auth-button,
@@ -115,10 +118,11 @@
   letter-spacing: -0.01em;
   text-align: center;
   font-family: quasimoda, sans-serif;
+  color: #4A494A;
 }
 
 .account-auth-footer a {
-  color: #4A494A;
+  color: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
