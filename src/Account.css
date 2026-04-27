@@ -350,6 +350,8 @@
 
 .account-dashboard-panel h2 {
   margin: 0 0 24px;
+  font-family: 'Quasimoda';
+  font-weight: 300;
   font-size: 1.5rem;
 }
 
