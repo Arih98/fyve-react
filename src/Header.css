@@ -1247,3 +1247,17 @@ body {
   cursor: not-allowed;
 }
 }
+
+@media (min-width: 769px) {
+  .mobile-header.account-normal-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none !important;
+  }
+
+  .mobile-header.account-normal-header.hide-header {
+    transform: none !important;
+  }
+}
