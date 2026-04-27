@@ -424,7 +424,7 @@ const renderOrderSummary = () => (
   const frontendUrlRef = useRef(window.location.origin)
 
   const { cart, cartItems, loading: cartLoading, refreshCart } = useContext(CartContext)
-  const { user } = useAuth()
+  const { user, authLoading } = useAuth()
 
   const clearMountedPaymentMethods = useCallback(() => {
   setCardReady(false)
@@ -1790,7 +1790,38 @@ if (loading || cartLoading) {
   )}
 </section>
 
-        <section className="checkout-section">
+<section className="checkout-section checkout-contact-section">
+  {!authLoading && !user && (
+    <div className="checkout-contact-header">
+      <h2>Guest checkout</h2>
+
+      <Link
+        to={`/login?redirect=${encodeURIComponent('/checkout')}`}
+        className="checkout-sign-in-link"
+      >
+        Sign in
+      </Link>
+    </div>
+  )}
+
+  {fieldErrors.contact_email && (
+    <div className="checkout-field-error">{fieldErrors.contact_email}</div>
+  )}
+
+  <input
+    ref={emailRef}
+    type="email"
+    placeholder="Email address"
+    value={contact.email}
+    onChange={(e) => {
+      setContact((prev) => ({ ...prev, email: e.target.value }))
+      setFieldErrors((prev) => ({ ...prev, contact_email: '' }))
+    }}
+    required
+  />
+</section>
+
+<section className="checkout-section">
   <h2>Shipping address</h2>
 
   {fieldErrors.shipping_first_name && (
@@ -1913,21 +1944,6 @@ if (loading || cartLoading) {
     setContact((prev) => ({ ...prev, phone: sanitizeUsPhoneInput(e.target.value) }))
   }}
 />
-
-  {fieldErrors.contact_email && (
-    <div className="checkout-field-error">{fieldErrors.contact_email}</div>
-  )}
-  <input
-    ref={emailRef}
-    type="email"
-    placeholder="Email address"
-    value={contact.email}
-    onChange={(e) => {
-      setContact((prev) => ({ ...prev, email: e.target.value }))
-      setFieldErrors((prev) => ({ ...prev, contact_email: '' }))
-    }}
-    required
-  />
 </section>
 
 

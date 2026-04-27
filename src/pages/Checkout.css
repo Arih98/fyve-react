@@ -191,6 +191,31 @@
   background: #dcdcdc;
 }
 
+.checkout-contact-section {
+  gap: 12px;
+}
+
+.checkout-contact-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.checkout-contact-header h2 {
+  margin: 0;
+}
+
+.checkout-sign-in-link {
+  color: #4A494A;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  flex: 0 0 auto;
+  margin-bottom: 3px;
+}
+
 .checkout-billing-toggle {
   display: flex;
   align-items: center;
@@ -996,6 +1021,15 @@ input[readonly] {
   .checkout-sidebar {
     display: none;
   }
+
+  .checkout-contact-header {
+  align-items: center;
+}
+
+.checkout-sign-in-link {
+  font-size: 13px;
+  margin-bottom: 0;
+}
 
   .checkout-page {
     flex-direction: column;

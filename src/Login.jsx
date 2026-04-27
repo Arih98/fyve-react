@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
+function getSafeRedirect(value) {
+  if (!value) return '/account'
+  if (!value.startsWith('/')) return '/account'
+  if (value.startsWith('//')) return '/account'
+  return value
+}
+
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -10,11 +17,13 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const from = location.state?.from?.pathname || '/account';
+  const query = new URLSearchParams(location.search);
+const redirect = getSafeRedirect(query.get('redirect'));
+const from = getSafeRedirect(location.state?.from?.pathname || redirect);
 
-  if (isAuthenticated) {
-    return <Navigate to="/account" replace />;
-  }
+if (isAuthenticated) {
+  return <Navigate to={from} replace />;
+}
 
   const handleChange = (e) => {
     const { name, value } = e.target;
