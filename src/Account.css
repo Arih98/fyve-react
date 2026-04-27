@@ -3,7 +3,7 @@
 .account-section-page {
   min-height: 100vh;
   background: #fff;
-  padding: 140px 20px 60px;
+  padding: 100px 20px 60px;
 }
 
 .account-auth-card,
@@ -54,7 +54,8 @@
 
 .account-auth-field label {
   font-family: quasimoda, sans-serif;;
-  font-size: 0.95rem;
+  font-size: 1.3rem;
+  color: #9c9a9c;
 }
 
 .account-auth-field input {
@@ -85,7 +86,7 @@
 .account-logout-button {
   border: none;
   padding: 0 22px;
-  background: #111111;
+  background: #4A494A;
   color: #ffffff;
 }
 
@@ -101,7 +102,9 @@
 }
 
 .account-auth-footer {
-  margin: 22px 0 0;
+  margin: 28px 0 0;
+  padding-top: 22px;
+  border-top: 1px solid #e8e7e6;
   font-size: 0.95rem;
   text-align: center;
 }
