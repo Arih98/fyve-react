@@ -28,6 +28,7 @@ import ResetPassword from './ResetPassword'
 import AccountOrderDetail from './AccountOrderDetail'
 import Checkout from './pages/Checkout'
 import CheckoutSuccess from './CheckoutSuccess'
+import './Account.css'
 import Returns from './pages/Returns'
 import ReturnConfirmation from './pages/ReturnConfirmation'
 import Footer from './Footer';
