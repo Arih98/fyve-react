@@ -414,21 +414,21 @@
   }
 
   .account-tabs {
-  gap: 28px;
-  margin-bottom: 32px;
-}
+    gap: 28px;
+    margin-bottom: 32px;
+  }
 
-.account-tab {
-  min-height: 46px;
-  font-size: 0.95rem;
-}
+  .account-tab {
+    min-height: 46px;
+    font-size: 0.95rem;
+  }
 
-.account-overview-grid {
-  grid-template-columns: 1fr;
-}
+  .account-overview-grid {
+    grid-template-columns: 1fr;
+  }
 
-.account-dashboard-panel,
-.account-empty-panel {
-  padding: 24px 20px;
-}
+  .account-dashboard-panel,
+  .account-empty-panel {
+    padding: 24px 20px;
+  }
 }
