@@ -53,6 +53,7 @@
 }
 
 .account-auth-field label {
+  font-family: quasimoda, sans-serif;;
   font-size: 0.95rem;
 }
 
@@ -102,6 +103,7 @@
 .account-auth-footer {
   margin: 22px 0 0;
   font-size: 0.95rem;
+  text-align: center;
 }
 
 .account-auth-footer a,

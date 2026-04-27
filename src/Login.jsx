@@ -49,7 +49,6 @@ if (isAuthenticated) {
     <div className="account-auth-page">
       <div className="account-auth-card">
         <h1 className="account-auth-title">Sign in</h1>
-        <p className="account-auth-subtitle">Access your account details, orders and saved addresses.</p>
 
         <form onSubmit={handleSubmit} className="account-auth-form">
           <div className="account-auth-field">
