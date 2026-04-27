@@ -869,4 +869,16 @@
   width: 100%;
   margin-top: 24px;
 }
+.account-auth-button,
+.account-logout-button,
+.account-card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  border-radius: 999px;
+  font-family: quasimoda, sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+}
 }

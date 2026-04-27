@@ -54,7 +54,6 @@ const Signup = () => {
     <div className="account-auth-page">
       <div className="account-auth-card">
         <h1 className="account-auth-title">Create account</h1>
-        <p className="account-auth-subtitle">Create an account to view orders and manage your details.</p>
 
         <form onSubmit={handleSubmit} className="account-auth-form">
           <div className="account-auth-field">
