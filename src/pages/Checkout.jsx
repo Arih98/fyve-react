@@ -1634,27 +1634,35 @@ const renderCheckoutSkeleton = () => (
     <div className="checkout-main">
       <div className="checkout-flow">
 
-        <section className="checkout-section">
-          <div className="checkout-skeleton checkout-skeleton-heading"></div>
+        <section className="checkout-section checkout-contact-section">
+  <div className="checkout-contact-header">
+    <div className="checkout-skeleton checkout-skeleton-heading"></div>
+    <div className="checkout-skeleton checkout-skeleton-link"></div>
+  </div>
 
-          <div className="checkout-row">
-            <div className="checkout-skeleton checkout-skeleton-input"></div>
-            <div className="checkout-skeleton checkout-skeleton-input"></div>
-          </div>
+  <div className="checkout-skeleton checkout-skeleton-input"></div>
+</section>
 
-          <div className="checkout-skeleton checkout-skeleton-input"></div>
-          <div className="checkout-skeleton checkout-skeleton-input"></div>
-          <div className="checkout-skeleton checkout-skeleton-input"></div>
+<section className="checkout-section">
+  <div className="checkout-skeleton checkout-skeleton-heading"></div>
 
-          <div className="checkout-row checkout-row-3">
-            <div className="checkout-skeleton checkout-skeleton-input"></div>
-            <div className="checkout-skeleton checkout-skeleton-input"></div>
-            <div className="checkout-skeleton checkout-skeleton-input"></div>
-          </div>
+  <div className="checkout-row">
+    <div className="checkout-skeleton checkout-skeleton-input"></div>
+    <div className="checkout-skeleton checkout-skeleton-input"></div>
+  </div>
 
-          <div className="checkout-skeleton checkout-skeleton-input"></div>
-          <div className="checkout-skeleton checkout-skeleton-input"></div>
-        </section>
+  <div className="checkout-skeleton checkout-skeleton-input"></div>
+  <div className="checkout-skeleton checkout-skeleton-input"></div>
+  <div className="checkout-skeleton checkout-skeleton-input"></div>
+
+  <div className="checkout-row checkout-row-3">
+    <div className="checkout-skeleton checkout-skeleton-input"></div>
+    <div className="checkout-skeleton checkout-skeleton-input"></div>
+    <div className="checkout-skeleton checkout-skeleton-input"></div>
+  </div>
+
+  <div className="checkout-skeleton checkout-skeleton-input"></div>
+</section>
 
         <section className="checkout-section">
           <div className="checkout-skeleton checkout-skeleton-heading"></div>

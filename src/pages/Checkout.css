@@ -191,6 +191,13 @@
   background: #dcdcdc;
 }
 
+.checkout-skeleton-link {
+  width: 52px;
+  height: 14px;
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
 .checkout-contact-section {
   gap: 12px;
 }
@@ -962,6 +969,11 @@ input[readonly] {
   border-radius: 4px;
   box-sizing: border-box;
   padding: 11px 14px;
+}
+
+.checkout-skeleton-link {
+  width: 44px;
+  height: 13px;
 }
 
 .checkout-page-skeleton .checkout-mobile-summary {
