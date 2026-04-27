@@ -54,7 +54,8 @@
 
 .account-auth-field label {
   font-family: quasimoda, sans-serif;;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  font-family: 300;
   color: #9c9a9c;
 }
 
