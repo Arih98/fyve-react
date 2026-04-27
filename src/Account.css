@@ -91,7 +91,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 52px;
+  min-height: 40px;
   border-radius: 999px;
   font-family: quasimoda, sans-serif;
   cursor: pointer;
@@ -101,7 +101,7 @@
 .account-auth-button,
 .account-logout-button {
   border: none;
-  padding: 0 22px;
+  padding: 0 50px;
   background: #4A494A;
   font-size: 1.1em;
   letter-spacing: -0.02em;
