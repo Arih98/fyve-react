@@ -1065,22 +1065,29 @@
   font-size: 0.95rem;
 }
 
+.account-auth-button,
+.account-card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  border-radius: 999px;
+  font-family: quasimoda, sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .account-logout-button-desktop {
   display: none;
 }
 
 .account-logout-button-mobile {
   display: inline-flex;
-  width: 100%;
-  margin-top: 24px;
-}
-.account-auth-button,
-.account-logout-button,
-.account-card-link {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-height: 50px;
+  margin-top: 24px;
   border-radius: 999px;
   font-family: quasimoda, sans-serif;
   cursor: pointer;
