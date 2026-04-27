@@ -1,0 +1,239 @@
+.returns-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  background: #fff;
+  color: #4A494A;
+}
+
+.returns-card {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.returns-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.returns-header h1,
+.returns-items h2 {
+  font-family: "ArizonaFlare", sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+  margin: 0;
+}
+
+.returns-header h1 {
+  font-size: 34px;
+}
+
+.returns-items h2 {
+  font-size: 26px;
+}
+
+.returns-header p {
+  font-family: "Quasimoda", sans-serif;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.returns-form,
+.returns-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.returns-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.returns-field label,
+.returns-small-label {
+  font-family: "Quasimoda", sans-serif;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.returns-field input,
+.returns-item select {
+  width: 100%;
+  padding: 16px 14px;
+  border: 1.5px solid #dad8d2;
+  border-radius: 7px;
+  background: #fff;
+  color: #4A494A;
+  font-family: "Quasimoda", sans-serif;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.returns-field input:focus,
+.returns-item select:focus {
+  outline: none;
+  border-color: #4A494A;
+  box-shadow: 0 0 0 1.5px #4A494A;
+}
+
+.returns-button {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 18px;
+  border: 1px solid #4A494A;
+  border-radius: 999px;
+  background: #4A494A;
+  color: #fff;
+  font-family: "Quasimoda", sans-serif;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.returns-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.returns-error {
+  padding: 12px 14px;
+  border-radius: 7px;
+  background: #fff4f4;
+  color: #c62828;
+  font-family: "Quasimoda", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.returns-message {
+  padding: 12px 14px;
+  border-radius: 7px;
+  background: #f4f8f4;
+  color: #2e7d32;
+  font-family: "Quasimoda", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.returns-order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid #dad8d2;
+  border-radius: 7px;
+}
+
+.returns-order-top > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.returns-text-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: #4A494A;
+  font-family: "Quasimoda", sans-serif;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.returns-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e8e7e6;
+}
+
+.returns-item-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.returns-item-image {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f4f4f4;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px #00000014;
+  box-sizing: border-box;
+}
+
+.returns-item-image-empty {
+  background: #f4f4f4;
+}
+
+.returns-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.returns-item-name {
+  font-family: "ArizonaFlare", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.returns-item-meta {
+  font-family: "Quasimoda", sans-serif;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.returns-item select {
+  width: 86px;
+  flex: 0 0 86px;
+}
+
+@media (max-width: 768px) {
+  .returns-page {
+    padding: 120px 16px 40px;
+  }
+
+  .returns-header h1 {
+    font-size: 28px;
+  }
+
+  .returns-items h2 {
+    font-size: 22px;
+  }
+
+  .returns-item {
+    align-items: flex-start;
+  }
+
+  .returns-item-image {
+    width: 58px;
+    height: 58px;
+    flex-basis: 58px;
+  }
+
+  .returns-item select {
+    width: 74px;
+    flex-basis: 74px;
+    padding: 12px 10px;
+  }
+}

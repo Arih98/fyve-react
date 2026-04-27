@@ -28,6 +28,7 @@ import ResetPassword from './ResetPassword'
 import AccountOrderDetail from './AccountOrderDetail'
 import Checkout from './pages/Checkout'
 import CheckoutSuccess from './CheckoutSuccess'
+import Returns from './pages/Returns'
 import Footer from './Footer';
 
 const ProductDetailWrapper = () => {
@@ -110,10 +111,12 @@ function AppContent() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/product/:id" element={<ProductDetailWrapper />} />
-              <Route path="/product-category/:slug" element={<CategoryProducts />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+<Route path="/product-category/:slug" element={<CategoryProducts />} />
+<Route path="/checkout" element={<Checkout />} />
+<Route path="/checkout/success" element={<CheckoutSuccess />} />
+<Route path="/returns" element={<Returns />} />
+<Route path="/login" element={<Login />} />
+<Route path="/signup" element={<Signup />} />
               <Route
                 path="/account"
                 element={
@@ -154,9 +157,9 @@ function AppContent() {
     </ProtectedRoute>
   }
 />
-<Route path="/checkout/success" element={<CheckoutSuccess />} />
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password" element={<ResetPassword />} />
+<Route path="/cart" element={<Cart />} />
               <Route path="/cart" element={<Cart />} />
             </Route>
           </Routes>

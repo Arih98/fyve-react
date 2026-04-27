@@ -1,25 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
 const Account = () => {
   const navigate = useNavigate();
   const { user, logout, authLoading } = useAuth();
-  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     try {
-      setLoggingOut(true);
       await logout();
       navigate('/login', { replace: true });
     } catch (err) {
       console.error(err);
-      setLoggingOut(false);
     }
   };
 
-  if (authLoading || loggingOut || !user) {
-    return <div className="route-loading-space"></div>;
+  if (authLoading || !user) {
+    return null;
   }
 
   return (
@@ -36,8 +33,8 @@ const Account = () => {
             </p>
           </div>
 
-          <button className="account-logout-button" onClick={handleLogout} disabled={loggingOut}>
-            {loggingOut ? 'Logging out...' : 'Logout'}
+          <button className="account-logout-button" onClick={handleLogout}>
+            Logout
           </button>
         </div>
 
