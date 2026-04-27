@@ -20,6 +20,12 @@ const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const isCheckoutPage = location.pathname.startsWith('/checkout');
+const isAccountArea =
+  location.pathname.startsWith('/account') ||
+  location.pathname === '/login' ||
+  location.pathname === '/signup' ||
+  location.pathname === '/forgot-password' ||
+  location.pathname === '/reset-password';
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
@@ -302,7 +308,7 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if (isMobile) {
+  if (isMobile || isAccountArea) {
     setHideHeader(false);
     return;
   }
@@ -326,7 +332,7 @@ useEffect(() => {
 
   window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen]);
+}, [isMobile, isMenuOpen, isAccountArea]);
 
 useEffect(() => {
   const handleResize = () => {
