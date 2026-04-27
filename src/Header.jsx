@@ -5,6 +5,7 @@ import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 import Cart from './Cart';
+import { useAuth } from './context/AuthContext';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const [isCartAddedPopupOpen, setIsCartAddedPopupOpen] = useState(false);
 const [cartAddedPopupItem, setCartAddedPopupItem] = useState(null);
 const [isCartAddedPopupImageVisible, setIsCartAddedPopupImageVisible] = useState(false);
 const [cartAddedPopupStatus, setCartAddedPopupStatus] = useState('adding');
+const { user, authLoading } = useAuth();
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -378,7 +380,9 @@ const handleLogoClick = () => {
 };
 
 const handleAccountClick = () => {
-  navigate('/account');
+  if (authLoading) return;
+
+  navigate(user ? '/account' : '/login');
 
   if (isMobile && isMenuOpen) {
     setTimeout(() => {

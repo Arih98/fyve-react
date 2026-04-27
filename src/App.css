@@ -18,10 +18,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-.protected-route-reserve {
-  min-height: 75svh;
-}
-
 @layer components {
   .btn {
     @apply px-4 py-2 rounded-lg font-medium transition-colors;
@@ -71,6 +67,10 @@ body::-webkit-scrollbar {
 
 .site-content {
   padding-top: calc(var(--announcement-height) + var(--desktop-header-height));
+}
+
+.route-loading-space {
+  min-height: 70vh;
 }
 
 .account-auth-page,
