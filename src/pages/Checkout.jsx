@@ -823,6 +823,15 @@ paymentSnapshotRef.current = {
 }, [contact, billing, shipping, useDifferentBilling])
 
 useEffect(() => {
+  if (!user?.email) return
+
+  setContact((prev) => ({
+    ...prev,
+    email: prev.email || user.email
+  }))
+}, [user])
+
+useEffect(() => {
   if (selectedPaymentMethod === 'wallet' && !walletAvailable) {
     if (cardAvailable) {
       setSelectedPaymentMethod('card')
@@ -1773,10 +1782,8 @@ if (loading || cartLoading) {
     <div className={`checkout-page ${isFinalizingOrder ? 'checkout-page-processing' : ''}`}>
   <div className="checkout-main">
     <div className="checkout-flow">
-<section className="checkout-section">
-  <h1>Checkout</h1>
-
-  {user && (
+{user && (
+  <section className="checkout-section">
     <div className="checkout-account-strip">
       <div>
         <span className="checkout-account-strip-label">Signed in as</span>
@@ -1787,11 +1794,11 @@ if (loading || cartLoading) {
         Account
       </Link>
     </div>
-  )}
-</section>
+  </section>
+)}
 
-<section className="checkout-section checkout-contact-section">
-  {!authLoading && !user && (
+{!authLoading && !user && (
+  <section className="checkout-section checkout-contact-section">
     <div className="checkout-contact-header">
       <h2>Guest checkout</h2>
 
@@ -1802,24 +1809,24 @@ if (loading || cartLoading) {
         Sign in
       </Link>
     </div>
-  )}
 
-  {fieldErrors.contact_email && (
-    <div className="checkout-field-error">{fieldErrors.contact_email}</div>
-  )}
+    {fieldErrors.contact_email && (
+      <div className="checkout-field-error">{fieldErrors.contact_email}</div>
+    )}
 
-  <input
-    ref={emailRef}
-    type="email"
-    placeholder="Email address"
-    value={contact.email}
-    onChange={(e) => {
-      setContact((prev) => ({ ...prev, email: e.target.value }))
-      setFieldErrors((prev) => ({ ...prev, contact_email: '' }))
-    }}
-    required
-  />
-</section>
+    <input
+      ref={emailRef}
+      type="email"
+      placeholder="Email address"
+      value={contact.email}
+      onChange={(e) => {
+        setContact((prev) => ({ ...prev, email: e.target.value }))
+        setFieldErrors((prev) => ({ ...prev, contact_email: '' }))
+      }}
+      required
+    />
+  </section>
+)}
 
 <section className="checkout-section">
   <h2>Shipping address</h2>
