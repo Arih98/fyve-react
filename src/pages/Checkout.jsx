@@ -827,9 +827,14 @@ useEffect(() => {
 
   setContact((prev) => ({
     ...prev,
-    email: prev.email || user.email
+    email: user.email
   }))
-}, [user])
+
+  setFieldErrors((prev) => ({
+    ...prev,
+    contact_email: ''
+  }))
+}, [user?.email])
 
 useEffect(() => {
   if (selectedPaymentMethod === 'wallet' && !walletAvailable) {
