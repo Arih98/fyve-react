@@ -20,12 +20,6 @@ const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const isCheckoutPage = location.pathname.startsWith('/checkout');
-const isAccountArea =
-  location.pathname.startsWith('/account') ||
-  location.pathname === '/login' ||
-  location.pathname === '/signup' ||
-  location.pathname === '/forgot-password' ||
-  location.pathname === '/reset-password';
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
@@ -308,7 +302,7 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if (isMobile || isAccountArea) {
+  if (isMobile) {
     setHideHeader(false);
     return;
   }
@@ -332,7 +326,7 @@ useEffect(() => {
 
   window.addEventListener('scroll', handleScroll);
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen, isAccountArea]);
+}, [isMobile, isMenuOpen]);
 
 useEffect(() => {
   const handleResize = () => {
@@ -591,7 +585,7 @@ const menuItems = [
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${isAccountArea ? ' account-normal-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 

@@ -78,7 +78,7 @@
   justify-content: center;
   min-height: 52px;
   border-radius: 999px;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   cursor: pointer;
   text-decoration: none;
 }
@@ -117,7 +117,8 @@
 
 .account-auth-footer a,
 .account-card-link {
-  color: #111111;
+  font-size: 1.1em;
+  color: #4A494A;
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
@@ -288,19 +289,5 @@
 
   .account-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 769px) {
-  .mobile-header.account-normal-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: none !important;
-  }
-
-  .mobile-header.account-normal-header.hide-header {
-    transform: none !important;
   }
 }
