@@ -148,14 +148,6 @@
   letter-spacing: -0.01em;
 }
 
-.account-page-eyebrow {
-  margin: 0 0 12px;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.5);
-}
-
 .account-page-header {
   display: flex;
   align-items: flex-start;
@@ -504,46 +496,46 @@
   }
 
   .account-orders-panel {
-  margin-top: 28px;
-  border-top: none;
-}
+    margin-top: 28px;
+    border-top: none;
+  }
 
-.account-orders-header {
-  display: none;
-}
+  .account-orders-header {
+    display: none;
+  }
 
-.account-orders-list {
-  display: grid;
-  gap: 14px;
-}
+  .account-orders-list {
+    display: grid;
+    gap: 14px;
+  }
 
-.account-order-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  min-height: auto;
-  padding: 22px 20px;
-  border: 1px solid #e8e7e6;
-  border-radius: 18px;
-}
+  .account-order-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    min-height: auto;
+    padding: 22px 20px;
+    border: 1px solid #e8e7e6;
+    border-radius: 18px;
+  }
 
-.account-order-cell {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-}
+  .account-order-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
 
-.account-order-mobile-label {
-  display: inline-flex;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
-}
+  .account-order-mobile-label {
+    display: inline-flex;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.45);
+  }
 
-.account-order-actions {
-  justify-content: flex-start;
-  padding-top: 8px;
-}
+  .account-order-actions {
+    justify-content: flex-start;
+    padding-top: 8px;
+  }
 }
