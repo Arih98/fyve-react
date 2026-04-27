@@ -15,7 +15,7 @@
 .account-page-inner,
 .account-section-inner {
   width: 100%;
-  max-width: 1320px;
+  max-width: none;
   margin: 0 auto;
   box-sizing: border-box;
 }
