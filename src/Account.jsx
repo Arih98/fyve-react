@@ -47,11 +47,11 @@ const Account = () => {
             <p><strong>Username:</strong> {user.username}</p>
           </div>
 
-          <div className="account-card">
-            <h2>Orders</h2>
-            <p>View your order history and track recent purchases.</p>
-            <Link to="/account/orders" className="account-card-link">View orders</Link>
-          </div>
+<div className="account-card">
+  <h2>Orders</h2>
+  <p>View your order history, order details and eligible returns.</p>
+  <Link to="/account/orders" className="account-card-link">View orders</Link>
+</div>
 
           <div className="account-card">
             <h2>Addresses</h2>

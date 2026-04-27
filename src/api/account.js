@@ -93,3 +93,25 @@ export async function getOrderDetail(orderId) {
 
   return data.order
 }
+
+export async function createAccountReturn(orderId, returnItems) {
+  const response = await fetch('https://fyvelondon.com/wp-json/fyve-returns/v1/create', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      order_id: orderId,
+      return_items: returnItems
+    })
+  })
+
+  const data = await response.json()
+
+  if (!response.ok || !data.ok) {
+    throw new Error(data.message || 'Failed to create return')
+  }
+
+  return data
+}

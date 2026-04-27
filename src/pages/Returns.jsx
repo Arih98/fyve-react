@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { lookupReturnOrder, createReturnRequest } from '../api/returns'
 import { useAuth } from '../context/AuthContext'
 import './Returns.css'
@@ -24,11 +25,11 @@ function getItemImage(item) {
 }
 
 export default function Returns() {
-  const { user } = useAuth()
+  const { user, authLoading } = useAuth()
 
   const [lookupForm, setLookupForm] = useState({
     orderId: '',
-    email: user?.email || ''
+    email: ''
   })
 
   const [order, setOrder] = useState(null)
@@ -54,6 +55,24 @@ export default function Returns() {
       })
       .filter((item) => item.item_id && item.quantity > 0)
   }, [items, selectedItems])
+
+  if (authLoading) {
+    return null
+  }
+
+  if (user) {
+    return (
+      <main className="returns-page">
+        <section className="returns-card">
+          <h1>Create a return from your account</h1>
+          <p>You are signed in, so please choose the order you want to return from your account orders.</p>
+          <Link to="/account/orders" className="returns-button">
+            View your orders
+          </Link>
+        </section>
+      </main>
+    )
+  }
 
   const handleLookupChange = (e) => {
     const { name, value } = e.target

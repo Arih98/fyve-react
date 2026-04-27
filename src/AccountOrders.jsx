@@ -44,7 +44,15 @@ const AccountOrders = () => {
                 <p><strong>Date:</strong> {order.date_created ? new Date(order.date_created).toLocaleDateString() : '-'}</p>
                 <p><strong>Total:</strong> {order.total_display}</p>
                 <p><strong>Items:</strong> {order.item_count}</p>
-                <Link to={`/account/orders/${order.id}`}>View Order</Link>
+                <div className="account-card-actions">
+  <Link to={`/account/orders/${order.id}`}>View Order</Link>
+
+  {order.return_eligible && (
+    <Link to={`/account/orders/${order.id}?return=1`} className="account-card-link">
+      Create return
+    </Link>
+  )}
+</div>
               </div>
             ))}
           </div>
