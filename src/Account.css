@@ -6,11 +6,16 @@
   padding: 100px 20px 60px;
 }
 
-.account-auth-card,
+.account-auth-card {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .account-page-inner,
 .account-section-inner {
   width: 100%;
-  max-width: 720px;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
@@ -75,7 +80,7 @@
   outline: none;
   border-color: #4A494A;
   box-shadow: 0 0 0 1.5px #4A494A;
-  background: #fff;
+  background: #f4f4f4;
 }
 
 .account-auth-button,
@@ -286,6 +291,104 @@
   cursor: not-allowed;
 }
 
+.account-shell {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.account-tabs {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  border-bottom: 1px solid #eeeeee;
+  margin-bottom: 42px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.account-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.account-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  color: rgba(0, 0, 0, 0.68);
+  font-family: quasimoda, sans-serif;
+  font-size: 1rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.account-tab.is-active {
+  color: #000;
+}
+
+.account-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #000;
+}
+
+.account-dashboard-panel,
+.account-empty-panel {
+  border: 1px solid #eeeeee;
+  padding: 32px;
+  background: #fff;
+}
+
+.account-dashboard-panel h2 {
+  margin: 0 0 24px;
+  font-size: 1.5rem;
+}
+
+.account-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.account-overview-grid div {
+  display: grid;
+  gap: 6px;
+}
+
+.account-overview-grid span {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.48);
+}
+
+.account-overview-grid strong {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #000;
+}
+
+.account-empty-panel {
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.account-empty-link {
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 768px) {
   .account-address-grid {
     grid-template-columns: 1fr;
@@ -309,4 +412,23 @@
   .account-grid {
     grid-template-columns: 1fr;
   }
+
+  .account-tabs {
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+.account-tab {
+  min-height: 46px;
+  font-size: 0.95rem;
+}
+
+.account-overview-grid {
+  grid-template-columns: 1fr;
+}
+
+.account-dashboard-panel,
+.account-empty-panel {
+  padding: 24px 20px;
+}
 }

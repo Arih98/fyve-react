@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAddresses, updateAddresses } from './api/account';
+import AccountTabs from './AccountTabs';
 
 const emptyBilling = {
   first_name: '',
@@ -80,9 +81,12 @@ const AccountAddresses = () => {
   };
 
   if (loading) {
-    return (
-      <div className="account-section-page">
-        <div className="account-section-inner">
+return (
+  <div className="account-section-page">
+    <div className="account-shell">
+      <AccountTabs />
+
+      <div className="account-section-inner">
           <p className="account-page-eyebrow">My Account</p>
           <h1 className="account-page-title">Addresses</h1>
           <p className="account-page-subtitle">Loading addresses...</p>
@@ -91,8 +95,11 @@ const AccountAddresses = () => {
     );
   }
 
-  return (
-    <div className="account-section-page">
+return (
+  <div className="account-section-page">
+    <div className="account-shell">
+      <AccountTabs />
+
       <div className="account-section-inner">
         <p className="account-page-eyebrow">My Account</p>
         <h1 className="account-page-title">Addresses</h1>
@@ -199,6 +206,8 @@ const AccountAddresses = () => {
           </button>
         </form>
       </div>
+    </div>
+    </div>
     </div>
   );
 };

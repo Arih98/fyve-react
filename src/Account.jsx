@@ -1,6 +1,7 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import AccountTabs from './AccountTabs';
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -32,48 +33,50 @@ const Account = () => {
 
   return (
     <div className="account-page">
-      <div className="account-page-inner">
-        <div className="account-page-header">
-          <div>
-            <p className="account-page-eyebrow">My Account</p>
-            <h1 className="account-page-title">
-              {greeting}, {displayName}
-            </h1>
-            <p className="account-page-subtitle">
-              Manage your account details, orders and saved addresses.
-            </p>
+      <div className="account-shell">
+        <AccountTabs />
+
+        <div className="account-page-inner">
+          <div className="account-page-header">
+            <div>
+              <h1 className="account-page-title">
+                {greeting}, {displayName}
+              </h1>
+
+              <p className="account-page-subtitle">
+                Manage your orders, saved addresses and account settings.
+              </p>
+            </div>
+
+            <button className="account-logout-button" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
 
-          <button className="account-logout-button" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
+          <div className="account-dashboard-panel">
+            <h2>Account overview</h2>
 
-        <div className="account-grid">
-          <div className="account-card">
-            <h2>Account details</h2>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>First name:</strong> {user.first_name || '-'}</p>
-            <p><strong>Last name:</strong> {user.last_name || '-'}</p>
-            <p><strong>Username:</strong> {user.username}</p>
-          </div>
+            <div className="account-overview-grid">
+              <div>
+                <span>Email</span>
+                <strong>{user.email}</strong>
+              </div>
 
-          <div className="account-card">
-            <h2>Orders</h2>
-            <p>View your order history, order details and eligible returns.</p>
-            <Link to="/account/orders" className="account-card-link">View orders</Link>
-          </div>
+              <div>
+                <span>First name</span>
+                <strong>{user.first_name || '-'}</strong>
+              </div>
 
-          <div className="account-card">
-            <h2>Addresses</h2>
-            <p>Manage your billing and shipping addresses.</p>
-            <Link to="/account/addresses" className="account-card-link">Manage addresses</Link>
-          </div>
+              <div>
+                <span>Last name</span>
+                <strong>{user.last_name || '-'}</strong>
+              </div>
 
-          <div className="account-card">
-            <h2>Account settings</h2>
-            <p>Update your personal details and password.</p>
-            <Link to="/account/details" className="account-card-link">Edit details</Link>
+              <div>
+                <span>Username</span>
+                <strong>{user.username}</strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>
