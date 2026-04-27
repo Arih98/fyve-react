@@ -16,7 +16,6 @@
 .account-section-inner {
   width: 100%;
   max-width: 1320px;
-  margin: 0 auto;
 }
 
 .account-auth-card,
@@ -334,14 +333,12 @@
   left: 0;
   right: 0;
   bottom: -1px;
-  height: 2px;
+  height: 3.5px;
   background: #000;
 }
 
 .account-dashboard-panel,
 .account-empty-panel {
-  border: 1px solid #eeeeee;
-  padding: 32px;
   background: #fff;
 }
 
