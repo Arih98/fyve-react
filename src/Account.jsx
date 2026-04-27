@@ -42,10 +42,6 @@ const Account = () => {
               <h1 className="account-page-title">
                 {greeting}, {displayName}
               </h1>
-
-              <p className="account-page-subtitle">
-                Manage your orders, saved addresses and account settings.
-              </p>
             </div>
 
             <button className="account-logout-button" onClick={handleLogout}>
