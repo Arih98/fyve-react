@@ -364,11 +364,6 @@ useEffect(() => {
   return () => document.removeEventListener('mousedown', handlePointerDown);
 }, []);
 
-const handleToggleMenu = () => {
-  toggleMenu();
-  if (isSearchOpen) setIsSearchOpen(false);
-};
-
 const handleLogoClick = () => {
   navigate('/');
 
@@ -553,10 +548,16 @@ const menuItems = [
   { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
 ];
 
+const handleToggleMenu = () => {
+  setHideHeader(false);
+  toggleMenu();
+  if (isSearchOpen) setIsSearchOpen(false);
+};
+
   const BurgerIcon = (
   <button
     type="button"
-    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${hideHeader ? ' hide-header' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}${showBurgerCartBadge ? ' has-cart-badge' : ''}`}
+    className={`a-burger${menuState === 'open' || menuState === 'closing' ? ' menu-open' : ''}${menuState === 'open' ? ' circle-open' : ''}${isMenuOpen ? ' menu-active' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' is-white' : ''}${showBurgerCartBadge ? ' has-cart-badge' : ''}`}
     ref={burgerRef}
     onClick={handleToggleMenu}
     aria-expanded={isMenuOpen}
