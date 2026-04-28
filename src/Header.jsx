@@ -24,6 +24,15 @@ const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
 const isHomePage = location.pathname === '/';
+const normalDesktopHeaderPages = [
+  /^\/account(\/.*)?$/,
+  /^\/checkout(\/.*)?$/,
+  /^\/login$/,
+  /^\/register$/
+];
+
+const normalDesktopHeader =
+  !isMobile && normalDesktopHeaderPages.some(pattern => pattern.test(location.pathname));
 const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 10);
 const headerRef = useRef(null);
 const prevMenuStateRef = useRef(menuState);
@@ -302,7 +311,7 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if (isMobile) {
+  if (isMobile || normalDesktopHeader) {
     setHideHeader(false);
     return;
   }
@@ -324,9 +333,9 @@ useEffect(() => {
     lastScrollY = currentScrollY;
   };
 
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
   return () => window.removeEventListener('scroll', handleScroll);
-}, [isMobile, isMenuOpen]);
+}, [isMobile, isMenuOpen, normalDesktopHeader, location.pathname]);
 
 useEffect(() => {
   const handleResize = () => {
@@ -586,7 +595,7 @@ const handleToggleMenu = () => {
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${normalDesktopHeader ? ' desktop-normal-scroll' : ''}${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 

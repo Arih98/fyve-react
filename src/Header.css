@@ -1250,3 +1250,15 @@ body {
   cursor: not-allowed;
 }
 }
+
+@media (min-width: 769px) {
+  .mobile-header.first-header.desktop-normal-scroll {
+    position: absolute;
+    transform: none;
+  }
+
+  .mobile-header.first-header.desktop-normal-scroll.hide-header {
+    transform: none;
+    pointer-events: auto;
+  }
+}
