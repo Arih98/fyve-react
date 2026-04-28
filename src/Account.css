@@ -692,6 +692,15 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
+  border: 1px solid #e8e7e6;
+  padding: 25px;
+  box-sizing: border-box;
+}
+
+.account-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
 }
 
 .account-overview-grid div {
@@ -1322,6 +1331,7 @@
 
   .account-overview-grid {
     grid-template-columns: 1fr;
+    padding: 25px;
   }
 
   .account-dashboard-panel,
