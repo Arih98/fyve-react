@@ -701,7 +701,7 @@
 
 .account-overview-grid span {
   font-family: quasimoda, sans-serif;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: rgba(0, 0, 0, 0.48);
 }
 
@@ -1106,6 +1106,12 @@
   padding: 20px 20px 8px;
 }
 
+.account-overview-grid span {
+  font-family: quasimoda, sans-serif;
+  font-size: 1.1rem;
+  color: rgba(0, 0, 0, 0.48);
+}
+
 .account-overview-grid strong {
   font-family: quasimoda, sans-serif;
   font-size: 1.1rem;
@@ -1223,7 +1229,7 @@
 .account-auth-title,
 .account-page-title {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2.2rem;
   font-family: "ArizonaFlare", sans-serif;;
   font-weight: 500;
   color: #4A494A;
