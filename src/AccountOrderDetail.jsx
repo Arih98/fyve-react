@@ -349,7 +349,7 @@ export default function AccountOrderDetail() {
 
 {canReturnOrder ? (
   <div className="account-return-box">
-    <p className="account-page-subtitle">Select the items you want to return.</p>
+    <p className="account-page-subtitle">Select the items you wish to return.</p>
 
     {returnItems.map((item) => {
       const itemId = getItemId(item);
