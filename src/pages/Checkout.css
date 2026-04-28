@@ -1124,7 +1124,7 @@ input[readonly] {
     border: 1.5px solid #dad8d2;
     border-radius: 7px;
     box-sizing: border-box;
-    font-family: quasimoda, sans-serif;
+    font: inherit;
     padding: 11px 14px;
     transition: border-color .15s ease, box-shadow .15s ease;
 }

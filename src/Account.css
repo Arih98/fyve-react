@@ -234,7 +234,7 @@
   border: 1.5px solid #e8e7e6;
   border-radius: 5px;
   padding: 0 16px;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   background: #f4f4f4;
   box-sizing: border-box;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
@@ -343,6 +343,7 @@
 
 .account-card h2 {
   margin: 0 0 12px;
+  font-family: quasimoda, sans-serif;
   font-size: 1.25rem;
 }
 
