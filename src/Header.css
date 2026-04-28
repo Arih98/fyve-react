@@ -233,7 +233,7 @@ body.locked {
 .a-burger .burger-glyph {
   position: relative;
   width: 45px;
-  height: 21px;
+  height: 20px;
   display: block;
 }
 
@@ -245,9 +245,9 @@ body.locked {
   position: absolute;
   left: 0;
   width: 45px;
-  height: 3px;
+  height: 2px;
   background-color: var(--header-icon-color);
-  transform: scaleX(1);
+  transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
