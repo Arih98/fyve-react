@@ -708,7 +708,7 @@
   font-family: quasimoda, sans-serif;
   font-size: 1.15rem;
   font-weight: 400;
-  color: #000;
+  color: #4A494A;
 }
 
 .account-empty-panel {
@@ -719,7 +719,7 @@
 }
 
 .account-empty-link {
-  color: #000;
+  color: #4A494A;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-decoration: underline;
