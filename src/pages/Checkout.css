@@ -427,7 +427,7 @@
   padding: 18px 40px 18px 14px;
   border: 1.5px solid #e8e7e6;
   border-radius: 4px;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   color: #4A494A;
   background-color: #fff;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%234A494A' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5'/></svg>");
@@ -684,8 +684,8 @@ input[readonly] {
 .checkout-summary-item-image-wrap {
   position: relative;
   width: 64px;
-  height: 64px;
-  flex: 0 0 64px;
+  height: 75px;
+  flex: 0 0 75px;
   aspect-ratio: 1 / 1;
   overflow: visible;
   background: #f4f4f4;
@@ -731,7 +731,7 @@ input[readonly] {
 
 .checkout-summary-item-variation {
   font-family: quasimoda, sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   color: #4A494A;
   opacity: 0.8;
   margin-top: 2px;
@@ -745,6 +745,7 @@ input[readonly] {
 
 .checkout-summary-item-title {
   font-family: "ArizonaFlare", sans-serif;
+  font-size: 1.2em;
   max-width: 240px;
   white-space: nowrap;
   overflow: hidden;
@@ -1125,11 +1126,33 @@ input[readonly] {
     border: 1.5px solid #dad8d2;
     border-radius: 7px;
     box-sizing: border-box;
-    font: inherit;
+    font-family: quasimoda, sans-serif;
     padding: 11px 14px;
     transition: border-color .15s ease, box-shadow .15s ease;
 }
   .checkout-section input::placeholder {
     font-size: 14px;
   }
+
+  .checkout-summary-item-image-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  aspect-ratio: 1 / 1;
+  overflow: visible;
+  background: #f4f4f4;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px #00000014;
+  box-sizing: border-box;
+}
+.checkout-summary-item-title {
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: 1em;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 }
