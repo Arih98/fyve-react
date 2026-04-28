@@ -680,7 +680,7 @@
 
 .account-dashboard-panel h2 {
   margin: 0 0 24px;
-  font-family: 'Quasimoda';
+  font-family: "ArizonaFlare", sans-serif;
   font-weight: 300;
   font-size: 1.5rem;
   color: #4A494A;
@@ -1193,10 +1193,29 @@
   border-radius: 12px;
 }
 
-  .account-shell,
+.account-shell,
 .account-page-inner,
 .account-section-inner {
   max-width: 100%;
+}
+
+.account-auth-title,
+.account-page-title {
+  margin: 0;
+  font-size: 2rem;
+  font-family: "ArizonaFlare", sans-serif;;
+  font-weight: 500;
+  color: #4A494A;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.account-dashboard-panel h2 {
+  margin: 0 0 24px;
+  font-family: "ArizonaFlare", sans-serif;
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: #4A494A;
 }
 
 .account-order-detail-layout {
