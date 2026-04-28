@@ -527,8 +527,8 @@
 
 .account-floating-field select:focus {
   outline: none;
-  border-color: #4A494A;
-  box-shadow: 0 0 0 1px #4A494A;
+  border-color: #e8e7e6;
+  box-shadow: none;
 }
 
 .account-floating-field select:focus + label,
@@ -1031,8 +1031,8 @@
 .account-order-address,
 .account-order-summary-lines,
 .account-order-payment-method {
-  color: #4A494A;
   font-family: quasimoda, sans-serif;
+  color: #4A494A;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
