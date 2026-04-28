@@ -473,8 +473,10 @@
 .account-logout-button {
   border: none;
   padding: 0 50px;
-  background: #4A494A;
+  background: #fff;
+  border: 1.2px solid #4A494A;
   font-size: 1.1em;
+  line-height: 1;
   color: #ffffff;
 }
 
