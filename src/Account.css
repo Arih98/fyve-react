@@ -294,7 +294,7 @@
 .account-floating-field input:not(:placeholder-shown) + label {
   top: 10px;
   transform: translateY(0);
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   text-transform: none;
   color: rgba(0, 0, 0, 0.45);
 }
