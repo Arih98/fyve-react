@@ -438,8 +438,68 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.account-address-grid .account-auth-field + .account-auth-field {
-  margin-top: 25px;
+.account-address-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.account-address-card h2 {
+  margin: 0 0 8px;
+}
+
+.account-field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.account-field-row-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.account-address-static-field {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border: 1.5px solid #e8e7e6;
+  background: #f4f4f4;
+  box-sizing: border-box;
+  font: inherit;
+  color: #4A494A;
+}
+
+.account-floating-field select {
+  width: 100%;
+  height: 70px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1.5px solid #e8e7e6;
+  padding: 20px 46px 8px 20px;
+  font: inherit;
+  color: #4A494A;
+  background-color: #f4f4f4;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%234A494A' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 10px;
+  box-sizing: border-box;
+}
+
+.account-floating-field select:focus {
+  outline: none;
+  border-color: #4A494A;
+  box-shadow: 0 0 0 1px #4A494A;
+}
+
+.account-floating-field select:focus + label,
+.account-floating-select-field.is-filled label {
+  top: 14px;
+  transform: translateY(0);
+  font-size: 0.9rem;
+  text-transform: none;
+  color: rgba(0, 0, 0, 0.45);
 }
 
 .account-auth-success {
@@ -922,6 +982,16 @@
 }
 
 @media (max-width: 768px) {
+.account-address-card {
+  gap: 12px;
+}
+
+.account-field-row,
+.account-field-row-3 {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
 .account-skeleton-title {
   height: 42px;
   width: 85%;

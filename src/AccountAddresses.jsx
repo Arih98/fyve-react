@@ -11,7 +11,7 @@ const emptyBilling = {
   city: '',
   state: '',
   postcode: '',
-  country: '',
+  country: 'US',
   email: '',
   phone: ''
 };
@@ -25,8 +25,95 @@ const emptyShipping = {
   city: '',
   state: '',
   postcode: '',
-  country: ''
+  country: 'US'
 };
+
+const US_STATES = [
+  { code: 'AL', name: 'Alabama' },
+  { code: 'AK', name: 'Alaska' },
+  { code: 'AZ', name: 'Arizona' },
+  { code: 'AR', name: 'Arkansas' },
+  { code: 'CA', name: 'California' },
+  { code: 'CO', name: 'Colorado' },
+  { code: 'CT', name: 'Connecticut' },
+  { code: 'DE', name: 'Delaware' },
+  { code: 'FL', name: 'Florida' },
+  { code: 'GA', name: 'Georgia' },
+  { code: 'HI', name: 'Hawaii' },
+  { code: 'ID', name: 'Idaho' },
+  { code: 'IL', name: 'Illinois' },
+  { code: 'IN', name: 'Indiana' },
+  { code: 'IA', name: 'Iowa' },
+  { code: 'KS', name: 'Kansas' },
+  { code: 'KY', name: 'Kentucky' },
+  { code: 'LA', name: 'Louisiana' },
+  { code: 'ME', name: 'Maine' },
+  { code: 'MD', name: 'Maryland' },
+  { code: 'MA', name: 'Massachusetts' },
+  { code: 'MI', name: 'Michigan' },
+  { code: 'MN', name: 'Minnesota' },
+  { code: 'MS', name: 'Mississippi' },
+  { code: 'MO', name: 'Missouri' },
+  { code: 'MT', name: 'Montana' },
+  { code: 'NE', name: 'Nebraska' },
+  { code: 'NV', name: 'Nevada' },
+  { code: 'NH', name: 'New Hampshire' },
+  { code: 'NJ', name: 'New Jersey' },
+  { code: 'NM', name: 'New Mexico' },
+  { code: 'NY', name: 'New York' },
+  { code: 'NC', name: 'North Carolina' },
+  { code: 'ND', name: 'North Dakota' },
+  { code: 'OH', name: 'Ohio' },
+  { code: 'OK', name: 'Oklahoma' },
+  { code: 'OR', name: 'Oregon' },
+  { code: 'PA', name: 'Pennsylvania' },
+  { code: 'RI', name: 'Rhode Island' },
+  { code: 'SC', name: 'South Carolina' },
+  { code: 'SD', name: 'South Dakota' },
+  { code: 'TN', name: 'Tennessee' },
+  { code: 'TX', name: 'Texas' },
+  { code: 'UT', name: 'Utah' },
+  { code: 'VT', name: 'Vermont' },
+  { code: 'VA', name: 'Virginia' },
+  { code: 'WA', name: 'Washington' },
+  { code: 'WV', name: 'West Virginia' },
+  { code: 'WI', name: 'Wisconsin' },
+  { code: 'WY', name: 'Wyoming' },
+  { code: 'DC', name: 'District of Columbia' }
+];
+
+function FloatingField({ id, name, value, onChange, label, type = 'text', inputMode }) {
+  return (
+    <div className="account-auth-field account-floating-field">
+      <input
+        id={id}
+        name={name}
+        type={type}
+        inputMode={inputMode}
+        value={value}
+        onChange={onChange}
+        placeholder=" "
+      />
+      <label htmlFor={id}>{label}</label>
+    </div>
+  );
+}
+
+function FloatingSelect({ id, name, value, onChange, label, options }) {
+  return (
+    <div className={`account-auth-field account-floating-field account-floating-select-field${value ? ' is-filled' : ''}`}>
+      <select id={id} name={name} value={value} onChange={onChange}>
+        <option value=""></option>
+        {options.map((option) => (
+          <option key={option.code} value={option.code}>
+            {option.name}
+          </option>
+        ))}
+      </select>
+      <label htmlFor={id}>{label}</label>
+    </div>
+  );
+}
 
 const AccountAddresses = () => {
   const [billing, setBilling] = useState(emptyBilling);
@@ -40,8 +127,8 @@ const AccountAddresses = () => {
     const loadAddresses = async () => {
       try {
         const data = await getAddresses();
-        setBilling({ ...emptyBilling, ...(data.billing || {}) });
-        setShipping({ ...emptyShipping, ...(data.shipping || {}) });
+setBilling({ ...emptyBilling, ...(data.billing || {}), country: 'US' });
+setShipping({ ...emptyShipping, ...(data.shipping || {}), country: 'US' });
       } catch (err) {
         setError(err.message || 'Failed to load addresses');
       } finally {
@@ -69,9 +156,12 @@ const AccountAddresses = () => {
     setSaving(true);
 
     try {
-      const data = await updateAddresses({ billing, shipping });
-      setBilling({ ...emptyBilling, ...(data.billing || {}) });
-      setShipping({ ...emptyShipping, ...(data.shipping || {}) });
+const nextBilling = { ...billing, country: 'US' };
+const nextShipping = { ...shipping, country: 'US' };
+const data = await updateAddresses({ billing: nextBilling, shipping: nextShipping });
+
+setBilling({ ...emptyBilling, ...(data.billing || {}), country: 'US' });
+setShipping({ ...emptyShipping, ...(data.shipping || {}), country: 'US' });
       setSuccess('Addresses updated successfully.');
     } catch (err) {
       setError(err.message || 'Failed to update addresses');
@@ -125,211 +215,48 @@ const AccountAddresses = () => {
 
           <form onSubmit={handleSubmit} className="account-addresses-form">
             <div className="account-address-grid">
-              <div className="account-card">
+              <div className="account-card account-address-card">
   <h2>Billing address</h2>
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-first-name"
-      name="first_name"
-      value={billing.first_name}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-first-name">First name</label>
+  <div className="account-field-row">
+    <FloatingField id="billing-first-name" name="first_name" label="First name" value={billing.first_name} onChange={handleBillingChange} />
+    <FloatingField id="billing-last-name" name="last_name" label="Last name" value={billing.last_name} onChange={handleBillingChange} />
   </div>
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-last-name"
-      name="last_name"
-      value={billing.last_name}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-last-name">Last name</label>
+  <div className="account-address-static-field">United States (US)</div>
+
+  <FloatingField id="billing-address-1" name="address_1" label="Address line 1" value={billing.address_1} onChange={handleBillingChange} />
+  <FloatingField id="billing-address-2" name="address_2" label="Address line 2" value={billing.address_2} onChange={handleBillingChange} />
+
+  <div className="account-field-row account-field-row-3">
+    <FloatingField id="billing-city" name="city" label="City" value={billing.city} onChange={handleBillingChange} />
+    <FloatingSelect id="billing-state" name="state" label="State" value={billing.state} onChange={handleBillingChange} options={US_STATES} />
+    <FloatingField id="billing-postcode" name="postcode" label="ZIP code" value={billing.postcode} onChange={handleBillingChange} />
   </div>
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-address-1"
-      name="address_1"
-      value={billing.address_1}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-address-1">Address line 1</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-address-2"
-      name="address_2"
-      value={billing.address_2}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-address-2">Address line 2</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-city"
-      name="city"
-      value={billing.city}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-city">City</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-state"
-      name="state"
-      value={billing.state}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-state">County / State</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-postcode"
-      name="postcode"
-      value={billing.postcode}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-postcode">Postcode</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-country"
-      name="country"
-      value={billing.country}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-country">Country</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-email"
-      name="email"
-      type="email"
-      value={billing.email}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-email">Email</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-phone"
-      name="phone"
-      type="tel"
-      value={billing.phone}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-phone">Phone</label>
+  <div className="account-field-row">
+    <FloatingField id="billing-email" name="email" type="email" label="Email" value={billing.email} onChange={handleBillingChange} />
+    <FloatingField id="billing-phone" name="phone" type="tel" inputMode="tel" label="Phone" value={billing.phone} onChange={handleBillingChange} />
   </div>
 </div>
 
-<div className="account-card">
+<div className="account-card account-address-card">
   <h2>Shipping address</h2>
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-first-name"
-      name="first_name"
-      value={shipping.first_name}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-first-name">First name</label>
+  <div className="account-field-row">
+    <FloatingField id="shipping-first-name" name="first_name" label="First name" value={shipping.first_name} onChange={handleShippingChange} />
+    <FloatingField id="shipping-last-name" name="last_name" label="Last name" value={shipping.last_name} onChange={handleShippingChange} />
   </div>
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-last-name"
-      name="last_name"
-      value={shipping.last_name}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-last-name">Last name</label>
-  </div>
+  <div className="account-address-static-field">United States (US)</div>
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-address-1"
-      name="address_1"
-      value={shipping.address_1}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-address-1">Address line 1</label>
-  </div>
+  <FloatingField id="shipping-address-1" name="address_1" label="Address line 1" value={shipping.address_1} onChange={handleShippingChange} />
+  <FloatingField id="shipping-address-2" name="address_2" label="Address line 2" value={shipping.address_2} onChange={handleShippingChange} />
 
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-address-2"
-      name="address_2"
-      value={shipping.address_2}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-address-2">Address line 2</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-city"
-      name="city"
-      value={shipping.city}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-city">City</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-state"
-      name="state"
-      value={shipping.state}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-state">County / State</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-postcode"
-      name="postcode"
-      value={shipping.postcode}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-postcode">Postcode</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-country"
-      name="country"
-      value={shipping.country}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-country">Country</label>
+  <div className="account-field-row account-field-row-3">
+    <FloatingField id="shipping-city" name="city" label="City" value={shipping.city} onChange={handleShippingChange} />
+    <FloatingSelect id="shipping-state" name="state" label="State" value={shipping.state} onChange={handleShippingChange} options={US_STATES} />
+    <FloatingField id="shipping-postcode" name="postcode" label="ZIP code" value={shipping.postcode} onChange={handleShippingChange} />
   </div>
 </div>
             </div>
