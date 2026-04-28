@@ -273,7 +273,7 @@ export default function AccountOrderDetail() {
 
           <div className="account-order-detail-heading">
             <div>
-              <h1 className="account-page-title">Order #{order.number}</h1>
+              <h1 className="account-page-title account-section-title">Order #{order.number}</h1>
 
               <div className="account-order-detail-meta">
                 <span>{formatOrderDate(order.date_created)}</span>
