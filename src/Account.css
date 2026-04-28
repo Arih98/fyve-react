@@ -1108,7 +1108,7 @@
 
 .account-overview-grid span {
   font-family: quasimoda, sans-serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: rgba(0, 0, 0, 0.48);
 }
 
@@ -1150,7 +1150,7 @@
 }
 
 .account-address-card {
-  gap: 5px;
+  gap: 20px;
 }
 
 .account-field-row,
