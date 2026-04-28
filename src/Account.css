@@ -1067,7 +1067,7 @@
 
 .account-saved-row {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .account-saved-label {
@@ -1104,6 +1104,14 @@
 .account-floating-field input {
   height: 60px;
   padding: 20px 20px 8px;
+}
+
+.account-saved-value {
+  font-family: quasimoda, sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: #4A494A;
+  line-height: 1.45;
 }
 
 .account-success-popup {
