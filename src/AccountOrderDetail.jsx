@@ -261,6 +261,8 @@ export default function AccountOrderDetail() {
     );
   }
 
+  const canReturnOrder = !returnChecking && returnToken && returnOrder?.eligible === true && !returnOrder?.done;
+
   return (
     <div className="account-section-page">
       <div className="account-shell">
@@ -336,63 +338,65 @@ export default function AccountOrderDetail() {
                 </div>
 
                 {returnChecking ? (
-                  <p className="account-page-subtitle">Checking return eligibility...</p>
-                ) : null}
+  <p className="account-page-subtitle">Checking return eligibility...</p>
+) : null}
 
-                {!returnChecking && !returnToken ? (
-                  <p className="account-page-subtitle">{returnError || 'This order is not eligible for return.'}</p>
-                ) : null}
+{!returnChecking && !canReturnOrder ? (
+  <p className="account-page-subtitle">
+    {returnError || 'This order is not eligible for return.'}
+  </p>
+) : null}
 
-                {!returnChecking && returnToken ? (
-                  <div className="account-return-box">
-                    <p className="account-page-subtitle">Select the items you want to return.</p>
+{canReturnOrder ? (
+  <div className="account-return-box">
+    <p className="account-page-subtitle">Select the items you want to return.</p>
 
-                    {returnItems.map((item) => {
-                      const itemId = getItemId(item);
-                      const quantity = getItemQuantity(item);
-                      const image = getItemImage(item);
+    {returnItems.map((item) => {
+      const itemId = getItemId(item);
+      const quantity = getItemQuantity(item);
+      const image = getItemImage(item);
 
-                      return (
-                        <div className="returns-item" key={itemId}>
-                          <div className="returns-item-main">
-                            {image ? (
-                              <img src={image} alt={getItemName(item)} className="returns-item-image" />
-                            ) : (
-                              <div className="returns-item-image returns-item-image-empty"></div>
-                            )}
+      return (
+        <div className="returns-item" key={itemId}>
+          <div className="returns-item-main">
+            {image ? (
+              <img src={image} alt={getItemName(item)} className="returns-item-image" />
+            ) : (
+              <div className="returns-item-image returns-item-image-empty"></div>
+            )}
 
-                            <div className="returns-item-info">
-                              <div className="returns-item-name">{getItemName(item)}</div>
-                              <div className="returns-item-meta">Purchased quantity: {quantity}</div>
-                            </div>
-                          </div>
+            <div className="returns-item-info">
+              <div className="returns-item-name">{getItemName(item)}</div>
+              <div className="returns-item-meta">Purchased quantity: {quantity}</div>
+            </div>
+          </div>
 
-                          <select
-                            value={selectedItems[itemId] || 0}
-                            onChange={(e) => handleQuantityChange(itemId, e.target.value)}
-                          >
-                            {Array.from({ length: quantity + 1 }, (_, index) => (
-                              <option key={index} value={index}>
-                                {index}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      );
-                    })}
+          <select
+            value={selectedItems[itemId] || 0}
+            onChange={(e) => handleQuantityChange(itemId, e.target.value)}
+          >
+            {Array.from({ length: quantity + 1 }, (_, index) => (
+              <option key={index} value={index}>
+                {index}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    })}
 
-                    {returnError ? <div className="returns-error">{returnError}</div> : null}
+    {returnError ? <div className="returns-error">{returnError}</div> : null}
 
-                    <button
-                      type="button"
-                      className="returns-button"
-                      onClick={handleCreateReturn}
-                      disabled={returnCreating}
-                    >
-                      {returnCreating ? 'Starting return...' : 'Start return'}
-                    </button>
-                  </div>
-                ) : null}
+    <button
+      type="button"
+      className="returns-button"
+      onClick={handleCreateReturn}
+      disabled={returnCreating}
+    >
+      {returnCreating ? 'Starting return...' : 'Start return'}
+    </button>
+  </div>
+) : null}
               </section>
             </div>
 
