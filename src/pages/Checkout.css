@@ -864,13 +864,13 @@ input[readonly] {
 }
 
 .checkout-account-strip-label {
-  font-size: 12px;
+  font-size: 15px;
   color: #4A494A;
   opacity: 0.65;
 }
 
 .checkout-account-strip-email {
-  font-size: 15px;
+  font-size: 17px;
   color: #4A494A;
   white-space: nowrap;
   overflow: hidden;
@@ -1124,7 +1124,7 @@ input[readonly] {
     border: 1.5px solid #dad8d2;
     border-radius: 7px;
     box-sizing: border-box;
-    font: inherit;
+    font-family: quasimoda, sans-serif;
     padding: 11px 14px;
     transition: border-color .15s ease, box-shadow .15s ease;
 }
