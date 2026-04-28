@@ -783,7 +783,7 @@ body.locked {
 @media (max-width: 768px) {
 
 .mobile-header.first-header.hide-header {
-  transform: none !important;
+  transform: translate3d(0, 0, 0) !important;
   pointer-events: auto;
 }
 
@@ -816,10 +816,14 @@ body.locked {
     bottom: 0;
     left: 0;
     right: 0;
-    transform: none !important;
+    transform: translateY(0);
     will-change: auto;
     backface-visibility: hidden;
   }
+
+  body {
+  overscroll-behavior: none;
+}
 
   .page-wrapper.menu-open {
     transform: none;
@@ -872,19 +876,18 @@ body.locked {
   --nav-side-padding: 22px;
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
-  --nav-bottom-safe-padding: var(--nav-bottom-padding);
-  --mobile-header-total-height: calc(var(--nav-icon-size) + var(--nav-bottom-safe-padding));
+  --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
+  --mobile-header-total-height: calc(var(--nav-icon-size) + var(--nav-top-padding) + var(--nav-bottom-safe-padding));
 
   position: fixed;
   top: auto;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
-  padding-bottom: var(--nav-bottom-safe-padding) !important;
+  padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-safe-padding) var(--nav-side-padding) !important;
   box-sizing: border-box;
-  transform: none !important;
-  will-change: auto;
+  transform: translate3d(0, 0, 0) !important;
+  will-change: transform;
   backface-visibility: hidden;
   display: grid !important;
   grid-template-columns: repeat(4, var(--nav-icon-size));
