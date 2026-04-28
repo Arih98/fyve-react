@@ -1062,6 +1062,7 @@
   color: #4A494A;
   font-family: quasimoda, sans-serif;
   font-size: 0.95rem;
+  letter-spacing: -0.02em;
 }
 
 .account-order-detail-product-link {
@@ -1599,6 +1600,7 @@
 
 .account-order-detail-item-info h3 {
   font-size: 1.12rem;
+  line-height: 1.2;
 }
 
 .account-order-detail-item-bottom {
