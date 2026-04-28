@@ -320,7 +320,7 @@
 .account-page-subtitle {
   margin: 12px 0 0;
   font-family: quasimoda, sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   letter-spacing: -0.02em;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.65);
@@ -1408,6 +1408,16 @@
   color: #4A494A;
   letter-spacing: -1px;
   line-height: 1;
+}
+
+.account-auth-subtitle,
+.account-page-subtitle {
+  margin: 12px 0 0;
+  font-family: quasimoda, sans-serif;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .account-auth-title {
