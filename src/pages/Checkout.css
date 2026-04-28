@@ -865,6 +865,7 @@ input[readonly] {
 
 .checkout-account-strip-label {
   font-size: 15px;
+  letter-spacing: -0.01em;
   color: #4A494A;
   opacity: 0.65;
 }

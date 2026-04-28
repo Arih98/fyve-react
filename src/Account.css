@@ -1160,6 +1160,7 @@
 .account-profile-card-header h2 {
   font-family: "ArizonaFlare", sans-serif;;
   font-weight: 500;
+  letter-spacing: -0.01em;
   margin: 0;
   line-height: 1;
 }
