@@ -1149,7 +1149,6 @@
   min-height: auto;
   padding: 22px 20px;
   border: 1px solid #e8e7e6;
-  border-radius: 18px;
 }
 
 .account-skeleton-order-row .account-skeleton {
@@ -1174,7 +1173,6 @@
 
 .account-skeleton-detail-panel {
   padding: 22px 20px;
-  border-radius: 18px;
 }
 
 .account-skeleton-item {
@@ -1334,7 +1332,6 @@
 
 .account-order-detail-panel {
   padding: 22px 20px;
-  border-radius: 18px;
 }
 
 .account-order-detail-item {
