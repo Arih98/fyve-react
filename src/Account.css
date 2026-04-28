@@ -1135,6 +1135,13 @@
   width: 95%;
 }
 
+.account-skeleton-panel {
+  margin-top: 28px;
+  border-top: none;
+  display: grid;
+  gap: 14px;
+}
+
 .account-skeleton-order-row {
   display: grid;
   grid-template-columns: 1fr;
@@ -1353,6 +1360,10 @@
 
 .account-order-summary-lines div {
   font-size: 0.95rem;
+}
+
+.account-card {
+  padding: 25px;
 }
 
 .account-auth-button,
