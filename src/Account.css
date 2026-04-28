@@ -1033,15 +1033,13 @@
 
 .account-saved-label {
   font-family: quasimoda, sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 1rem;
   color: rgba(0, 0, 0, 0.45);
 }
 
 .account-saved-value {
   font-family: quasimoda, sans-serif;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   color: #000;
   line-height: 1.45;
 }
