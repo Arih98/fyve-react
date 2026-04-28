@@ -1985,17 +1985,25 @@ if (loading || cartLoading || authLoading) {
     <div className="checkout-payment-methods">
   {cardAvailable && (
     <div className={`checkout-payment-option ${selectedPaymentMethod === 'card' ? 'is-selected' : ''}`}>
-      <label className="checkout-payment-option-label">
-        <input
-          type="radio"
-          name="payment_method"
-          value="card"
-          checked={selectedPaymentMethod === 'card'}
-          onChange={() => setSelectedPaymentMethod('card')}
-          disabled={isFinalizingOrder}
-        />
-        <span className="checkout-payment-option-title">Pay by card</span>
-      </label>
+<label className="checkout-payment-option-label checkout-payment-option-label-card">
+  <span className="checkout-payment-option-left">
+    <input
+      type="radio"
+      name="payment_method"
+      value="card"
+      checked={selectedPaymentMethod === 'card'}
+      onChange={() => setSelectedPaymentMethod('card')}
+      disabled={isFinalizingOrder}
+    />
+    <span className="checkout-payment-option-title">Pay by card</span>
+  </span>
+
+  <span className="checkout-card-icons" aria-hidden="true">
+    <img src="/assets/MC.svg" alt="" />
+    <img src="/assets/Amex.svg" alt="" />
+    <img src="/assets/Visa.svg" alt="" />
+  </span>
+</label>
 
       <div
         ref={cardBodyRef}

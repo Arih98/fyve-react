@@ -623,6 +623,32 @@
   color: #4A494A;
 }
 
+.checkout-payment-option-label-card {
+  justify-content: space-between;
+}
+
+.checkout-payment-option-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.checkout-card-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.checkout-card-icons img {
+  display: block;
+  height: 22px;
+  width: auto;
+}
+
 #revolut-card-field {
   padding: 12px 16px;
   border: 1.5px solid #e8e7e6;
@@ -937,6 +963,14 @@ input[readonly] {
   .checkout-page-skeleton .checkout-payment-option-label {
     padding: 16px 18px;
   }
+
+  .checkout-card-icons {
+  gap: 4px;
+}
+
+.checkout-card-icons img {
+  height: 18px;
+}
 
 .checkout-page-skeleton .checkout-main {
   width: 100%;
