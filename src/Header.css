@@ -1257,10 +1257,12 @@ body {
 }
 }
 
-@media (max-width: 768px) {
-  .mobile-header.first-header {
-    position: sticky !important;
-    top: calc(100dvh - var(--mobile-header-total-height));
-    bottom: auto;
+@supports (-moz-appearance: none) {
+  @media (max-width: 768px) {
+    .mobile-header.first-header {
+      position: sticky !important;
+      top: calc(100dvh - var(--mobile-header-total-height));
+      bottom: auto;
+    }
   }
 }
