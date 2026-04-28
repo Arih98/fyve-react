@@ -274,7 +274,7 @@
 
 .account-floating-field label {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 20px;
   margin: 0;
   transform: translateY(-50%);
@@ -292,7 +292,7 @@
 
 .account-floating-field input:focus + label,
 .account-floating-field input:not(:placeholder-shown) + label {
-  top: 10px;
+  top: 14px;
   transform: translateY(0);
   font-size: 0.9rem;
   text-transform: none;
