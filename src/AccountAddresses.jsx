@@ -97,7 +97,7 @@ const AccountAddresses = () => {
                   <div className="account-skeleton account-skeleton-card-title"></div>
 
                   <div className="account-skeleton-form">
-                    {Array.from({ length: cardIndex === 0 ? 11 : 9 }).map((__, fieldIndex) => (
+                    {Array.from({ length: cardIndex === 0 ? 10 : 8 }).map((__, fieldIndex) => (
                       <div className="account-skeleton-field" key={fieldIndex}>
                         <div className="account-skeleton account-skeleton-label"></div>
                         <div className="account-skeleton account-skeleton-input"></div>
@@ -148,17 +148,6 @@ const AccountAddresses = () => {
       placeholder=" "
     />
     <label htmlFor="billing-last-name">Last name</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="billing-company"
-      name="company"
-      value={billing.company}
-      onChange={handleBillingChange}
-      placeholder=" "
-    />
-    <label htmlFor="billing-company">Company</label>
   </div>
 
   <div className="account-auth-field account-floating-field">
@@ -275,17 +264,6 @@ const AccountAddresses = () => {
       placeholder=" "
     />
     <label htmlFor="shipping-last-name">Last name</label>
-  </div>
-
-  <div className="account-auth-field account-floating-field">
-    <input
-      id="shipping-company"
-      name="company"
-      value={shipping.company}
-      onChange={handleShippingChange}
-      placeholder=" "
-    />
-    <label htmlFor="shipping-company">Company</label>
   </div>
 
   <div className="account-auth-field account-floating-field">

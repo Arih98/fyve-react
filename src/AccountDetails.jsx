@@ -82,7 +82,7 @@ const AccountDetails = () => {
           <div className="account-skeleton account-skeleton-subtitle"></div>
 
           <div className="account-skeleton-form">
-            {Array.from({ length: 4 }).map((_, index) => (
+            {Array.from({ length: 3 }).map((_, index) => (
               <div className="account-skeleton-field" key={index}>
                 <div className="account-skeleton account-skeleton-label"></div>
                 <div className="account-skeleton account-skeleton-input"></div>
@@ -138,18 +138,6 @@ const AccountDetails = () => {
   />
   <label htmlFor="account-email">Email</label>
 </div>
-
-<div className="account-auth-field account-floating-field">
-  <input
-    id="account-username"
-    name="username"
-    value={form.username}
-    disabled
-    placeholder=" "
-  />
-  <label htmlFor="account-username">Username</label>
-</div>
-
             {error ? <p className="account-auth-error">{error}</p> : null}
             {success ? <p className="account-auth-success">{success}</p> : null}
 
