@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getAddresses, updateAddresses } from './api/account';
+import { getAddresses, updateAddresses, getAccountDetails, updateAccountDetails } from './api/account';
+import { useAuth } from './context/AuthContext';
 import AccountTabs from './AccountTabs';
 
 const emptyBilling = {
@@ -116,19 +117,39 @@ function FloatingSelect({ id, name, value, onChange, label, options }) {
 }
 
 const AccountAddresses = () => {
+  const { refreshUser } = useAuth();
+
+const [details, setDetails] = useState({
+  first_name: '',
+  last_name: '',
+  email: ''
+});
   const [billing, setBilling] = useState(emptyBilling);
   const [shipping, setShipping] = useState(emptyShipping);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
+const handleDetailsChange = (e) => {
+  const { name, value } = e.target;
+  setDetails((prev) => ({ ...prev, [name]: value }));
+};
   useEffect(() => {
     const loadAddresses = async () => {
       try {
-        const data = await getAddresses();
-setBilling({ ...emptyBilling, ...(data.billing || {}), country: 'US' });
-setShipping({ ...emptyShipping, ...(data.shipping || {}), country: 'US' });
+const [addressData, detailsData] = await Promise.all([
+  getAddresses(),
+  getAccountDetails()
+]);
+
+setBilling({ ...emptyBilling, ...(addressData.billing || {}), country: 'US' });
+setShipping({ ...emptyShipping, ...(addressData.shipping || {}), country: 'US' });
+
+setDetails({
+  first_name: detailsData.details?.first_name || '',
+  last_name: detailsData.details?.last_name || '',
+  email: detailsData.details?.email || ''
+});
       } catch (err) {
         setError(err.message || 'Failed to load addresses');
       } finally {
@@ -158,11 +179,28 @@ setShipping({ ...emptyShipping, ...(data.shipping || {}), country: 'US' });
     try {
 const nextBilling = { ...billing, country: 'US' };
 const nextShipping = { ...shipping, country: 'US' };
-const data = await updateAddresses({ billing: nextBilling, shipping: nextShipping });
 
-setBilling({ ...emptyBilling, ...(data.billing || {}), country: 'US' });
-setShipping({ ...emptyShipping, ...(data.shipping || {}), country: 'US' });
-      setSuccess('Addresses updated successfully.');
+const [addressData, detailsData] = await Promise.all([
+  updateAddresses({ billing: nextBilling, shipping: nextShipping }),
+  updateAccountDetails({
+    first_name: details.first_name,
+    last_name: details.last_name,
+    email: details.email
+  })
+]);
+
+setBilling({ ...emptyBilling, ...(addressData.billing || {}), country: 'US' });
+setShipping({ ...emptyShipping, ...(addressData.shipping || {}), country: 'US' });
+
+setDetails({
+  first_name: detailsData.details?.first_name || '',
+  last_name: detailsData.details?.last_name || '',
+  email: detailsData.details?.email || ''
+});
+
+await refreshUser();
+
+setSuccess('Account details and addresses updated successfully.');
     } catch (err) {
       setError(err.message || 'Failed to update addresses');
     } finally {
@@ -215,8 +253,39 @@ setShipping({ ...emptyShipping, ...(data.shipping || {}), country: 'US' });
 
           <form onSubmit={handleSubmit} className="account-addresses-form">
             <div className="account-address-grid">
-              <div className="account-card account-address-card">
-  <h2>Billing address</h2>
+  <div className="account-card account-address-card account-details-card">
+    <h2>Account details</h2>
+
+    <div className="account-field-row">
+      <FloatingField
+        id="details-first-name"
+        name="first_name"
+        label="First name"
+        value={details.first_name}
+        onChange={handleDetailsChange}
+      />
+
+      <FloatingField
+        id="details-last-name"
+        name="last_name"
+        label="Last name"
+        value={details.last_name}
+        onChange={handleDetailsChange}
+      />
+    </div>
+
+    <FloatingField
+      id="details-email"
+      name="email"
+      type="email"
+      label="Email"
+      value={details.email}
+      onChange={handleDetailsChange}
+    />
+  </div>
+
+  <div className="account-card account-address-card">
+    <h2>Billing address</h2>
 
   <div className="account-field-row">
     <FloatingField id="billing-first-name" name="first_name" label="First name" value={billing.first_name} onChange={handleBillingChange} />

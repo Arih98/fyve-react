@@ -15,10 +15,6 @@ const AccountTabs = () => {
       <NavLink to="/account/addresses" className={({ isActive }) => `account-tab${isActive ? ' is-active' : ''}`}>
         Addresses
       </NavLink>
-
-      <NavLink to="/account/details" className={({ isActive }) => `account-tab${isActive ? ' is-active' : ''}`}>
-        Account settings
-      </NavLink>
     </nav>
   );
 };
