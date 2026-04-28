@@ -281,7 +281,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
 }
 
 .checkout-field-error {
@@ -395,7 +395,7 @@
   padding: 18px 14px;
   border: 1.5px solid #e8e7e6;
   border-radius: 7px;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   background: #fff;
   box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -413,7 +413,7 @@
   border-radius: 4px;
   background: #f9f9f9;
   box-sizing: border-box;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   color: #4A494A;
   user-select: none;
   -webkit-user-select: none;
@@ -606,7 +606,7 @@
 }
 
 .checkout-payment-option-title {
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   color: #4A494A;
 }
 
@@ -753,7 +753,7 @@ input[readonly] {
 }
 
 .checkout-summary-coupon-label {
-  font: inherit;
+  font-family: quasimoda, sans-serif;
 }
 
 .checkout-summary-coupon-row {
@@ -789,7 +789,7 @@ input[readonly] {
   border: none;
   padding: 0;
   cursor: pointer;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
 }
 
 .checkout-summary-total span:first-child {
@@ -1095,7 +1095,7 @@ input[readonly] {
   padding: 11px 40px 11px 14px;
   border: 1.5px solid #dad8d2;
   border-radius: 4px;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   color: #4A494A;
   background-color: #fff;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%234A494A' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5'/></svg>");
