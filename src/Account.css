@@ -1159,22 +1159,23 @@
   max-width: none;
 }
 
-.account-edit-icon-button {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
-  display: inline-flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 0;
-  line-height: 0;
-}
+  .account-edit-icon-button {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 0;
+    line-height: 0;
+  }
 
-.account-edit-icon-button img {
-  width: 20px;
-  height: 20px;
-  display: block;
-}
+  .account-edit-icon-button img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    transform: translateX(1px);
+  }
 
 .account-profile-save-button {
   width: 100%;
@@ -1507,27 +1508,27 @@
 }
 
 .account-auth-field input {
-  border-width: 1.2px;
+  border-width: 1.3px;
 }
 
 .account-auth-field input:focus {
-  border-width: 1.2px;
+  border-width: 1.3px;
   border-color: #4A494A;
   box-shadow: none;
 }
 
 .account-floating-field {
-  --field-border-width: 1.2px;
+  --field-border-width: 1.3px;
 }
 
 .account-floating-field input,
 .account-floating-field select {
-  border-width: 1.2px;
+  border-width: 1.3px;
 }
 
 .account-floating-field input:focus,
 .account-floating-field select:focus {
-  border-width: 1.2px;
+  border-width: 1.3px;
   border-color: #4A494A;
   box-shadow: none;
 }
