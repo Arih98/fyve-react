@@ -655,6 +655,7 @@
   font-family: quasimoda, sans-serif;
   font-size: 1.2rem;
   font-weight: 400;
+  letter-spacing: -0.02em;
   text-decoration: none;
   white-space: nowrap;
 }
