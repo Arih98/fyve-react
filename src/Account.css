@@ -815,7 +815,7 @@
   display: inline-flex;
   margin-bottom: 28px;
   color: #4A494A;
-  font-family: 'Quasimoda';
+  font-family: quasimoda, sans-serif;
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -943,7 +943,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 14px;
-  color: rgba(0, 0, 0, 0.55);
+  color: #4A494A;
+  font-family: quasimoda, sans-serif;
   font-size: 0.95rem;
 }
 
@@ -951,13 +952,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  color: rgba(0, 0, 0, 0.72);
+  color: #4A494A;
+  font-family: quasimoda, sans-serif;
   font-size: 0.95rem;
 }
 
 .account-order-detail-product-link {
   width: fit-content;
   color: #4A494A;
+  font-family: quasimoda, sans-serif;
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1028,6 +1031,8 @@
 .account-order-address,
 .account-order-summary-lines,
 .account-order-payment-method {
+  color: #4A494A;
+  font-family: quasimoda, sans-serif;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
