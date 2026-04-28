@@ -1123,6 +1123,7 @@ input[readonly] {
 
 .checkout-section input:not([type=checkbox]):not([type=radio]) {
     background: #fff;
+    color: #4A494A;
     border: 1.5px solid #dad8d2;
     border-radius: 7px;
     box-sizing: border-box;
