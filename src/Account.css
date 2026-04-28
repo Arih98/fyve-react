@@ -212,6 +212,7 @@
 .account-auth-subtitle,
 .account-page-subtitle {
   margin: 12px 0 0;
+  font-family: quasimoda, sans-serif;
   font-size: 1rem;
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.65);
@@ -753,6 +754,7 @@
 
 .account-order-cell {
   min-width: 0;
+  font-family: quasimoda, sans-serif;
   font-size: 1rem;
   color: rgba(0, 0, 0, 0.78);
 }
@@ -1073,6 +1075,7 @@
 .account-saved-value {
   font-family: quasimoda, sans-serif;
   font-size: 1.15rem;
+  letter-spacing: -0.02em;
   color: #000;
   line-height: 1.45;
 }
@@ -1173,6 +1176,7 @@
 
 .account-skeleton-detail-panel {
   padding: 22px 20px;
+  border-radius: 0;
 }
 
 .account-skeleton-item {
@@ -1255,6 +1259,7 @@
   .account-tab {
     min-height: 46px;
     font-size: 0.95rem;
+    letter-spacing: -0.02em;
   }
 
   .account-overview-grid {
@@ -1298,6 +1303,7 @@
 
   .account-order-mobile-label {
     display: inline-flex;
+    font-family: quasimoda, sans-serif;
     font-size: 0.72rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1332,6 +1338,7 @@
 
 .account-order-detail-panel {
   padding: 22px 20px;
+  border-radius: 0;
 }
 
 .account-order-detail-item {
