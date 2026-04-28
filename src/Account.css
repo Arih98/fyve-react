@@ -701,7 +701,7 @@
 
 .account-overview-grid span {
   font-family: quasimoda, sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: rgba(0, 0, 0, 0.48);
 }
 
@@ -1072,7 +1072,7 @@
 
 .account-saved-label {
   font-family: quasimoda, sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: rgba(0, 0, 0, 0.45);
 }
 
@@ -1365,6 +1365,12 @@
     font-size: 1rem;
     color: rgba(0, 0, 0, 0.45);
   }
+
+.account-saved-label {
+  font-family: quasimoda, sans-serif;
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.45);
+}
 
   .account-order-actions {
     justify-content: flex-start;
