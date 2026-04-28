@@ -1504,16 +1504,30 @@
   cursor: pointer;
   text-decoration: none;
 }
-  .account-auth-field input:focus {
-    border-width: 1px;
-    border-color: #4A494A;
-    box-shadow: none;
-  }
 
-  .account-floating-field input:focus,
-  .account-floating-field select:focus {
-    border-width: 1px;
-    border-color: #4A494A;
-    box-shadow: none;
-  }
+.account-auth-field input {
+  border-width: 1.2px;
+}
+
+.account-auth-field input:focus {
+  border-width: 1.2px;
+  border-color: #4A494A;
+  box-shadow: none;
+}
+
+.account-floating-field {
+  --field-border-width: 1.2px;
+}
+
+.account-floating-field input,
+.account-floating-field select {
+  border-width: 1.2px;
+}
+
+.account-floating-field input:focus,
+.account-floating-field select:focus {
+  border-width: 1.2px;
+  border-color: #4A494A;
+  box-shadow: none;
+}
 }
