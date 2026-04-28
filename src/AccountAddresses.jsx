@@ -216,6 +216,15 @@ const [details, setDetails] = useState({
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [editingSection, setEditingSection] = useState(null);
+useEffect(() => {
+  if (!success) return;
+
+  const timer = window.setTimeout(() => {
+    setSuccess('');
+  }, 3000);
+
+  return () => window.clearTimeout(timer);
+}, [success]);
 const handleDetailsChange = (e) => {
   const { name, value } = e.target;
   setDetails((prev) => ({ ...prev, [name]: value }));
@@ -525,7 +534,11 @@ return (
           </div>
 
           {error ? <p className="account-auth-error">{error}</p> : null}
-          {success ? <p className="account-auth-success">{success}</p> : null}
+          {success ? (
+  <div className="account-success-popup" role="status" aria-live="polite">
+    {success}
+  </div>
+) : null}
         </div>
       </div>
     </div>
