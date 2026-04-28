@@ -981,9 +981,9 @@
 
 .account-order-detail-panel-header h2 {
   margin: 0;
-  font-family: quasimoda, sans-serif;
-  font-size: 1.15rem;
-  font-weight: 400;
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
   color: #4A494A;
 }
 
@@ -1157,6 +1157,7 @@
 
 .account-profile-card-header h2 {
   font-family: "ArizonaFlare", sans-serif;;
+  font-size: 1.3em;
   font-weight: 500;
   letter-spacing: -0.01em;
   margin: 0;
