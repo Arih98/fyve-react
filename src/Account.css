@@ -262,6 +262,14 @@
   border-radius: 8px;
 }
 
+.account-global-header {
+  margin-bottom: 42px;
+}
+
+.account-global-logout-button {
+  flex: 0 0 auto;
+}
+
 .account-auth-page,
 .account-page,
 .account-section-page {
@@ -460,10 +468,6 @@
   background: #4A494A;
   font-size: 1.1em;
   color: #ffffff;
-}
-
-.account-logout-button-mobile {
-  display: none;
 }
 
 .account-auth-button:disabled {
@@ -1221,6 +1225,15 @@
 }
 
 @media (max-width: 768px) {
+  .account-global-header {
+    margin-bottom: 32px;
+  }
+
+  .account-global-logout-button {
+    width: 100%;
+    min-height: 50px;
+  }
+
 .account-floating-field input {
   height: 70px;
   padding: 20px 20px 8px var(--field-x-padding);
@@ -1645,19 +1658,6 @@
 
 .account-logout-button-desktop {
   display: none;
-}
-
-.account-logout-button-mobile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 50px;
-  margin-top: 24px;
-  border-radius: 999px;
-  font-family: quasimoda, sans-serif;
-  cursor: pointer;
-  text-decoration: none;
 }
 
 .account-auth-field input {

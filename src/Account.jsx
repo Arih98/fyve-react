@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AccountTabs from './AccountTabs';
 
@@ -12,29 +11,15 @@ function getGreeting() {
 }
 
 const Account = () => {
-  const navigate = useNavigate();
-  const { user, logout, authLoading } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login', { replace: true });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+const { user, authLoading } = useAuth();
 
 if (authLoading) {
   return (
     <div className="account-page">
       <div className="account-shell">
-        <AccountTabs />
+  <AccountTabs />
 
-        <div className="account-page-inner">
-          <div className="account-page-header">
-            <div className="account-skeleton account-skeleton-title"></div>
-            <div className="account-skeleton account-skeleton-button account-logout-button-desktop"></div>
-          </div>
+  <div className="account-page-inner">
 
           <div className="account-dashboard-panel">
             <div className="account-skeleton account-skeleton-dashboard-heading"></div>
@@ -60,26 +45,12 @@ if (!user) {
   return null;
 }
 
-  const displayName = user.first_name || user.username || 'User';
-  const greeting = getGreeting();
-
   return (
     <div className="account-page">
       <div className="account-shell">
         <AccountTabs />
 
         <div className="account-page-inner">
-          <div className="account-page-header">
-            <div>
-              <h1 className="account-page-title">
-                {greeting}, {displayName}
-              </h1>
-            </div>
-
-<button className="account-logout-button account-logout-button-desktop" onClick={handleLogout}>
-  Logout
-</button>
-          </div>
 
                     <div className="account-dashboard-panel">
             <h2>Account overview</h2>
@@ -107,9 +78,6 @@ if (!user) {
             </div>
           </div>
 
-          <button className="account-logout-button account-logout-button-mobile" onClick={handleLogout}>
-            Logout
-          </button>
         </div>
       </div>
     </div>
