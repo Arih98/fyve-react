@@ -1513,7 +1513,7 @@
   .account-floating-field input:focus,
   .account-floating-field select:focus {
     border-width: 1px;
-    border-color: #dad8d2;
+    border-color: #4A494A;
     box-shadow: none;
   }
 }
