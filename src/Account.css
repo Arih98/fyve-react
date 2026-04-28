@@ -356,8 +356,8 @@
 
 .account-success-popup {
   position: fixed;
-  top: 96px;
   right: 24px;
+  bottom: 24px;
   z-index: 9999;
   max-width: min(360px, calc(100vw - 32px));
   padding: 16px 20px;
@@ -367,14 +367,14 @@
   font-family: quasimoda, sans-serif;
   font-size: 1rem;
   line-height: 1.35;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   animation: accountSuccessPopupIn 0.28s ease forwards;
 }
 
 @keyframes accountSuccessPopupIn {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(12px);
   }
 
   to {
@@ -1092,9 +1092,9 @@
 
 @media (max-width: 768px) {
 .account-success-popup {
-  top: 96px;
   left: 16px;
   right: 16px;
+  bottom: 24px;
   max-width: none;
 }
 
