@@ -202,7 +202,7 @@ await refreshUser();
 
 setSuccess('Account details and addresses updated successfully.');
     } catch (err) {
-      setError(err.message || 'Failed to update addresses');
+      setError(err.message || 'Failed to update account details and addresses');
     } finally {
       setSaving(false);
     }
@@ -220,12 +220,12 @@ setSuccess('Account details and addresses updated successfully.');
 
           <div className="account-addresses-form">
             <div className="account-address-grid">
-              {Array.from({ length: 2 }).map((_, cardIndex) => (
+              {Array.from({ length: 3 }).map((_, cardIndex) => (
                 <div className="account-skeleton-card" key={cardIndex}>
                   <div className="account-skeleton account-skeleton-card-title"></div>
 
                   <div className="account-skeleton-form">
-                    {Array.from({ length: cardIndex === 0 ? 10 : 8 }).map((__, fieldIndex) => (
+                    {Array.from({ length: cardIndex === 0 ? 3 : cardIndex === 1 ? 9 : 7 }).map((__, fieldIndex) => (
                       <div className="account-skeleton-field" key={fieldIndex}>
                         <div className="account-skeleton account-skeleton-label"></div>
                         <div className="account-skeleton account-skeleton-input"></div>
