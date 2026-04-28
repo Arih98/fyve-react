@@ -90,7 +90,6 @@ body.locked {
   z-index: 10002;
   box-sizing: border-box;
   transform: translateY(0);
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s, background-image 0.3s;
 }
 
 .mobile-header.first-header.home-transparent {
@@ -873,7 +872,7 @@ body.locked {
   --nav-side-padding: 22px;
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
-  --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
+  --nav-bottom-safe-padding: var(--nav-bottom-padding);
   --mobile-header-total-height: calc(var(--nav-icon-size) + var(--nav-bottom-safe-padding));
 
   position: fixed;
