@@ -51,31 +51,33 @@ if (isAuthenticated) {
         <h1 className="account-auth-title">Sign in</h1>
 
         <form onSubmit={handleSubmit} className="account-auth-form">
-          <div className="account-auth-field">
-            <label htmlFor="login-email">Email</label>
-            <input
-              id="login-email"
-              name="email"
-              type="text"
-              value={form.email}
-              onChange={handleChange}
-              autoComplete="username"
-              required
-            />
-          </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="login-email"
+    name="email"
+    type="text"
+    value={form.email}
+    onChange={handleChange}
+    autoComplete="username"
+    placeholder=" "
+    required
+  />
+  <label htmlFor="login-email">Email</label>
+</div>
 
-          <div className="account-auth-field">
-            <label htmlFor="login-password">Password</label>
-            <input
-              id="login-password"
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-              required
-            />
-          </div>
+          <div className="account-auth-field account-floating-field">
+  <input
+    id="login-password"
+    name="password"
+    type="password"
+    value={form.password}
+    onChange={handleChange}
+    autoComplete="current-password"
+    placeholder=" "
+    required
+  />
+  <label htmlFor="login-password">Password</label>
+</div>
 
           {error ? <p className="account-auth-error">{error}</p> : null}
 

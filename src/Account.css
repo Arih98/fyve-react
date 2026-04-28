@@ -263,6 +263,42 @@
   border-color: #dad8d2;
 }
 
+.account-floating-field {
+  position: relative;
+  display: block;
+}
+
+.account-floating-field input {
+  height: 60px;
+  padding: 20px 16px 8px;
+}
+
+.account-floating-field label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  margin: 0;
+  transform: translateY(-50%);
+  transform-origin: left center;
+  transition: transform 0.22s ease, top 0.22s ease, font-size 0.22s ease, color 0.22s ease;
+  font-family: quasimoda, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #9c9a9c;
+  pointer-events: none;
+}
+
+.account-floating-field input:focus + label,
+.account-floating-field input:not(:placeholder-shown) + label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}
+
 .account-auth-button,
 .account-logout-button,
 .account-card-link {
