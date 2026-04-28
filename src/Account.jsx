@@ -1,49 +1,51 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AccountTabs from './AccountTabs';
 
-function getGreeting() {
-  const hour = new Date().getHours();
-
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
-}
-
 const Account = () => {
-const { user, authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout, authLoading } = useAuth();
 
-if (authLoading) {
-  return (
-    <div className="account-page">
-      <div className="account-shell">
-  <AccountTabs />
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  <div className="account-page-inner">
+  if (authLoading) {
+    return (
+      <div className="account-page">
+        <div className="account-shell">
+          <AccountTabs />
 
-          <div className="account-dashboard-panel">
-            <div className="account-skeleton account-skeleton-dashboard-heading"></div>
+          <div className="account-page-inner">
+            <div className="account-dashboard-panel">
+              <div className="account-skeleton account-skeleton-dashboard-heading"></div>
 
-            <div className="account-skeleton-overview-grid">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div className="account-skeleton-overview-item" key={index}>
-                  <div className="account-skeleton account-skeleton-overview-label"></div>
-                  <div className="account-skeleton account-skeleton-overview-value"></div>
-                </div>
-              ))}
+              <div className="account-skeleton-overview-grid">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div className="account-skeleton-overview-item" key={index}>
+                    <div className="account-skeleton account-skeleton-overview-label"></div>
+                    <div className="account-skeleton account-skeleton-overview-value"></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="account-skeleton account-skeleton-mobile-logout"></div>
+            <div className="account-skeleton account-skeleton-section-logout"></div>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-if (!user) {
-  return null;
-}
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="account-page">
@@ -51,8 +53,7 @@ if (!user) {
         <AccountTabs />
 
         <div className="account-page-inner">
-
-                    <div className="account-dashboard-panel">
+          <div className="account-dashboard-panel">
             <h2>Account overview</h2>
 
             <div className="account-overview-grid">
@@ -78,6 +79,9 @@ if (!user) {
             </div>
           </div>
 
+          <button className="account-logout-button account-section-logout-button" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
     </div>
