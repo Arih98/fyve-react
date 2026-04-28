@@ -105,25 +105,50 @@ const AccountDetails = () => {
           <p className="account-page-subtitle">Update your name and email address.</p>
 
           <form onSubmit={handleSubmit} className="account-auth-form">
-            <div className="account-auth-field">
-              <label>First name</label>
-              <input name="first_name" value={form.first_name} onChange={handleChange} />
-            </div>
+            <div className="account-auth-field account-floating-field">
+  <input
+    id="account-first-name"
+    name="first_name"
+    value={form.first_name}
+    onChange={handleChange}
+    placeholder=" "
+  />
+  <label htmlFor="account-first-name">First name</label>
+</div>
 
-            <div className="account-auth-field">
-              <label>Last name</label>
-              <input name="last_name" value={form.last_name} onChange={handleChange} />
-            </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="account-last-name"
+    name="last_name"
+    value={form.last_name}
+    onChange={handleChange}
+    placeholder=" "
+  />
+  <label htmlFor="account-last-name">Last name</label>
+</div>
 
-            <div className="account-auth-field">
-              <label>Email</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange} />
-            </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="account-email"
+    name="email"
+    type="email"
+    value={form.email}
+    onChange={handleChange}
+    placeholder=" "
+  />
+  <label htmlFor="account-email">Email</label>
+</div>
 
-            <div className="account-auth-field">
-              <label>Username</label>
-              <input name="username" value={form.username} disabled />
-            </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="account-username"
+    name="username"
+    value={form.username}
+    disabled
+    placeholder=" "
+  />
+  <label htmlFor="account-username">Username</label>
+</div>
 
             {error ? <p className="account-auth-error">{error}</p> : null}
             {success ? <p className="account-auth-success">{success}</p> : null}

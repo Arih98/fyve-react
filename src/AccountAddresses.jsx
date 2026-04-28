@@ -126,112 +126,234 @@ const AccountAddresses = () => {
           <form onSubmit={handleSubmit} className="account-addresses-form">
             <div className="account-address-grid">
               <div className="account-card">
-                <h2>Billing address</h2>
+  <h2>Billing address</h2>
 
-                <div className="account-auth-field">
-                  <label>First name</label>
-                  <input name="first_name" value={billing.first_name} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-first-name"
+      name="first_name"
+      value={billing.first_name}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-first-name">First name</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Last name</label>
-                  <input name="last_name" value={billing.last_name} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-last-name"
+      name="last_name"
+      value={billing.last_name}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-last-name">Last name</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Company</label>
-                  <input name="company" value={billing.company} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-company"
+      name="company"
+      value={billing.company}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-company">Company</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Address line 1</label>
-                  <input name="address_1" value={billing.address_1} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-address-1"
+      name="address_1"
+      value={billing.address_1}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-address-1">Address line 1</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Address line 2</label>
-                  <input name="address_2" value={billing.address_2} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-address-2"
+      name="address_2"
+      value={billing.address_2}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-address-2">Address line 2</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>City</label>
-                  <input name="city" value={billing.city} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-city"
+      name="city"
+      value={billing.city}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-city">City</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>County / State</label>
-                  <input name="state" value={billing.state} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-state"
+      name="state"
+      value={billing.state}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-state">County / State</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Postcode</label>
-                  <input name="postcode" value={billing.postcode} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-postcode"
+      name="postcode"
+      value={billing.postcode}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-postcode">Postcode</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Country</label>
-                  <input name="country" value={billing.country} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-country"
+      name="country"
+      value={billing.country}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-country">Country</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Email</label>
-                  <input name="email" type="email" value={billing.email} onChange={handleBillingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-email"
+      name="email"
+      type="email"
+      value={billing.email}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-email">Email</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Phone</label>
-                  <input name="phone" value={billing.phone} onChange={handleBillingChange} />
-                </div>
-              </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="billing-phone"
+      name="phone"
+      type="tel"
+      value={billing.phone}
+      onChange={handleBillingChange}
+      placeholder=" "
+    />
+    <label htmlFor="billing-phone">Phone</label>
+  </div>
+</div>
 
-              <div className="account-card">
-                <h2>Shipping address</h2>
+<div className="account-card">
+  <h2>Shipping address</h2>
 
-                <div className="account-auth-field">
-                  <label>First name</label>
-                  <input name="first_name" value={shipping.first_name} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-first-name"
+      name="first_name"
+      value={shipping.first_name}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-first-name">First name</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Last name</label>
-                  <input name="last_name" value={shipping.last_name} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-last-name"
+      name="last_name"
+      value={shipping.last_name}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-last-name">Last name</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Company</label>
-                  <input name="company" value={shipping.company} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-company"
+      name="company"
+      value={shipping.company}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-company">Company</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Address line 1</label>
-                  <input name="address_1" value={shipping.address_1} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-address-1"
+      name="address_1"
+      value={shipping.address_1}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-address-1">Address line 1</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Address line 2</label>
-                  <input name="address_2" value={shipping.address_2} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-address-2"
+      name="address_2"
+      value={shipping.address_2}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-address-2">Address line 2</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>City</label>
-                  <input name="city" value={shipping.city} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-city"
+      name="city"
+      value={shipping.city}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-city">City</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>County / State</label>
-                  <input name="state" value={shipping.state} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-state"
+      name="state"
+      value={shipping.state}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-state">County / State</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Postcode</label>
-                  <input name="postcode" value={shipping.postcode} onChange={handleShippingChange} />
-                </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-postcode"
+      name="postcode"
+      value={shipping.postcode}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-postcode">Postcode</label>
+  </div>
 
-                <div className="account-auth-field">
-                  <label>Country</label>
-                  <input name="country" value={shipping.country} onChange={handleShippingChange} />
-                </div>
-              </div>
+  <div className="account-auth-field account-floating-field">
+    <input
+      id="shipping-country"
+      name="country"
+      value={shipping.country}
+      onChange={handleShippingChange}
+      placeholder=" "
+    />
+    <label htmlFor="shipping-country">Country</label>
+  </div>
+</div>
             </div>
 
             {error ? <p className="account-auth-error">{error}</p> : null}
