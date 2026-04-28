@@ -700,14 +700,12 @@
 .account-overview-grid span {
   font-family: quasimoda, sans-serif;
   font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: rgba(0, 0, 0, 0.48);
 }
 
 .account-overview-grid strong {
   font-family: quasimoda, sans-serif;
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 400;
   color: #000;
 }
@@ -1327,9 +1325,8 @@
   .account-order-mobile-label {
     display: inline-flex;
     font-family: quasimoda, sans-serif;
-    font-size: 0.72rem;
+    font-size: 1rem;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
     color: rgba(0, 0, 0, 0.45);
   }
 
