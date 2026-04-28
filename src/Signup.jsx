@@ -56,57 +56,61 @@ const Signup = () => {
         <h1 className="account-auth-title">Create account</h1>
 
         <form onSubmit={handleSubmit} className="account-auth-form">
-          <div className="account-auth-field">
-            <label htmlFor="signup-first-name">First name</label>
-            <input
-              id="signup-first-name"
-              name="firstName"
-              type="text"
-              value={form.firstName}
-              onChange={handleChange}
-              autoComplete="given-name"
-              required
-            />
-          </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="signup-first-name"
+    name="firstName"
+    type="text"
+    value={form.firstName}
+    onChange={handleChange}
+    autoComplete="given-name"
+    placeholder=" "
+    required
+  />
+  <label htmlFor="signup-first-name">First name</label>
+</div>
 
-          <div className="account-auth-field">
-            <label htmlFor="signup-last-name">Last name</label>
-            <input
-              id="signup-last-name"
-              name="lastName"
-              type="text"
-              value={form.lastName}
-              onChange={handleChange}
-              autoComplete="family-name"
-              required
-            />
-          </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="signup-last-name"
+    name="lastName"
+    type="text"
+    value={form.lastName}
+    onChange={handleChange}
+    autoComplete="family-name"
+    placeholder=" "
+    required
+  />
+  <label htmlFor="signup-last-name">Last name</label>
+</div>
 
-          <div className="account-auth-field">
-            <label htmlFor="signup-email">Email</label>
-            <input
-              id="signup-email"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              autoComplete="email"
-              required
-            />
-          </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="signup-email"
+    name="email"
+    type="email"
+    value={form.email}
+    onChange={handleChange}
+    autoComplete="email"
+    placeholder=" "
+    required
+  />
+  <label htmlFor="signup-email">Email</label>
+</div>
 
-          <div className="account-auth-field">
-            <label htmlFor="signup-password">Password</label>
-            <input
-              id="signup-password"
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="new-password"
-              required
-            />
-          </div>
+<div className="account-auth-field account-floating-field">
+  <input
+    id="signup-password"
+    name="password"
+    type="password"
+    value={form.password}
+    onChange={handleChange}
+    autoComplete="new-password"
+    placeholder=" "
+    required
+  />
+  <label htmlFor="signup-password">Password</label>
+</div>
 
           {error ? <p className="account-auth-error">{error}</p> : null}
 
