@@ -1117,13 +1117,13 @@
 }
 
 .account-address-card {
-  gap: 12px;
+  gap: 20px;
 }
 
 .account-field-row,
 .account-field-row-3 {
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 20px;
 }
 
 .account-skeleton-title {
