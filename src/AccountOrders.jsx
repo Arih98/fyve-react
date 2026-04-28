@@ -57,14 +57,14 @@ const AccountOrders = () => {
           {loading ? (
   <div className="account-skeleton-panel" aria-hidden="true">
     {Array.from({ length: 4 }).map((_, index) => (
-      <div className="account-skeleton-order-row" key={index}>
-        <div className="account-skeleton"></div>
-        <div className="account-skeleton"></div>
-        <div className="account-skeleton"></div>
-        <div className="account-skeleton"></div>
-        <div className="account-skeleton"></div>
-        <div className="account-skeleton"></div>
-      </div>
+<div className="account-skeleton-order-row" key={index}>
+  <div className="account-skeleton"></div>
+  <div className="account-skeleton"></div>
+  <div className="account-skeleton account-skeleton-status"></div>
+  <div className="account-skeleton"></div>
+  <div className="account-skeleton"></div>
+  <div className="account-skeleton account-skeleton-actions"></div>
+</div>
     ))}
   </div>
 ) : null}

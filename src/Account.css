@@ -52,13 +52,17 @@
 }
 
 .account-skeleton-order-row .account-skeleton {
-  height: 18px;
+  height: 16px;
   border-radius: 8px;
 }
 
-.account-skeleton-order-row .account-skeleton:nth-child(3) {
-  height: 30px;
-  border-radius: 999px;
+.account-skeleton-order-row .account-skeleton-status {
+  width: 86px;
+}
+
+.account-skeleton-order-row .account-skeleton-actions {
+  width: 92px;
+  justify-self: end;
 }
 
 .account-skeleton-form {
@@ -341,7 +345,6 @@
   padding: 0 50px;
   background: #4A494A;
   font-size: 1.1em;
-  letter-spacing: -0.02em;
   color: #ffffff;
 }
 
@@ -1133,12 +1136,28 @@
 }
 
 .account-skeleton-order-row {
+  display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
   min-height: auto;
   padding: 22px 20px;
   border: 1px solid #e8e7e6;
   border-radius: 18px;
+}
+
+.account-skeleton-order-row .account-skeleton {
+  height: 16px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.account-skeleton-order-row .account-skeleton-status {
+  width: 110px;
+}
+
+.account-skeleton-order-row .account-skeleton-actions {
+  width: 130px;
+  justify-self: start;
 }
 
 .account-skeleton-detail-layout {
