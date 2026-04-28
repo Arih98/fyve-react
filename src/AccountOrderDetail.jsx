@@ -261,7 +261,7 @@ export default function AccountOrderDetail() {
     );
   }
 
-  const canReturnOrder = !returnChecking && returnToken && returnOrder?.eligible === true && !returnOrder?.done;
+  const canReturnOrder = !returnChecking && Boolean(returnToken) && returnOrder?.eligible === true && !returnOrder?.done;
 
   return (
     <div className="account-section-page">
