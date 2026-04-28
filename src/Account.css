@@ -742,6 +742,7 @@
 .account-orders-header {
   min-height: 48px;
   border-bottom: 1px solid #e8e7e6;
+  font-family: quasimoda, sans-serif;
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
