@@ -116,6 +116,86 @@ function FloatingSelect({ id, name, value, onChange, label, options }) {
   );
 }
 
+function getDisplayValue(value) {
+  return String(value || '').trim() || 'Not added yet';
+}
+
+function getFullName(value) {
+  const fullName = [value.first_name, value.last_name].filter(Boolean).join(' ');
+  return getDisplayValue(fullName);
+}
+
+function getStateName(value) {
+  const input = String(value || '').trim();
+
+  const match = US_STATES.find((state) => (
+    state.code.toLowerCase() === input.toLowerCase() ||
+    state.name.toLowerCase() === input.toLowerCase()
+  ));
+
+  return match?.name || input;
+}
+
+function SavedRow({ label, children }) {
+  return (
+    <div className="account-saved-row">
+      <span className="account-saved-label">{label}</span>
+      <div className="account-saved-value">{children}</div>
+    </div>
+  );
+}
+
+function SectionHeader({ title, editingTitle, isEditing, onEdit }) {
+  return (
+    <div className="account-profile-card-header">
+      <h2>{isEditing ? editingTitle : title}</h2>
+
+      <button type="button" className="account-edit-icon-button" onClick={onEdit} aria-label={`Edit ${title}`}>
+        <img src="/assets/edit-pencil-icon.svg" alt="" />
+      </button>
+    </div>
+  );
+}
+
+function DetailsSummary({ details }) {
+  return (
+    <div className="account-saved-summary">
+      <SavedRow label="Name">{getFullName(details)}</SavedRow>
+      <SavedRow label="Email">{getDisplayValue(details.email)}</SavedRow>
+    </div>
+  );
+}
+
+function AddressSummary({ address, showContact = false }) {
+  const cityLine = [address.city, getStateName(address.state), address.postcode].filter(Boolean).join(', ');
+  const addressLines = [address.address_1, address.address_2, cityLine, 'United States (US)'].filter(Boolean);
+
+  return (
+    <div className="account-saved-summary">
+      <SavedRow label="Name">{getFullName(address)}</SavedRow>
+
+      <SavedRow label="Address">
+        {addressLines.length ? (
+          <div className="account-saved-address">
+            {addressLines.map((line, index) => (
+              <span key={index}>{line}</span>
+            ))}
+          </div>
+        ) : (
+          'Not added yet'
+        )}
+      </SavedRow>
+
+      {showContact ? (
+        <>
+          <SavedRow label="Email">{getDisplayValue(address.email)}</SavedRow>
+          <SavedRow label="Phone">{getDisplayValue(address.phone)}</SavedRow>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
 const AccountAddresses = () => {
   const { refreshUser } = useAuth();
 
@@ -130,6 +210,7 @@ const [details, setDetails] = useState({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [editingSection, setEditingSection] = useState(null);
 const handleDetailsChange = (e) => {
   const { name, value } = e.target;
   setDetails((prev) => ({ ...prev, [name]: value }));
@@ -201,6 +282,7 @@ setDetails({
 await refreshUser();
 
 setSuccess('Account details and addresses updated successfully.');
+setEditingSection(null);
     } catch (err) {
       setError(err.message || 'Failed to update account details and addresses');
     } finally {
@@ -219,122 +301,124 @@ setSuccess('Account details and addresses updated successfully.');
           <div className="account-skeleton account-skeleton-subtitle"></div>
 
           <div className="account-addresses-form">
-            <div className="account-address-grid">
-              {Array.from({ length: 3 }).map((_, cardIndex) => (
-                <div className="account-skeleton-card" key={cardIndex}>
-                  <div className="account-skeleton account-skeleton-card-title"></div>
+            <div className="account-card account-address-card account-details-card">
+  <SectionHeader
+    title="Personal details"
+    editingTitle="Edit your details"
+    isEditing={editingSection === 'details'}
+    onEdit={() => setEditingSection(editingSection === 'details' ? null : 'details')}
+  />
 
-                  <div className="account-skeleton-form">
-                    {Array.from({ length: cardIndex === 0 ? 3 : cardIndex === 1 ? 9 : 7 }).map((__, fieldIndex) => (
-                      <div className="account-skeleton-field" key={fieldIndex}>
-                        <div className="account-skeleton account-skeleton-label"></div>
-                        <div className="account-skeleton account-skeleton-input"></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+  {editingSection === 'details' ? (
+    <>
+      <div className="account-field-row">
+        <FloatingField
+          id="details-first-name"
+          name="first_name"
+          label="First name"
+          value={details.first_name}
+          onChange={handleDetailsChange}
+        />
+
+        <FloatingField
+          id="details-last-name"
+          name="last_name"
+          label="Last name"
+          value={details.last_name}
+          onChange={handleDetailsChange}
+        />
       </div>
-    </div>
-  );
-}
-
-  return (
-    <div className="account-section-page">
-      <div className="account-shell">
-        <AccountTabs />
-
-        <div className="account-section-inner">
-          <h1 className="account-page-title account-section-title">Your profile</h1>
-
-          <form onSubmit={handleSubmit} className="account-addresses-form">
-            <div className="account-address-grid">
-  <div className="account-card account-address-card account-details-card">
-    <h2>Personal details</h2>
-
-    <div className="account-field-row">
-      <FloatingField
-        id="details-first-name"
-        name="first_name"
-        label="First name"
-        value={details.first_name}
-        onChange={handleDetailsChange}
-      />
 
       <FloatingField
-        id="details-last-name"
-        name="last_name"
-        label="Last name"
-        value={details.last_name}
+        id="details-email"
+        name="email"
+        type="email"
+        label="Email"
+        value={details.email}
         onChange={handleDetailsChange}
       />
-    </div>
-
-    <FloatingField
-      id="details-email"
-      name="email"
-      type="email"
-      label="Email"
-      value={details.email}
-      onChange={handleDetailsChange}
-    />
-  </div>
-
-  <div className="account-card account-address-card">
-    <h2>Billing address</h2>
-
-  <div className="account-field-row">
-    <FloatingField id="billing-first-name" name="first_name" label="First name" value={billing.first_name} onChange={handleBillingChange} />
-    <FloatingField id="billing-last-name" name="last_name" label="Last name" value={billing.last_name} onChange={handleBillingChange} />
-  </div>
-
-  <div className="account-address-static-field">United States (US)</div>
-
-  <FloatingField id="billing-address-1" name="address_1" label="Address line 1" value={billing.address_1} onChange={handleBillingChange} />
-  <FloatingField id="billing-address-2" name="address_2" label="Address line 2" value={billing.address_2} onChange={handleBillingChange} />
-
-  <div className="account-field-row account-field-row-3">
-    <FloatingField id="billing-city" name="city" label="City" value={billing.city} onChange={handleBillingChange} />
-    <FloatingSelect id="billing-state" name="state" label="State" value={billing.state} onChange={handleBillingChange} options={US_STATES} />
-    <FloatingField id="billing-postcode" name="postcode" label="ZIP code" value={billing.postcode} onChange={handleBillingChange} />
-  </div>
-
-  <div className="account-field-row">
-    <FloatingField id="billing-email" name="email" type="email" label="Email" value={billing.email} onChange={handleBillingChange} />
-    <FloatingField id="billing-phone" name="phone" type="tel" inputMode="tel" label="Phone" value={billing.phone} onChange={handleBillingChange} />
-  </div>
+    </>
+  ) : (
+    <DetailsSummary details={details} />
+  )}
 </div>
 
 <div className="account-card account-address-card">
-  <h2>Shipping address</h2>
+  <SectionHeader
+    title="Billing address"
+    editingTitle="Edit address"
+    isEditing={editingSection === 'billing'}
+    onEdit={() => setEditingSection(editingSection === 'billing' ? null : 'billing')}
+  />
 
-  <div className="account-field-row">
-    <FloatingField id="shipping-first-name" name="first_name" label="First name" value={shipping.first_name} onChange={handleShippingChange} />
-    <FloatingField id="shipping-last-name" name="last_name" label="Last name" value={shipping.last_name} onChange={handleShippingChange} />
-  </div>
+  {editingSection === 'billing' ? (
+    <>
+      <div className="account-field-row">
+        <FloatingField id="billing-first-name" name="first_name" label="First name" value={billing.first_name} onChange={handleBillingChange} />
+        <FloatingField id="billing-last-name" name="last_name" label="Last name" value={billing.last_name} onChange={handleBillingChange} />
+      </div>
 
-  <div className="account-address-static-field">United States (US)</div>
+      <div className="account-address-static-field">United States (US)</div>
 
-  <FloatingField id="shipping-address-1" name="address_1" label="Address line 1" value={shipping.address_1} onChange={handleShippingChange} />
-  <FloatingField id="shipping-address-2" name="address_2" label="Address line 2" value={shipping.address_2} onChange={handleShippingChange} />
+      <FloatingField id="billing-address-1" name="address_1" label="Address line 1" value={billing.address_1} onChange={handleBillingChange} />
+      <FloatingField id="billing-address-2" name="address_2" label="Address line 2" value={billing.address_2} onChange={handleBillingChange} />
 
-  <div className="account-field-row account-field-row-3">
-    <FloatingField id="shipping-city" name="city" label="City" value={shipping.city} onChange={handleShippingChange} />
-    <FloatingSelect id="shipping-state" name="state" label="State" value={shipping.state} onChange={handleShippingChange} options={US_STATES} />
-    <FloatingField id="shipping-postcode" name="postcode" label="ZIP code" value={shipping.postcode} onChange={handleShippingChange} />
-  </div>
+      <div className="account-field-row account-field-row-3">
+        <FloatingField id="billing-city" name="city" label="City" value={billing.city} onChange={handleBillingChange} />
+        <FloatingSelect id="billing-state" name="state" label="State" value={billing.state} onChange={handleBillingChange} options={US_STATES} />
+        <FloatingField id="billing-postcode" name="postcode" label="ZIP code" value={billing.postcode} onChange={handleBillingChange} />
+      </div>
+
+      <div className="account-field-row">
+        <FloatingField id="billing-email" name="email" type="email" label="Email" value={billing.email} onChange={handleBillingChange} />
+        <FloatingField id="billing-phone" name="phone" type="tel" inputMode="tel" label="Phone" value={billing.phone} onChange={handleBillingChange} />
+      </div>
+    </>
+  ) : (
+    <AddressSummary address={billing} showContact />
+  )}
+</div>
+
+<div className="account-card account-address-card">
+  <SectionHeader
+    title="Shipping address"
+    editingTitle="Edit address"
+    isEditing={editingSection === 'shipping'}
+    onEdit={() => setEditingSection(editingSection === 'shipping' ? null : 'shipping')}
+  />
+
+  {editingSection === 'shipping' ? (
+    <>
+      <div className="account-field-row">
+        <FloatingField id="shipping-first-name" name="first_name" label="First name" value={shipping.first_name} onChange={handleShippingChange} />
+        <FloatingField id="shipping-last-name" name="last_name" label="Last name" value={shipping.last_name} onChange={handleShippingChange} />
+      </div>
+
+      <div className="account-address-static-field">United States (US)</div>
+
+      <FloatingField id="shipping-address-1" name="address_1" label="Address line 1" value={shipping.address_1} onChange={handleShippingChange} />
+      <FloatingField id="shipping-address-2" name="address_2" label="Address line 2" value={shipping.address_2} onChange={handleShippingChange} />
+
+      <div className="account-field-row account-field-row-3">
+        <FloatingField id="shipping-city" name="city" label="City" value={shipping.city} onChange={handleShippingChange} />
+        <FloatingSelect id="shipping-state" name="state" label="State" value={shipping.state} onChange={handleShippingChange} options={US_STATES} />
+        <FloatingField id="shipping-postcode" name="postcode" label="ZIP code" value={shipping.postcode} onChange={handleShippingChange} />
+      </div>
+    </>
+  ) : (
+    <AddressSummary address={shipping} />
+  )}
 </div>
             </div>
 
             {error ? <p className="account-auth-error">{error}</p> : null}
             {success ? <p className="account-auth-success">{success}</p> : null}
 
-            <button className="account-auth-button" type="submit" disabled={saving}>
-              {saving ? 'Saving...' : 'Save addresses'}
-            </button>
+{editingSection ? (
+  <button className="account-auth-button account-profile-save-button" type="submit" disabled={saving}>
+    {saving ? 'Saving...' : 'Save changes'}
+  </button>
+) : null}
           </form>
         </div>
       </div>
