@@ -796,6 +796,7 @@
 
 .account-order-actions {
   display: flex;
+  font-family: quasimoda, sans-serif;
   justify-content: flex-end;
   align-items: center;
   gap: 18px;
