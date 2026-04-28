@@ -1106,6 +1106,13 @@
   padding: 20px 20px 8px;
 }
 
+.account-overview-grid strong {
+  font-family: quasimoda, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #4A494A;
+}
+
 .account-saved-value {
   font-family: quasimoda, sans-serif;
   font-size: 1.1rem;
