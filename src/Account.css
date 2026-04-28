@@ -268,14 +268,14 @@
 }
 
 .account-floating-field input {
-  height: 60px;
+  height: 70px;
   padding: 20px 16px 8px;
 }
 
 .account-floating-field label {
   position: absolute;
   top: 50%;
-  left: 16px;
+  left: 20px;
   margin: 0;
   transform: translateY(-50%);
   transform-origin: left center;
