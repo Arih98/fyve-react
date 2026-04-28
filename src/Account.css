@@ -170,7 +170,7 @@
 
 .account-auth-card {
   width: 100%;
-  max-width: 720px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -241,7 +241,6 @@
   width: 100%;
   height: 60px;
   border: 1.5px solid #e8e7e6;
-  border-radius: 5px;
   padding: 24px 16px 8px;
   font: inherit;
   background: #f4f4f4;
@@ -284,6 +283,7 @@
   font-family: quasimoda, sans-serif;
   font-size: 1rem;
   font-weight: 300;
+  letter-spacing: -0.05em;
   line-height: 1;
   color: #9c9a9c;
   pointer-events: none;
@@ -295,7 +295,6 @@
   top: 10px;
   transform: translateY(0);
   font-size: 0.72rem;
-  letter-spacing: -0.08em;
   text-transform: none;
   color: rgba(0, 0, 0, 0.45);
 }
