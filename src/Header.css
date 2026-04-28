@@ -262,6 +262,11 @@ body.locked {
   transform-origin: right;
 }
 
+.a-burger .hamburger-line.bottom {
+  top: 18px;
+  transform-origin: left;
+}
+
 .a-burger .x-svg {
   color: var(--header-icon-color);
 }
