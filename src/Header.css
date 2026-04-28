@@ -233,8 +233,11 @@ body.locked {
 .a-burger .burger-glyph {
   position: relative;
   width: 45px;
-  height: 21px;
-  display: block;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
 }
 
 .a-burger {
@@ -242,25 +245,14 @@ body.locked {
 }
 
 .a-burger .hamburger-line {
-  position: absolute;
-  left: 0;
+  display: block;
   width: 45px;
   height: 3px;
   background-color: var(--header-icon-color);
-  transform: none;
+  transform: scaleX(1) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   flex-shrink: 0;
-}
-
-.a-burger .hamburger-line.top {
-  top: 0;
-}
-
-.a-burger .hamburger-line.middle {
-  top: 9px;
-}
-
-.a-burger .hamburger-line.bottom {
-  top: 18px;
 }
 
 .a-burger .x-svg {
