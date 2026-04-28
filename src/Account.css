@@ -274,7 +274,7 @@
 
 .account-floating-field label {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 20px;
   margin: 0;
   transform: translateY(-50%);
