@@ -90,7 +90,6 @@ body.locked {
   z-index: 10002;
   box-sizing: border-box;
   transform: translateY(0);
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, background-color 0.3s, background-image 0.3s;
 }
 
 .mobile-header.first-header.home-transparent {
@@ -427,7 +426,7 @@ body.locked {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   z-index: 10001;
   overflow: hidden;
   pointer-events: none;
@@ -783,6 +782,11 @@ body.locked {
 
 @media (max-width: 768px) {
 
+.mobile-header.first-header.hide-header {
+  transform: none !important;
+  pointer-events: auto;
+}
+
   .header-bag-count {
   position: absolute;
   top: -1px;
@@ -807,6 +811,14 @@ body.locked {
 
   .mobile-header.first-header {
   background-color: #FFFFFF;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none !important;
+    will-change: auto;
+    backface-visibility: hidden;
   }
 
   .page-wrapper.menu-open {
@@ -860,7 +872,7 @@ body.locked {
   --nav-side-padding: 22px;
   --nav-top-padding: 15px;
   --nav-bottom-padding: 15px;
-  --nav-bottom-safe-padding: calc(var(--nav-bottom-padding) + env(safe-area-inset-bottom));
+  --nav-bottom-safe-padding: var(--nav-bottom-padding);
   --mobile-header-total-height: calc(var(--nav-icon-size) + var(--nav-bottom-safe-padding));
 
   position: fixed;
@@ -871,18 +883,15 @@ body.locked {
   padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
   padding-bottom: var(--nav-bottom-safe-padding) !important;
   box-sizing: border-box;
-  transform: translateY(0) !important;
+  transform: none !important;
+  will-change: auto;
+  backface-visibility: hidden;
   display: grid !important;
   grid-template-columns: repeat(4, var(--nav-icon-size));
   column-gap: var(--nav-icon-gap);
   justify-content: center;
   align-items: center;
 }
-
-  .mobile-header.first-header.hide-header {
-    transform: translateY(0) !important;
-    pointer-events: auto;
-  }
 
   .mobile-header .header-logo.mobile-hide-logo {
     display: none !important;
@@ -1064,7 +1073,7 @@ body.locked {
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(100vh - var(--announcement-height));
+  height: calc(100dvh - var(--announcement-height));
   background: transparent;
 }
 
