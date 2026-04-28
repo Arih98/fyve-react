@@ -104,7 +104,7 @@ body.locked {
 }
 
 .mobile-header.first-header.hide-header {
-  transform: translateY(-100%);
+  transform: none !important;
   pointer-events: none;
 }
 
@@ -887,10 +887,11 @@ body.locked {
   align-items: center;
 }
 
-  .mobile-header.first-header.hide-header {
-    transform: translateY(0) !important;
-    pointer-events: auto;
-  }
+.mobile-header.first-header {
+  transform: none !important;
+  will-change: auto;
+  backface-visibility: hidden;
+}
 
   .mobile-header .header-logo.mobile-hide-logo {
     display: none !important;
