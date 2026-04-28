@@ -1209,6 +1209,14 @@
   line-height: 1;
 }
 
+.account-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
 .account-dashboard-panel h2 {
   margin: 0 0 24px;
   font-family: "ArizonaFlare", sans-serif;
