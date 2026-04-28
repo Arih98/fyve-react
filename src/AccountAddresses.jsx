@@ -248,13 +248,12 @@ setSuccess('Account details and addresses updated successfully.');
         <AccountTabs />
 
         <div className="account-section-inner">
-          <h1 className="account-page-title">Addresses</h1>
-          <p className="account-page-subtitle">Manage your billing and shipping information.</p>
+          <h1 className="account-page-title">Your profile</h1>
 
           <form onSubmit={handleSubmit} className="account-addresses-form">
             <div className="account-address-grid">
   <div className="account-card account-address-card account-details-card">
-    <h2>Account details</h2>
+    <h2>Personal details</h2>
 
     <div className="account-field-row">
       <FloatingField
