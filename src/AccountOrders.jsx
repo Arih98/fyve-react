@@ -51,7 +51,7 @@ const AccountOrders = () => {
         <AccountTabs />
 
         <div className="account-section-inner">
-          <h1 className="account-page-title">Orders</h1>
+          <h1 className="account-page-title account-section-title">Orders</h1>
           <p className="account-page-subtitle">View your order history and manage returns.</p>
 
           {loading ? (

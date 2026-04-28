@@ -202,6 +202,10 @@
   line-height: 1;
 }
 
+.account-section-title {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
 .account-auth-subtitle,
 .account-page-subtitle {
   margin: 12px 0 0;

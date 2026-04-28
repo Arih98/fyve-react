@@ -248,7 +248,7 @@ setSuccess('Account details and addresses updated successfully.');
         <AccountTabs />
 
         <div className="account-section-inner">
-          <h1 className="account-page-title">Your profile</h1>
+          <h1 className="account-page-title account-section-title">Your profile</h1>
 
           <form onSubmit={handleSubmit} className="account-addresses-form">
             <div className="account-address-grid">
