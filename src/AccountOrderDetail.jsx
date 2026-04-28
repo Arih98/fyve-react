@@ -111,45 +111,45 @@ export default function AccountOrderDetail() {
   }, [orderId]);
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!user?.email) return;
-    if (!orderId) return;
+  if (authLoading) return;
+  if (!orderId) return;
+  if (!order?.billing_address?.email) return;
 
-    let active = true;
+  let active = true;
 
-    async function checkReturnEligibility() {
-      try {
-        setReturnChecking(true);
-        setReturnError('');
+  async function checkReturnEligibility() {
+    try {
+      setReturnChecking(true);
+      setReturnError('');
 
-        const result = await lookupReturnOrder({
-          orderId,
-          email: user.email
-        });
+      const result = await lookupReturnOrder({
+        orderId,
+        email: order.billing_address.email
+      });
 
-        if (!active) return;
+      if (!active) return;
 
-        setReturnOrder(result.order || null);
-        setReturnToken(result.token || '');
-      } catch (err) {
-        if (!active) return;
+      setReturnOrder(result.order || null);
+      setReturnToken(result.token || '');
+    } catch (err) {
+      if (!active) return;
 
-        setReturnOrder(null);
-        setReturnToken('');
-        setReturnError(err.message || 'This order is not eligible for return');
-      } finally {
-        if (active) {
-          setReturnChecking(false);
-        }
+      setReturnOrder(null);
+      setReturnToken('');
+      setReturnError(err.message || 'This order is not eligible for return');
+    } finally {
+      if (active) {
+        setReturnChecking(false);
       }
     }
+  }
 
-    checkReturnEligibility();
+  checkReturnEligibility();
 
-    return () => {
-      active = false;
-    };
-  }, [authLoading, user?.email, orderId]);
+  return () => {
+    active = false;
+  };
+}, [authLoading, orderId, order?.billing_address?.email]);
 
   const handleQuantityChange = (itemId, value) => {
     setSelectedItems((prev) => ({
