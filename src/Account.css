@@ -258,7 +258,7 @@
   height: 60px;
   border: 1.5px solid #e8e7e6;
   padding: 24px 16px 8px;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   background: #f4f4f4;
   box-sizing: border-box;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
@@ -284,6 +284,7 @@
 }
 
 .account-floating-field input {
+  font-family: quasimoda, sans-serif;
   height: 70px;
   padding: 20px 20px 8px;
 }
@@ -1121,7 +1122,7 @@
 
 @media (max-width: 768px) {
 .account-floating-field input {
-  height: 60px;
+  height: 70px;
   padding: 20px 20px 8px;
 }
 
