@@ -1101,6 +1101,11 @@
 }
 
 @media (max-width: 768px) {
+.account-floating-field input {
+  height: 60px;
+  padding: 20px 20px 8px;
+}
+
 .account-success-popup {
   left: 16px;
   right: 16px;
@@ -1407,6 +1412,9 @@
   min-height: 50px;
   border-radius: 999px;
   font-family: quasimoda, sans-serif;
+  font-size: 1.13em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
   cursor: pointer;
   text-decoration: none;
 }
