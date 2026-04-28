@@ -1160,12 +1160,12 @@
 }
 
 .account-edit-icon-button {
-  width: 20px;
-  height: 20px;
+  width: 38px;
+  height: 38px;
   flex: 0 0 38px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   padding: 0;
 }
 
