@@ -24,9 +24,41 @@ const Account = () => {
     }
   };
 
-  if (authLoading || !user) {
-    return null;
-  }
+if (authLoading) {
+  return (
+    <div className="account-page">
+      <div className="account-shell">
+        <AccountTabs />
+
+        <div className="account-page-inner">
+          <div className="account-page-header">
+            <div className="account-skeleton account-skeleton-title"></div>
+            <div className="account-skeleton account-skeleton-button account-logout-button-desktop"></div>
+          </div>
+
+          <div className="account-dashboard-panel">
+            <div className="account-skeleton account-skeleton-dashboard-heading"></div>
+
+            <div className="account-skeleton-overview-grid">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div className="account-skeleton-overview-item" key={index}>
+                  <div className="account-skeleton account-skeleton-overview-label"></div>
+                  <div className="account-skeleton account-skeleton-overview-value"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="account-skeleton account-skeleton-mobile-logout"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+if (!user) {
+  return null;
+}
 
   const displayName = user.first_name || user.username || 'User';
   const greeting = getGreeting();

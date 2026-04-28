@@ -164,6 +164,105 @@
   border-radius: 8px;
 }
 
+.account-skeleton-button {
+  width: 140px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+.account-skeleton-dashboard-heading {
+  width: min(300px, 70%);
+  height: 42px;
+  margin-bottom: 24px;
+  border-radius: 10px;
+}
+
+.account-skeleton-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  border: 1.5px solid #e8e7e6;
+  padding: 25px;
+  box-sizing: border-box;
+}
+
+.account-skeleton-overview-item {
+  display: grid;
+  gap: 8px;
+}
+
+.account-skeleton-overview-label {
+  width: 90px;
+  height: 18px;
+  border-radius: 8px;
+}
+
+.account-skeleton-overview-value {
+  width: 68%;
+  height: 20px;
+  border-radius: 8px;
+}
+
+.account-skeleton-mobile-logout {
+  display: none;
+}
+
+.account-skeleton-profile-title {
+  margin-bottom: 28px;
+}
+
+.account-profile-skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 45px;
+  border: 1.5px solid #e8e7e6;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.account-profile-skeleton-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.account-skeleton-profile-card-title {
+  width: min(240px, 70%);
+  height: 32px;
+  border-radius: 8px;
+}
+
+.account-skeleton-edit-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 999px;
+}
+
+.account-skeleton-summary {
+  display: grid;
+  gap: 18px;
+}
+
+.account-skeleton-summary-row {
+  display: grid;
+  gap: 8px;
+}
+
+.account-skeleton-summary-label {
+  width: 110px;
+  height: 17px;
+  border-radius: 8px;
+}
+
+.account-skeleton-summary-value {
+  width: 72%;
+  height: 20px;
+  border-radius: 8px;
+}
+
 .account-auth-page,
 .account-page,
 .account-section-page {
@@ -710,12 +809,6 @@
   box-sizing: border-box;
 }
 
-.account-overview-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-}
-
 .account-overview-grid div {
   display: grid;
   gap: 4px;
@@ -1250,6 +1343,52 @@
   width: 82px;
   height: 82px;
   border-radius: 12px;
+}
+
+.account-skeleton-dashboard-heading {
+  width: 210px;
+  height: 30px;
+  margin-bottom: 24px;
+}
+
+.account-skeleton-overview-grid {
+  grid-template-columns: 1fr;
+  padding: 25px;
+}
+
+.account-skeleton-mobile-logout {
+  display: block;
+  width: 100%;
+  height: 50px;
+  margin-top: 24px;
+  border-radius: 999px;
+}
+
+.account-profile-skeleton-card {
+  gap: 20px;
+  padding: 25px;
+}
+
+.account-skeleton-profile-card-title {
+  height: 26px;
+}
+
+.account-skeleton-edit-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+}
+
+.account-skeleton-summary-label {
+  height: 16px;
+}
+
+.account-skeleton-summary-value {
+  height: 19px;
+}
+
+.account-skeleton-order-row {
+  padding: 25px;
 }
 
 .account-shell,

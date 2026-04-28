@@ -353,20 +353,25 @@ const handleSaveShipping = async () => {
         <AccountTabs />
 
         <div className="account-section-inner">
-          <div className="account-skeleton account-skeleton-title"></div>
-          <div className="account-skeleton account-skeleton-subtitle"></div>
+          <div className="account-skeleton account-skeleton-title account-skeleton-profile-title"></div>
 
           <div className="account-addresses-form">
             <div className="account-address-grid">
               {Array.from({ length: 3 }).map((_, cardIndex) => (
-                <div className="account-skeleton-card" key={cardIndex}>
-                  <div className="account-skeleton account-skeleton-card-title"></div>
+                <div
+                  className={`account-profile-skeleton-card${cardIndex === 0 ? ' account-details-card' : ''}`}
+                  key={cardIndex}
+                >
+                  <div className="account-profile-skeleton-header">
+                    <div className="account-skeleton account-skeleton-profile-card-title"></div>
+                    <div className="account-skeleton account-skeleton-edit-icon"></div>
+                  </div>
 
-                  <div className="account-skeleton-form">
-                    {Array.from({ length: cardIndex === 0 ? 3 : cardIndex === 1 ? 9 : 7 }).map((__, fieldIndex) => (
-                      <div className="account-skeleton-field" key={fieldIndex}>
-                        <div className="account-skeleton account-skeleton-label"></div>
-                        <div className="account-skeleton account-skeleton-input"></div>
+                  <div className="account-skeleton-summary">
+                    {Array.from({ length: cardIndex === 0 ? 2 : cardIndex === 1 ? 4 : 2 }).map((__, rowIndex) => (
+                      <div className="account-skeleton-summary-row" key={rowIndex}>
+                        <div className="account-skeleton account-skeleton-summary-label"></div>
+                        <div className="account-skeleton account-skeleton-summary-value"></div>
                       </div>
                     ))}
                   </div>
