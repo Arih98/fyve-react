@@ -1269,6 +1269,10 @@
   color: #4A494A;
 }
 
+.account-section-title {
+  font-size: 1.5;
+}
+
 .account-order-detail-layout {
   width: 100%;
   overflow: hidden;
