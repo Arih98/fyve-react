@@ -1162,11 +1162,12 @@
 .account-edit-icon-button {
   width: 20px;
   height: 20px;
-  flex: 0 0 38px;
+  flex: 0 0 20px;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-end;
   padding: 0;
+  line-height: 0;
 }
 
 .account-edit-icon-button img {
