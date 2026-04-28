@@ -2151,17 +2151,23 @@ if (loading || cartLoading || authLoading) {
 
   {walletAvailable && (
     <div className={`checkout-payment-option ${selectedPaymentMethod === 'wallet' ? 'is-selected' : ''}`}>
-      <label className="checkout-payment-option-label">
-        <input
-          type="radio"
-          name="payment_method"
-          value="wallet"
-          checked={selectedPaymentMethod === 'wallet'}
-          onChange={() => setSelectedPaymentMethod('wallet')}
-          disabled={isFinalizingOrder}
-        />
-        <span className="checkout-payment-option-title">Google Pay</span>
-      </label>
+<label className="checkout-payment-option-label checkout-payment-option-label-brand">
+  <span className="checkout-payment-option-left">
+    <input
+      type="radio"
+      name="payment_method"
+      value="wallet"
+      checked={selectedPaymentMethod === 'wallet'}
+      onChange={() => setSelectedPaymentMethod('wallet')}
+      disabled={isFinalizingOrder}
+    />
+    <span className="checkout-payment-option-title">Google Pay</span>
+  </span>
+
+  <span className="checkout-payment-brand-icon" aria-hidden="true">
+    <img src="/assets/GPay.svg" alt="" />
+  </span>
+</label>
 
       <div
         ref={walletBodyRef}
@@ -2180,17 +2186,23 @@ if (loading || cartLoading || authLoading) {
 
   {revolutPayAvailable && (
     <div className={`checkout-payment-option ${selectedPaymentMethod === 'revolut_pay' ? 'is-selected' : ''}`}>
-      <label className="checkout-payment-option-label">
-        <input
-          type="radio"
-          name="payment_method"
-          value="revolut_pay"
-          checked={selectedPaymentMethod === 'revolut_pay'}
-          onChange={() => setSelectedPaymentMethod('revolut_pay')}
-          disabled={isFinalizingOrder}
-        />
-        <span className="checkout-payment-option-title">Revolut Pay</span>
-      </label>
+<label className="checkout-payment-option-label checkout-payment-option-label-brand">
+  <span className="checkout-payment-option-left">
+    <input
+      type="radio"
+      name="payment_method"
+      value="revolut_pay"
+      checked={selectedPaymentMethod === 'revolut_pay'}
+      onChange={() => setSelectedPaymentMethod('revolut_pay')}
+      disabled={isFinalizingOrder}
+    />
+    <span className="checkout-payment-option-title">Revolut Pay</span>
+  </span>
+
+  <span className="checkout-payment-brand-icon checkout-payment-brand-icon-revolut" aria-hidden="true">
+    <img src="/assets/RevolutPay.svg" alt="" />
+  </span>
+</label>
 
       <div
         ref={revolutPayBodyRef}
