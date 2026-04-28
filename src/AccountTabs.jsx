@@ -12,9 +12,9 @@ const AccountTabs = () => {
         Orders
       </NavLink>
 
-      <NavLink to="/account/addresses" className={({ isActive }) => `account-tab${isActive ? ' is-active' : ''}`}>
-        Addresses
-      </NavLink>
+<NavLink to="/account/addresses" className={({ isActive }) => `account-tab${isActive ? ' is-active' : ''}`}>
+  Profile
+</NavLink>
     </nav>
   );
 };
