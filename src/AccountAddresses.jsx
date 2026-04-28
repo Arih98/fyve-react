@@ -150,8 +150,13 @@ function SectionHeader({ title, editingTitle, isEditing, onEdit }) {
     <div className="account-profile-card-header">
       <h2>{isEditing ? editingTitle : title}</h2>
 
-      <button type="button" className="account-edit-icon-button" onClick={onEdit} aria-label={`Edit ${title}`}>
-        <img src="/assets/edit-pencil-icon.svg" alt="" />
+      <button
+        type="button"
+        className="account-edit-icon-button"
+        onClick={onEdit}
+        aria-label={isEditing ? `Close ${title}` : `Edit ${title}`}
+      >
+        <img src={isEditing ? '/assets/Close.svg' : '/assets/edit-pencil-icon.svg'} alt="" />
       </button>
     </div>
   );
