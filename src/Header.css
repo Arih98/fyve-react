@@ -884,7 +884,9 @@ body.locked {
   padding: var(--nav-top-padding) var(--nav-side-padding) var(--nav-bottom-padding) var(--nav-side-padding) !important;
   padding-bottom: var(--nav-bottom-safe-padding) !important;
   box-sizing: border-box;
-  transform: translateY(0) !important;
+  transform: none !important;
+  will-change: auto;
+  backface-visibility: hidden;
   display: grid !important;
   grid-template-columns: repeat(4, var(--nav-icon-size));
   column-gap: var(--nav-icon-gap);
