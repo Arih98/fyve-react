@@ -299,6 +299,16 @@
   color: rgba(0, 0, 0, 0.45);
 }
 
+.account-auth-field input:-webkit-autofill,
+.account-auth-field input:-webkit-autofill:hover,
+.account-auth-field input:-webkit-autofill:focus,
+.account-auth-field input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #f4f4f4 inset;
+  -webkit-text-fill-color: #000;
+  caret-color: #000;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 .account-auth-button {
   display: inline-flex;
   align-items: center;
