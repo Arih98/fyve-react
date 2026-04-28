@@ -1050,9 +1050,15 @@
   gap: 4px;
 }
 
+.account-profile-card-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 4px;
+}
+
 .account-profile-save-button {
   width: fit-content;
-  min-width: 220px;
+  min-width: 190px;
 }
 
 @media (max-width: 768px) {
