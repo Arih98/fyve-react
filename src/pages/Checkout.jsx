@@ -2000,8 +2000,8 @@ if (loading || cartLoading || authLoading) {
 
   <span className="checkout-card-icons" aria-hidden="true">
     <img src="/assets/MC.svg" alt="" />
-    <img src="/assets/Amex.svg" alt="" />
     <img src="/assets/Visa.svg" alt="" />
+    <img src="/assets/Amex.svg" alt="" />
   </span>
 </label>
 
