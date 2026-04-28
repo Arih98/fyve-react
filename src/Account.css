@@ -299,13 +299,23 @@
   color: rgba(0, 0, 0, 0.45);
 }
 
-.account-auth-button,
+.account-auth-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 55px;
+  border-radius: 999px;
+  font-family: quasimoda, sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .account-logout-button,
 .account-card-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 55px;
+  min-height: 40px;
   border-radius: 999px;
   font-family: quasimoda, sans-serif;
   cursor: pointer;
