@@ -1592,8 +1592,8 @@ body.search-open {
 
 .custom-search-mobile-floating-close {
   position: fixed;
-  right: 18px;
-  bottom: calc(18px + env(safe-area-inset-bottom));
+  right: 20px;
+  bottom: calc(30px + env(safe-area-inset-bottom));
   width: 46px;
   height: 46px;
   border: 0;

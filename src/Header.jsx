@@ -454,12 +454,13 @@ const handleBagClick = () => {
 
 const openSearch = () => {
   setHideHeader(false);
+  setIsSearchOpen(true);
 
   if (isMenuOpen) {
-    setIsMenuOpen(false);
+    requestAnimationFrame(() => {
+      setIsMenuOpen(false);
+    });
   }
-
-  setIsSearchOpen(true);
 };
 
 const closeSearch = () => {
