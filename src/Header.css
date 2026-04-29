@@ -1311,7 +1311,7 @@ body.search-open {
     max-height: none;
     background: #ffffff;
     z-index: 100000;
-    padding: 18px 16px calc(76px + env(safe-area-inset-bottom));
+    padding: 38px 16px calc(76px + env(safe-area-inset-bottom));
     overflow: hidden;
     transform: none;
     opacity: 0;
@@ -1650,7 +1650,8 @@ body.search-open {
 
   .custom-search-input {
     height: 50px;
-    font-size: 16px;
+    font-size: 0.9em;
+    color: #4A494A;
   }
 
   .custom-search-close {
@@ -1777,7 +1778,7 @@ body.search-open {
     height: 46px;
     border: 0;
     border-radius: 999px;
-    background: #000;
+    background: #4A494A;
     display: flex;
     align-items: center;
     justify-content: center;
