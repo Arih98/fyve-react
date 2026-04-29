@@ -130,7 +130,7 @@ const current = product ? (isVariableProduct ? effectiveVariation : product) : n
   const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const availableStock = availableStockRaw === null ? null : Number(availableStockRaw);
 
-  const relatedProducts = useRelatedProducts(product, effectiveVariation, allProducts, isColorAttribute);
+  const relatedProducts = useRelatedProducts(product, effectiveVariation, allProducts, isColorLikeAttributeName);
   const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
