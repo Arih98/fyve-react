@@ -592,8 +592,19 @@ return true;
 ]);
 
 const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
-const addToCartLabel = isOutOfStock ? 'Out of Stock' : 'Add to bag';
-const pdpMobileButtonLabel = isOutOfStock ? 'Out of Stock' : 'Add to bag';
+const hasCurrentSelectionInCart = Boolean(existingCartItem);
+const hasReachedCartStockLimit =
+  hasCurrentSelectionInCart &&
+  remainingStockForSelection !== null &&
+  remainingStockForSelection <= 0;
+
+const addToCartLabel = hasReachedCartStockLimit
+  ? 'In your bag'
+  : isOutOfStock
+    ? 'Out of Stock'
+    : 'Add to bag';
+
+const pdpMobileButtonLabel = addToCartLabel;
 
 useEffect(() => {
   window.dispatchEvent(
