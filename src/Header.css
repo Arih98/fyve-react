@@ -1541,7 +1541,6 @@ body {
   .custom-search-field {
     grid-template-columns: 20px minmax(0, 1fr) auto;
     gap: 10px;
-    padding-bottom: 12px;
   }
 
   .custom-search-input {
@@ -1601,7 +1600,7 @@ body.search-open {
   height: 46px;
   border: 0;
   border-radius: 999px;
-  background: #000;
+  background: #4A494A;
   display: flex;
   align-items: center;
   justify-content: center;

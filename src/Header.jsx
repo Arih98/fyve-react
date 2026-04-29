@@ -121,7 +121,7 @@ const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
   !delayTransparentHeader;
 const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.svg' : '/assets/FYVE-Dark-Logo.svg';
-const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
+const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchFeatureIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
 
@@ -873,7 +873,7 @@ const handleToggleMenu = () => {
         <div className="custom-search-main-row">
           <div className="custom-search-field">
             <span className="custom-search-field-icon">
-              <img src="/assets/SearchIcon.svg" alt="" />
+              <img src="/assets/SearchFeatureIcon.svg" alt="" />
             </span>
 
             <input
