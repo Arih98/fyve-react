@@ -8,7 +8,6 @@ import Cart from './Cart';
 import { searchProducts } from './api/search';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
-import { useStoredProducts } from './hooks/useStoredProducts';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
@@ -193,9 +192,11 @@ const [cartAddedPopupItem, setCartAddedPopupItem] = useState(null);
 const [isCartAddedPopupImageVisible, setIsCartAddedPopupImageVisible] = useState(false);
 const [cartAddedPopupStatus, setCartAddedPopupStatus] = useState('adding');
 const { user, authLoading } = useAuth();
-const allProducts = useStoredProducts();
 const [searchProductVisibleCount, setSearchProductVisibleCount] = useState(6);
 const [searchProductColors, setSearchProductColors] = useState({});
+const [allProducts, setAllProducts] = useState([]);
+const [allProductsLoading, setAllProductsLoading] = useState(false);
+const hasTriedLoadSearchProductsRef = useRef(false);
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -492,6 +493,51 @@ useEffect(() => {
   return () => window.removeEventListener('scroll', handleHeaderThemeScroll);
 }, [location.pathname]);
 
+useEffect(() => {
+  if (!isSearchOpen) return;
+  if (allProducts.length > 0) return;
+  if (allProductsLoading) return;
+  if (hasTriedLoadSearchProductsRef.current) return;
+
+  let cancelled = false;
+  hasTriedLoadSearchProductsRef.current = true;
+
+  const loadProducts = async () => {
+    try {
+      setAllProductsLoading(true);
+
+      const response = await fetch('https://fyvelondon.com/wp-json/fyve/v1/products?per_page=60&page=1', {
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (cancelled) return;
+
+      const products = Array.isArray(data)
+        ? data
+        : Array.isArray(data.products)
+          ? data.products
+          : [];
+
+      setAllProducts(products);
+    } catch (error) {
+      if (!cancelled) {
+        setAllProducts([]);
+      }
+    } finally {
+      if (!cancelled) {
+        setAllProductsLoading(false);
+      }
+    }
+  };
+
+  loadProducts();
+
+  return () => {
+    cancelled = true;
+  };
+}, [isSearchOpen, allProducts.length, allProductsLoading]);
 
 useEffect(() => {
   if (isMobile || normalDesktopHeader) {
@@ -1070,6 +1116,10 @@ const handleToggleMenu = () => {
         </button>
       ))}
     </div>
+
+    {allProductsLoading && (
+  <p className="custom-search-message">Loading products...</p>
+)}
 
     {searchPanelProducts.length > 0 && (
       <div className="custom-search-all-products">
