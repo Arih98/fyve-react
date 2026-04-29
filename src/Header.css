@@ -458,7 +458,7 @@ body.search-open {
   font-size: 1.3em;
   font-weight: 500;
   color: #4A494A;
-  letter-spacing: -0.2;
+  letter-spacing: -0.2em;
 }
 
 .custom-search-suggestions {
