@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { CartContext } from './CartContext'
 import { clearCheckoutCart } from './api/checkout'
 import { clearStoredCartToken } from './api/request'
+import './CheckoutSuccess.css'
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams()
@@ -166,19 +167,41 @@ export default function CheckoutSuccess() {
     }
   }, [orderId, refreshCart, clearCartState])
 
-  if (loading && isConfirming) {
-    return (
-      <div className="checkout-success-page">
-        <h1>Confirming your payment...</h1>
-        <p>Please stay on this page for a moment.</p>
-      </div>
-    )
-  }
+  const status = String(order?.status || '').toLowerCase()
+  const statusLabel = order?.status_label || order?.status || 'Confirmed'
+  const statusClass = ['processing', 'completed'].includes(status) ? 'is-success' : 'is-pending'
+  const formattedTotal = order?.total && order?.currency ? `${order.total} ${order.currency}` : order?.total || '-'
 
   if (loading) {
     return (
       <div className="checkout-success-page">
-        <h1>Loading your order...</h1>
+        <div className="checkout-success-shell">
+          <div className="checkout-success-card">
+            <div className="checkout-success-loader"></div>
+
+            <div className="checkout-success-copy">
+              <p className="checkout-success-eyebrow">
+                {isConfirming ? 'Payment confirmation' : 'Order confirmation'}
+              </p>
+
+              <h1>
+                {isConfirming ? 'Confirming your payment' : 'Loading your order'}
+              </h1>
+
+              <p>
+                {isConfirming
+                  ? 'Please stay on this page while we finalise your order.'
+                  : 'We are getting your order details ready.'}
+              </p>
+            </div>
+
+            <div className="checkout-success-skeleton">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -186,9 +209,29 @@ export default function CheckoutSuccess() {
   if (error) {
     return (
       <div className="checkout-success-page">
-        <h1>We could not confirm your order</h1>
-        <p>{error}</p>
-        <Link to="/checkout">Return to checkout</Link>
+        <div className="checkout-success-shell">
+          <div className="checkout-success-card checkout-success-card-error">
+            <div className="checkout-success-error-icon" aria-hidden="true">
+              !
+            </div>
+
+            <div className="checkout-success-copy">
+              <p className="checkout-success-eyebrow">Order status</p>
+              <h1>We could not confirm your order</h1>
+              <p>{error}</p>
+            </div>
+
+            <div className="checkout-success-actions">
+              <Link className="checkout-success-button" to="/checkout">
+                Return to checkout
+              </Link>
+
+              <Link className="checkout-success-link" to="/">
+                Continue shopping
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -196,19 +239,81 @@ export default function CheckoutSuccess() {
   if (!order) {
     return (
       <div className="checkout-success-page">
-        <h1>We could not find your order</h1>
-        <Link to="/checkout">Return to checkout</Link>
+        <div className="checkout-success-shell">
+          <div className="checkout-success-card checkout-success-card-error">
+            <div className="checkout-success-error-icon" aria-hidden="true">
+              !
+            </div>
+
+            <div className="checkout-success-copy">
+              <p className="checkout-success-eyebrow">Order status</p>
+              <h1>We could not find your order</h1>
+              <p>Please return to checkout or continue shopping.</p>
+            </div>
+
+            <div className="checkout-success-actions">
+              <Link className="checkout-success-button" to="/checkout">
+                Return to checkout
+              </Link>
+
+              <Link className="checkout-success-link" to="/">
+                Continue shopping
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="checkout-success-page">
-      <h1>Thank you for your order</h1>
-      <p>Order #{order.number}</p>
-      <p>Status: {order.status_label}</p>
-      <p>Total: {order.total} {order.currency}</p>
-      <a href={order.received_url}>View order confirmation</a>
+      <div className="checkout-success-shell">
+        <div className="checkout-success-card">
+          <div className="checkout-success-icon" aria-hidden="true">
+            <span></span>
+          </div>
+
+          <div className="checkout-success-copy">
+            <p className="checkout-success-eyebrow">Order confirmed</p>
+            <h1>Thank you for your order</h1>
+            <p>
+              We have received your order and will send your confirmation details by email.
+            </p>
+          </div>
+
+          <div className="checkout-success-summary">
+            <div className="checkout-success-summary-row">
+              <span>Order number</span>
+              <strong>#{order.number}</strong>
+            </div>
+
+            <div className="checkout-success-summary-row">
+              <span>Status</span>
+              <strong className={`checkout-success-status ${statusClass}`}>
+                {statusLabel}
+              </strong>
+            </div>
+
+            <div className="checkout-success-summary-row">
+              <span>Total</span>
+              <strong>{formattedTotal}</strong>
+            </div>
+          </div>
+
+          <div className="checkout-success-actions">
+            {order.received_url ? (
+              <a className="checkout-success-button" href={order.received_url}>
+                View order confirmation
+              </a>
+            ) : null}
+
+            <Link className="checkout-success-link" to="/">
+              Continue shopping
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
