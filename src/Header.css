@@ -844,18 +844,6 @@ body.search-open {
   color: rgba(74, 73, 74, 0.72);
 }
 
-.custom-search-product-list-description {
-  margin: 8px 0 0;
-  font-family: quasimoda, sans-serif;
-  font-size: 12px;
-  line-height: 1.35;
-  color: rgba(74, 73, 74, 0.68);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .custom-search-product-colors {
   display: flex;
   gap: 8px;
