@@ -44,7 +44,6 @@ const faqItems = [
 export default function FAQ() {
   const [activeIndex, setActiveIndex] = useState(null)
   const pageRef = useRef(null)
-  const itemRefs = useRef([])
   const contentRefs = useRef([])
   const iconRefs = useRef([])
 
@@ -58,21 +57,6 @@ export default function FAQ() {
       gsap.set(iconRefs.current, {
         rotate: 0
       })
-
-      gsap.fromTo(
-        itemRefs.current,
-        {
-          y: 18,
-          opacity: 0
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.75,
-          ease: 'power3.out',
-          stagger: 0.055
-        }
-      )
     }, pageRef)
 
     return () => ctx.revert()
@@ -149,13 +133,7 @@ export default function FAQ() {
             const isActive = activeIndex === index
 
             return (
-              <article
-                className={`faq-item${isActive ? ' is-active' : ''}`}
-                key={item.question}
-                ref={(el) => {
-                  itemRefs.current[index] = el
-                }}
-              >
+              <article className={`faq-item${isActive ? ' is-active' : ''}`} key={item.question}>
                 <button
                   className="faq-question"
                   type="button"
