@@ -7,6 +7,35 @@ import './Header.css';
 import Cart from './Cart';
 import { searchProducts } from './api/search';
 import { useAuth } from './context/AuthContext';
+import { faqItems } from './data/faqItems';
+
+const normalizeSearchText = (value) => {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s@.]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+const getFaqSearchResults = (items, query) => {
+  const q = normalizeSearchText(query);
+
+  if (q.length < 2) {
+    return [];
+  }
+
+  return items
+    .filter((item) => {
+      const text = normalizeSearchText([
+        item.question,
+        item.answer,
+        ...(item.keywords || [])
+      ].join(' '));
+
+      return text.includes(q);
+    })
+    .slice(0, 4);
+};
 
 const Header = () => {
   const navigate = useNavigate();
@@ -95,6 +124,10 @@ const logoSrc = useTransparentHomeHeader ? '/assets/FYVE-White-Logo.svg' : '/ass
 const searchIconSrc = useTransparentHomeHeader ? '/assets/SearchIcon-White.svg' : '/assets/SearchIcon.svg';
 const accountIconSrc = useTransparentHomeHeader ? '/assets/AccountIcon-White.svg' : '/assets/AccountIcon.svg';
 const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/assets/BagIcon.svg';
+
+const faqResults = useMemo(() => {
+  return getFaqSearchResults(faqItems, searchQuery);
+}, [searchQuery]);
 
 const closeCartAddedPopup = () => {
   clearTimeout(cartAddedPopupTimeoutRef.current);
@@ -438,6 +471,11 @@ const closeSearch = () => {
   if (searchAbortRef.current) {
     searchAbortRef.current.abort();
   }
+};
+
+const handleFaqResultClick = (item) => {
+  closeSearch();
+  navigate(`/faq?open=${encodeURIComponent(item.slug)}`);
 };
 
 const toggleSearch = () => {
@@ -909,9 +947,9 @@ const handleToggleMenu = () => {
             <p className="custom-search-message">{searchError}</p>
           )}
 
-          {!searchLoading && !searchError && searchQuery.trim().length >= 2 && searchResults.length === 0 && (
-            <p className="custom-search-message">No products found for “{searchQuery.trim()}”.</p>
-          )}
+          {!searchLoading && !searchError && searchQuery.trim().length >= 2 && searchResults.length === 0 && faqResults.length === 0 && (
+  <p className="custom-search-message">No results found for “{searchQuery.trim()}”.</p>
+)}
 
           {!searchLoading && searchResults.length > 0 && (
             <div className="custom-search-results">
@@ -947,6 +985,26 @@ const handleToggleMenu = () => {
               </div>
             </div>
           )}
+
+          {!searchError && searchQuery.trim().length >= 2 && faqResults.length > 0 && (
+  <div className="custom-search-faq-results">
+    <p className="custom-search-section-title">FAQs</p>
+
+    <div className="custom-search-faq-list">
+      {faqResults.map(item => (
+        <button
+          key={item.slug}
+          type="button"
+          className="custom-search-faq-card"
+          onClick={() => handleFaqResultClick(item)}
+        >
+          <span className="custom-search-faq-question">{item.question}</span>
+          <span className="custom-search-faq-answer">{item.answer}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+)}
         </div>
       </form>
     </div>
