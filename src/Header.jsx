@@ -862,10 +862,13 @@ const handleToggleMenu = () => {
   {!useCartHeaderVariant && !usePdpBottomAddVariant && (
   <>
 
-    <div
-      className={`custom-search-container${isSearchOpen ? ' active' : ''}`}
-      aria-hidden={!isSearchOpen}
-    >
+<div
+  className={`custom-search-container${isSearchOpen ? ' active' : ''}`}
+  aria-hidden={!isSearchOpen}
+  role="dialog"
+  aria-modal={isSearchOpen ? 'true' : undefined}
+  aria-label="Search"
+>
       <form className="custom-search-inner" onSubmit={handleSearchSubmit}>
         <div className="custom-search-main-row">
           <div className="custom-search-field">
@@ -1006,6 +1009,14 @@ const handleToggleMenu = () => {
 )}
         </div>
       </form>
+      <button
+  type="button"
+  className="custom-search-mobile-floating-close"
+  onClick={closeSearch}
+  aria-label="Close search"
+>
+  <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="" />
+</button>
     </div>
   </>
 )}
