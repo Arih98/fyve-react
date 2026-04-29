@@ -388,9 +388,7 @@ const colorValue = colorValueKey ? selectedAttributes[colorValueKey] || '' : '';
 const currentItemId = current?.id || product?.id;
 const currentVariationKey = `${sizeValue}-${colorValue}`;
 
-const existingCartItem = cartItems.find(
-  item => item.id === currentItemId && `${item.size || ''}-${item.color || ''}` === currentVariationKey
-);
+const existingCartItem = cartItems.find((item) => Number(item.id) === Number(currentItemId));
 
 const existingQuantityInCart = existingCartItem?.quantity || 0;
 const remainingStockForSelection =
@@ -508,23 +506,14 @@ try {
 
     const currentItemId = current?.id || product?.id;
 
-    const existingCartItem = cartItems.find((item) => item.id === currentItemId);
+    const existingCartItem = cartItems.find((item) => Number(item.id) === Number(currentItemId));
     const existingQuantityInCart = existingCartItem?.quantity || 0;
     const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
 
-    if (freshStock > 0 && remainingStock <= 0) {
-      setCartError('No more stock available for this selection');
-return false;
-    }
-
-    if (freshStock > 0 && remainingStock < 1) {
-setCartError(
-  remainingStock === 1
-    ? 'Only 1 more available'
-    : `Only ${remainingStock} more available`
-);
-return false;
-    }
+if (freshStock > 0 && remainingStock <= 0) {
+  setCartError('You already have the available stock for this item in your bag');
+  return false;
+}
 
     const variationPayload =
       Array.isArray(current?.attributes) && current.attributes.length
@@ -560,6 +549,12 @@ window.dispatchEvent(
 const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
 const selectedColor = selectedColorKey ? selectedAttributes[selectedColorKey] || '' : '';
 
+await addItem({
+  id: Number(currentItemId),
+  quantity: 1,
+  variation: variationPayload
+});
+
 try {
   const storedCartLinks = JSON.parse(localStorage.getItem('fyveCartProductLinks') || '{}');
 
@@ -572,12 +567,6 @@ try {
 
   localStorage.setItem('fyveCartProductLinks', JSON.stringify(storedCartLinks));
 } catch {}
-
-await addItem({
-  id: Number(currentItemId),
-  quantity: 1,
-  variation: variationPayload
-});
 
 window.dispatchEvent(new CustomEvent('cart:item-add-confirmed'));
 
