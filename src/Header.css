@@ -836,7 +836,7 @@ body.search-open {
 }
 
 .custom-search-product-list-price {
-  margin: 5px 0 0;
+  margin: 0;
   font-family: quasimoda, sans-serif;
   font-size: 13px;
   color: rgba(74, 73, 74, 0.72);
@@ -846,7 +846,7 @@ body.search-open {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .custom-search-product-color {
@@ -1542,7 +1542,7 @@ body.search-open {
     display: block;
   }
 
-  .custom-search-container {
+.custom-search-container {
   position: fixed;
   inset: 0;
   width: 100%;
@@ -1550,13 +1550,43 @@ body.search-open {
   max-height: none;
   background: #ffffff;
   z-index: 100000;
-  padding: 38px 16px calc(76px + env(safe-area-inset-bottom));
+  padding: 38px 0 calc(76px + env(safe-area-inset-bottom));
   overflow: hidden;
   transform: none;
   opacity: 1;
   visibility: hidden;
   pointer-events: none;
   transition: visibility 0s linear 0.42s;
+}
+
+.custom-search-main-row {
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.custom-search-section-title,
+.custom-search-chips,
+.custom-search-message {
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+
+.custom-search-all-products {
+  width: 100%;
+  margin-top: 22px;
+}
+
+.custom-search-all-products-grid {
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 12px;
+}
+
+.custom-search-show-more {
+  width: calc(100% - 32px);
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 .custom-search-container.active {
