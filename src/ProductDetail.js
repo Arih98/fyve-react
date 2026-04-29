@@ -1085,7 +1085,7 @@ onClick={closeSizePanel}
   <button
     type="button"
     className={`size-panel-add-button ${hasReachedCartStockLimit ? 'in-bag' : ''}`}
-    disabled={!selectedAttributes[sizeAttrName] || isAddDisabled}
+    disabled={!hasSelectedSize || isAddDisabled}
     onClick={async () => {
       const added = await handleAddToCart();
 
