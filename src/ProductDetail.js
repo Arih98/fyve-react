@@ -386,7 +386,6 @@ useEffect(() => {
 const colorValueKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
 const colorValue = colorValueKey ? selectedAttributes[colorValueKey] || '' : '';
 const currentItemId = current?.id || product?.id;
-const currentVariationKey = `${sizeValue}-${colorValue}`;
 
 const existingCartItem = cartItems.find((item) => Number(item.id) === Number(currentItemId));
 
