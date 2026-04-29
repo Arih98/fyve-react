@@ -1640,10 +1640,12 @@ body.search-open {
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
-  height: 50px;
-  background: #f5f3f0;
+  height: 3.5rem;
+  background: #f4f4f4;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
   .custom-search-input {
@@ -1783,11 +1785,11 @@ body.search-open {
     padding: 0;
   }
 
-  .custom-search-mobile-floating-close img {
-    width: 18px;
-    height: 18px;
-    filter: invert(1);
-  }
+.custom-search-mobile-floating-close img {
+  width: 18px;
+  height: 18px;
+  filter: none;
+}
 }
 
 @media (min-width: 769px) {
