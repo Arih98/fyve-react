@@ -170,8 +170,6 @@ const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const isCheckoutPage = location.pathname.startsWith('/checkout');
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
-const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
 const isHomePage = location.pathname === '/';
 const normalDesktopHeaderPages = [
   /^\/account(\/.*)?$/,
@@ -210,6 +208,8 @@ const [allProductsLoading, setAllProductsLoading] = useState(false);
 const hasTriedLoadSearchProductsRef = useRef(false);
 const [isSearchClosing, setIsSearchClosing] = useState(false);
 const searchCloseTimeoutRef = useRef(null);
+const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
+const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
