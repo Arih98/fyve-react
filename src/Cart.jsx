@@ -84,6 +84,32 @@ const findCartItemParentProduct = (item) => {
 };
 
 const getCartProductLink = (item, variationColor) => {
+  const colorValue = getVariationValue(variationColor);
+
+  try {
+    const storedCartLinks = JSON.parse(localStorage.getItem('fyveCartProductLinks') || '{}');
+    const storedLink = storedCartLinks[String(item.id)];
+
+    if (storedLink?.path) {
+      return storedLink.path;
+    }
+  } catch {}
+
+  try {
+    const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+
+    const recentlyViewedMatch = recentlyViewed.find((product) => {
+      const sameVariation = String(product.id) === String(item.id);
+      const sameColor = !colorValue || String(product.selectedColor || '').toLowerCase() === String(colorValue).toLowerCase();
+
+      return sameVariation && sameColor && product.path;
+    });
+
+    if (recentlyViewedMatch?.path) {
+      return recentlyViewedMatch.path;
+    }
+  } catch {}
+
   const parentProduct = findCartItemParentProduct(item);
 
   const parentId =
@@ -93,8 +119,6 @@ const getCartProductLink = (item, variationColor) => {
     item.productId ||
     parentProduct?.id ||
     item.id;
-
-  const colorValue = getVariationValue(variationColor);
 
   return colorValue
     ? `/product/${parentId}?color=${encodeURIComponent(colorValue)}`

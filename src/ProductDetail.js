@@ -149,8 +149,8 @@ const current = product ? (isVariableProduct ? effectiveVariation : product) : n
   return '';
 };
 
-  const selectedColorKey = Object.keys(selectedAttributes).find(isColorAttribute);
-  const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
+  const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
+const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
   const [showDetails, setShowDetails] = useState(!location.state?.fromProductGrid);
 
@@ -383,7 +383,8 @@ useEffect(() => {
   };
 }, [isMobile, displayImages.length, current?.sku, product?.id]);
 
-const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
+const colorValueKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
+const colorValue = colorValueKey ? selectedAttributes[colorValueKey] || '' : '';
 const currentItemId = current?.id || product?.id;
 const currentVariationKey = `${sizeValue}-${colorValue}`;
 
@@ -556,6 +557,22 @@ window.dispatchEvent(
   })
 );
 
+const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
+const selectedColor = selectedColorKey ? selectedAttributes[selectedColorKey] || '' : '';
+
+try {
+  const storedCartLinks = JSON.parse(localStorage.getItem('fyveCartProductLinks') || '{}');
+
+  storedCartLinks[String(currentItemId)] = {
+    parentId: product.id,
+    variationId: currentItemId,
+    selectedColor,
+    path: `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`
+  };
+
+  localStorage.setItem('fyveCartProductLinks', JSON.stringify(storedCartLinks));
+} catch {}
+
 await addItem({
   id: Number(currentItemId),
   quantity: 1,
@@ -577,6 +594,7 @@ return true;
   current,
   selectedAttributes,
   isSizeAttribute,
+  isColorLikeAttributeName,
   attributeNames,
   cartItems,
   addItem,
@@ -726,8 +744,8 @@ useEffect(() => {
   if (!product) return;
   if (product.product_type === 'variable' && !effectiveVariation) return;
 
-  const selectedColor =
-    selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
+const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
+const selectedColor = selectedColorKey ? selectedAttributes[selectedColorKey] || '' : '';
 
   if (product.product_type === 'variable' && !selectedColor) return;
 
@@ -758,7 +776,7 @@ useEffect(() => {
   displayImages,
   displayTitle,
   selectedAttributes,
-  isColorAttribute
+  isColorLikeAttributeName
 ]);
 
 const openImageViewer = (index) => {
