@@ -121,8 +121,10 @@ const {
 }, [isVariableProduct, product, initialColorValue, isColorLikeAttributeName]);
 
 const effectiveVariation = currentVariation || fallbackVariation;
-const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
+const sizeAttrName = attributeNames.find(isSizeAttribute);
+const sizeValue = sizeAttrName ? selectedAttributes[sizeAttrName] || '' : '';
 const hasSelectedSize = Boolean(sizeValue);
+const needsSizeSelection = product?.product_type === 'variable' && sizeAttrName && !hasSelectedSize;
 const current = product ? (isVariableProduct ? effectiveVariation : product) : null;
 
   const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
@@ -492,12 +494,17 @@ const closeSizePanel = useCallback(() => {
 
   const handleAddToCart = useCallback(async () => {
   if (!product || !current) return false;
+const sizeAttrName = attributeNames.find(isSizeAttribute);
+const sizeValue = sizeAttrName ? selectedAttributes[sizeAttrName] || '' : '';
 
-  try {
-    const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
+if (product.product_type === 'variable' && sizeAttrName && !sizeValue) {
+  openSizePanel();
+  return false;
+}
 
-    const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
-    const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
+try {
+  const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
+  const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
 
     const currentItemId = current?.id || product?.id;
 
@@ -572,10 +579,12 @@ return true;
   selectedAttributes,
   isSizeAttribute,
   isColorAttribute,
+  attributeNames,
   cartItems,
   addItem,
   displayTitle,
-  displayImages
+  displayImages,
+  openSizePanel
 ]);
 
 const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
@@ -1064,13 +1073,20 @@ onClick={async () => {
 
 
 <button
-  onClick={handleAddToCart}
-  disabled={isAddDisabled}
-  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+  onClick={() => {
+    if (needsSizeSelection) {
+      pendingHeaderAddAfterSizeRef.current = true;
+      openSizePanel();
+      return;
+    }
+
+    handleAddToCart();
+  }}
+  disabled={isOutOfStock || cartLoading}
+  className={`add-to-cart-button ${isOutOfStock || cartLoading ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
-
 <div className="product-description-accordion">
     <button
       type="button"
