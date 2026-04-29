@@ -139,6 +139,17 @@ const getSearchProductDisplay = (product, selectedColor) => {
   };
 };
 
+const isSs26Product = (product) => {
+  const categories = Array.isArray(product?.categories) ? product.categories : [];
+
+  return categories.some(category => {
+    const slug = String(category.slug || '').trim().toLowerCase();
+    const name = String(category.name || '').trim().toLowerCase();
+
+    return slug === 'ss26' || name === 'ss26';
+  });
+};
+
 const Header = () => {
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -240,7 +251,9 @@ const faqResults = useMemo(() => {
 }, [searchQuery]);
 
 const searchPanelProducts = useMemo(() => {
-  return Array.isArray(allProducts) ? allProducts.filter(Boolean) : [];
+  return Array.isArray(allProducts)
+    ? allProducts.filter(Boolean).filter(isSs26Product)
+    : [];
 }, [allProducts]);
 
 const visibleSearchPanelProducts = useMemo(() => {
@@ -505,9 +518,9 @@ useEffect(() => {
     try {
       setAllProductsLoading(true);
 
-      const response = await fetch('https://fyvelondon.com/wp-json/fyve/v1/products?per_page=60&page=1', {
-        credentials: 'include'
-      });
+const response = await fetch('https://fyvelondon.com/wp-json/fyve/v1/products?category=ss26&per_page=60&page=1', {
+  credentials: 'include'
+});
 
       if (!response.ok) {
         throw new Error(`Products request failed: ${response.status}`);
