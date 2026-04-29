@@ -56,9 +56,9 @@ const location = useLocation();
 const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const isCheckoutPage = location.pathname.startsWith('/checkout');
-const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && cartItems.length > 0;
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen;
+const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && cartItems.length > 0;
+const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen;
 const isHomePage = location.pathname === '/';
 const normalDesktopHeaderPages = [
   /^\/account(\/.*)?$/,
