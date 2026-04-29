@@ -1010,69 +1010,70 @@ onClick={closeSizePanel}
                   </div>
 
                   <div className="size-panel-options" role="listbox" aria-label="Select a size">
-                    {options.map(term => {
-  const stockState = getSizeOptionStockState(sizeAttrName, term);
-  const optionOutOfStock = stockState.isOutOfStock;
-  const optionSelected = selectedAttributes[sizeAttrName] === term;
+  {options.map(term => {
+    const stockState = getSizeOptionStockState(sizeAttrName, term);
+    const optionOutOfStock = stockState.isOutOfStock;
+    const optionSelected = selectedAttributes[sizeAttrName] === term;
 
-  return (
-    <button
-      key={term}
-      type="button"
-      role="option"
-      aria-selected={optionSelected}
-      disabled={optionOutOfStock}
-      className={`size-panel-option ${optionSelected ? 'selected' : ''} ${optionOutOfStock ? 'out-of-stock' : ''}`}
-      onClick={() => {
-        if (optionOutOfStock) return;
+    return (
+      <button
+        key={term}
+        type="button"
+        role="option"
+        aria-selected={optionSelected}
+        disabled={optionOutOfStock}
+        className={`size-panel-option ${optionSelected ? 'selected' : ''} ${optionOutOfStock ? 'out-of-stock' : ''}`}
+        onClick={() => {
+          if (optionOutOfStock) return;
 
-        handleAttributeChange(sizeAttrName, term);
-        setCartError(null);
-      }}
-    >
-      <span className="size-panel-option-value">{term}</span>
+          handleAttributeChange(sizeAttrName, term);
+          setCartError(null);
+        }}
+      >
+        <span className="size-panel-option-value">{term}</span>
 
-      <span className="size-panel-option-meta">
-  {(() => {
-    const stockLabel = optionOutOfStock
-      ? 'Out of stock'
-      : stockState.remainingStock !== null &&
-          stockState.remainingStock > 0 &&
-          stockState.remainingStock <= 3
-        ? stockState.remainingStock === 1
-          ? '1 left'
-          : `${stockState.remainingStock} left`
-        : '';
+        <span className="size-panel-option-meta">
+          {(() => {
+            const stockLabel = optionOutOfStock
+              ? 'Out of stock'
+              : stockState.remainingStock !== null &&
+                  stockState.remainingStock > 0 &&
+                  stockState.remainingStock <= 3
+                ? stockState.remainingStock === 1
+                  ? '1 left'
+                  : `${stockState.remainingStock} left`
+                : '';
 
-    return stockLabel ? (
-      <span className="size-panel-option-stock">{stockLabel}</span>
-    ) : null;
-  })()}
+            return stockLabel ? (
+              <span className="size-panel-option-stock">{stockLabel}</span>
+            ) : null;
+          })()}
 
-  {optionSelected && !optionOutOfStock && (
-    <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
-  )}
-</span>
-    </button>
-  );
-})}
-                  </div>
+          {optionSelected && !optionOutOfStock && (
+            <img src="/assets/Tick.svg" alt="" className="size-panel-option-tick" />
+          )}
+        </span>
+      </button>
+    );
+  })}
+</div>
 
-                  <div className="size-panel-footer">
-                    <button
-                      type="button"
-                      className="size-panel-add-button"
-                      disabled={!selectedAttributes[sizeAttrName] || isOutOfStock}
-onClick={async () => {
-  const added = await handleAddToCart();
+<div className="size-panel-footer">
+  <button
+    type="button"
+    className={`size-panel-add-button ${hasReachedCartStockLimit ? 'in-bag' : ''}`}
+    disabled={!selectedAttributes[sizeAttrName] || isOutOfStock}
+    onClick={async () => {
+      const added = await handleAddToCart();
 
-  if (added) {
-    closeSizePanel();
-  }
-}}
-                    >
-                      {addToCartLabel}
-                    </button>
+      if (added) {
+        closeSizePanel();
+      }
+    }}
+  >
+    {addToCartLabel}
+  </button>
+</div>
                   </div>
                 </div>
               </div>
@@ -1098,7 +1099,7 @@ onClick={async () => {
     handleAddToCart();
   }}
   disabled={isOutOfStock || cartLoading}
-  className={`add-to-cart-button ${isOutOfStock || cartLoading ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+  className={`add-to-cart-button ${isOutOfStock || cartLoading ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''} ${hasReachedCartStockLimit ? 'in-bag' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
