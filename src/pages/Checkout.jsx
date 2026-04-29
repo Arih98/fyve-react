@@ -15,6 +15,7 @@ import './Checkout.css'
 import RevolutCheckout from '@revolut/checkout'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { clearStoredCartToken } from '../api/request'
 
 function mergeEmptyFields(current, incoming) {
   const next = { ...current }
@@ -494,8 +495,9 @@ const finalizeOrderBeforeRedirect = useCallback(async () => {
     const status = String(nextOrder?.status || '').toLowerCase()
 
     if (paid || status === 'processing' || status === 'completed') {
-      await clearCheckoutCart().catch(() => {})
-      await refreshCart({ silent: true }).catch(() => {})
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
+await refreshCart({ silent: true }).catch(() => {})
       clearCheckoutDraftStorage()
       window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
       return
@@ -528,10 +530,11 @@ const finalizeOrderBeforeRedirect = useCallback(async () => {
   const status = String(nextOrder?.status || '').toLowerCase()
 
   if (confirmed || status === 'processing' || status === 'completed') {
-    await clearCheckoutCart().catch(() => {})
-    await refreshCart({ silent: true }).catch(() => {})
-    clearCheckoutDraftStorage()
-    window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
+await refreshCart({ silent: true }).catch(() => {})
+clearCheckoutDraftStorage()
+window.location.href = `/checkout/success?order_id=${encodeURIComponent(wooOrderId)}`
     return
   }
 
@@ -1148,8 +1151,9 @@ await updateCheckoutCustomer({
 const result = await createRevolutPaymentOrder()
 
 if (result?.free_order) {
-  await clearCheckoutCart().catch(() => {})
-  await refreshCart({ silent: true }).catch(() => {})
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
+await refreshCart({ silent: true }).catch(() => {})
   clearCheckoutDraftStorage()
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   return
@@ -1249,8 +1253,9 @@ await updateCheckoutCustomer({
 const result = await createRevolutPaymentOrder()
 
 if (result?.free_order) {
-  await clearCheckoutCart().catch(() => {})
-  await refreshCart({ silent: true }).catch(() => {})
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
+await refreshCart({ silent: true }).catch(() => {})
   clearCheckoutDraftStorage()
   window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
   return
@@ -1410,7 +1415,8 @@ const handleFreeOrder = async () => {
       throw new Error('Expected a free order')
     }
 
-    await clearCheckoutCart().catch(() => {})
+await clearCheckoutCart().catch(() => {})
+clearStoredCartToken()
 await refreshCart({ silent: true }).catch(() => {})
 clearCheckoutDraftStorage()
 window.location.href = `/checkout/success?order_id=${encodeURIComponent(result.wc_order_id)}`
