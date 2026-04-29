@@ -504,7 +504,6 @@ if (product.product_type === 'variable' && sizeAttrName && !sizeValue) {
 
 try {
   const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
-  const colorValue = selectedAttributes[Object.keys(selectedAttributes).find(isColorAttribute)] || '';
 
     const currentItemId = current?.id || product?.id;
 
@@ -578,7 +577,6 @@ return true;
   current,
   selectedAttributes,
   isSizeAttribute,
-  isColorAttribute,
   attributeNames,
   cartItems,
   addItem,
