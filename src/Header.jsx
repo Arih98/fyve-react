@@ -27,6 +27,7 @@ const isHomePage = location.pathname === '/';
 const normalDesktopHeaderPages = [
   /^\/account(\/.*)?$/,
   /^\/checkout(\/.*)?$/,
+  /^\/faq(\/.*)?$/,
   /^\/login$/,
   /^\/register$/
 ];
