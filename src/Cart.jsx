@@ -76,7 +76,14 @@ const handleRemoveItem = async (itemKey) => {
 
 const variationColor = item.variation?.find((attr) => {
   const label = String(attr.attribute || attr.name || '').toLowerCase()
-  return label.includes('color') || label.includes('colour') || label.includes('pa_color') || label.includes('pa_colour')
+  return (
+    label.includes('color') ||
+    label.includes('colour') ||
+    label.includes('pa_color') ||
+    label.includes('pa_colour') ||
+    label.includes('stitching') ||
+    label.includes('stiching')
+  )
 })
 
 const variationSize = item.variation?.find((attr) => {
@@ -99,7 +106,9 @@ const variationSize = item.variation?.find((attr) => {
 
 {variationColor && (
   <p className="variation variation-color">
-    <span className="variation-label">Color:</span> {variationColor.value || variationColor.display || ''}
+    <span className="variation-label">
+  {String(variationColor.attribute || variationColor.name || '').toLowerCase().includes('stitch') ? 'Stitching:' : 'Color:'}
+</span> {variationColor.value || variationColor.display || ''}
   </p>
 )}
 
