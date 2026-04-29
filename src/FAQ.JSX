@@ -121,7 +121,6 @@ export default function FAQ() {
     <main className="faq-page" ref={pageRef}>
       <section className="faq-shell">
         <div className="faq-header">
-          <p className="faq-eyebrow">Customer care</p>
           <h1>Frequently asked questions</h1>
           <p>
             Find answers to common questions about sizing, delivery, returns and garment care.
