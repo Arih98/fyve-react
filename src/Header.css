@@ -1641,7 +1641,6 @@ body.search-open {
   width: 100%;
   min-width: 0;
   height: 50px;
-  border-radius: 999px;
   background: #f5f3f0;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
