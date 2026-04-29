@@ -17,14 +17,17 @@ export function clearStoredCartToken() {
 }
 
 export async function apiRequest(path, options = {}) {
-  const storedCartToken = getStoredCartToken()
   const headers = new Headers(options.headers || {})
+  const hasBody = options.body !== undefined && options.body !== null
+  const method = (options.method || 'GET').toUpperCase()
+  const storedCartToken = getStoredCartToken()
+  const isStoreApiRequest = path.startsWith('/wc/store/')
 
-  if (!headers.has('Content-Type') && options.body) {
+  if (hasBody && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')
   }
 
-  if (storedCartToken) {
+  if (storedCartToken && isStoreApiRequest && method !== 'GET') {
     headers.set('Cart-Token', storedCartToken)
   }
 
