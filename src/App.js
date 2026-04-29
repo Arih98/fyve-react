@@ -120,6 +120,7 @@ function AppContent() {
 <Route path="/returns" element={<Returns />} />
 <Route path="/returns/confirmation" element={<ReturnConfirmation />} />
 <Route path="/return-confirmation" element={<ReturnConfirmation />} />
+<Route path="/faq" element={<FAQ />} />
 <Route path="/login" element={<Login />} />
 <Route path="/signup" element={<Signup />} />
               <Route
@@ -162,7 +163,6 @@ function AppContent() {
     </ProtectedRoute>
   }
 />
-<Route path="/faq" element={<FAQ />} />
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password" element={<ResetPassword />} />
 <Route path="/cart" element={<Cart />} />
