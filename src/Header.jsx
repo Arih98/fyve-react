@@ -492,7 +492,9 @@ const handleSearch = (e) => {
 
 const handleSearchSubmit = (e) => {
   e.preventDefault();
+};
 
+const handleSearchViewAll = () => {
   const q = searchQuery.trim();
 
   if (!q) return;
@@ -859,13 +861,6 @@ const handleToggleMenu = () => {
 
   {!useCartHeaderVariant && !usePdpBottomAddVariant && (
   <>
-    <button
-      type="button"
-      className={`custom-search-backdrop${isSearchOpen ? ' active' : ''}`}
-      onClick={closeSearch}
-      aria-label="Close search"
-      tabIndex={isSearchOpen ? 0 : -1}
-    />
 
     <div
       className={`custom-search-container${isSearchOpen ? ' active' : ''}`}
@@ -956,9 +951,13 @@ const handleToggleMenu = () => {
               <div className="custom-search-results-header">
                 <p className="custom-search-section-title">Products</p>
 
-                <button type="submit" className="custom-search-view-all">
-                  View all
-                </button>
+<button
+  type="button"
+  className="custom-search-view-all"
+  onClick={handleSearchViewAll}
+>
+  View all
+</button>
               </div>
 
               <div className="custom-search-results-grid">

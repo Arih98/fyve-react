@@ -339,32 +339,12 @@ body.search-open {
   overflow: hidden;
 }
 
-.custom-search-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 10004;
-  border: none;
-  padding: 0;
-  margin: 0;
-  background: rgba(0, 0, 0, 0.16);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
-}
-
-.custom-search-backdrop.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
 .custom-search-container {
   position: fixed;
   top: var(--announcement-height, 0px);
   left: 0;
   right: 0;
-  z-index: 10005;
+  z-index: 10020;
   display: block;
   background: #ffffff;
   border-bottom: 1px solid #e8e7e6;
@@ -1329,13 +1309,14 @@ body.search-open {
     display: block;
   }
 
-.custom-search-container {
-  top: auto;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10003;
-}
+  .custom-search-container {
+    top: 0;
+    bottom: auto;
+    z-index: 10020;
+    padding: 20px 18px 24px;
+    max-height: calc(100dvh - 82px);
+    overflow-y: auto;
+  }
 
 .mobile-menu-logo {
   position: absolute;
