@@ -395,19 +395,22 @@ const remainingStockForSelection =
     ? null
     : Math.max(0, Number(availableStock) - existingQuantityInCart);
 
-const hasCurrentSelectionInCart = Boolean(existingCartItem);
+const hasResolvedSelection = product?.product_type !== 'variable' || hasSelectedSize;
+
+const hasCurrentSelectionInCart = hasResolvedSelection && Boolean(existingCartItem);
+
 const hasReachedCartStockLimit =
   hasCurrentSelectionInCart &&
   remainingStockForSelection !== null &&
   remainingStockForSelection <= 0;
 
 const isOutOfStock =
+  hasResolvedSelection &&
   !hasCurrentSelectionInCart &&
   remainingStockForSelection !== null &&
-  remainingStockForSelection <= 0 &&
-  (product?.product_type !== 'variable' || hasSelectedSize);
+  remainingStockForSelection <= 0;
 
-const isAddDisabled = isOutOfStock || cartLoading || hasReachedCartStockLimit;
+const isAddDisabled = cartLoading || isOutOfStock || hasReachedCartStockLimit;
 
 const getVariationForSizeOption = useCallback((sizeAttrName, sizeTerm) => {
   if (!Array.isArray(productForOptions?.variations)) return null;
