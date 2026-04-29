@@ -460,19 +460,20 @@ const getSizeOptionStockState = useCallback((sizeAttrName, sizeTerm) => {
   }
 
   const rawStock = variation.stockQuantity ?? variation.stock_quantity ?? null;
+  const stockNumber = Number(rawStock);
+  const hasKnownStock = rawStock !== null && rawStock !== undefined && rawStock !== '' && Number.isFinite(stockNumber);
 
-  if (rawStock === null || rawStock === undefined || rawStock === '') {
+  if (!hasKnownStock) {
     return {
       variation,
-      isOutOfStock: false,
-      remainingStock: null
+      isOutOfStock: true,
+      remainingStock: 0
     };
   }
 
-  const stock = Number(rawStock);
   const existingItem = cartItems.find((item) => Number(item.id) === Number(variation.id));
   const existingQuantity = existingItem?.quantity || 0;
-  const remainingStock = Math.max(0, stock - existingQuantity);
+  const remainingStock = Math.max(0, stockNumber - existingQuantity);
 
   return {
     variation,
@@ -513,15 +514,30 @@ if (product.product_type === 'variable' && sizeAttrName && !sizeValue) {
 }
 
 try {
-  const freshStock = Number(current?.stockQuantity ?? current?.stock_quantity ?? 0);
+  const stockStatus = String(current?.stock_status || current?.stockStatus || '').toLowerCase();
 
-    const currentItemId = current?.id || product?.id;
+if (stockStatus === 'outofstock' || stockStatus === 'out_of_stock') {
+  setCartError('This item is out of stock');
+  return false;
+}
 
-    const existingCartItem = cartItems.find((item) => Number(item.id) === Number(currentItemId));
-    const existingQuantityInCart = existingCartItem?.quantity || 0;
-    const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
+const rawFreshStock = current?.stockQuantity ?? current?.stock_quantity ?? null;
+const freshStock = Number(rawFreshStock);
+const hasKnownFreshStock = rawFreshStock !== null && rawFreshStock !== undefined && rawFreshStock !== '' && Number.isFinite(freshStock);
 
-if (freshStock > 0 && remainingStock <= 0) {
+const currentItemId = current?.id || product?.id;
+
+const existingCartItem = cartItems.find((item) => Number(item.id) === Number(currentItemId));
+const existingQuantityInCart = existingCartItem?.quantity || 0;
+
+if (!hasKnownFreshStock || freshStock <= 0) {
+  setCartError('This item is out of stock');
+  return false;
+}
+
+const remainingStock = Math.max(0, freshStock - existingQuantityInCart);
+
+if (remainingStock <= 0) {
   setCartError('You already have the available stock for this item in your bag');
   return false;
 }
