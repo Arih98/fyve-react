@@ -5,12 +5,19 @@ import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 import Cart from './Cart';
+import { searchProducts } from './api/search';
 import { useAuth } from './context/AuthContext';
 
 const Header = () => {
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef(null);
+const searchAbortRef = useRef(null);
+const searchDebounceRef = useRef(null);
+const [searchResults, setSearchResults] = useState([]);
+const [searchLoading, setSearchLoading] = useState(false);
+const [searchError, setSearchError] = useState('');
   const [activeMenuImage, setActiveMenuImage] = useState('ss25');
   const [hideHeader, setHideHeader] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
@@ -412,14 +419,157 @@ const handleBagClick = () => {
   setIsDesktopCartOpen(v => !v);
 };
 
-  const toggleSearch = () => {
-    setIsSearchOpen(v => !v);
-    if (isMenuOpen) setIsMenuOpen(false);
+  const openSearch = () => {
+  setHideHeader(false);
+  setIsSearchOpen(true);
+
+  if (isMenuOpen) {
+    setIsMenuOpen(false);
+  }
+};
+
+const closeSearch = () => {
+  setIsSearchOpen(false);
+  setSearchQuery('');
+  setSearchResults([]);
+  setSearchError('');
+  setSearchLoading(false);
+
+  if (searchAbortRef.current) {
+    searchAbortRef.current.abort();
+  }
+};
+
+const toggleSearch = () => {
+  if (isSearchOpen) {
+    closeSearch();
+  } else {
+    openSearch();
+  }
+};
+
+const handleSearch = (e) => {
+  setSearchQuery(e.target.value);
+};
+
+const handleSearchSubmit = (e) => {
+  e.preventDefault();
+
+  const q = searchQuery.trim();
+
+  if (!q) return;
+
+  setIsSearchOpen(false);
+  navigate(`/products?search=${encodeURIComponent(q)}`);
+};
+
+const handleSearchResultClick = (product) => {
+  closeSearch();
+  navigate(`/product/${product.slug || product.id}`);
+};
+
+const handleSuggestedSearch = (value) => {
+  setSearchQuery(value);
+
+  requestAnimationFrame(() => {
+    searchInputRef.current?.focus();
+  });
+};
+
+const clearSearchQuery = () => {
+  setSearchQuery('');
+  setSearchResults([]);
+  setSearchError('');
+
+  requestAnimationFrame(() => {
+    searchInputRef.current?.focus();
+  });
+};
+
+useEffect(() => {
+  if (!isSearchOpen) return;
+
+  const frame = requestAnimationFrame(() => {
+    searchInputRef.current?.focus();
+  });
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      closeSearch();
+    }
   };
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
+  document.addEventListener('keydown', handleKeyDown);
+
+  return () => {
+    cancelAnimationFrame(frame);
+    document.removeEventListener('keydown', handleKeyDown);
   };
+}, [isSearchOpen]);
+
+useEffect(() => {
+  document.body.classList.toggle('search-open', isSearchOpen);
+
+  return () => {
+    document.body.classList.remove('search-open');
+  };
+}, [isSearchOpen]);
+
+useEffect(() => {
+  if (!isSearchOpen) return;
+
+  const q = searchQuery.trim();
+
+  clearTimeout(searchDebounceRef.current);
+
+  if (searchAbortRef.current) {
+    searchAbortRef.current.abort();
+  }
+
+  setSearchError('');
+
+  if (q.length < 2) {
+    setSearchResults([]);
+    setSearchLoading(false);
+    return;
+  }
+
+  searchDebounceRef.current = setTimeout(async () => {
+    const controller = new AbortController();
+    searchAbortRef.current = controller;
+
+    try {
+      setSearchLoading(true);
+
+      const results = await searchProducts(q, {
+        signal: controller.signal,
+        limit: 8
+      });
+
+      setSearchResults(results);
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        setSearchError('Search is currently unavailable.');
+        setSearchResults([]);
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        setSearchLoading(false);
+      }
+    }
+  }, 220);
+
+  return () => {
+    clearTimeout(searchDebounceRef.current);
+  };
+}, [isSearchOpen, searchQuery]);
+
+useEffect(() => {
+  setIsSearchOpen(false);
+  setSearchQuery('');
+  setSearchResults([]);
+  setSearchError('');
+}, [location.pathname]);
 
   const handleMenuImageChange = (newId) => {
     if (isImageAnimating || newId === activeMenuImage) return;
@@ -632,10 +782,15 @@ const handleToggleMenu = () => {
       </div>
 
       <div className="mobile-nav-icons">
-        <button className="mobile-nav-icon" onClick={toggleSearch}>
-          <img src={searchIconSrc} alt="Search" />
-        </button>
-
+<button
+  type="button"
+  className="mobile-nav-icon"
+  onClick={toggleSearch}
+  aria-label="Search"
+  aria-expanded={isSearchOpen}
+>
+  <img src={searchIconSrc} alt="" />
+</button>
         <button className="mobile-nav-icon" onClick={handleAccountClick}>
           <img src={accountIconSrc} alt="Account" />
         </button>
@@ -665,22 +820,138 @@ const handleToggleMenu = () => {
   )}
 
   {!useCartHeaderVariant && !usePdpBottomAddVariant && (
-    <div className={`custom-search-container${isSearchOpen ? ' active' : ''}`}>
-      <div className="custom-search-inner">
-        <input
-          type="text"
-          className="custom-search-input"
-          placeholder="Little Trendsetters: Uncover Your Child's Style"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
-        <button className="custom-search-close" onClick={toggleSearch}>
-          <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="Close Button" />
-        </button>
-        <div className="custom-search-results"></div>
-      </div>
+  <>
+    <button
+      type="button"
+      className={`custom-search-backdrop${isSearchOpen ? ' active' : ''}`}
+      onClick={closeSearch}
+      aria-label="Close search"
+      tabIndex={isSearchOpen ? 0 : -1}
+    />
+
+    <div
+      className={`custom-search-container${isSearchOpen ? ' active' : ''}`}
+      aria-hidden={!isSearchOpen}
+    >
+      <form className="custom-search-inner" onSubmit={handleSearchSubmit}>
+        <div className="custom-search-main-row">
+          <div className="custom-search-field">
+            <span className="custom-search-field-icon">
+              <img src="/assets/SearchIcon.svg" alt="" />
+            </span>
+
+            <input
+              ref={searchInputRef}
+              id="site-search-box"
+              type="text"
+              className="custom-search-input"
+              placeholder="Search for products"
+              value={searchQuery}
+              onChange={handleSearch}
+              autoComplete="off"
+            />
+
+            {searchQuery && (
+              <button
+                type="button"
+                className="custom-search-clear"
+                onClick={clearSearchQuery}
+                aria-label="Clear search"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="custom-search-close"
+            onClick={closeSearch}
+            aria-label="Close search"
+          >
+            <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="" />
+          </button>
+        </div>
+
+        <div className="custom-search-content">
+          {!searchQuery.trim() && (
+            <div className="custom-search-suggestions">
+              <p className="custom-search-section-title">Suggested searches</p>
+
+              <div className="custom-search-chips">
+                {menuItems.slice(0, 4).map(item => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="custom-search-chip"
+                    onClick={() => handleSuggestedSearch(item.name)}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {searchQuery.trim().length > 0 && searchQuery.trim().length < 2 && (
+            <p className="custom-search-message">Keep typing to search.</p>
+          )}
+
+          {searchLoading && (
+            <div className="custom-search-loading">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          )}
+
+          {!searchLoading && searchError && (
+            <p className="custom-search-message">{searchError}</p>
+          )}
+
+          {!searchLoading && !searchError && searchQuery.trim().length >= 2 && searchResults.length === 0 && (
+            <p className="custom-search-message">No products found for “{searchQuery.trim()}”.</p>
+          )}
+
+          {!searchLoading && searchResults.length > 0 && (
+            <div className="custom-search-results">
+              <div className="custom-search-results-header">
+                <p className="custom-search-section-title">Products</p>
+
+                <button type="submit" className="custom-search-view-all">
+                  View all
+                </button>
+              </div>
+
+              <div className="custom-search-results-grid">
+                {searchResults.map(product => (
+                  <button
+                    key={product.id}
+                    type="button"
+                    className="custom-search-result-card"
+                    onClick={() => handleSearchResultClick(product)}
+                  >
+                    <span className="custom-search-result-image">
+                      <img src={product.image} alt={product.title} />
+                    </span>
+
+                    <span className="custom-search-result-info">
+                      <span className="custom-search-result-title">{product.title}</span>
+
+                      {product.price && (
+                        <span className="custom-search-result-price">{product.price}</span>
+                      )}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </form>
     </div>
-  )}
+  </>
+)}
 </div>
 
 {isCartAddedPopupOpen && (
