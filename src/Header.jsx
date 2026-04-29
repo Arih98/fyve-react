@@ -514,11 +514,13 @@ useEffect(() => {
 
       if (cancelled) return;
 
-      const products = Array.isArray(data)
-        ? data
-        : Array.isArray(data.products)
-          ? data.products
-          : [];
+const products = Array.isArray(data)
+  ? data
+  : Array.isArray(data.items)
+    ? data.items
+    : Array.isArray(data.products)
+      ? data.products
+      : [];
 
       setAllProducts(products);
     } catch (error) {
