@@ -31,6 +31,7 @@ import CheckoutSuccess from './CheckoutSuccess'
 import './Account.css'
 import Returns from './pages/Returns'
 import ReturnConfirmation from './pages/ReturnConfirmation'
+import FAQ from './FAQ'
 import Footer from './Footer';
 
 const ProductDetailWrapper = () => {
@@ -161,6 +162,7 @@ function AppContent() {
     </ProtectedRoute>
   }
 />
+<Route path="/faq" element={<FAQ />} />
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password" element={<ResetPassword />} />
 <Route path="/cart" element={<Cart />} />
