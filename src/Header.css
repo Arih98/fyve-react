@@ -381,7 +381,6 @@ body.search-open {
   align-items: center;
   gap: 14px;
   border-bottom: 1px solid #4A494A;
-  padding: 0 0 14px;
 }
 
 .custom-search-field-icon {
@@ -1648,7 +1647,7 @@ body.search-open {
 
   .custom-search-input {
     height: 50px;
-    font-size: 0.9em;
+    font-size: 1.1em;
     color: #4A494A;
   }
 
