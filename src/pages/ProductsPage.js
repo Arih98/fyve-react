@@ -120,9 +120,15 @@ if (!targetProduct) {
   return;
 }
 
-    const colorQuery = item.selectedColor
-      ? `?color=${encodeURIComponent(item.selectedColor)}`
-      : '';
+const selectedProductColor =
+  item.selectedColor ||
+  item.selectedStitchingColor ||
+  item.selectedStichingColor ||
+  null;
+
+const colorQuery = selectedProductColor
+  ? `?color=${encodeURIComponent(selectedProductColor)}`
+  : '';
 
     const targetPath = `/product/${item.parentId}${colorQuery}`;
 
