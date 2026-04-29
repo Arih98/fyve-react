@@ -1887,9 +1887,50 @@ body.search-open {
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 0;
+  padding: 0 16px;
   width: 100%;
+  box-sizing: border-box;
 }
+
+  .custom-search-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .custom-search-main-row {
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+
+  .custom-search-section-title,
+  .custom-search-chips,
+  .custom-search-message {
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+
+  .custom-search-all-products {
+    width: 100%;
+  }
+
+  .custom-search-all-products-grid {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .custom-search-product-list-card {
+    min-width: 0;
+  }
+
+  .custom-search-show-more {
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
+  }
 
 .custom-search-field {
   flex: 1 1 auto;
