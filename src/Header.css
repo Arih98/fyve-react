@@ -2099,6 +2099,8 @@ body.search-open {
 
   .custom-search-product-list-info {
     padding-top: 8px;
+    padding-right: 9px;
+    padding-left: 9px;
     gap: 4px;
   }
 
