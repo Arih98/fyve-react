@@ -81,25 +81,44 @@ const {
 
   const isVariableProduct = product?.product_type === 'variable';
 
+  const isColorLikeAttributeName = useCallback((name) => {
+  const value = String(name || '').trim().toLowerCase();
+
+  return (
+    value === 'color' ||
+    value === 'colour' ||
+    value.includes('color') ||
+    value.includes('colour') ||
+    value.includes('stitching') ||
+    value.includes('stiching')
+  );
+}, []);
+
   const fallbackVariation = useMemo(() => {
-    if (!isVariableProduct || !Array.isArray(product?.variations) || !product.variations.length) {
-      return null;
-    }
+  if (!isVariableProduct || !Array.isArray(product?.variations) || !product.variations.length) {
+    return null;
+  }
 
-    const normalizedInitialColor = String(initialColorValue || '').trim().toLowerCase();
+  const normalizedInitialColor = String(initialColorValue || '').trim().toLowerCase();
 
-    if (!normalizedInitialColor) {
-      return product.variations[0] || null;
-    }
-
-    return product.variations.find((variation) =>
+  if (normalizedInitialColor) {
+    const matchByColor = product.variations.find((variation) =>
       Array.isArray(variation.attributes) &&
-      variation.attributes.some((attr) =>
-        String(attr.attribute_name || '').trim().toLowerCase() === 'color' &&
-        String(attr.term_name || '').trim().toLowerCase() === normalizedInitialColor
-      )
-    ) || product.variations[0] || null;
-  }, [isVariableProduct, product, initialColorValue]);
+      variation.attributes.some((attr) => {
+        const attrName = String(attr.attribute_name || attr.name || '').trim().toLowerCase();
+        const attrValue = String(attr.term_name || attr.term_slug || attr.value || '').trim().toLowerCase();
+
+        return isColorLikeAttributeName(attrName) && attrValue === normalizedInitialColor;
+      })
+    );
+
+    if (matchByColor) {
+      return matchByColor;
+    }
+  }
+
+  return product.variations[0] || null;
+}, [isVariableProduct, product, initialColorValue, isColorLikeAttributeName]);
 
 const effectiveVariation = currentVariation || fallbackVariation;
 const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
