@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from './CartContext';
 import { startProductImageTransition } from './utils/productImageTransition';
@@ -24,6 +24,13 @@ const recentlyViewedTouchStartX = useRef(0);
 const recentlyViewedTouchDeltaX = useRef(0);
 const recentlyViewedViewportRef = useRef(null);
 const [recentlyViewedMaxIndex, setRecentlyViewedMaxIndex] = useState(0);
+const storedProducts = useMemo(() => {
+  try {
+    return JSON.parse(localStorage.getItem('products') || '[]');
+  } catch {
+    return [];
+  }
+}, []);
 
   useEffect(() => {
   const stored = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
@@ -62,6 +69,38 @@ const handleRemoveItem = async (itemKey) => {
 }
   const isPanel = variant === 'panel';
 
+  const getVariationValue = (variation) => {
+  return String(variation?.value || variation?.display || variation?.term_name || variation?.term_slug || '').trim();
+};
+
+const findCartItemParentProduct = (item) => {
+  return storedProducts.find((product) => {
+    if (String(product.id) === String(item.id)) return true;
+
+    return Array.isArray(product.variations) && product.variations.some((variation) =>
+      String(variation.id) === String(item.id)
+    );
+  });
+};
+
+const getCartProductLink = (item, variationColor) => {
+  const parentProduct = findCartItemParentProduct(item);
+
+  const parentId =
+    item.parentId ||
+    item.parent_id ||
+    item.product_id ||
+    item.productId ||
+    parentProduct?.id ||
+    item.id;
+
+  const colorValue = getVariationValue(variationColor);
+
+  return colorValue
+    ? `/product/${parentId}?color=${encodeURIComponent(colorValue)}`
+    : `/product/${parentId}`;
+};
+
   const cartItemsMarkup = (
   <ul className="cart-items">
     {cartItems.map((item) => {
@@ -71,7 +110,6 @@ const handleRemoveItem = async (itemKey) => {
         item.images?.[0]?.src ||
         '/api/Uploads/fallback-image.png'
 
-      const productLink = `/product/${item.id}`
       const itemTotal = formatWooMoney(item.totals?.line_total, item.totals)
 
 const variationColor = item.variation?.find((attr) => {
@@ -90,6 +128,9 @@ const variationSize = item.variation?.find((attr) => {
   const label = String(attr.attribute || attr.name || '').toLowerCase()
   return label.includes('size') || label.includes('pa_size')
 })
+
+const productLink = getCartProductLink(item, variationColor);
+
       return (
         <li key={item.key} className="cart-item" data-cart-key={item.key}>
           <div className="cart-item-content cart-item-grid">
