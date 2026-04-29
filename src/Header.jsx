@@ -1163,12 +1163,6 @@ const handleToggleMenu = () => {
                     </p>
                   )}
 
-                  {display.description && (
-                    <p className="custom-search-product-list-description">
-                      {display.description}
-                    </p>
-                  )}
-
                   {colorOptions.length > 0 && (
                     <div className="custom-search-product-colors">
                       {colorOptions.map(term => (
