@@ -120,7 +120,7 @@ const {
   return product.variations[0] || null;
 }, [isVariableProduct, product, initialColorValue, isColorLikeAttributeName]);
 
-const effectiveVariation = initialColorValue && fallbackVariation ? fallbackVariation : currentVariation || fallbackVariation;
+const effectiveVariation = currentVariation || fallbackVariation;
 const sizeValue = selectedAttributes[Object.keys(selectedAttributes).find(isSizeAttribute)] || '';
 const hasSelectedSize = Boolean(sizeValue);
 const current = product ? (isVariableProduct ? effectiveVariation : product) : null;

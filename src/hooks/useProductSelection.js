@@ -1,6 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const isColorLikeAttribute = (name) => {
+  const value = String(name || '').trim().toLowerCase();
+
+  return (
+    value === 'color' ||
+    value === 'colour' ||
+    value.includes('color') ||
+    value.includes('colour') ||
+    value.includes('stitching') ||
+    value.includes('stiching')
+  );
+};
+
+const isSizeLikeAttribute = (name) => {
+  return String(name || '').trim().toLowerCase() === 'size';
+};
+
 export function useProductSelection({
   product,
   location,
@@ -12,87 +29,96 @@ export function useProductSelection({
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [currentVariation, setCurrentVariation] = useState(null);
 
-  const isColorAttribute = (name) => String(name || '').trim().toLowerCase() === 'color';
-  const isSizeAttribute = (name) => String(name || '').trim().toLowerCase() === 'size';
+  const isColorAttribute = isColorLikeAttribute;
+  const isSizeAttribute = isSizeLikeAttribute;
 
   const attributeNames = useMemo(() => {
     if (!product || product.product_type !== 'variable' || !product.variations?.length) {
       return [];
     }
 
-return [
-  ...new Set(
-    product.variations.flatMap((v) => v.attributes.map((a) => a.attribute_name))
-  )
-].sort((a, b) => {
-  const aName = String(a || '').trim().toLowerCase();
-  const bName = String(b || '').trim().toLowerCase();
+    return [
+      ...new Set(
+        product.variations.flatMap((v) =>
+          Array.isArray(v.attributes)
+            ? v.attributes.map((a) => a.attribute_name).filter(Boolean)
+            : []
+        )
+      )
+    ].sort((a, b) => {
+      const aName = String(a || '').trim().toLowerCase();
+      const bName = String(b || '').trim().toLowerCase();
 
-  if (aName === bName) return 0;
-  if (aName === 'size') return -1;
-  if (bName === 'size') return 1;
-  if (aName === 'color') return 1;
-  if (bName === 'color') return -1;
+      if (aName === bName) return 0;
+      if (isSizeAttribute(aName)) return -1;
+      if (isSizeAttribute(bName)) return 1;
+      if (isColorAttribute(aName)) return 1;
+      if (isColorAttribute(bName)) return -1;
 
-  return aName.localeCompare(bName);
-});
+      return aName.localeCompare(bName);
+    });
   }, [product]);
 
   useEffect(() => {
-  if (!product || product.product_type !== 'variable' || !product.variations?.length) {
-    setSelectedAttributes({});
-    setCurrentVariation(null);
-    return;
-  }
+    if (!product || product.product_type !== 'variable' || !product.variations?.length) {
+      setSelectedAttributes({});
+      setCurrentVariation(null);
+      return;
+    }
 
-  const normalizedInitialColor = String(initialColorValue || '').trim().toLowerCase();
-  const normalizedSelectedVariationId = String(selectedVariationIdFromApi || '').trim();
+    const normalizedInitialColor = String(initialColorValue || '').trim().toLowerCase();
+    const normalizedSelectedVariationId = String(selectedVariationIdFromApi || '').trim();
 
-  let initialVariation = null;
+    let initialVariation = null;
 
-  if (normalizedInitialColor) {
-    initialVariation =
-      product.variations.find((v) => {
-        const colorAttr = v.attributes.find((a) => isColorAttribute(a.attribute_name));
-        return String(colorAttr?.term_name || '').trim().toLowerCase() === normalizedInitialColor;
-      }) || null;
-  }
+    if (normalizedInitialColor) {
+      initialVariation =
+        product.variations.find((v) => {
+          const colorAttr = Array.isArray(v.attributes)
+            ? v.attributes.find((a) => isColorAttribute(a.attribute_name))
+            : null;
 
-  if (!initialVariation && normalizedSelectedVariationId) {
-    initialVariation =
-      product.variations.find((v) => String(v.id) === normalizedSelectedVariationId) || null;
-  }
+          const value = String(colorAttr?.term_name || colorAttr?.term_slug || colorAttr?.value || '').trim().toLowerCase();
 
-  if (!initialVariation) {
-    initialVariation = product.variations[0] || null;
-  }
+          return value === normalizedInitialColor;
+        }) || null;
+    }
 
-  const initialAttrs = {};
+    if (!initialVariation && normalizedSelectedVariationId) {
+      initialVariation =
+        product.variations.find((v) => String(v.id) === normalizedSelectedVariationId) || null;
+    }
 
-initialVariation?.attributes.forEach((attr) => {
-  const termName = String(attr.term_name || '').trim();
+    if (!initialVariation) {
+      initialVariation = product.variations[0] || null;
+    }
 
-  if (
-    termName &&
-    !termName.startsWith('Any') &&
-    !isSizeAttribute(attr.attribute_name)
-  ) {
-    initialAttrs[attr.attribute_name] = termName;
-  }
-});
+    const initialAttrs = {};
 
-  const colorKey =
-    Object.keys(initialAttrs).find(isColorAttribute) ||
-    initialVariation?.attributes?.find((attr) => isColorAttribute(attr.attribute_name))?.attribute_name ||
-    'Color';
+    initialVariation?.attributes?.forEach((attr) => {
+      const termName = String(attr.term_name || '').trim();
 
-  if (location.state?.initialColor && !initialAttrs[colorKey]) {
-    initialAttrs[colorKey] = location.state.initialColor;
-  }
+      if (
+        termName &&
+        !termName.startsWith('Any') &&
+        !isSizeAttribute(attr.attribute_name)
+      ) {
+        initialAttrs[attr.attribute_name] = termName;
+      }
+    });
 
-  setSelectedAttributes(initialAttrs);
-  setCurrentVariation(initialVariation);
-}, [product, initialColorValue, selectedVariationIdFromApi, location.state]);
+    const colorKey =
+      Object.keys(initialAttrs).find(isColorAttribute) ||
+      initialVariation?.attributes?.find((attr) => isColorAttribute(attr.attribute_name))?.attribute_name ||
+      'Color';
+
+    if (location.state?.initialColor && !initialAttrs[colorKey]) {
+      initialAttrs[colorKey] = location.state.initialColor;
+    }
+
+    setSelectedAttributes(initialAttrs);
+    setCurrentVariation(initialVariation);
+  }, [product, initialColorValue, selectedVariationIdFromApi, location.state]);
 
   const getAvailableOptions = (attrName) => {
     if (!product?.variations?.length) return [];
@@ -162,10 +188,11 @@ initialVariation?.attributes.forEach((attr) => {
 
     attributeNames.forEach((attr) => {
       const avail = getAvailableOptions(attr);
-if (selectedAttributes[attr] && !avail.includes(selectedAttributes[attr])) {
-  updatedSelected[attr] = undefined;
-  changed = true;
-}
+
+      if (selectedAttributes[attr] && !avail.includes(selectedAttributes[attr])) {
+        updatedSelected[attr] = undefined;
+        changed = true;
+      }
     });
 
     if (changed) {
