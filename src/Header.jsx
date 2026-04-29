@@ -8,6 +8,7 @@ import Cart from './Cart';
 import { searchProducts } from './api/search';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
+import { useStoredProducts } from './hooks/useStoredProducts';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
@@ -35,6 +36,108 @@ const getFaqSearchResults = (items, query) => {
       return text.includes(q);
     })
     .slice(0, 4);
+};
+
+const stripSearchHtml = (value) => {
+  return String(value || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+const getSearchColorClassName = (term) => {
+  const value = String(term || '').trim().toLowerCase();
+
+  if (value === 'sand') return 'sand';
+  if (value === 'ivory') return 'ivory';
+  if (value === 'mauve') return 'mauve';
+  if (value === 'olive') return 'olive';
+  if (value === 'lavender') return 'lavender';
+  if (value === 'blue') return 'blue';
+  if (value === 'oat') return 'oat';
+
+  return '';
+};
+
+const isSearchColorAttribute = (name) => {
+  const value = String(name || '').trim().toLowerCase();
+
+  return (
+    value === 'color' ||
+    value === 'colour' ||
+    value.includes('color') ||
+    value.includes('colour') ||
+    value.includes('stitching') ||
+    value.includes('stiching')
+  );
+};
+
+const getSearchProductColorOptions = (product) => {
+  const attribute = (product?.attributes || []).find(attr =>
+    isSearchColorAttribute(attr.attribute_name || attr.name)
+  );
+
+  if (attribute?.options?.length) {
+    return [...new Set(attribute.options.map(option =>
+      option.term_name || option.name || option.term_slug || option.value
+    ).filter(Boolean))];
+  }
+
+  const fromVariations = (product?.variations || [])
+    .flatMap(variation => variation.attributes || [])
+    .filter(attr => isSearchColorAttribute(attr.attribute_name || attr.name))
+    .map(attr => attr.term_name || attr.term_slug || attr.value)
+    .filter(Boolean);
+
+  return [...new Set(fromVariations)];
+};
+
+const getSearchProductVariationForColor = (product, color) => {
+  const normalizedColor = String(color || '').trim().toLowerCase();
+
+  if (!normalizedColor || !Array.isArray(product?.variations)) {
+    return null;
+  }
+
+  return product.variations.find(variation =>
+    Array.isArray(variation.attributes) &&
+    variation.attributes.some(attr => {
+      const attrName = String(attr.attribute_name || attr.name || '').trim().toLowerCase();
+      const attrValue = String(attr.term_name || attr.term_slug || attr.value || '').trim().toLowerCase();
+
+      return isSearchColorAttribute(attrName) && attrValue === normalizedColor;
+    })
+  ) || null;
+};
+
+const getSearchMoneyValue = (value) => {
+  if (value && typeof value === 'object') {
+    return Number(value.current ?? value.amount ?? 0);
+  }
+
+  return Number(String(value || '').replace(/[^0-9.]/g, ''));
+};
+
+const getSearchProductDisplay = (product, selectedColor) => {
+  const variation = getSearchProductVariationForColor(product, selectedColor);
+  const displayItem = variation || product;
+
+  const gallery = Array.isArray(displayItem?.gallery) && displayItem.gallery.length
+    ? displayItem.gallery
+    : Array.isArray(product?.gallery) && product.gallery.length
+      ? product.gallery
+      : [];
+
+  const price = getSearchMoneyValue(displayItem?.price ?? product?.price);
+
+  return {
+    title: displayItem?.title || displayItem?.name || product?.title || product?.name || '',
+    image: gallery[0] || product?.thumbnail || '/api/Uploads/fallback-image.png',
+    price: Number.isFinite(price) ? price : 0,
+    description: stripSearchHtml(product?.description || product?.short_description || product?.shortDescription || displayItem?.description || '')
+  };
 };
 
 const Header = () => {
@@ -90,6 +193,9 @@ const [cartAddedPopupItem, setCartAddedPopupItem] = useState(null);
 const [isCartAddedPopupImageVisible, setIsCartAddedPopupImageVisible] = useState(false);
 const [cartAddedPopupStatus, setCartAddedPopupStatus] = useState('adding');
 const { user, authLoading } = useAuth();
+const allProducts = useStoredProducts();
+const [searchProductVisibleCount, setSearchProductVisibleCount] = useState(6);
+const [searchProductColors, setSearchProductColors] = useState({});
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -101,6 +207,7 @@ const [displayedBagQuantity, setDisplayedBagQuantity] = useState(totalBagQuantit
 const showBurgerCartBadge =
   isMobile &&
   !isMenuOpen &&
+  !isSearchOpen &&
   displayedBagQuantity > 0 &&
   (isCartPage || isProductDetailPage);
 
@@ -128,6 +235,35 @@ const bagIconSrc = useTransparentHomeHeader ? '/assets/BagIcon-White.svg' : '/as
 const faqResults = useMemo(() => {
   return getFaqSearchResults(faqItems, searchQuery);
 }, [searchQuery]);
+
+const searchPanelProducts = useMemo(() => {
+  return Array.isArray(allProducts) ? allProducts.filter(Boolean) : [];
+}, [allProducts]);
+
+const visibleSearchPanelProducts = useMemo(() => {
+  return searchPanelProducts.slice(0, searchProductVisibleCount);
+}, [searchPanelProducts, searchProductVisibleCount]);
+
+const hasMoreSearchPanelProducts = searchProductVisibleCount < searchPanelProducts.length;
+
+const handleSearchProductColor = (productId, color) => {
+  setSearchProductColors(prev => ({
+    ...prev,
+    [String(productId)]: color
+  }));
+};
+
+const handleSearchProductClick = (product) => {
+  const colorOptions = getSearchProductColorOptions(product);
+  const selectedColor = searchProductColors[String(product.id)] || colorOptions[0] || '';
+
+  closeSearch();
+  navigate(`/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`);
+};
+
+const handleShowMoreSearchProducts = () => {
+  setSearchProductVisibleCount(prev => Math.min(prev + 6, searchPanelProducts.length));
+};
 
 const closeCartAddedPopup = () => {
   clearTimeout(cartAddedPopupTimeoutRef.current);
@@ -255,6 +391,12 @@ useEffect(() => {
     }
   };
 }, []);
+
+useEffect(() => {
+  if (isSearchOpen) {
+    setSearchProductVisibleCount(6);
+  }
+}, [isSearchOpen]);
 
 useEffect(() => {
   const handleCartAddConfirmed = () => {
@@ -913,23 +1055,102 @@ const handleToggleMenu = () => {
 
         <div className="custom-search-content">
           {!searchQuery.trim() && (
-            <div className="custom-search-suggestions">
-              <p className="custom-search-section-title">Suggested searches</p>
+  <div className="custom-search-suggestions">
+    <p className="custom-search-section-title">Suggested searches</p>
 
-              <div className="custom-search-chips">
-                {menuItems.slice(0, 4).map(item => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className="custom-search-chip"
-                    onClick={() => handleSuggestedSearch(item.name)}
-                  >
-                    {item.name}
-                  </button>
-                ))}
+    <div className="custom-search-chips">
+      {menuItems.slice(0, 4).map(item => (
+        <button
+          key={item.id}
+          type="button"
+          className="custom-search-chip"
+          onClick={() => handleSuggestedSearch(item.name)}
+        >
+          {item.name}
+        </button>
+      ))}
+    </div>
+
+    {searchPanelProducts.length > 0 && (
+      <div className="custom-search-all-products">
+        <div className="custom-search-all-products-grid">
+          {visibleSearchPanelProducts.map(product => {
+            const colorOptions = getSearchProductColorOptions(product);
+            const selectedColor = searchProductColors[String(product.id)] || colorOptions[0] || '';
+            const display = getSearchProductDisplay(product, selectedColor);
+
+            return (
+              <div
+                key={product.id}
+                className="custom-search-product-list-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => handleSearchProductClick(product)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSearchProductClick(product);
+                  }
+                }}
+              >
+                <div className="custom-search-product-list-image">
+                  <img
+                    src={display.image}
+                    alt={display.title}
+                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                  />
+                </div>
+
+                <div className="custom-search-product-list-info">
+                  <h3 className="custom-search-product-list-title">{display.title}</h3>
+
+                  {display.price > 0 && (
+                    <p className="custom-search-product-list-price">
+                      ${display.price.toFixed(2)}
+                    </p>
+                  )}
+
+                  {display.description && (
+                    <p className="custom-search-product-list-description">
+                      {display.description}
+                    </p>
+                  )}
+
+                  {colorOptions.length > 0 && (
+                    <div className="custom-search-product-colors">
+                      {colorOptions.map(term => (
+                        <button
+                          key={term}
+                          type="button"
+                          className={`custom-search-product-color ${selectedColor === term ? 'selected' : ''} ${getSearchColorClassName(term)}`}
+                          aria-label={`View ${term}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSearchProductColor(product.id, term);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })}
+        </div>
+
+        {hasMoreSearchPanelProducts && (
+          <button
+            type="button"
+            className="custom-search-show-more"
+            onClick={handleShowMoreSearchProducts}
+          >
+            Show more
+          </button>
+        )}
+      </div>
+    )}
+  </div>
+)}
 
           {searchQuery.trim().length > 0 && searchQuery.trim().length < 2 && (
             <p className="custom-search-message">Keep typing to search.</p>
