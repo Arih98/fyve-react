@@ -705,16 +705,14 @@ body.search-open {
 
 .custom-search-product-list-title {
   margin: 0;
-  font-family: "ArizonaFlare", sans-serif;
-  font-size: 1em;
+  font-family: quasimoda, sans-serif;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
   color: #4A494A;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  line-height: 1.25;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .custom-search-product-list-price {
