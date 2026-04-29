@@ -905,7 +905,7 @@ const handleToggleMenu = () => {
             onClick={closeSearch}
             aria-label="Close search"
           >
-            <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="" />
+            <img src="/assets/CloseWhite.svg" alt="" />
           </button>
         </div>
 
@@ -1015,7 +1015,7 @@ const handleToggleMenu = () => {
   onClick={closeSearch}
   aria-label="Close search"
 >
-  <img src="/api/Uploads/FYVEDarkCloseIcon.svg" alt="" />
+  <img src="/assets/CloseWhite.svg" alt="" />
 </button>
     </div>
   </>
