@@ -1080,7 +1080,6 @@ onClick={closeSizePanel}
 </div>
                   </div>
                 </div>
-              </div>
             )}
           </div>
         </div>
