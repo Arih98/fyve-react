@@ -574,7 +574,7 @@ body.search-open {
 .custom-search-result-image {
   width: 88px;
   aspect-ratio: 1 / 1;
-  background: #f4f1ef;
+  background: #f4f4f4;
   overflow: hidden;
   display: block;
 }
@@ -1689,7 +1689,7 @@ body.search-open {
     aspect-ratio: 1 / 1.25;
     display: block;
     overflow: hidden;
-    background: #f5f3f0;
+    background: #f4f4f4;
   }
 
   .custom-search-result-image img {
@@ -1764,7 +1764,6 @@ body.search-open {
 
   .custom-search-chip {
     border-radius: 999px;
-    padding: 10px 14px;
   }
 
   .custom-search-mobile-floating-close {
