@@ -85,8 +85,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid #e8e7e6;
-  border-radius: 999px;
+  border: none;
+  border-radius: 0;
 }
 
 .faq-icon span {
@@ -118,12 +118,6 @@
   line-height: 1.55;
   letter-spacing: -0.02em;
   color: rgba(0, 0, 0, 0.64);
-}
-
-@media (hover: hover) {
-  .faq-question:hover .faq-icon {
-    border-color: #4A494A;
-  }
 }
 
 @media (max-width: 768px) {
