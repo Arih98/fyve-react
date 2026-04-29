@@ -30,6 +30,7 @@ export default function CheckoutSuccess() {
       await clearCheckoutCart().catch(() => {})
       clearStoredCartToken()
       clearCartState()
+      localStorage.removeItem('fyveCartProductLinks')
       await refreshCart({ silent: true }).catch(() => {})
     }
 
