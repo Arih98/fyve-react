@@ -452,13 +452,14 @@ const handleBagClick = () => {
   setIsDesktopCartOpen(v => !v);
 };
 
-  const openSearch = () => {
+const openSearch = () => {
   setHideHeader(false);
-  setIsSearchOpen(true);
 
   if (isMenuOpen) {
     setIsMenuOpen(false);
   }
+
+  setIsSearchOpen(true);
 };
 
 const closeSearch = () => {
