@@ -395,10 +395,19 @@ const remainingStockForSelection =
     ? null
     : Math.max(0, Number(availableStock) - existingQuantityInCart);
 
-const isOutOfStock =
-  hasSelectedSize && remainingStockForSelection !== null && remainingStockForSelection <= 0;
+const hasCurrentSelectionInCart = Boolean(existingCartItem);
+const hasReachedCartStockLimit =
+  hasCurrentSelectionInCart &&
+  remainingStockForSelection !== null &&
+  remainingStockForSelection <= 0;
 
-const isAddDisabled = isOutOfStock || cartLoading;
+const isOutOfStock =
+  !hasCurrentSelectionInCart &&
+  remainingStockForSelection !== null &&
+  remainingStockForSelection <= 0 &&
+  (product?.product_type !== 'variable' || hasSelectedSize);
+
+const isAddDisabled = isOutOfStock || cartLoading || hasReachedCartStockLimit;
 
 const getVariationForSizeOption = useCallback((sizeAttrName, sizeTerm) => {
   if (!Array.isArray(productForOptions?.variations)) return null;
@@ -592,11 +601,6 @@ return true;
 ]);
 
 const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
-const hasCurrentSelectionInCart = Boolean(existingCartItem);
-const hasReachedCartStockLimit =
-  hasCurrentSelectionInCart &&
-  remainingStockForSelection !== null &&
-  remainingStockForSelection <= 0;
 
 const addToCartLabel = hasReachedCartStockLimit
   ? 'In your bag'
@@ -1062,7 +1066,7 @@ onClick={closeSizePanel}
   <button
     type="button"
     className={`size-panel-add-button ${hasReachedCartStockLimit ? 'in-bag' : ''}`}
-    disabled={!selectedAttributes[sizeAttrName] || isOutOfStock}
+    disabled={!selectedAttributes[sizeAttrName] || isAddDisabled}
     onClick={async () => {
       const added = await handleAddToCart();
 
@@ -1098,8 +1102,8 @@ onClick={closeSizePanel}
 
     handleAddToCart();
   }}
-  disabled={isOutOfStock || cartLoading}
-  className={`add-to-cart-button ${isOutOfStock || cartLoading ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''} ${hasReachedCartStockLimit ? 'in-bag' : ''}`}
+  disabled={isAddDisabled}
+  className={`add-to-cart-button ${isAddDisabled ? 'disabled' : ''} ${isOutOfStock ? 'out-of-stock' : ''} ${hasReachedCartStockLimit ? 'in-bag' : ''}`}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
