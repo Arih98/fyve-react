@@ -494,13 +494,9 @@ useEffect(() => {
 }, [location.pathname]);
 
 useEffect(() => {
-  if (!isSearchOpen) return;
-  if (allProducts.length > 0) return;
-  if (allProductsLoading) return;
-  if (hasTriedLoadSearchProductsRef.current) return;
+  if (!isSearchOpen || allProducts.length > 0) return;
 
   let cancelled = false;
-  hasTriedLoadSearchProductsRef.current = true;
 
   const loadProducts = async () => {
     try {
@@ -510,21 +506,26 @@ useEffect(() => {
         credentials: 'include'
       });
 
+      if (!response.ok) {
+        throw new Error(`Products request failed: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (cancelled) return;
 
-const products = Array.isArray(data)
-  ? data
-  : Array.isArray(data.items)
-    ? data.items
-    : Array.isArray(data.products)
-      ? data.products
-      : [];
+      const products = Array.isArray(data)
+        ? data
+        : Array.isArray(data.items)
+          ? data.items
+          : Array.isArray(data.products)
+            ? data.products
+            : [];
 
       setAllProducts(products);
     } catch (error) {
       if (!cancelled) {
+        console.error('Failed to load search panel products:', error);
         setAllProducts([]);
       }
     } finally {
@@ -539,7 +540,7 @@ const products = Array.isArray(data)
   return () => {
     cancelled = true;
   };
-}, [isSearchOpen, allProducts.length, allProductsLoading]);
+}, [isSearchOpen, allProducts.length]);
 
 useEffect(() => {
   if (isMobile || normalDesktopHeader) {
