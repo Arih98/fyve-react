@@ -465,7 +465,7 @@ const handleSearchSubmit = (e) => {
 
 const handleSearchResultClick = (product) => {
   closeSearch();
-  navigate(`/product/${product.slug || product.id}`);
+  navigate(`/product/${product.id}`);
 };
 
 const handleSuggestedSearch = (value) => {
