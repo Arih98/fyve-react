@@ -159,8 +159,8 @@ const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const isCheckoutPage = location.pathname.startsWith('/checkout');
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
-const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && cartItems.length > 0;
-const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen;
+const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
+const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
 const isHomePage = location.pathname === '/';
 const normalDesktopHeaderPages = [
   /^\/account(\/.*)?$/,
@@ -197,6 +197,8 @@ const [searchProductColors, setSearchProductColors] = useState({});
 const [allProducts, setAllProducts] = useState([]);
 const [allProductsLoading, setAllProductsLoading] = useState(false);
 const hasTriedLoadSearchProductsRef = useRef(false);
+const [isSearchClosing, setIsSearchClosing] = useState(false);
+const searchCloseTimeoutRef = useRef(null);
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -382,6 +384,7 @@ if (!targetEl || !sourceImageEl || !startRect) {
 useEffect(() => {
   return () => {
     clearTimeout(cartAddedPopupTimeoutRef.current);
+    clearTimeout(searchCloseTimeoutRef.current);
 
     if (cartAddedPopupAnimationRef.current) {
       cartAddedPopupAnimationRef.current.kill();
@@ -644,6 +647,8 @@ const handleBagClick = () => {
 };
 
 const openSearch = () => {
+  clearTimeout(searchCloseTimeoutRef.current);
+  setIsSearchClosing(false);
   setHideHeader(false);
   setIsSearchOpen(true);
 
@@ -655,11 +660,22 @@ const openSearch = () => {
 };
 
 const closeSearch = () => {
+  if (document.activeElement?.closest?.('.custom-search-container')) {
+    document.activeElement.blur();
+  }
+
+  clearTimeout(searchCloseTimeoutRef.current);
+
+  setIsSearchClosing(true);
   setIsSearchOpen(false);
   setSearchQuery('');
   setSearchResults([]);
   setSearchError('');
   setSearchLoading(false);
+
+  searchCloseTimeoutRef.current = setTimeout(() => {
+    setIsSearchClosing(false);
+  }, 460);
 
   if (searchAbortRef.current) {
     searchAbortRef.current.abort();
