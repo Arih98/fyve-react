@@ -74,3 +74,9 @@
     padding-right: 36px;
   }
 }
+
+body.search-open .announcement-bar {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
