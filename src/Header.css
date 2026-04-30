@@ -2131,6 +2131,18 @@ body.search-open {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px 12px;
   }
+
+  .custom-search-container.closing {
+  visibility: hidden;
+  pointer-events: none;
+  transition: none;
+}
+
+.custom-search-container.closing .custom-search-inner,
+.custom-search-container.closing .custom-search-mobile-floating-close {
+  opacity: 0;
+  transition: none;
+}
 }
 
 @media (min-width: 769px) {

@@ -686,9 +686,9 @@ const closeSearch = () => {
   setSearchError('');
   setSearchLoading(false);
 
-  searchCloseTimeoutRef.current = setTimeout(() => {
-    setIsSearchClosing(false);
-  }, 460);
+searchCloseTimeoutRef.current = setTimeout(() => {
+  setIsSearchClosing(false);
+}, 50);
 
   if (searchAbortRef.current) {
     searchAbortRef.current.abort();
@@ -1085,7 +1085,7 @@ const handleToggleMenu = () => {
   <>
 
 <div
-  className={`custom-search-container${isSearchOpen ? ' active' : ''}`}
+  className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
   aria-hidden={!isSearchOpen}
   role="dialog"
   aria-modal={isSearchOpen ? 'true' : undefined}
