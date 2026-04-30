@@ -5,7 +5,6 @@ import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import './Header.css';
 import Cart from './Cart';
-import { searchProducts } from './api/search';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
 
@@ -148,6 +147,68 @@ const isSs26Product = (product) => {
 
     return slug === 'ss26' || name === 'ss26';
   });
+};
+
+const getSs26ProductSearchText = (product) => {
+  const categories = Array.isArray(product?.categories)
+    ? product.categories.map(category => `${category.name || ''} ${category.slug || ''}`)
+    : [];
+
+  const attributes = Array.isArray(product?.attributes)
+    ? product.attributes.flatMap(attribute => [
+        attribute.attribute_name,
+        attribute.name,
+        ...(attribute.options || []).map(option =>
+          `${option.term_name || ''} ${option.name || ''} ${option.term_slug || ''} ${option.value || ''}`
+        )
+      ])
+    : [];
+
+  const variations = Array.isArray(product?.variations)
+    ? product.variations.flatMap(variation => [
+        variation.title,
+        variation.custom_variation_title,
+        variation.sku,
+        ...(variation.attributes || []).map(attribute =>
+          `${attribute.attribute_name || ''} ${attribute.name || ''} ${attribute.term_name || ''} ${attribute.term_slug || ''} ${attribute.value || ''}`
+        )
+      ])
+    : [];
+
+  return normalizeSearchText([
+    product?.title,
+    product?.name,
+    product?.sku,
+    product?.description,
+    product?.short_description,
+    product?.shortDescription,
+    ...categories,
+    ...attributes,
+    ...variations
+  ].join(' '));
+};
+
+const getSs26SearchResults = (products, query, limit = 8) => {
+  const q = normalizeSearchText(query);
+
+  if (q.length < 2) {
+    return [];
+  }
+
+  return products
+    .filter(product => getSs26ProductSearchText(product).includes(q))
+    .slice(0, limit)
+    .map(product => {
+      const colorOptions = getSearchProductColorOptions(product);
+      const display = getSearchProductDisplay(product, colorOptions[0] || '');
+
+      return {
+        ...product,
+        title: display.title,
+        image: display.image,
+        price: display.price > 0 ? `$${display.price.toFixed(2)}` : ''
+      };
+    });
 };
 
 const Header = () => {
@@ -722,7 +783,7 @@ const handleSearchViewAll = () => {
   if (!q) return;
 
   setIsSearchOpen(false);
-  navigate(`/products?search=${encodeURIComponent(q)}`);
+navigate(`/products?category=ss26&search=${encodeURIComponent(q)}`);
 };
 
 const handleSearchResultClick = (product) => {
@@ -796,35 +857,21 @@ useEffect(() => {
     return;
   }
 
-  searchDebounceRef.current = setTimeout(async () => {
-    const controller = new AbortController();
-    searchAbortRef.current = controller;
+  if (allProductsLoading) {
+    setSearchLoading(true);
+    return;
+  }
 
-    try {
-      setSearchLoading(true);
-
-      const results = await searchProducts(q, {
-        signal: controller.signal,
-        limit: 8
-      });
-
-      setSearchResults(results);
-    } catch (error) {
-      if (error.name !== 'AbortError') {
-        setSearchError('Search is currently unavailable.');
-        setSearchResults([]);
-      }
-    } finally {
-      if (!controller.signal.aborted) {
-        setSearchLoading(false);
-      }
-    }
-  }, 220);
+  searchDebounceRef.current = setTimeout(() => {
+    setSearchLoading(true);
+    setSearchResults(getSs26SearchResults(searchPanelProducts, q, 8));
+    setSearchLoading(false);
+  }, 120);
 
   return () => {
     clearTimeout(searchDebounceRef.current);
   };
-}, [isSearchOpen, searchQuery]);
+}, [isSearchOpen, searchQuery, searchPanelProducts, allProductsLoading]);
 
 useEffect(() => {
   setIsSearchOpen(false);
