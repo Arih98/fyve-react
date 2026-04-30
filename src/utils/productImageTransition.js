@@ -159,7 +159,7 @@ export const startProductImageTransition = async ({
   duration = 750,
   minTargetTop = 0,
   zIndex = 999999,
-  hideTarget = true
+  cleanupDelay = 0
 }) => {
   if (!src || !fromElement) return;
 
@@ -289,8 +289,17 @@ const stableTarget = await stableTargetPromise;
     }
   };
 
-  animation.addEventListener('finish', cleanup, { once: true });
-  animation.addEventListener('cancel', cleanup, { once: true });
+const finishCleanup = () => {
+  if (cleanupDelay > 0) {
+    window.setTimeout(cleanup, cleanupDelay);
+    return;
+  }
+
+  cleanup();
+};
+
+animation.addEventListener('finish', finishCleanup, { once: true });
+animation.addEventListener('cancel', cleanup, { once: true });
 };
 
 export const clearProductImageTransitionClone = () => {

@@ -379,15 +379,15 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
     isSearchTransitioningRef.current = true;
     document.body.classList.add('search-transitioning');
 
-    startProductImageTransition({
-      src: sourceSrc,
-      fromElement: sourceEl,
-      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: transitionDuration,
-      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-      zIndex: 100200,
-      hideTarget: false
-    });
+startProductImageTransition({
+  src: sourceSrc,
+  fromElement: sourceEl,
+  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+  duration: window.innerWidth <= 768 ? 520 : 620,
+  minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+  zIndex: 100200,
+  cleanupDelay: window.innerWidth <= 768 ? 260 : 180
+});
 
     navigate(destination, {
       state: navigationState
