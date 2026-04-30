@@ -257,7 +257,7 @@
   width: 100%;
   max-width: 520px;
   height: auto;
-  max-height: 80vh;
+  max-height: 80dvh;
   background: #fff;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
@@ -1118,5 +1118,19 @@ body.size-panel-open {
     border-radius: 20px;
     max-width: 420px;
     height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-detail-container {
+    min-height: 100svh;
+    overflow-anchor: none;
+  }
+
+  .images-container,
+  .details-container,
+  .product-image-gallery,
+  .product-image-gallery-track {
+    overflow-anchor: none;
   }
 }
