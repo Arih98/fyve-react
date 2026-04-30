@@ -24,11 +24,12 @@ const rectsMatch = (a, b, tolerance = 0.5) =>
 
 const waitForStableElementRect = async (
   getEl,
-  { maxAttempts = 90, maxFramesPerAttempt = 20, stableFrames = 2 } = {}
+  { maxAttempts = 90, maxFramesPerAttempt = 20, stableFrames = 2, hideElementWhileWaiting = true } = {}
 ) => {
   let hiddenElement = null;
 
   const hideElement = (el) => {
+    if (!hideElementWhileWaiting) return;
     if (!el) return;
     if (hiddenElement && hiddenElement !== el && hiddenElement.isConnected) {
       hiddenElement.style.opacity = '';
@@ -157,7 +158,8 @@ export const startProductImageTransition = async ({
   toElementGetter,
   duration = 750,
   minTargetTop = 0,
-  zIndex = 999999
+  zIndex = 999999,
+  hideTarget = true
 }) => {
   if (!src || !fromElement) return;
 
@@ -188,10 +190,11 @@ export const startProductImageTransition = async ({
 
   activeClone = clone;
 
-  const stableTargetPromise = waitForStableElementRect(toElementGetter, {
+const stableTargetPromise = waitForStableElementRect(toElementGetter, {
   maxAttempts: 90,
   maxFramesPerAttempt: 20,
-  stableFrames: 2
+  stableFrames: 2,
+  hideElementWhileWaiting: hideTarget
 });
 
 await waitForImageReady(clone);
@@ -213,7 +216,9 @@ const stableTarget = await stableTargetPromise;
   const stableRect = stableTarget.rect;
 
   if (!stableRect.width || !stableRect.height) {
-    toElement.style.opacity = '';
+    if (hideTarget) {
+  toElement.style.opacity = '';
+}
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
@@ -268,7 +273,9 @@ const stableTarget = await stableTargetPromise;
   activeAnimation = animation;
 
   const cleanup = () => {
-    toElement.style.opacity = '';
+    if (hideTarget) {
+  toElement.style.opacity = '';
+}
     fromElement.style.opacity = '';
 
     clone.remove();

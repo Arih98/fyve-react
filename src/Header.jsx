@@ -275,6 +275,8 @@ const [searchProductColors, setSearchProductColors] = useState({});
 const [allProducts, setAllProducts] = useState([]);
 const [allProductsLoading, setAllProductsLoading] = useState(false);
 const [isSearchClosing, setIsSearchClosing] = useState(false);
+const searchTransitionCloseTimeoutRef = useRef(null);
+const isSearchTransitioningRef = useRef(false);
 const searchCloseTimeoutRef = useRef(null);
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
@@ -360,29 +362,50 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
   const transitionKey = getSearchTransitionKey(product, selectedColor);
   const sourceEl = searchImageRefs.current.get(transitionKey);
   const sourceSrc = display.gallery?.[0] || display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+  const transitionDuration = window.innerWidth <= 768 ? 520 : 620;
+  const destination = `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`;
+  const navigationState = {
+    product,
+    initialColor: selectedColor || null,
+    transitionSourceDisplayId: product.id,
+    transitionSourceSrc: sourceSrc,
+    fromProductGrid: true,
+    fromSearch: true
+  };
 
   if (sourceEl) {
+    clearTimeout(searchTransitionCloseTimeoutRef.current);
+
+    isSearchTransitioningRef.current = true;
+    document.body.classList.add('search-transitioning');
+
     startProductImageTransition({
       src: sourceSrc,
       fromElement: sourceEl,
       toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: window.innerWidth <= 768 ? 520 : 620,
+      duration: transitionDuration,
       minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-      zIndex: 100200
+      zIndex: 100200,
+      hideTarget: false
     });
+
+    navigate(destination, {
+      state: navigationState
+    });
+
+    searchTransitionCloseTimeoutRef.current = setTimeout(() => {
+      isSearchTransitioningRef.current = false;
+      document.body.classList.remove('search-transitioning');
+      closeSearch();
+    }, transitionDuration + 120);
+
+    return;
   }
 
   closeSearch();
 
-  navigate(`/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`, {
-    state: {
-      product,
-      initialColor: selectedColor || null,
-      transitionSourceDisplayId: product.id,
-      transitionSourceSrc: sourceSrc,
-      fromProductGrid: true,
-      fromSearch: true
-    }
+  navigate(destination, {
+    state: navigationState
   });
 };
 
@@ -507,6 +530,8 @@ useEffect(() => {
   return () => {
     clearTimeout(cartAddedPopupTimeoutRef.current);
     clearTimeout(searchCloseTimeoutRef.current);
+    clearTimeout(searchTransitionCloseTimeoutRef.current);
+    document.body.classList.remove('search-transitioning');
 
     if (cartAddedPopupAnimationRef.current) {
       cartAddedPopupAnimationRef.current.kill();
@@ -788,6 +813,10 @@ const closeSearch = () => {
     document.activeElement.blur();
   }
 
+  clearTimeout(searchTransitionCloseTimeoutRef.current);
+isSearchTransitioningRef.current = false;
+document.body.classList.remove('search-transitioning');
+
   clearTimeout(searchCloseTimeoutRef.current);
 
   setIsSearchClosing(true);
@@ -919,6 +948,8 @@ useEffect(() => {
 }, [isSearchOpen, searchQuery, searchPanelProducts, allProductsLoading]);
 
 useEffect(() => {
+  if (isSearchTransitioningRef.current) return;
+
   setIsSearchOpen(false);
   setSearchQuery('');
   setSearchResults([]);

@@ -20,6 +20,16 @@ body.locked {
   width: 100%;
 }
 
+body.search-transitioning .custom-search-container.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+}
+
+body.search-transitioning .custom-search-container.active .custom-search-inner {
+  opacity: 1;
+}
+
 .flying-cart-clone {
   overflow: hidden;
   box-sizing: border-box;
