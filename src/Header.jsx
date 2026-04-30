@@ -118,21 +118,65 @@ const getSearchMoneyValue = (value) => {
   return Number(String(value || '').replace(/[^0-9.]/g, ''));
 };
 
+const getSearchImageSrc = (...values) => {
+  for (const value of values) {
+    if (!value) continue;
+
+    if (Array.isArray(value)) {
+      const found = getSearchImageSrc(...value);
+      if (found) return found;
+      continue;
+    }
+
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+
+    if (typeof value === 'object') {
+      const found = getSearchImageSrc(
+        value.src,
+        value.url,
+        value.source_url,
+        value.full,
+        value.medium,
+        value.thumbnail,
+        value.image,
+        value.original
+      );
+
+      if (found) return found;
+    }
+  }
+
+  return '';
+};
+
 const getSearchProductDisplay = (product, selectedColor) => {
   const variation = getSearchProductVariationForColor(product, selectedColor);
   const displayItem = variation || product;
 
-  const gallery = Array.isArray(displayItem?.gallery) && displayItem.gallery.length
-    ? displayItem.gallery
-    : Array.isArray(product?.gallery) && product.gallery.length
-      ? product.gallery
-      : [];
+  const image = getSearchImageSrc(
+    displayItem?.gallery,
+    displayItem?.image,
+    displayItem?.images,
+    displayItem?.thumbnail,
+    displayItem?.featured_image,
+    displayItem?.featuredImage,
+    displayItem?.main_image,
+    product?.gallery,
+    product?.image,
+    product?.images,
+    product?.thumbnail,
+    product?.featured_image,
+    product?.featuredImage,
+    product?.main_image
+  );
 
   const price = getSearchMoneyValue(displayItem?.price ?? product?.price);
 
   return {
     title: displayItem?.title || displayItem?.name || product?.title || product?.name || '',
-    image: gallery[0] || product?.thumbnail || '/api/Uploads/fallback-image.png',
+    image: image || '/api/Uploads/fallback-image.png',
     price: Number.isFinite(price) ? price : 0,
     description: stripSearchHtml(product?.description || product?.short_description || product?.shortDescription || displayItem?.description || '')
   };
@@ -1359,7 +1403,11 @@ const handleToggleMenu = () => {
             onClick={() => handleSearchResultClick(product)}
           >
             <span className="custom-search-result-image">
-              <img src={product.image} alt={product.title} />
+              <img
+  src={product.image}
+  alt={product.title}
+  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+/>
             </span>
 
             <span className="custom-search-result-info">
