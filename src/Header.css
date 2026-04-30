@@ -20,6 +20,14 @@ body.locked {
   width: 100%;
 }
 
+body.product-image-transition-active [data-pdp-primary-image="true"] {
+  opacity: 0 !important;
+}
+
+body.product-image-transition-active .product-gallery-image-box {
+  background: transparent !important;
+}
+
 .custom-search-container.is-transitioning-out {
   opacity: 0 !important;
   visibility: hidden !important;

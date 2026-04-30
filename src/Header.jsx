@@ -350,6 +350,8 @@ const handleSearchProductColor = (productId, color) => {
 const handleSearchProductClick = (product, selectedColorOverride = '', displayOverride = null) => {
   if (searchClickLockRef.current) return;
 
+  document.activeElement?.blur?.();
+
   searchClickLockRef.current = true;
 
   setTimeout(() => {
@@ -375,38 +377,38 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
   };
 
   if (sourceEl) {
-    clearTimeout(searchTransitionTimeoutRef.current);
-    setIsSearchTransitioningOut(true);
+  clearTimeout(searchTransitionTimeoutRef.current);
+  setIsSearchTransitioningOut(true);
 
-    startProductImageTransition({
-      src: sourceSrc,
-      fromElement: sourceEl,
-      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: window.innerWidth <= 768 ? 620 : 700,
-      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-      zIndex: 100200,
-      restoreFromElement: false,
-      hideTarget: true
-    });
+  startProductImageTransition({
+    src: sourceSrc,
+    fromElement: sourceEl,
+    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+    duration: window.innerWidth <= 768 ? 620 : 700,
+    minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+    zIndex: 100200,
+    restoreFromElement: false,
+    hideTarget: true
+  });
 
-setIsSearchClosing(true);
-setIsSearchOpen(false);
-setSearchQuery('');
-setSearchResults([]);
-setSearchError('');
-setSearchLoading(false);
+  setIsSearchClosing(true);
+  setIsSearchOpen(false);
+  setSearchQuery('');
+  setSearchResults([]);
+  setSearchError('');
+  setSearchLoading(false);
 
-searchTransitionTimeoutRef.current = setTimeout(() => {
-  setIsSearchTransitioningOut(false);
-  setIsSearchClosing(false);
-}, 900);
+  searchTransitionTimeoutRef.current = setTimeout(() => {
+    setIsSearchTransitioningOut(false);
+    setIsSearchClosing(false);
+  }, 900);
 
-navigate(destination, {
-  state: navigationState
-});
+  navigate(destination, {
+    state: navigationState
+  });
 
-    return;
-  }
+  return;
+}
 
   closeSearch();
 
@@ -951,11 +953,13 @@ useEffect(() => {
 }, [isSearchOpen, searchQuery, searchPanelProducts, allProductsLoading]);
 
 useEffect(() => {
+  if (isSearchTransitioningOut) return;
+
   setIsSearchOpen(false);
   setSearchQuery('');
   setSearchResults([]);
   setSearchError('');
-}, [location.pathname]);
+}, [location.pathname, isSearchTransitioningOut]);
 
   const handleMenuImageChange = (newId) => {
     if (isImageAnimating || newId === activeMenuImage) return;
