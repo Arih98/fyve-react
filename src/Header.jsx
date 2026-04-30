@@ -1060,46 +1060,47 @@ const handleToggleMenu = () => {
   {BurgerIcon}
 
   {useCartHeaderVariant ? (
-  <div className="cart-header-mobile-layout">
-    {cartItems.length > 0 && (
+    <div className="cart-header-mobile-layout">
+      {cartItems.length > 0 && (
+        <div className="cart-header-checkout-container">
+          <button
+            className="cart-header-checkout-button cart-header-checkout-button-mobile"
+            onClick={() => navigate('/checkout')}
+          >
+            Checkout
+          </button>
+        </div>
+      )}
+    </div>
+  ) : usePdpBottomAddVariant ? (
+    <div className="cart-header-mobile-layout pdp-header-mobile-layout">
       <div className="cart-header-checkout-container">
         <button
-          className="cart-header-checkout-button cart-header-checkout-button-mobile"
-          onClick={() => navigate('/checkout')}
+          className="cart-header-checkout-button cart-header-checkout-button-mobile pdp-header-add-button"
+          disabled={pdpMobileAddDisabled}
+          onClick={() => window.dispatchEvent(new CustomEvent('pdp:add-to-cart'))}
         >
-          Checkout
+          {pdpMobileAddLabel}
         </button>
       </div>
-    )}
-  </div>
-) : usePdpBottomAddVariant ? (
-  <div className="cart-header-mobile-layout pdp-header-mobile-layout">
-    <div className="cart-header-checkout-container">
-      <button
-        className="cart-header-checkout-button cart-header-checkout-button-mobile pdp-header-add-button"
-        disabled={pdpMobileAddDisabled}
-        onClick={() => window.dispatchEvent(new CustomEvent('pdp:add-to-cart'))}
-      >
-        {pdpMobileAddLabel}
-      </button>
     </div>
-  </div>
-) : (
+  ) : (
     <>
       <div className="header-logo mobile-hide-logo">
         <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />
       </div>
 
       <div className="mobile-nav-icons">
-<button
-  type="button"
-  className="mobile-nav-icon"
-  onClick={toggleSearch}
-  aria-label="Search"
-  aria-expanded={isSearchOpen}
->
-  <img src={searchIconSrc} alt="" />
-</button>
+        <button
+          type="button"
+          className="mobile-nav-icon"
+          onClick={toggleSearch}
+          aria-label="Search"
+          aria-expanded={isSearchOpen}
+        >
+          <img src={searchIconSrc} alt="" />
+        </button>
+
         <button className="mobile-nav-icon" onClick={handleAccountClick}>
           <img src={accountIconSrc} alt="Account" />
         </button>
@@ -1127,246 +1128,71 @@ const handleToggleMenu = () => {
       </div>
     </>
   )}
-
-  {!useCartHeaderVariant && !usePdpBottomAddVariant && (
-  <>
-
-<div
-  className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
-  aria-hidden={!isSearchOpen}
-  role="dialog"
-  aria-modal={isSearchOpen ? 'true' : undefined}
-  aria-label="Search"
->
-      <form className="custom-search-inner" onSubmit={handleSearchSubmit}>
-        <div className="custom-search-main-row">
-          <div className="custom-search-field">
-            <span className="custom-search-field-icon">
-              <img src="/assets/SearchFeatureIcon.svg" alt="" />
-            </span>
-
-            <input
-              ref={searchInputRef}
-              id="site-search-box"
-              type="text"
-              className="custom-search-input"
-              placeholder="Search for products"
-              value={searchQuery}
-              onChange={handleSearch}
-              autoComplete="off"
-            />
-
-            {searchQuery && (
-              <button
-                type="button"
-                className="custom-search-clear"
-                onClick={clearSearchQuery}
-                aria-label="Clear search"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className="custom-search-close"
-            onClick={closeSearch}
-            aria-label="Close search"
-          >
-            <img src="/assets/CloseWhite.svg" alt="" />
-          </button>
-        </div>
-
-        <div className="custom-search-content">
-          {!searchQuery.trim() && (
-  <div className="custom-search-suggestions">
-    <p className="custom-search-section-title">Suggested searches</p>
-
-    <div className="custom-search-chips">
-      {menuItems.slice(0, 4).map(item => (
-        <button
-          key={item.id}
-          type="button"
-          className="custom-search-chip"
-          onClick={() => handleSuggestedSearch(item.name)}
-        >
-          {item.name}
-        </button>
-      ))}
-    </div>
-
-    {allProductsLoading && (
-  <p className="custom-search-message">Loading products...</p>
-)}
-
-    {searchPanelProducts.length > 0 && (
-      <div className="custom-search-all-products">
-        <div className="custom-search-all-products-grid">
-          {visibleSearchPanelProducts.map(product => {
-            const colorOptions = getSearchProductColorOptions(product);
-            const selectedColor = searchProductColors[String(product.id)] || colorOptions[0] || '';
-            const display = getSearchProductDisplay(product, selectedColor);
-
-            return (
-              <div
-                key={product.id}
-                className="custom-search-product-list-card"
-                role="button"
-                tabIndex={0}
-                onClick={() => handleSearchProductClick(product)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleSearchProductClick(product);
-                  }
-                }}
-              >
-                <div className="custom-search-product-list-image">
-                  <img
-                    src={display.image}
-                    alt={display.title}
-                    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                  />
-                </div>
-
-                <div className="custom-search-product-list-info">
-                  <h3 className="custom-search-product-list-title">{display.title}</h3>
-
-                  {display.price > 0 && (
-                    <p className="custom-search-product-list-price">
-                      ${display.price.toFixed(2)}
-                    </p>
-                  )}
-
-                  {colorOptions.length > 0 && (
-                    <div className="custom-search-product-colors">
-                      {colorOptions.map(term => (
-                        <button
-                          key={term}
-                          type="button"
-                          className={`custom-search-product-color ${selectedColor === term ? 'selected' : ''} ${getSearchColorClassName(term)}`}
-                          aria-label={`View ${term}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSearchProductColor(product.id, term);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {hasMoreSearchPanelProducts && (
-          <button
-            type="button"
-            className="custom-search-show-more"
-            onClick={handleShowMoreSearchProducts}
-          >
-            Show more
-          </button>
-        )}
-      </div>
-    )}
-  </div>
-)}
-
-          {searchQuery.trim().length > 0 && searchQuery.trim().length < 2 && (
-            <p className="custom-search-message">Keep typing to search.</p>
-          )}
-
-          {searchLoading && (
-            <div className="custom-search-loading">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          )}
-
-          {!searchLoading && searchError && (
-            <p className="custom-search-message">{searchError}</p>
-          )}
-
-          {!searchLoading && !searchError && searchQuery.trim().length >= 2 && searchResults.length === 0 && faqResults.length === 0 && (
-  <p className="custom-search-message">No results found for “{searchQuery.trim()}”.</p>
-)}
-
-          {!searchLoading && searchResults.length > 0 && (
-            <div className="custom-search-results">
-              <div className="custom-search-results-header">
-                <p className="custom-search-section-title">Products</p>
-
-<button
-  type="button"
-  className="custom-search-view-all"
-  onClick={handleSearchViewAll}
->
-  View all
-</button>
-              </div>
-
-              <div className="custom-search-results-grid">
-                {searchResults.map(product => (
-                  <button
-                    key={product.id}
-                    type="button"
-                    className="custom-search-result-card"
-                    onClick={() => handleSearchResultClick(product)}
-                  >
-                    <span className="custom-search-result-image">
-                      <img src={product.image} alt={product.title} />
-                    </span>
-
-                    <span className="custom-search-result-info">
-                      <span className="custom-search-result-title">{product.title}</span>
-
-                      {product.price && (
-                        <span className="custom-search-result-price">{product.price}</span>
-                      )}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!searchError && searchQuery.trim().length >= 2 && faqResults.length > 0 && (
-  <div className="custom-search-faq-results">
-    <p className="custom-search-section-title">FAQs</p>
-
-    <div className="custom-search-faq-list">
-      {faqResults.map(item => (
-        <button
-          key={item.slug}
-          type="button"
-          className="custom-search-faq-card"
-          onClick={() => handleFaqResultClick(item)}
-        >
-          <span className="custom-search-faq-question">{item.question}</span>
-          <span className="custom-search-faq-answer">{item.answer}</span>
-        </button>
-      ))}
-    </div>
-  </div>
-)}
-        </div>
-      </form>
-      <button
-  type="button"
-  className="custom-search-mobile-floating-close"
-  onClick={closeSearch}
-  aria-label="Close search"
->
-  <img src="/assets/CloseWhite.svg" alt="" />
-</button>
-    </div>
-  </>
-)}
 </div>
+
+{!useCartHeaderVariant && !usePdpBottomAddVariant && (
+  <div
+    className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
+    aria-hidden={!isSearchOpen}
+    role="dialog"
+    aria-modal={isSearchOpen ? 'true' : undefined}
+    aria-label="Search"
+  >
+    <form className="custom-search-inner" onSubmit={handleSearchSubmit}>
+      <div className="custom-search-main-row">
+        <div className="custom-search-field">
+          <span className="custom-search-field-icon">
+            <img src="/assets/SearchFeatureIcon.svg" alt="" />
+          </span>
+
+          <input
+            ref={searchInputRef}
+            id="site-search-box"
+            type="text"
+            className="custom-search-input"
+            placeholder="Search for products"
+            value={searchQuery}
+            onChange={handleSearch}
+            autoComplete="off"
+          />
+
+          {searchQuery && (
+            <button
+              type="button"
+              className="custom-search-clear"
+              onClick={clearSearchQuery}
+              aria-label="Clear search"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="custom-search-close"
+          onClick={closeSearch}
+          aria-label="Close search"
+        >
+          <img src="/assets/CloseWhite.svg" alt="" />
+        </button>
+      </div>
+
+      <div className="custom-search-content">
+        ...
+      </div>
+    </form>
+
+    <button
+      type="button"
+      className="custom-search-mobile-floating-close"
+      onClick={closeSearch}
+      aria-label="Close search"
+    >
+      <img src="/assets/CloseWhite.svg" alt="" />
+    </button>
+  </div>
+)}
 
 {isCartAddedPopupOpen && (
   <div className="cart-added-popup" ref={cartAddedPopupRef}>
