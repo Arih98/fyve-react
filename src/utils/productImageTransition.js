@@ -191,19 +191,19 @@ export const startProductImageTransition = async ({
 
   activeClone = clone;
 
-  fromElement.style.opacity = '0';
-  clone.style.opacity = '1';
-
   const stableTargetPromise = waitForStableElementRect(toElementGetter, {
-    maxAttempts: 90,
-    maxFramesPerAttempt: 20,
-    stableFrames: 2,
-    hideElementWhileWaiting: hideTarget
-  });
+  maxAttempts: 90,
+  maxFramesPerAttempt: 20,
+  stableFrames: 2,
+  hideElementWhileWaiting: hideTarget
+});
 
-  await waitForImageReady(clone);
+await waitForImageReady(clone);
 
-  const stableTarget = await stableTargetPromise;
+fromElement.style.opacity = '0';
+clone.style.opacity = '1';
+
+const stableTarget = await stableTargetPromise;
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
     fromElement.style.opacity = '';
