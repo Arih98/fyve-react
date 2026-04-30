@@ -118,23 +118,44 @@ const getSearchMoneyValue = (value) => {
   return Number(String(value || '').replace(/[^0-9.]/g, ''));
 };
 
-const getSearchProductDisplay = (product, selectedColor) => {
-  const variation = getSearchProductVariationForColor(product, selectedColor);
-  const displayItem = variation || product;
+const getSearchFirstVariationWithImage = (product) => {
+  const variations = Array.isArray(product?.variations) ? product.variations : [];
 
-  const gallery = Array.isArray(displayItem?.gallery) && displayItem.gallery.length > 0
-    ? displayItem.gallery
-    : displayItem?.thumbnail
-      ? [displayItem.thumbnail, displayItem.hoverImage].filter(Boolean)
-      : Array.isArray(product?.gallery) && product.gallery.length > 0
-        ? product.gallery
-        : product?.thumbnail
-          ? [product.thumbnail, product.hoverImage].filter(Boolean)
-          : [];
+  return variations.find(variation => {
+    if (Array.isArray(variation?.gallery) && variation.gallery.length > 0) return true;
+    if (variation?.thumbnail) return true;
+    if (variation?.hoverImage) return true;
+    return false;
+  }) || null;
+};
+
+const getSearchItemGallery = (item) => {
+  if (Array.isArray(item?.gallery) && item.gallery.length > 0) {
+    return item.gallery;
+  }
+
+  if (item?.thumbnail) {
+    return [item.thumbnail, item.hoverImage].filter(Boolean);
+  }
+
+  return [];
+};
+
+const getSearchProductDisplay = (product, selectedColor) => {
+  const colorVariation = getSearchProductVariationForColor(product, selectedColor);
+  const fallbackVariation = getSearchFirstVariationWithImage(product);
+  const displayItem = colorVariation || product;
+
+  const gallery = [
+    ...getSearchItemGallery(displayItem),
+    ...getSearchItemGallery(product),
+    ...getSearchItemGallery(fallbackVariation)
+  ].filter(Boolean);
 
   const image = gallery[0] || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
-  const price = getSearchMoneyValue(displayItem?.price ?? product?.price);
+  const priceSource = colorVariation || fallbackVariation || product;
+  const price = getSearchMoneyValue(priceSource?.price ?? product?.price);
 
   return {
     title: displayItem?.title || displayItem?.name || product?.title || product?.name || '',
