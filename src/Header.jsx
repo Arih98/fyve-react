@@ -521,6 +521,8 @@ useEffect(() => {
 useEffect(() => {
   if (isSearchOpen) {
     setSearchProductVisibleCount(6);
+  } else {
+    searchImageRefs.current.clear();
   }
 }, [isSearchOpen]);
 
@@ -832,11 +834,6 @@ const handleSearchViewAll = () => {
 
   setIsSearchOpen(false);
 navigate(`/products?category=ss26&search=${encodeURIComponent(q)}`);
-};
-
-const handleSearchResultClick = (product) => {
-  closeSearch();
-  navigate(`/product/${product.id}`);
 };
 
 const handleSuggestedSearch = (value) => {
