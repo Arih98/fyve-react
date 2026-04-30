@@ -118,39 +118,6 @@ const getSearchMoneyValue = (value) => {
   return Number(String(value || '').replace(/[^0-9.]/g, ''));
 };
 
-const getSearchImageSrc = (...values) => {
-  for (const value of values) {
-    if (!value) continue;
-
-    if (Array.isArray(value)) {
-      const found = getSearchImageSrc(...value);
-      if (found) return found;
-      continue;
-    }
-
-    if (typeof value === 'string' && value.trim()) {
-      return value.trim();
-    }
-
-    if (typeof value === 'object') {
-      const found = getSearchImageSrc(
-        value.src,
-        value.url,
-        value.source_url,
-        value.full,
-        value.medium,
-        value.thumbnail,
-        value.image,
-        value.original
-      );
-
-      if (found) return found;
-    }
-  }
-
-  return '';
-};
-
 const getSearchProductDisplay = (product, selectedColor) => {
   const variation = getSearchProductVariationForColor(product, selectedColor);
   const displayItem = variation || product;
@@ -1267,16 +1234,16 @@ const handleToggleMenu = () => {
                     }
                   }}
                 >
-                  <div className="custom-search-product-list-image">
-<img
-  src={product.image}
-  alt={product.title}
-onError={e => {
-  e.currentTarget.onerror = null;
-  e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-}}
-/>
-                  </div>
+<div className="custom-search-product-list-image">
+  <img
+    src={display.image}
+    alt={display.title}
+    onError={e => {
+      e.currentTarget.onerror = null;
+      e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+    }}
+  />
+</div>
 
                   <div className="custom-search-product-list-info">
                     <h3 className="custom-search-product-list-title">{display.title}</h3>
