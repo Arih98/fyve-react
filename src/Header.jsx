@@ -155,30 +155,24 @@ const getSearchProductDisplay = (product, selectedColor) => {
   const variation = getSearchProductVariationForColor(product, selectedColor);
   const displayItem = variation || product;
 
-  const image = getSearchImageSrc(
-    displayItem?.gallery,
-    displayItem?.thumbnail,
-    displayItem?.hoverImage,
-    displayItem?.image,
-    displayItem?.images,
-    displayItem?.featured_image,
-    displayItem?.featuredImage,
-    displayItem?.main_image,
-    product?.gallery,
-    product?.thumbnail,
-    product?.hoverImage,
-    product?.image,
-    product?.images,
-    product?.featured_image,
-    product?.featuredImage,
-    product?.main_image
-  );
+  const gallery = Array.isArray(displayItem?.gallery) && displayItem.gallery.length > 0
+    ? displayItem.gallery
+    : displayItem?.thumbnail
+      ? [displayItem.thumbnail, displayItem.hoverImage].filter(Boolean)
+      : Array.isArray(product?.gallery) && product.gallery.length > 0
+        ? product.gallery
+        : product?.thumbnail
+          ? [product.thumbnail, product.hoverImage].filter(Boolean)
+          : [];
+
+  const image = gallery[0] || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
   const price = getSearchMoneyValue(displayItem?.price ?? product?.price);
 
   return {
     title: displayItem?.title || displayItem?.name || product?.title || product?.name || '',
-    image: image || '/api/Uploads/fallback-image.png',
+    image,
+    gallery,
     price: Number.isFinite(price) ? price : 0,
     description: stripSearchHtml(product?.description || product?.short_description || product?.shortDescription || displayItem?.description || '')
   };
@@ -248,12 +242,13 @@ const getSs26SearchResults = (products, query, limit = 8) => {
       const colorOptions = getSearchProductColorOptions(product);
       const display = getSearchProductDisplay(product, colorOptions[0] || '');
 
-      return {
-        ...product,
-        title: display.title,
-        image: display.image,
-        price: display.price > 0 ? `$${display.price.toFixed(2)}` : ''
-      };
+return {
+  ...product,
+  title: display.title,
+  image: display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png',
+  gallery: display.gallery,
+  price: display.price > 0 ? `$${display.price.toFixed(2)}` : ''
+};
     });
 };
 
@@ -1276,10 +1271,10 @@ const handleToggleMenu = () => {
 <img
   src={product.image}
   alt={product.title}
-  onError={e => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = '/api/Uploads/fallback-image.png';
-  }}
+onError={e => {
+  e.currentTarget.onerror = null;
+  e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+}}
 />
                   </div>
 
@@ -1411,10 +1406,10 @@ const handleToggleMenu = () => {
 <img
   src={product.image}
   alt={product.title}
-  onError={e => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = '/api/Uploads/fallback-image.png';
-  }}
+onError={e => {
+  e.currentTarget.onerror = null;
+  e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+}}
 />
             </span>
 
