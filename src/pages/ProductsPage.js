@@ -150,31 +150,15 @@ const colorQuery = selectedProductColor
       sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
     }
 
-const navigateToProduct = () => {
-  navigate(targetPath, {
-    state: {
-      product: targetProduct,
-      initialColor: item.selectedColor,
-      transitionSourceDisplayId: item.displayId,
-      transitionSourceSrc: sourceSrc,
-      fromProductGrid: true
-    }
-  });
-};
-
-if (isMobile) {
-  window.scrollTo(0, 0);
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      navigateToProduct();
+    navigate(targetPath, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc,
+        fromProductGrid: true
+      }
     });
-  });
-
-  return;
-}
-
-navigateToProduct();
   };
 
   const currentProducts = isMobile
