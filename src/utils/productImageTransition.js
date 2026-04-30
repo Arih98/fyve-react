@@ -1,5 +1,8 @@
 let activeClone = null;
 let activeAnimation = null;
+let activeSourceElement = null;
+let activeRestoreFromElement = true;
+let activeToken = 0;
 
 const waitForNextFrame = () =>
   new Promise((resolve) => {
@@ -8,6 +11,7 @@ const waitForNextFrame = () =>
 
 const getRect = (el) => {
   const rect = el.getBoundingClientRect();
+
   return {
     left: rect.left,
     top: rect.top,
@@ -29,14 +33,16 @@ const waitForStableElementRect = async (
   let hiddenElement = null;
 
   const hideElement = (el) => {
-  if (!hideElementWhileWaiting) return;
-  if (!el) return;
-  if (hiddenElement && hiddenElement !== el && hiddenElement.isConnected) {
-    hiddenElement.style.opacity = '';
-  }
-  el.style.opacity = '0';
-  hiddenElement = el;
-};
+    if (!hideElementWhileWaiting) return;
+    if (!el) return;
+
+    if (hiddenElement && hiddenElement !== el && hiddenElement.isConnected) {
+      hiddenElement.style.opacity = '';
+    }
+
+    el.style.opacity = '0';
+    hiddenElement = el;
+  };
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const el = getEl?.();
@@ -61,6 +67,7 @@ const waitForStableElementRect = async (
       }
 
       const latestEl = getEl?.();
+
       if (!latestEl || !latestEl.isConnected || latestEl !== el) {
         disconnected = true;
         break;
@@ -78,6 +85,7 @@ const waitForStableElementRect = async (
 
       if (previousRect && rectsMatch(previousRect, rect)) {
         stableCount += 1;
+
         if (stableCount >= stableFrames) {
           return { element: el, rect };
         }
@@ -90,6 +98,7 @@ const waitForStableElementRect = async (
 
     if (!disconnected && el.isConnected) {
       const rect = getRect(el);
+
       if (rect.width && rect.height) {
         return { element: el, rect };
       }
@@ -108,6 +117,7 @@ const waitForImageReady = async (el) => {
         await el.decode();
       } catch {}
     }
+
     return;
   }
 
@@ -131,6 +141,7 @@ const waitForImageReady = async (el) => {
 
 const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   const clone = document.createElement('img');
+
   clone.src = src;
   clone.alt = '';
   clone.setAttribute('aria-hidden', 'true');
@@ -147,47 +158,60 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   clone.style.boxSizing = fromStyle.boxSizing || 'border-box';
   clone.style.transformOrigin = 'center center';
   clone.style.willChange = 'left, top, width, height, opacity, border-radius';
-  clone.style.opacity = '0';
+  clone.style.opacity = '1';
+
   document.body.appendChild(clone);
+
   return clone;
 };
 
-export const startProductImageTransition = async ({
-  src,
-  fromElement,
-  toElementGetter,
-  duration = 750,
-  minTargetTop = 0,
-  zIndex = 999999,
-  restoreFromElement = true,
-  hideTarget = true
-}) => {
-  if (!src || !fromElement) return;
-
-  document.body.classList.add('product-image-transition-active');
-
-  const removeActiveClass = () => {
-    document.body.classList.remove('product-image-transition-active');
-  };
+const cancelActiveTransition = ({ restoreSource = true } = {}) => {
+  activeToken += 1;
 
   if (activeAnimation) {
-    activeAnimation.cancel();
-    activeAnimation = null;
+    try {
+      activeAnimation.cancel();
+    } catch {}
+  }
+
+  if (restoreSource && activeSourceElement && activeRestoreFromElement) {
+    activeSourceElement.style.opacity = '';
   }
 
   if (activeClone) {
     activeClone.remove();
-    activeClone = null;
   }
+
+  activeClone = null;
+  activeAnimation = null;
+  activeSourceElement = null;
+  activeRestoreFromElement = true;
+  document.body.classList.remove('product-image-transition-active');
+};
+
+const createPreparedSession = ({
+  src,
+  fromElement,
+  zIndex = 999999,
+  restoreFromElement = true
+}) => {
+  if (!src || !fromElement) return null;
+
+  cancelActiveTransition({ restoreSource: true });
+
+  const token = activeToken + 1;
+  activeToken = token;
 
   const fromRect = getRect(fromElement);
 
   if (!fromRect.width || !fromRect.height) {
-    removeActiveClass();
-    return;
+    document.body.classList.remove('product-image-transition-active');
+    return null;
   }
 
   const fromStyle = window.getComputedStyle(fromElement);
+
+  document.body.classList.add('product-image-transition-active');
 
   const clone = createClone({
     src,
@@ -196,10 +220,32 @@ export const startProductImageTransition = async ({
     zIndex
   });
 
-  activeClone = clone;
-
   fromElement.style.opacity = '0';
-  clone.style.opacity = '1';
+
+  activeClone = clone;
+  activeSourceElement = fromElement;
+  activeRestoreFromElement = restoreFromElement;
+
+  return {
+    token,
+    clone,
+    fromElement,
+    fromRect,
+    restoreFromElement
+  };
+};
+
+const playPreparedSession = async (
+  session,
+  {
+    toElementGetter,
+    duration = 750,
+    minTargetTop = 0,
+    hideTarget = true
+  } = {}
+) => {
+  if (!session || !session.clone || !session.fromElement) return;
+  if (session.token !== activeToken) return;
 
   const stableTargetPromise = waitForStableElementRect(toElementGetter, {
     maxAttempts: 90,
@@ -208,22 +254,16 @@ export const startProductImageTransition = async ({
     hideElementWhileWaiting: hideTarget
   });
 
-  await waitForImageReady(clone);
+  await waitForImageReady(session.clone);
+
+  if (session.token !== activeToken || !session.clone.isConnected) return;
 
   const stableTarget = await stableTargetPromise;
 
+  if (session.token !== activeToken || !session.clone.isConnected) return;
+
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
-    if (restoreFromElement) {
-      fromElement.style.opacity = '';
-    }
-
-    clone.remove();
-
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    removeActiveClass();
+    cancelActiveTransition({ restoreSource: true });
     return;
   }
 
@@ -235,19 +275,11 @@ export const startProductImageTransition = async ({
       toElement.style.opacity = '';
     }
 
-    if (restoreFromElement) {
-      fromElement.style.opacity = '';
-    }
-
-    clone.remove();
-
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    removeActiveClass();
+    cancelActiveTransition({ restoreSource: true });
     return;
   }
+
+  const fromRect = session.fromRect;
 
   const toRect = {
     left: stableRect.left,
@@ -262,15 +294,15 @@ export const startProductImageTransition = async ({
   const finalLeft = toRect.left + (toRect.width - finalWidth) / 2;
   const finalTop = toRect.top + (toRect.height - finalHeight) / 2;
 
-  clone.style.left = `${fromRect.left}px`;
-  clone.style.top = `${fromRect.top}px`;
-  clone.style.width = `${fromRect.width}px`;
-  clone.style.height = `${fromRect.height}px`;
-  clone.style.objectFit = 'cover';
+  session.clone.style.left = `${fromRect.left}px`;
+  session.clone.style.top = `${fromRect.top}px`;
+  session.clone.style.width = `${fromRect.width}px`;
+  session.clone.style.height = `${fromRect.height}px`;
+  session.clone.style.objectFit = 'cover';
 
-  clone.getBoundingClientRect();
+  session.clone.getBoundingClientRect();
 
-  const animation = clone.animate(
+  const animation = session.clone.animate(
     [
       {
         left: `${fromRect.left}px`,
@@ -300,40 +332,87 @@ export const startProductImageTransition = async ({
 
   const cleanup = () => {
     if (cleaned) return;
+    if (session.token !== activeToken) return;
+
     cleaned = true;
 
     if (hideTarget) {
       toElement.style.opacity = '';
     }
 
-    if (restoreFromElement) {
-      fromElement.style.opacity = '';
+    if (session.restoreFromElement && session.fromElement) {
+      session.fromElement.style.opacity = '';
     }
 
-    clone.remove();
-    removeActiveClass();
-
-    if (activeClone === clone) {
-      activeClone = null;
+    if (session.clone) {
+      session.clone.remove();
     }
 
-    if (activeAnimation === animation) {
-      activeAnimation = null;
-    }
+    activeClone = null;
+    activeAnimation = null;
+    activeSourceElement = null;
+    activeRestoreFromElement = true;
+    document.body.classList.remove('product-image-transition-active');
   };
 
   animation.addEventListener('finish', cleanup, { once: true });
   animation.addEventListener('cancel', cleanup, { once: true });
 };
 
-export const clearProductImageTransitionClone = () => {
-  if (activeAnimation) {
-    activeAnimation.cancel();
-    activeAnimation = null;
-  }
+export const prepareProductImageTransition = ({
+  src,
+  fromElement,
+  zIndex = 999999,
+  restoreFromElement = true
+}) => {
+  const session = createPreparedSession({
+    src,
+    fromElement,
+    zIndex,
+    restoreFromElement
+  });
 
-  if (activeClone) {
-    activeClone.remove();
-    activeClone = null;
-  }
+  if (!session) return null;
+
+  return {
+    play(options) {
+      return playPreparedSession(session, options);
+    },
+    cancel() {
+      if (session.token === activeToken) {
+        cancelActiveTransition({ restoreSource: true });
+      }
+    }
+  };
+};
+
+export const startProductImageTransition = async ({
+  src,
+  fromElement,
+  toElementGetter,
+  duration = 750,
+  minTargetTop = 0,
+  zIndex = 999999,
+  restoreFromElement = true,
+  hideTarget = true
+}) => {
+  const prepared = prepareProductImageTransition({
+    src,
+    fromElement,
+    zIndex,
+    restoreFromElement
+  });
+
+  if (!prepared) return;
+
+  return prepared.play({
+    toElementGetter,
+    duration,
+    minTargetTop,
+    hideTarget
+  });
+};
+
+export const clearProductImageTransitionClone = () => {
+  cancelActiveTransition({ restoreSource: true });
 };

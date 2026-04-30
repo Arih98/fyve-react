@@ -7,7 +7,11 @@ import './Header.css';
 import Cart from './Cart';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
-import { startProductImageTransition } from './utils/productImageTransition';
+import {
+  startProductImageTransition,
+  prepareProductImageTransition,
+  clearProductImageTransitionClone
+} from './utils/productImageTransition';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
@@ -226,6 +230,8 @@ const searchAbortRef = useRef(null);
 const searchDebounceRef = useRef(null);
 const searchImageRefs = useRef(new Map());
 const searchClickLockRef = useRef(false);
+const searchPreparedTransitionRef = useRef(null);
+const searchPointerRef = useRef(null);
 const [searchResults, setSearchResults] = useState([]);
 const [searchLoading, setSearchLoading] = useState(false);
 const [searchError, setSearchError] = useState('');
@@ -345,17 +351,7 @@ const handleSearchProductColor = (productId, color) => {
   }));
 };
 
-const handleSearchProductClick = (product, selectedColorOverride = '', displayOverride = null) => {
-  if (searchClickLockRef.current) return;
-
-  document.activeElement?.blur?.();
-
-  searchClickLockRef.current = true;
-
-  setTimeout(() => {
-    searchClickLockRef.current = false;
-  }, 900);
-
+const getSearchProductTransitionData = (product, selectedColorOverride = '', displayOverride = null) => {
   const colorOptions = getSearchProductColorOptions(product);
   const selectedColor = selectedColorOverride || searchProductColors[String(product.id)] || colorOptions[0] || '';
   const display = displayOverride || getSearchProductDisplay(product, selectedColor);
@@ -374,33 +370,145 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
     fromSearch: true
   };
 
-  if (sourceEl) {
+  return {
+    colorOptions,
+    selectedColor,
+    display,
+    transitionKey,
+    sourceEl,
+    sourceSrc,
+    destination,
+    navigationState
+  };
+};
+
+const cancelPreparedSearchTransition = () => {
+  if (searchPreparedTransitionRef.current?.transition) {
+    searchPreparedTransitionRef.current.transition.cancel();
+  }
+
+  searchPreparedTransitionRef.current = null;
+  searchPointerRef.current = null;
+  clearProductImageTransitionClone();
+};
+
+const prepareSearchProductTransition = (product, selectedColorOverride = '', displayOverride = null) => {
+  const data = getSearchProductTransitionData(product, selectedColorOverride, displayOverride);
+
+  if (!data.sourceEl) {
+    return data;
+  }
+
+  if (searchPreparedTransitionRef.current?.key === data.transitionKey) {
+    return data;
+  }
+
+  if (searchPreparedTransitionRef.current?.transition) {
+    searchPreparedTransitionRef.current.transition.cancel();
+  }
+
+  const transition = prepareProductImageTransition({
+    src: data.sourceSrc,
+    fromElement: data.sourceEl,
+    zIndex: 100200,
+    restoreFromElement: true
+  });
+
+  if (transition) {
+    searchPreparedTransitionRef.current = {
+      key: data.transitionKey,
+      transition
+    };
+  }
+
+  return data;
+};
+
+const handleSearchProductPointerDown = (product, selectedColorOverride = '', displayOverride = null, e) => {
+  if (e.button !== undefined && e.button !== 0) return;
+  if (e.target.closest?.('.custom-search-product-color')) return;
+
+  searchPointerRef.current = {
+    pointerId: e.pointerId,
+    x: e.clientX,
+    y: e.clientY,
+    moved: false
+  };
+
+  prepareSearchProductTransition(product, selectedColorOverride, displayOverride);
+};
+
+const handleSearchProductPointerMove = (e) => {
+  const pointer = searchPointerRef.current;
+
+  if (!pointer || pointer.pointerId !== e.pointerId) return;
+
+  const dx = Math.abs(e.clientX - pointer.x);
+  const dy = Math.abs(e.clientY - pointer.y);
+
+  if (dx > 10 || dy > 10) {
+    pointer.moved = true;
+    cancelPreparedSearchTransition();
+  }
+};
+
+const handleSearchProductPointerCancel = () => {
+  cancelPreparedSearchTransition();
+};
+
+const handleSearchProductClick = (product, selectedColorOverride = '', displayOverride = null) => {
+  if (searchClickLockRef.current) return;
+
+  document.activeElement?.blur?.();
+
+  searchClickLockRef.current = true;
+
+  setTimeout(() => {
+    searchClickLockRef.current = false;
+  }, 900);
+
+  const data = getSearchProductTransitionData(product, selectedColorOverride, displayOverride);
+
+  if (data.sourceEl) {
     if (document.activeElement?.closest?.('.custom-search-container')) {
       document.activeElement.blur();
     }
 
-startProductImageTransition({
-  src: sourceSrc,
-  fromElement: sourceEl,
-  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-  duration: window.innerWidth <= 768 ? 620 : 700,
-  minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-  zIndex: 10001,
-  restoreFromElement: false,
-  hideTarget: true
-});
+    const prepared = searchPreparedTransitionRef.current;
 
-navigate(destination, {
-  state: navigationState
-});
+    if (prepared?.key === data.transitionKey && prepared.transition) {
+      prepared.transition.play({
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: window.innerWidth <= 768 ? 620 : 700,
+        minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+        hideTarget: true
+      });
+
+      searchPreparedTransitionRef.current = null;
+    } else {
+      startProductImageTransition({
+        src: data.sourceSrc,
+        fromElement: data.sourceEl,
+        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+        duration: window.innerWidth <= 768 ? 620 : 700,
+        minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+        zIndex: 100200,
+        restoreFromElement: true,
+        hideTarget: true
+      });
+    }
+
+    navigate(data.destination, {
+      state: data.navigationState
+    });
 
     return;
   }
 
   closeSearch();
 
-  navigate(destination, {
-    state: navigationState
+  navigate(data.destination, {
+    state: data.navigationState
   });
 };
 
@@ -1276,18 +1384,22 @@ const handleToggleMenu = () => {
 
               return (
                 <div
-                  key={product.id}
-                  className="custom-search-product-list-card"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => handleSearchProductClick(product, selectedColor, display)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleSearchProductClick(product, selectedColor, display);
-                    }
-                  }}
-                >
+  key={product.id}
+  className="custom-search-product-list-card"
+  role="button"
+  tabIndex={0}
+  onPointerDown={(e) => handleSearchProductPointerDown(product, selectedColor, display, e)}
+  onPointerMove={handleSearchProductPointerMove}
+  onPointerCancel={handleSearchProductPointerCancel}
+  onPointerLeave={handleSearchProductPointerCancel}
+  onClick={() => handleSearchProductClick(product, selectedColor, display)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleSearchProductClick(product, selectedColor, display);
+    }
+  }}
+>
 <div className="custom-search-product-list-image">
 <img
   ref={(el) => {
@@ -1323,10 +1435,13 @@ const handleToggleMenu = () => {
                             type="button"
                             className={`custom-search-product-color ${selectedColor === term ? 'selected' : ''} ${getSearchColorClassName(term)}`}
                             aria-label={`View ${term}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSearchProductColor(product.id, term);
-                            }}
+onPointerDown={(e) => {
+  e.stopPropagation();
+}}
+onClick={(e) => {
+  e.stopPropagation();
+  handleSearchProductColor(product.id, term);
+}}
                           />
                         ))}
                       </div>
@@ -1423,18 +1538,25 @@ const handleToggleMenu = () => {
       </div>
 
       <div className="custom-search-results-grid">
-        {searchResults.map(product => (
-          <button
-            key={product.id}
-            type="button"
-            className="custom-search-result-card"
-            onClick={() => handleSearchProductClick(product, product.selectedColor || '', {
-  title: product.title,
-  image: product.image,
-  gallery: product.gallery || [],
-  price: getSearchMoneyValue(product.price)
-})}
-          >
+{searchResults.map(product => {
+  const display = {
+    title: product.title,
+    image: product.image,
+    gallery: product.gallery || [],
+    price: getSearchMoneyValue(product.price)
+  };
+
+  return (
+    <button
+      key={product.id}
+      type="button"
+      className="custom-search-result-card"
+      onPointerDown={(e) => handleSearchProductPointerDown(product, product.selectedColor || '', display, e)}
+      onPointerMove={handleSearchProductPointerMove}
+      onPointerCancel={handleSearchProductPointerCancel}
+      onPointerLeave={handleSearchProductPointerCancel}
+      onClick={() => handleSearchProductClick(product, product.selectedColor || '', display)}
+    >
             <span className="custom-search-result-image">
 <img
   ref={(el) => {
@@ -1461,8 +1583,9 @@ const handleToggleMenu = () => {
                 <span className="custom-search-result-price">{product.price}</span>
               )}
             </span>
-          </button>
-        ))}
+    </button>
+  );
+})}
       </div>
     </div>
   )}

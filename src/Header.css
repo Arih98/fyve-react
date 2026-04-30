@@ -28,6 +28,11 @@ body.product-image-transition-active .product-gallery-image-box {
   background: transparent !important;
 }
 
+body.product-image-transition-active .custom-search-product-list-image,
+body.product-image-transition-active .custom-search-result-image {
+  background: transparent !important;
+}
+
 .flying-cart-clone {
   overflow: hidden;
   box-sizing: border-box;
