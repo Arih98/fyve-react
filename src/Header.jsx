@@ -311,6 +311,10 @@ const faqResults = useMemo(() => {
   return getFaqSearchResults(faqItems, searchQuery);
 }, [searchQuery]);
 
+const faqPreviewItems = useMemo(() => {
+  return faqItems.slice(0, 6);
+}, []);
+
 const searchPanelProducts = useMemo(() => {
   return Array.isArray(allProducts)
     ? allProducts.filter(Boolean).filter(isSs26Product)
@@ -1269,6 +1273,54 @@ const handleToggleMenu = () => {
             >
               Show more
             </button>
+
+            {hasMoreSearchPanelProducts && (
+  <button
+    type="button"
+    className="custom-search-show-more"
+    onClick={handleShowMoreSearchProducts}
+  >
+    Show more
+  </button>
+)}
+
+{faqPreviewItems.length > 0 && (
+  <div className="custom-search-faq-preview">
+    <div className="custom-search-faq-preview-header">
+      <p className="custom-search-section-title">FAQs</p>
+
+      <button
+        type="button"
+        className="custom-search-faq-preview-view-all"
+        onClick={() => {
+          closeSearch();
+          navigate('/faq');
+        }}
+      >
+        View all
+      </button>
+    </div>
+
+    <div className="custom-search-faq-preview-slider" aria-label="FAQ preview">
+      {faqPreviewItems.map(item => (
+        <button
+          key={item.slug}
+          type="button"
+          className="custom-search-faq-preview-card"
+          onClick={() => handleFaqResultClick(item)}
+        >
+          <span className="custom-search-faq-preview-question">
+            {item.question}
+          </span>
+
+          <span className="custom-search-faq-preview-answer">
+            {item.answer}
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+)}
           )}
         </div>
       )}
