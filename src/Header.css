@@ -28,19 +28,6 @@ body.product-image-transition-active .product-gallery-image-box {
   background: transparent !important;
 }
 
-.custom-search-container.is-transitioning-out {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  transition: none !important;
-}
-
-.custom-search-container.is-transitioning-out .custom-search-inner,
-.custom-search-container.is-transitioning-out .custom-search-mobile-floating-close {
-  opacity: 0 !important;
-  transition: none !important;
-}
-
 .flying-cart-clone {
   overflow: hidden;
   box-sizing: border-box;

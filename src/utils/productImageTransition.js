@@ -24,18 +24,19 @@ const rectsMatch = (a, b, tolerance = 0.5) =>
 
 const waitForStableElementRect = async (
   getEl,
-  { maxAttempts = 90, maxFramesPerAttempt = 20, stableFrames = 2 } = {}
+  { maxAttempts = 90, maxFramesPerAttempt = 20, stableFrames = 2, hideElementWhileWaiting = true } = {}
 ) => {
   let hiddenElement = null;
 
   const hideElement = (el) => {
-    if (!el) return;
-    if (hiddenElement && hiddenElement !== el && hiddenElement.isConnected) {
-      hiddenElement.style.opacity = '';
-    }
-    el.style.opacity = '0';
-    hiddenElement = el;
-  };
+  if (!hideElementWhileWaiting) return;
+  if (!el) return;
+  if (hiddenElement && hiddenElement !== el && hiddenElement.isConnected) {
+    hiddenElement.style.opacity = '';
+  }
+  el.style.opacity = '0';
+  hiddenElement = el;
+};
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const el = getEl?.();
@@ -157,9 +158,17 @@ export const startProductImageTransition = async ({
   toElementGetter,
   duration = 750,
   minTargetTop = 0,
-  zIndex = 999999
+  zIndex = 999999,
+  restoreFromElement = true,
+  hideTarget = true
 }) => {
   if (!src || !fromElement) return;
+
+  document.body.classList.add('product-image-transition-active');
+
+  const removeActiveClass = () => {
+    document.body.classList.remove('product-image-transition-active');
+  };
 
   if (activeAnimation) {
     activeAnimation.cancel();
@@ -174,6 +183,7 @@ export const startProductImageTransition = async ({
   const fromRect = getRect(fromElement);
 
   if (!fromRect.width || !fromRect.height) {
+    removeActiveClass();
     return;
   }
 
@@ -188,35 +198,54 @@ export const startProductImageTransition = async ({
 
   activeClone = clone;
 
+  fromElement.style.opacity = '0';
+  clone.style.opacity = '1';
+
   const stableTargetPromise = waitForStableElementRect(toElementGetter, {
-  maxAttempts: 90,
-  maxFramesPerAttempt: 20,
-  stableFrames: 2
-});
+    maxAttempts: 90,
+    maxFramesPerAttempt: 20,
+    stableFrames: 2,
+    hideElementWhileWaiting: hideTarget
+  });
 
-await waitForImageReady(clone);
+  await waitForImageReady(clone);
 
-fromElement.style.opacity = '0';
-clone.style.opacity = '1';
-
-const stableTarget = await stableTargetPromise;
+  const stableTarget = await stableTargetPromise;
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
-    fromElement.style.opacity = '';
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
+    }
+
     clone.remove();
-    if (activeClone === clone) activeClone = null;
+
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    removeActiveClass();
     return;
   }
 
   const toElement = stableTarget.element;
-
   const stableRect = stableTarget.rect;
 
   if (!stableRect.width || !stableRect.height) {
-    toElement.style.opacity = '';
-    fromElement.style.opacity = '';
+    if (hideTarget) {
+      toElement.style.opacity = '';
+    }
+
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
+    }
+
     clone.remove();
-    if (activeClone === clone) activeClone = null;
+
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    removeActiveClass();
     return;
   }
 
@@ -267,11 +296,22 @@ const stableTarget = await stableTargetPromise;
 
   activeAnimation = animation;
 
+  let cleaned = false;
+
   const cleanup = () => {
-    toElement.style.opacity = '';
-    fromElement.style.opacity = '';
+    if (cleaned) return;
+    cleaned = true;
+
+    if (hideTarget) {
+      toElement.style.opacity = '';
+    }
+
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
+    }
 
     clone.remove();
+    removeActiveClass();
 
     if (activeClone === clone) {
       activeClone = null;
