@@ -1273,18 +1273,8 @@ const handleToggleMenu = () => {
             >
               Show more
             </button>
-
-            {hasMoreSearchPanelProducts && (
-  <button
-    type="button"
-    className="custom-search-show-more"
-    onClick={handleShowMoreSearchProducts}
-  >
-    Show more
-  </button>
-)}
-
-{faqPreviewItems.length > 0 && (
+          )}
+          {faqPreviewItems.length > 0 && (
   <div className="custom-search-faq-preview">
     <div className="custom-search-faq-preview-header">
       <p className="custom-search-section-title">FAQs</p>
@@ -1321,7 +1311,6 @@ const handleToggleMenu = () => {
     </div>
   </div>
 )}
-          )}
         </div>
       )}
     </div>
