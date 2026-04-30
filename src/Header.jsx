@@ -7,6 +7,7 @@ import './Header.css';
 import Cart from './Cart';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
+import { startProductImageTransition } from './utils/productImageTransition';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
@@ -118,29 +119,6 @@ const getSearchMoneyValue = (value) => {
   return Number(String(value || '').replace(/[^0-9.]/g, ''));
 };
 
-const getSearchFirstVariationWithImage = (product) => {
-  const variations = Array.isArray(product?.variations) ? product.variations : [];
-
-  return variations.find(variation => {
-    if (Array.isArray(variation?.gallery) && variation.gallery.length > 0) return true;
-    if (variation?.thumbnail) return true;
-    if (variation?.hoverImage) return true;
-    return false;
-  }) || null;
-};
-
-const getSearchItemGallery = (item) => {
-  if (Array.isArray(item?.gallery) && item.gallery.length > 0) {
-    return item.gallery;
-  }
-
-  if (item?.thumbnail) {
-    return [item.thumbnail, item.hoverImage].filter(Boolean);
-  }
-
-  return [];
-};
-
 const getSearchProductDisplay = (product, selectedColor) => {
   const variation = getSearchProductVariationForColor(product, selectedColor);
   const displayItem = variation || product;
@@ -233,6 +211,7 @@ return {
   title: display.title,
   image: display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png',
   gallery: display.gallery,
+  selectedColor: colorOptions[0] || '',
   price: display.price > 0 ? `$${display.price.toFixed(2)}` : ''
 };
     });
@@ -245,6 +224,8 @@ const Header = () => {
   const searchInputRef = useRef(null);
 const searchAbortRef = useRef(null);
 const searchDebounceRef = useRef(null);
+const searchImageRefs = useRef(new Map());
+const searchClickLockRef = useRef(false);
 const [searchResults, setSearchResults] = useState([]);
 const [searchLoading, setSearchLoading] = useState(false);
 const [searchError, setSearchError] = useState('');
@@ -353,6 +334,10 @@ const visibleSearchPanelProducts = useMemo(() => {
 
 const hasMoreSearchPanelProducts = searchProductVisibleCount < searchPanelProducts.length;
 
+const getSearchTransitionKey = (product, color = '') => {
+  return `${product?.id || ''}:${color || 'default'}`;
+};
+
 const handleSearchProductColor = (productId, color) => {
   setSearchProductColors(prev => ({
     ...prev,
@@ -360,12 +345,45 @@ const handleSearchProductColor = (productId, color) => {
   }));
 };
 
-const handleSearchProductClick = (product) => {
+const handleSearchProductClick = (product, selectedColorOverride = '', displayOverride = null) => {
+  if (searchClickLockRef.current) return;
+
+  searchClickLockRef.current = true;
+
+  setTimeout(() => {
+    searchClickLockRef.current = false;
+  }, 900);
+
   const colorOptions = getSearchProductColorOptions(product);
-  const selectedColor = searchProductColors[String(product.id)] || colorOptions[0] || '';
+  const selectedColor = selectedColorOverride || searchProductColors[String(product.id)] || colorOptions[0] || '';
+  const display = displayOverride || getSearchProductDisplay(product, selectedColor);
+  const transitionKey = getSearchTransitionKey(product, selectedColor);
+  const sourceEl = searchImageRefs.current.get(transitionKey);
+  const sourceSrc = display.gallery?.[0] || display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+
+  if (sourceEl) {
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: window.innerWidth <= 768 ? 520 : 620,
+      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+      zIndex: 100200
+    });
+  }
 
   closeSearch();
-  navigate(`/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`);
+
+  navigate(`/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`, {
+    state: {
+      product,
+      initialColor: selectedColor || null,
+      transitionSourceDisplayId: product.id,
+      transitionSourceSrc: sourceSrc,
+      fromProductGrid: true,
+      fromSearch: true
+    }
+  });
 };
 
 const handleShowMoreSearchProducts = () => {
@@ -1237,6 +1255,7 @@ const handleToggleMenu = () => {
               const colorOptions = getSearchProductColorOptions(product);
               const selectedColor = searchProductColors[String(product.id)] || colorOptions[0] || '';
               const display = getSearchProductDisplay(product, selectedColor);
+              const transitionKey = getSearchTransitionKey(product, selectedColor);
 
               return (
                 <div
@@ -1244,23 +1263,30 @@ const handleToggleMenu = () => {
                   className="custom-search-product-list-card"
                   role="button"
                   tabIndex={0}
-                  onClick={() => handleSearchProductClick(product)}
+                  onClick={() => handleSearchProductClick(product, selectedColor, display)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      handleSearchProductClick(product);
+                      handleSearchProductClick(product, selectedColor, display);
                     }
                   }}
                 >
 <div className="custom-search-product-list-image">
-  <img
-    src={display.image}
-    alt={display.title}
-    onError={e => {
-      e.currentTarget.onerror = null;
-      e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-    }}
-  />
+<img
+  ref={(el) => {
+    if (el) {
+      searchImageRefs.current.set(transitionKey, el);
+    } else {
+      searchImageRefs.current.delete(transitionKey);
+    }
+  }}
+  src={display.image}
+  alt={display.title}
+  onError={e => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+  }}
+/>
 </div>
 
                   <div className="custom-search-product-list-info">
@@ -1385,16 +1411,29 @@ const handleToggleMenu = () => {
             key={product.id}
             type="button"
             className="custom-search-result-card"
-            onClick={() => handleSearchResultClick(product)}
+            onClick={() => handleSearchProductClick(product, product.selectedColor || '', {
+  title: product.title,
+  image: product.image,
+  gallery: product.gallery || [],
+  price: getSearchMoneyValue(product.price)
+})}
           >
             <span className="custom-search-result-image">
 <img
+  ref={(el) => {
+    const transitionKey = getSearchTransitionKey(product, product.selectedColor || '');
+    if (el) {
+      searchImageRefs.current.set(transitionKey, el);
+    } else {
+      searchImageRefs.current.delete(transitionKey);
+    }
+  }}
   src={product.image}
   alt={product.title}
-onError={e => {
-  e.currentTarget.onerror = null;
-  e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-}}
+  onError={e => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
+  }}
 />
             </span>
 
