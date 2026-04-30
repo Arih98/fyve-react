@@ -379,20 +379,20 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
       document.activeElement.blur();
     }
 
-    startProductImageTransition({
-      src: sourceSrc,
-      fromElement: sourceEl,
-      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: window.innerWidth <= 768 ? 620 : 700,
-      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-      zIndex: 100200,
-      restoreFromElement: false,
-      hideTarget: true
-    });
+startProductImageTransition({
+  src: sourceSrc,
+  fromElement: sourceEl,
+  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+  duration: window.innerWidth <= 768 ? 620 : 700,
+  minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+  zIndex: 10001,
+  restoreFromElement: false,
+  hideTarget: true
+});
 
-    navigate(destination, {
-      state: navigationState
-    });
+navigate(destination, {
+  state: navigationState
+});
 
     return;
   }
@@ -404,19 +404,6 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
   });
 };
 
-  navigate(destination, {
-    state: navigationState
-  });
-
-  return;
-}
-
-  closeSearch();
-
-  navigate(destination, {
-    state: navigationState
-  });
-};
 
 const handleShowMoreSearchProducts = () => {
   setSearchProductVisibleCount(prev => Math.min(prev + 6, searchPanelProducts.length));
@@ -955,6 +942,7 @@ useEffect(() => {
   setSearchQuery('');
   setSearchResults([]);
   setSearchError('');
+  setSearchLoading(false);
 }, [location.pathname]);
 
   const handleMenuImageChange = (newId) => {
