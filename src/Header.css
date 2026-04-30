@@ -837,7 +837,11 @@ body.search-open {
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
+  padding-left: 16px;
+  padding-right: 0;
   padding-bottom: 4px;
+  box-sizing: border-box;
+  scroll-padding-left: 16px;
   scrollbar-width: none;
 }
 

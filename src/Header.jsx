@@ -274,7 +274,6 @@ const [searchProductVisibleCount, setSearchProductVisibleCount] = useState(6);
 const [searchProductColors, setSearchProductColors] = useState({});
 const [allProducts, setAllProducts] = useState([]);
 const [allProductsLoading, setAllProductsLoading] = useState(false);
-const hasTriedLoadSearchProductsRef = useRef(false);
 const [isSearchClosing, setIsSearchClosing] = useState(false);
 const searchCloseTimeoutRef = useRef(null);
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
