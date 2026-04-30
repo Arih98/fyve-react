@@ -159,7 +159,7 @@ export const startProductImageTransition = async ({
   duration = 750,
   minTargetTop = 0,
   zIndex = 999999,
-  cleanupDelay = 0,
+  restoreFromElement = true,
   hideTarget = true
 }) => {
   if (!src || !fromElement) return;
@@ -191,19 +191,19 @@ export const startProductImageTransition = async ({
 
   activeClone = clone;
 
-const stableTargetPromise = waitForStableElementRect(toElementGetter, {
-  maxAttempts: 90,
-  maxFramesPerAttempt: 20,
-  stableFrames: 2,
-  hideElementWhileWaiting: hideTarget
-});
+  fromElement.style.opacity = '0';
+  clone.style.opacity = '1';
 
-await waitForImageReady(clone);
+  const stableTargetPromise = waitForStableElementRect(toElementGetter, {
+    maxAttempts: 90,
+    maxFramesPerAttempt: 20,
+    stableFrames: 2,
+    hideElementWhileWaiting: hideTarget
+  });
 
-fromElement.style.opacity = '0';
-clone.style.opacity = '1';
+  await waitForImageReady(clone);
 
-const stableTarget = await stableTargetPromise;
+  const stableTarget = await stableTargetPromise;
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
     fromElement.style.opacity = '';
@@ -213,13 +213,13 @@ const stableTarget = await stableTargetPromise;
   }
 
   const toElement = stableTarget.element;
-
   const stableRect = stableTarget.rect;
 
   if (!stableRect.width || !stableRect.height) {
     if (hideTarget) {
-  toElement.style.opacity = '';
-}
+      toElement.style.opacity = '';
+    }
+
     fromElement.style.opacity = '';
     clone.remove();
     if (activeClone === clone) activeClone = null;
@@ -275,9 +275,12 @@ const stableTarget = await stableTargetPromise;
 
   const cleanup = () => {
     if (hideTarget) {
-  toElement.style.opacity = '';
-}
-    fromElement.style.opacity = '';
+      toElement.style.opacity = '';
+    }
+
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
+    }
 
     clone.remove();
 
@@ -290,17 +293,8 @@ const stableTarget = await stableTargetPromise;
     }
   };
 
-const finishCleanup = () => {
-  if (cleanupDelay > 0) {
-    window.setTimeout(cleanup, cleanupDelay);
-    return;
-  }
-
-  cleanup();
-};
-
-animation.addEventListener('finish', finishCleanup, { once: true });
-animation.addEventListener('cancel', cleanup, { once: true });
+  animation.addEventListener('finish', cleanup, { once: true });
+  animation.addEventListener('cancel', cleanup, { once: true });
 };
 
 export const clearProductImageTransitionClone = () => {

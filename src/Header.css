@@ -20,14 +20,17 @@ body.locked {
   width: 100%;
 }
 
-body.search-transitioning .custom-search-container.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: none;
+.custom-search-container.is-transitioning-out {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: none !important;
 }
 
-body.search-transitioning .custom-search-container.active .custom-search-inner {
-  opacity: 1;
+.custom-search-container.is-transitioning-out .custom-search-inner,
+.custom-search-container.is-transitioning-out .custom-search-mobile-floating-close {
+  opacity: 0 !important;
+  transition: none !important;
 }
 
 .flying-cart-clone {

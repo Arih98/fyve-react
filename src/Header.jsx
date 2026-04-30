@@ -226,6 +226,8 @@ const searchAbortRef = useRef(null);
 const searchDebounceRef = useRef(null);
 const searchImageRefs = useRef(new Map());
 const searchClickLockRef = useRef(false);
+const [isSearchTransitioningOut, setIsSearchTransitioningOut] = useState(false);
+const searchTransitionTimeoutRef = useRef(null);
 const [searchResults, setSearchResults] = useState([]);
 const [searchLoading, setSearchLoading] = useState(false);
 const [searchError, setSearchError] = useState('');
@@ -275,8 +277,6 @@ const [searchProductColors, setSearchProductColors] = useState({});
 const [allProducts, setAllProducts] = useState([]);
 const [allProductsLoading, setAllProductsLoading] = useState(false);
 const [isSearchClosing, setIsSearchClosing] = useState(false);
-const searchTransitionCloseTimeoutRef = useRef(null);
-const isSearchTransitioningRef = useRef(false);
 const searchCloseTimeoutRef = useRef(null);
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
@@ -362,8 +362,9 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
   const transitionKey = getSearchTransitionKey(product, selectedColor);
   const sourceEl = searchImageRefs.current.get(transitionKey);
   const sourceSrc = display.gallery?.[0] || display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
-  const transitionDuration = window.innerWidth <= 768 ? 520 : 620;
+
   const destination = `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`;
+
   const navigationState = {
     product,
     initialColor: selectedColor || null,
@@ -374,30 +375,35 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
   };
 
   if (sourceEl) {
-    clearTimeout(searchTransitionCloseTimeoutRef.current);
+    clearTimeout(searchTransitionTimeoutRef.current);
+    setIsSearchTransitioningOut(true);
 
-    isSearchTransitioningRef.current = true;
-    document.body.classList.add('search-transitioning');
-
-startProductImageTransition({
-  src: sourceSrc,
-  fromElement: sourceEl,
-  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-  duration: window.innerWidth <= 768 ? 520 : 620,
-  minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-  zIndex: 100200,
-  cleanupDelay: window.innerWidth <= 768 ? 260 : 180
-});
-
-    navigate(destination, {
-      state: navigationState
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: window.innerWidth <= 768 ? 620 : 700,
+      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+      zIndex: 100200,
+      restoreFromElement: false,
+      hideTarget: true
     });
 
-    searchTransitionCloseTimeoutRef.current = setTimeout(() => {
-      isSearchTransitioningRef.current = false;
-      document.body.classList.remove('search-transitioning');
-      closeSearch();
-    }, transitionDuration + 120);
+setIsSearchClosing(true);
+setIsSearchOpen(false);
+setSearchQuery('');
+setSearchResults([]);
+setSearchError('');
+setSearchLoading(false);
+
+searchTransitionTimeoutRef.current = setTimeout(() => {
+  setIsSearchTransitioningOut(false);
+  setIsSearchClosing(false);
+}, 900);
+
+navigate(destination, {
+  state: navigationState
+});
 
     return;
   }
@@ -530,8 +536,7 @@ useEffect(() => {
   return () => {
     clearTimeout(cartAddedPopupTimeoutRef.current);
     clearTimeout(searchCloseTimeoutRef.current);
-    clearTimeout(searchTransitionCloseTimeoutRef.current);
-    document.body.classList.remove('search-transitioning');
+    clearTimeout(searchTransitionTimeoutRef.current);
 
     if (cartAddedPopupAnimationRef.current) {
       cartAddedPopupAnimationRef.current.kill();
@@ -813,12 +818,10 @@ const closeSearch = () => {
     document.activeElement.blur();
   }
 
-  clearTimeout(searchTransitionCloseTimeoutRef.current);
-isSearchTransitioningRef.current = false;
-document.body.classList.remove('search-transitioning');
-
   clearTimeout(searchCloseTimeoutRef.current);
+  clearTimeout(searchTransitionTimeoutRef.current);
 
+  setIsSearchTransitioningOut(false);
   setIsSearchClosing(true);
   setIsSearchOpen(false);
   setSearchQuery('');
@@ -826,9 +829,9 @@ document.body.classList.remove('search-transitioning');
   setSearchError('');
   setSearchLoading(false);
 
-searchCloseTimeoutRef.current = setTimeout(() => {
-  setIsSearchClosing(false);
-}, 50);
+  searchCloseTimeoutRef.current = setTimeout(() => {
+    setIsSearchClosing(false);
+  }, 50);
 
   if (searchAbortRef.current) {
     searchAbortRef.current.abort();
@@ -948,8 +951,6 @@ useEffect(() => {
 }, [isSearchOpen, searchQuery, searchPanelProducts, allProductsLoading]);
 
 useEffect(() => {
-  if (isSearchTransitioningRef.current) return;
-
   setIsSearchOpen(false);
   setSearchQuery('');
   setSearchResults([]);
@@ -1208,7 +1209,7 @@ const handleToggleMenu = () => {
 
 {!usePdpBottomAddVariant && (
   <div
-    className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
+    className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}${isSearchTransitioningOut ? ' is-transitioning-out' : ''}`}
     aria-hidden={!isSearchOpen}
     role="dialog"
     aria-modal={isSearchOpen ? 'true' : undefined}
