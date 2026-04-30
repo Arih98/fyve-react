@@ -139,28 +139,28 @@ export const startProductImageTransition = async ({
   activeAnimation = animation;
 
   const cleanup = () => {
+  if (hideTarget) {
+    toElement.style.opacity = '';
+  }
+
+  if (restoreFromElement) {
+    fromElement.style.opacity = '';
+  }
+
+  requestAnimationFrame(() => {
+    clone.remove();
+
     document.body.classList.remove('product-image-transition-active');
 
-    if (hideTarget) {
-      toElement.style.opacity = '';
+    if (activeClone === clone) {
+      activeClone = null;
     }
 
-    if (restoreFromElement) {
-      fromElement.style.opacity = '';
+    if (activeAnimation === animation) {
+      activeAnimation = null;
     }
-
-    requestAnimationFrame(() => {
-      clone.remove();
-
-      if (activeClone === clone) {
-        activeClone = null;
-      }
-
-      if (activeAnimation === animation) {
-        activeAnimation = null;
-      }
-    });
-  };
+  });
+};
 
   animation.addEventListener('finish', cleanup, { once: true });
   animation.addEventListener('cancel', cleanup, { once: true });
