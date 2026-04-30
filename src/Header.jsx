@@ -1130,7 +1130,7 @@ const handleToggleMenu = () => {
   )}
 </div>
 
-{!useCartHeaderVariant && !usePdpBottomAddVariant && (
+{!usePdpBottomAddVariant && (
   <div
     className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
     aria-hidden={!isSearchOpen}
