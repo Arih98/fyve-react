@@ -159,7 +159,8 @@ export const startProductImageTransition = async ({
   duration = 750,
   minTargetTop = 0,
   zIndex = 999999,
-  cleanupDelay = 0
+  cleanupDelay = 0,
+  hideTarget = true
 }) => {
   if (!src || !fromElement) return;
 
