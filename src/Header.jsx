@@ -157,16 +157,18 @@ const getSearchProductDisplay = (product, selectedColor) => {
 
   const image = getSearchImageSrc(
     displayItem?.gallery,
+    displayItem?.thumbnail,
+    displayItem?.hoverImage,
     displayItem?.image,
     displayItem?.images,
-    displayItem?.thumbnail,
     displayItem?.featured_image,
     displayItem?.featuredImage,
     displayItem?.main_image,
     product?.gallery,
+    product?.thumbnail,
+    product?.hoverImage,
     product?.image,
     product?.images,
-    product?.thumbnail,
     product?.featured_image,
     product?.featuredImage,
     product?.main_image
@@ -1271,11 +1273,14 @@ const handleToggleMenu = () => {
                   }}
                 >
                   <div className="custom-search-product-list-image">
-                    <img
-                      src={display.image}
-                      alt={display.title}
-                      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                    />
+<img
+  src={product.image}
+  alt={product.title}
+  onError={e => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = '/api/Uploads/fallback-image.png';
+  }}
+/>
                   </div>
 
                   <div className="custom-search-product-list-info">
@@ -1403,10 +1408,13 @@ const handleToggleMenu = () => {
             onClick={() => handleSearchResultClick(product)}
           >
             <span className="custom-search-result-image">
-              <img
+<img
   src={product.image}
   alt={product.title}
-  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+  onError={e => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = '/api/Uploads/fallback-image.png';
+  }}
 />
             </span>
 
