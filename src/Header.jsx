@@ -142,20 +142,18 @@ const getSearchItemGallery = (item) => {
 };
 
 const getSearchProductDisplay = (product, selectedColor) => {
-  const colorVariation = getSearchProductVariationForColor(product, selectedColor);
-  const fallbackVariation = getSearchFirstVariationWithImage(product);
-  const displayItem = colorVariation || product;
+  const variation = getSearchProductVariationForColor(product, selectedColor);
+  const displayItem = variation || product;
 
-  const gallery = [
-    ...getSearchItemGallery(displayItem),
-    ...getSearchItemGallery(product),
-    ...getSearchItemGallery(fallbackVariation)
-  ].filter(Boolean);
+  const gallery = Array.isArray(displayItem?.gallery) && displayItem.gallery.length > 0
+    ? displayItem.gallery
+    : Array.isArray(product?.gallery) && product.gallery.length > 0
+      ? product.gallery
+      : [];
 
   const image = gallery[0] || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
-  const priceSource = colorVariation || fallbackVariation || product;
-  const price = getSearchMoneyValue(priceSource?.price ?? product?.price);
+  const price = getSearchMoneyValue(displayItem?.price ?? product?.price);
 
   return {
     title: displayItem?.title || displayItem?.name || product?.title || product?.name || '',
