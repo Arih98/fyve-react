@@ -1155,9 +1155,10 @@ body.size-panel-open {
 
   .product-gallery-image-wrapper,
   .product-main-image-wrapper {
-    flex: 0 0 88%;
-    width: 88%;
-    min-width: 88%;
+    flex: 0 0 720px;
+    width: 720px;
+    min-width: 720px;
+    max-width: 720px;
     aspect-ratio: 1 / 1;
     height: auto;
     scroll-snap-align: start;
