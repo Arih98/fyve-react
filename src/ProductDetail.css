@@ -685,7 +685,7 @@ body.size-panel-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
+  padding: 1.5rem 0;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1113,6 +1113,17 @@ body.size-panel-open {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #4a494a;
+}
+.product-description-accordion-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
 }
 }
 
