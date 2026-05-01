@@ -1114,6 +1114,11 @@ body.size-panel-open {
     padding-left: 30px;
   }
 
+  .product-image-gallery {
+    width: 100%;
+    max-width: 1020px;
+  }
+
   .images-container {
     flex: 1 1 auto;
     width: auto;
