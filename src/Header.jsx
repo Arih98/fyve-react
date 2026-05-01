@@ -7,11 +7,7 @@ import './Header.css';
 import Cart from './Cart';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
-import {
-  startProductImageTransition,
-  prepareProductImageTransition,
-  clearProductImageTransitionClone
-} from './utils/productImageTransition';
+import { startProductImageTransition } from './utils/productImageTransition';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
@@ -467,39 +463,42 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
     searchClickLockRef.current = false;
   }, 900);
 
-  const data = getSearchProductTransitionData(product, selectedColorOverride, displayOverride);
+  const colorOptions = getSearchProductColorOptions(product);
+  const selectedColor = selectedColorOverride || searchProductColors[String(product.id)] || colorOptions[0] || '';
+  const display = displayOverride || getSearchProductDisplay(product, selectedColor);
+  const transitionKey = getSearchTransitionKey(product, selectedColor);
+  const sourceEl = searchImageRefs.current.get(transitionKey);
+  const sourceSrc = display.gallery?.[0] || display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
-  if (data.sourceEl) {
+  const destination = `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`;
+
+  const navigationState = {
+    product,
+    initialColor: selectedColor || null,
+    transitionSourceDisplayId: product.id,
+    transitionSourceSrc: sourceSrc,
+    fromProductGrid: true,
+    fromSearch: true
+  };
+
+  if (sourceEl) {
     if (document.activeElement?.closest?.('.custom-search-container')) {
       document.activeElement.blur();
     }
 
-    const prepared = searchPreparedTransitionRef.current;
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: window.innerWidth <= 768 ? 620 : 700,
+      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+      zIndex: 100200,
+      restoreFromElement: false,
+      hideTarget: true
+    });
 
-    if (prepared?.key === data.transitionKey && prepared.transition) {
-      prepared.transition.play({
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: window.innerWidth <= 768 ? 620 : 700,
-        minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-        hideTarget: true
-      });
-
-      searchPreparedTransitionRef.current = null;
-    } else {
-startProductImageTransition({
-  src: sourceSrc,
-  fromElement: sourceEl,
-  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-  duration: window.innerWidth <= 768 ? 620 : 700,
-  minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-  zIndex: 100200,
-  restoreFromElement: false,
-  hideTarget: true
-});
-    }
-
-    navigate(data.destination, {
-      state: data.navigationState
+    navigate(destination, {
+      state: navigationState
     });
 
     return;
@@ -507,8 +506,8 @@ startProductImageTransition({
 
   closeSearch();
 
-  navigate(data.destination, {
-    state: data.navigationState
+  navigate(destination, {
+    state: navigationState
   });
 };
 
