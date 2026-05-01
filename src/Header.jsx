@@ -7,7 +7,11 @@ import './Header.css';
 import Cart from './Cart';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
-import { startProductImageTransition } from './utils/productImageTransition';
+import {
+  startProductImageTransition,
+  prepareProductImageTransition,
+  clearProductImageTransitionClone
+} from './utils/productImageTransition';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
