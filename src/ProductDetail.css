@@ -1,9 +1,7 @@
 .product-detail-container {
   display: flex;
   width: 100%;
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 100%;
   padding-bottom: 125px;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -1111,6 +1109,11 @@ body.size-panel-open {
 }
 
 @media (min-width: 769px) {
+  .details-container {
+  flex: 0 0 360px;
+  width: 360px;
+  max-width: 360px;
+}
   .size-panel-backdrop {
     align-items: center;
   }
