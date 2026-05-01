@@ -200,6 +200,7 @@
   gap: 10px;
   margin-top: 8px;
   flex-wrap: wrap;
+  padding-bottom: 3rem;
 }
 
 .color-option,
@@ -225,11 +226,11 @@
   color: #4a494a;
   font-family: 'Quasimoda', sans-serif;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
 }
 
@@ -430,8 +431,8 @@
 }
 
 .size-picker-chevron {
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   display: block;
 }
 
@@ -539,7 +540,7 @@ body.size-panel-open {
 .add-to-cart-button {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 1.2rem;
   text-transform: none;
   color: #fff;
   background-color: #4a494a;
@@ -550,9 +551,15 @@ body.size-panel-open {
   margin-top: 20px;
   transition: background-color 0.2s ease;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.add-to-cart-text {
+  display: block;
+  width: 100%;
+  text-align: center;
 }
 
 .add-to-cart-price {
