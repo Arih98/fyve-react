@@ -7,11 +7,7 @@ import './Header.css';
 import Cart from './Cart';
 import { useAuth } from './context/AuthContext';
 import { faqItems } from './data/faqItems';
-import {
-  startProductImageTransition,
-  prepareProductImageTransition,
-  clearProductImageTransitionClone
-} from './utils/productImageTransition';
+import { startProductImageTransition } from './utils/productImageTransition';
 
 const normalizeSearchText = (value) => {
   return String(value || '')
@@ -230,8 +226,6 @@ const searchAbortRef = useRef(null);
 const searchDebounceRef = useRef(null);
 const searchImageRefs = useRef(new Map());
 const searchClickLockRef = useRef(false);
-const searchPreparedTransitionRef = useRef(null);
-const searchPointerRef = useRef(null);
 const [searchResults, setSearchResults] = useState([]);
 const [searchLoading, setSearchLoading] = useState(false);
 const [searchError, setSearchError] = useState('');
@@ -382,16 +376,6 @@ const getSearchProductTransitionData = (product, selectedColorOverride = '', dis
   };
 };
 
-const cancelPreparedSearchTransition = () => {
-  if (searchPreparedTransitionRef.current?.transition) {
-    searchPreparedTransitionRef.current.transition.cancel();
-  }
-
-  searchPreparedTransitionRef.current = null;
-  searchPointerRef.current = null;
-  clearProductImageTransitionClone();
-};
-
 const prepareSearchProductTransition = (product, selectedColorOverride = '', displayOverride = null) => {
   const data = getSearchProductTransitionData(product, selectedColorOverride, displayOverride);
 
@@ -486,19 +470,15 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
   };
 
   if (sourceEl) {
-    if (document.activeElement?.closest?.('.custom-search-container')) {
-      document.activeElement.blur();
-    }
+    const isMobileViewport = window.innerWidth <= 768;
 
     startProductImageTransition({
       src: sourceSrc,
       fromElement: sourceEl,
       toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: window.innerWidth <= 768 ? 620 : 700,
-      minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-      zIndex: 100200,
-      restoreFromElement: false,
-      hideTarget: true
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 1 : 999999
     });
 
     navigate(destination, {
@@ -1178,7 +1158,7 @@ const menuItems = [
     id: 'ss26',
     name: 'SS26',
     path: '/products?category=ss26',
-    image: '/api/Uploads/LOOK_11_2043-1.webp',
+    image: '/assets/DSC00542copy-2-web.webp',
     children: [
       { id: 'regents', name: 'The Regents Collection', path: '/products?category=the-regents-collection' },
       { id: 'grosvenor', name: 'The Grosvenor Collection', path: '/products?category=the-grosvenor-collection' },
@@ -1186,11 +1166,11 @@ const menuItems = [
       { id: 'bloomsbury', name: 'The Bloomsbury Collection', path: '/products?category=the-bloomsbury-collection' }
     ]
   },
-  { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/assets/DSC06727copy-1-web.webp' },
-  { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/assets/DSC08194copy-2-web.webp' },
-  { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/assets/DSC07108copycopy-web.webp' },
-  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/assets/DSC07888copy-1-web.webp' },
-  { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/assets/DSC07888copy-1-web.webp },
+  { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/assets/DSC07151copy-web.webp' },
+  { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/assets/DSC07292copy-1-web.webp' },
+  { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/assets/DSC08194copy-2-web.webp' },
+  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/assets/DSC09497copy-1-web.webp' },
+  { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/assets/DSC08584copy-3-web.webp' },
 ];
 
 const handleToggleMenu = () => {
@@ -1391,10 +1371,6 @@ const handleToggleMenu = () => {
   className="custom-search-product-list-card"
   role="button"
   tabIndex={0}
-  onPointerDown={(e) => handleSearchProductPointerDown(product, selectedColor, display, e)}
-  onPointerMove={handleSearchProductPointerMove}
-  onPointerCancel={handleSearchProductPointerCancel}
-  onPointerLeave={handleSearchProductPointerCancel}
   onClick={() => handleSearchProductClick(product, selectedColor, display)}
   onKeyDown={(e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -1551,15 +1527,11 @@ onClick={(e) => {
 
   return (
     <button
-      key={product.id}
-      type="button"
-      className="custom-search-result-card"
-      onPointerDown={(e) => handleSearchProductPointerDown(product, product.selectedColor || '', display, e)}
-      onPointerMove={handleSearchProductPointerMove}
-      onPointerCancel={handleSearchProductPointerCancel}
-      onPointerLeave={handleSearchProductPointerCancel}
-      onClick={() => handleSearchProductClick(product, product.selectedColor || '', display)}
-    >
+  key={product.id}
+  type="button"
+  className="custom-search-result-card"
+  onClick={() => handleSearchProductClick(product, product.selectedColor || '', display)}
+>
             <span className="custom-search-result-image">
 <img
   ref={(el) => {
