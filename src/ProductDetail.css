@@ -8,61 +8,28 @@
 }
 
 .images-container {
-  width: min(815px, 58vw);
-  max-width: 58vw;
-  flex: 0 0 min(815px, 58vw);
-  overflow: hidden;
+  width: 815px;
+  max-width: 100%;
+  flex-shrink: 0;
 }
 
 .product-image-gallery {
-  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  overflow: hidden;
+  gap: 20px;
 }
 
 .product-image-gallery-track {
-  width: 100%;
   display: flex;
-  flex-direction: row;
-  gap: 4px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-snap-stop: always;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-  cursor: grab;
-  user-select: none;
-}
-
-.product-image-gallery-track.is-dragging {
-  cursor: grabbing;
-}
-
-.product-image-gallery-track::-webkit-scrollbar {
-  display: none;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .product-gallery-image-wrapper,
 .product-main-image-wrapper {
   position: relative;
-  flex: 0 0 100%;
   width: 100%;
-  min-width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #f7f7f7;
-  overflow: hidden;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  cursor: zoom-in;
-}
-
-.product-gallery-image-box {
-  width: 100%;
-  height: 100%;
+  aspect-ratio: 3 / 4.7;
   background: #f7f7f7;
   overflow: hidden;
 }
@@ -74,7 +41,6 @@
   object-fit: cover;
   display: block;
   box-sizing: border-box;
-  pointer-events: none;
 }
 
 .product-gallery-progress {
@@ -1141,9 +1107,6 @@ body.size-panel-open {
   .add-to-cart-button {
   display: none;
 }
-.product-image-gallery-track {
-  cursor: auto;
-}
 }
 
 @media (min-width: 769px) {
@@ -1155,5 +1118,40 @@ body.size-panel-open {
     border-radius: 20px;
     max-width: 420px;
     height: 420px;
+  }
+}
+
+@media (min-width: 769px) {
+  .product-image-gallery-track {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .product-image-gallery-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-gallery-image-wrapper,
+  .product-main-image-wrapper {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .product-gallery-image-box {
+    width: 100%;
+    height: 100%;
+    background: #f7f7f7;
+    overflow: hidden;
   }
 }
