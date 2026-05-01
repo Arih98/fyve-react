@@ -758,7 +758,7 @@ body.size-panel-open {
 .accordion-description-content p {
   font-family: 'Quasimoda', sans-serif;
   font-weight: 400;
-  font-size: 1.2em;
+  font-size: clamp(1rem, .94rem + .26vw, 1.25rem);
   line-height: 1.4;
   color: #4a494a;
 }
