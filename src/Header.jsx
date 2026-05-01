@@ -345,36 +345,7 @@ const handleSearchProductColor = (productId, color) => {
   }));
 };
 
-const getSearchProductTransitionData = (product, selectedColorOverride = '', displayOverride = null) => {
-  const colorOptions = getSearchProductColorOptions(product);
-  const selectedColor = selectedColorOverride || searchProductColors[String(product.id)] || colorOptions[0] || '';
-  const display = displayOverride || getSearchProductDisplay(product, selectedColor);
-  const transitionKey = getSearchTransitionKey(product, selectedColor);
-  const sourceEl = searchImageRefs.current.get(transitionKey);
-  const sourceSrc = display.gallery?.[0] || display.image || 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
 
-  const destination = `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`;
-
-  const navigationState = {
-    product,
-    initialColor: selectedColor || null,
-    transitionSourceDisplayId: product.id,
-    transitionSourceSrc: sourceSrc,
-    fromProductGrid: true,
-    fromSearch: true
-  };
-
-  return {
-    colorOptions,
-    selectedColor,
-    display,
-    transitionKey,
-    sourceEl,
-    sourceSrc,
-    destination,
-    navigationState
-  };
-};
 
 const prepareSearchProductTransition = (product, selectedColorOverride = '', displayOverride = null) => {
   const data = getSearchProductTransitionData(product, selectedColorOverride, displayOverride);
