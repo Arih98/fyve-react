@@ -837,6 +837,161 @@ const handleGalleryImageClick = (idx) => {
   openImageViewer(idx);
 };
 
+const productAccordions = (
+  <>
+    <div className="product-description-accordion">
+      <button
+        type="button"
+        className="product-description-accordion-toggle"
+        onClick={() => {
+          setIsSizeGuideOpen(prev => !prev);
+          setIsDescriptionOpen(false);
+          setIsDeliveryOpen(false);
+        }}
+        aria-expanded={isSizeGuideOpen}
+      >
+        <span className="product-description-accordion-title">Size Guide</span>
+        <span
+          ref={sizeGuideIconRef}
+          className="product-description-accordion-icon"
+          aria-hidden="true"
+        >
+          <span />
+          <span />
+        </span>
+      </button>
+
+      <div
+        ref={sizeGuidePanelRef}
+        className="product-description-accordion-panel"
+      >
+        <div className="product-description-accordion-inner">
+          <div className="accordion-description-content size-guide-content">
+            {hasSizeChart ? (
+              <>
+                {sizeChart?.title && (
+                  <h3 className="size-guide-title">{sizeChart.title}</h3>
+                )}
+
+                <div className="size-guide-table-wrap">
+                  <table className="size-guide-table">
+                    <thead>
+                      <tr>
+                        <th>Size</th>
+                        {showSizeChartMeasurement1 && (
+                          <th>{sizeChartMeasurement1Title || 'Measurement 1'}</th>
+                        )}
+                        {showSizeChartMeasurement2 && (
+                          <th>{sizeChartMeasurement2Title || 'Measurement 2'}</th>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sizeChartRows.map((row, index) => (
+                        <tr key={`${row.size}-${index}`}>
+                          <td>{row.size}</td>
+                          {showSizeChartMeasurement1 && (
+                            <td>{row.measurement_1 || ''}</td>
+                          )}
+                          {showSizeChartMeasurement2 && (
+                            <td>{row.measurement_2 || ''}</td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {sizeChart?.custom_text && (
+                  <p className="size-guide-custom-text">{sizeChart.custom_text}</p>
+                )}
+              </>
+            ) : (
+              <p className="size-guide-empty-text">
+                A size guide is not available for this product yet. Please contact us if you need help choosing a size.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="product-description-accordion">
+      <button
+        type="button"
+        className="product-description-accordion-toggle"
+        onClick={() => {
+          setIsDescriptionOpen(prev => !prev);
+          setIsSizeGuideOpen(false);
+          setIsDeliveryOpen(false);
+        }}
+        aria-expanded={isDescriptionOpen}
+      >
+        <span className="product-description-accordion-title">Materials</span>
+        <span
+          ref={descriptionIconRef}
+          className="product-description-accordion-icon"
+          aria-hidden="true"
+        >
+          <span />
+          <span />
+        </span>
+      </button>
+
+      <div
+        ref={descriptionPanelRef}
+        className="product-description-accordion-panel"
+      >
+        <div className="product-description-accordion-inner">
+          <div
+            className="product-description accordion-description-content"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayMaterialsDescription || '') }}
+          />
+        </div>
+      </div>
+    </div>
+
+    <div className="product-description-accordion">
+      <button
+        type="button"
+        className="product-description-accordion-toggle"
+        onClick={() => {
+          setIsDeliveryOpen(prev => !prev);
+          setIsSizeGuideOpen(false);
+          setIsDescriptionOpen(false);
+        }}
+        aria-expanded={isDeliveryOpen}
+      >
+        <span className="product-description-accordion-title">Delivery and Returns</span>
+        <span
+          ref={deliveryIconRef}
+          className="product-description-accordion-icon"
+          aria-hidden="true"
+        >
+          <span />
+          <span />
+        </span>
+      </button>
+
+      <div
+        ref={deliveryPanelRef}
+        className="product-description-accordion-panel"
+      >
+        <div className="product-description-accordion-inner">
+          <div className="accordion-description-content">
+            <p>
+              You can return your item(s) within 7 days of delivery. There will be an $8 charge to process your return, and we'll provide you with a prepaid shipping label to make the process as smooth as possible.
+            </p>
+            <p>
+              Please note, your return must be marked as posted within 7 calendar days from being delivered. Any returns received which do not meet our returns criteria will not be eligible for a refund.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </>
+);
+
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -847,61 +1002,68 @@ return (
     <div>
       <motion.div className="product-detail-container">
         <div className="images-container">
-  <div className="product-image-gallery">
-<div
-  ref={mobileGalleryRef}
-  className="product-image-gallery-track"
-  onScroll={handleMobileGalleryScroll}
-  onTouchStart={handleGalleryTouchStart}
-  onTouchMove={handleGalleryTouchMove}
->
-      {displayImages.map((img, idx) => {
-        const imageKey = `${current?.sku || product.id}-${idx}`;
+          <div className="product-image-gallery">
+            <div
+              ref={mobileGalleryRef}
+              className="product-image-gallery-track"
+              onScroll={handleMobileGalleryScroll}
+              onTouchStart={handleGalleryTouchStart}
+              onTouchMove={handleGalleryTouchMove}
+            >
+              {displayImages.map((img, idx) => {
+                const imageKey = `${current?.sku || product.id}-${idx}`;
 
-        return (
-          <div
-  ref={el => {
-    galleryRefs.current.set(imageKey, el);
-  }}
-  key={imageKey}
-  className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
-  onClick={() => handleGalleryImageClick(idx)}
->
-            <div className="product-gallery-image-box">
-  <img
-    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-                ref={el => {
-                  if (idx === 0) {
-                    mainImageRef.current = el;
-                  } else if (mainImageRef.current === el) {
-                    mainImageRef.current = null;
-                  }
-                }}
-                src={img}
-                alt={`${displayTitle} ${idx + 1}`}
-                className="product-gallery-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-              />
+                return (
+                  <div
+                    ref={el => {
+                      galleryRefs.current.set(imageKey, el);
+                    }}
+                    key={imageKey}
+                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+                    onClick={() => handleGalleryImageClick(idx)}
+                  >
+                    <div className="product-gallery-image-box">
+                      <img
+                        data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+                        ref={el => {
+                          if (idx === 0) {
+                            mainImageRef.current = el;
+                          } else if (mainImageRef.current === el) {
+                            mainImageRef.current = null;
+                          }
+                        }}
+                        src={img}
+                        alt={`${displayTitle} ${idx + 1}`}
+                        className="product-gallery-image"
+                        onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+
+            {displayImages.length > 1 && (
+              <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
+                <div
+                  className="product-gallery-progress-bar"
+                  style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
+                />
+              </div>
+            )}
           </div>
-        );
-      })}
-    </div>
 
-    {displayImages.length > 1 && (
-      <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
-        <div
-          className="product-gallery-progress-bar"
-          style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
-        />
-      </div>
-    )}
-  </div>
-</div>
+          {!isMobile && (
+            <div className="product-accordions-desktop">
+              {productAccordions}
+            </div>
+          )}
+        </div>
 
-{showDetails && (
-  <motion.div
-    className="details-container"
+        {showDetails && (
+          <motion.div
+            className="details-container"
+
     initial={
       shouldAnimateDetailsIn
         ? isMobile
@@ -1124,155 +1286,11 @@ onClick={closeSizePanel}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
-<div className="product-description-accordion">
-    <button
-      type="button"
-      className="product-description-accordion-toggle"
-      onClick={() => {
-        setIsSizeGuideOpen(prev => !prev);
-        setIsDescriptionOpen(false);
-        setIsDeliveryOpen(false);
-      }}
-      aria-expanded={isSizeGuideOpen}
-    >
-      <span className="product-description-accordion-title">Size Guide</span>
-      <span
-        ref={sizeGuideIconRef}
-        className="product-description-accordion-icon"
-        aria-hidden="true"
-      >
-        <span />
-        <span />
-      </span>
-    </button>
-
-    <div
-      ref={sizeGuidePanelRef}
-      className="product-description-accordion-panel"
-    >
-      <div className="product-description-accordion-inner">
-        <div className="accordion-description-content size-guide-content">
-  {hasSizeChart ? (
-    <>
-      {sizeChart?.title && (
-        <h3 className="size-guide-title">{sizeChart.title}</h3>
-      )}
-
-      <div className="size-guide-table-wrap">
-        <table className="size-guide-table">
-          <thead>
-            <tr>
-              <th>Size</th>
-              {showSizeChartMeasurement1 && (
-                <th>{sizeChartMeasurement1Title || 'Measurement 1'}</th>
-              )}
-              {showSizeChartMeasurement2 && (
-                <th>{sizeChartMeasurement2Title || 'Measurement 2'}</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {sizeChartRows.map((row, index) => (
-              <tr key={`${row.size}-${index}`}>
-                <td>{row.size}</td>
-                {showSizeChartMeasurement1 && (
-                  <td>{row.measurement_1 || ''}</td>
-                )}
-                {showSizeChartMeasurement2 && (
-                  <td>{row.measurement_2 || ''}</td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {sizeChart?.custom_text && (
-        <p className="size-guide-custom-text">{sizeChart.custom_text}</p>
-      )}
-    </>
-  ) : (
-    <p className="size-guide-empty-text">
-      A size guide is not available for this product yet. Please contact us if you need help choosing a size.
-    </p>
-  )}
-</div>
-      </div>
-    </div>
+{isMobile && (
+  <div className="product-accordions-mobile">
+    {productAccordions}
   </div>
-
-<div className="product-description-accordion">
-  <button
-    type="button"
-    className="product-description-accordion-toggle"
-onClick={() => {
-  setIsDescriptionOpen(prev => !prev);
-  setIsSizeGuideOpen(false);
-  setIsDeliveryOpen(false);
-}}
-    aria-expanded={isDescriptionOpen}
-  >
-    <span className="product-description-accordion-title">Materials</span>
-    <span
-      ref={descriptionIconRef}
-      className="product-description-accordion-icon"
-      aria-hidden="true"
-    >
-      <span />
-      <span />
-    </span>
-  </button>
-
-  <div
-    ref={descriptionPanelRef}
-    className="product-description-accordion-panel"
-  >
-    <div className="product-description-accordion-inner">
-      <div
-        className="product-description accordion-description-content"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayMaterialsDescription || '') }}
-      />
-    </div>
-  </div>
-</div>
-<div className="product-description-accordion">
-  <button
-    type="button"
-    className="product-description-accordion-toggle"
-onClick={() => {
-  setIsDeliveryOpen(prev => !prev);
-  setIsSizeGuideOpen(false);
-  setIsDescriptionOpen(false);
-}}
-    aria-expanded={isDeliveryOpen}
-  >
-    <span className="product-description-accordion-title">Delivery and Returns</span>
-    <span
-      ref={deliveryIconRef}
-      className="product-description-accordion-icon"
-      aria-hidden="true"
-    >
-      <span />
-      <span />
-    </span>
-  </button>
-
-  <div
-    ref={deliveryPanelRef}
-    className="product-description-accordion-panel"
-  >
-    <div className="product-description-accordion-inner">
-      <div className="accordion-description-content">
-        <p>
-          You can return your item(s) within 7 days of delivery. There will be an $8 charge to process your return, and we'll provide you with a prepaid shipping label to make the process as smooth as possible.
-        </p>
-        <p>
-          Please note, your return must be marked as posted within 7 calendar days from being delivered. Any returns received which do not meet our returns criteria will not be eligible for a refund.
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+)}
     </div>
   </motion.div>
 )}

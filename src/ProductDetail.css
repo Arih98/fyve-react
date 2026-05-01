@@ -1110,6 +1110,7 @@ body.size-panel-open {
 
 @media (min-width: 769px) {
   .product-detail-container {
+    padding-top: 30px;
     padding-left: 30px;
   }
 
@@ -1173,5 +1174,16 @@ body.size-panel-open {
     height: 100%;
     background: #f7f7f7;
     overflow: hidden;
+  }
+}
+
+.product-accordions-desktop,
+.product-accordions-mobile {
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .product-accordions-desktop {
+    margin-top: 24px;
   }
 }
