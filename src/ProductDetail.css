@@ -694,7 +694,7 @@ body.size-panel-open {
 
 .product-description-accordion-title {
   font-family: quasimoda, sans-serif;
-  font-size: 14px;
+  font-size: 1em;
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1105,6 +1105,14 @@ body.size-panel-open {
   }
   .add-to-cart-button {
   display: none;
+}
+.product-description-accordion-title {
+  font-family: quasimoda, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4a494a;
 }
 }
 
