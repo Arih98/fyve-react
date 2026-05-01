@@ -1126,12 +1126,6 @@ body.size-panel-open {
     min-width: 0;
   }
 
-  .product-image-gallery,
-  .product-accordions-desktop {
-    width: 100%;
-    max-width: 820px;
-  }
-
   .details-container {
     flex: 0 0 500px;
     width: 500px;
