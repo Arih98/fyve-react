@@ -25,6 +25,7 @@ const ProductDetail = () => {
   const galleryRefs = useRef(new Map());
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [showDesktopSecondaryImages, setShowDesktopSecondaryImages] = useState(!location.state?.fromProductGrid);
 const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 const descriptionPanelRef = useRef(null);
 const descriptionIconRef = useRef(null);
@@ -321,6 +322,22 @@ useEffect(() => {
 
   return () => clearTimeout(timeout);
 }, [location.state?.fromProductGrid, isMobile]);
+
+useEffect(() => {
+  if (isMobile || !location.state?.fromProductGrid) {
+    setShowDesktopSecondaryImages(true);
+    return;
+  }
+
+  setShowDesktopSecondaryImages(false);
+
+  const timeout = setTimeout(() => {
+    setShowDesktopSecondaryImages(true);
+  }, 650);
+
+  return () => clearTimeout(timeout);
+}, [location.state?.fromProductGrid, isMobile]);
+
 useLayoutEffect(() => {
   setActiveImageIndex(0);
   if (mobileGalleryRef.current) {
@@ -1019,7 +1036,7 @@ return (
                       galleryRefs.current.set(imageKey, el);
                     }}
                     key={imageKey}
-                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''}`}
+                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''} ${!isMobile && idx > 0 && !showDesktopSecondaryImages ? 'desktop-gallery-image-hidden' : ''}`}
                     onClick={() => handleGalleryImageClick(idx)}
                   >
                     <div className="product-gallery-image-box">
