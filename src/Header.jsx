@@ -1189,7 +1189,7 @@ const menuItems = [
   { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/assets/DSC06727copy-1-web.webp' },
   { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/assets/DSC08194copy-2-web.webp' },
   { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/assets/DSC07108copycopy-web.webp' },
-  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/DSC07888copy-1-web.webp' },
+  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/assets/DSC07888copy-1-web.webp' },
   { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/assets/DSC07888copy-1-web.webp },
 ];
 
