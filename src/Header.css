@@ -94,10 +94,10 @@ body.product-image-transition-active .custom-search-result-image {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding-top: 30px !important;
-  padding-bottom: 30px !important;
-  padding-right: 50px !important;
-  padding-left: 50px !important;
+  padding-top: 17px;
+  padding-bottom: 27px;
+  padding-right: 50px;
+  padding-left: 50px;
   background-color: #F1DBD1;
   background-image: none;
   z-index: 10002;
