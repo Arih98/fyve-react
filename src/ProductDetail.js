@@ -333,7 +333,7 @@ useEffect(() => {
 
   const timeout = setTimeout(() => {
     setShowDesktopSecondaryImages(true);
-  }, 550);
+  }, 450);
 
   return () => clearTimeout(timeout);
 }, [location.state?.fromProductGrid, isMobile]);
