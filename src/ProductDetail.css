@@ -1109,7 +1109,7 @@ body.size-panel-open {
 }
 
 @media (min-width: 769px) {
-    .images-container {
+  .images-container {
     flex: 1 1 auto;
     width: auto;
     max-width: none;
@@ -1120,8 +1120,13 @@ body.size-panel-open {
     flex: 0 0 500px;
     width: 500px;
     max-width: 500px;
-    margin-left: auto;
+    margin-left: 0;
     margin-right: 30px;
+  }
+
+  .product-image-gallery,
+  .product-image-gallery-track {
+    width: 100%;
   }
 
   .size-panel-backdrop {
