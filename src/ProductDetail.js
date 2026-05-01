@@ -45,6 +45,13 @@ const deliveryIconRef = useRef(null);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
 
+  const galleryDragRef = useRef({
+  isDown: false,
+  startX: 0,
+  scrollLeft: 0,
+  hasMoved: false
+});
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
@@ -335,12 +342,16 @@ const handleMobileGalleryScroll = () => {
   const firstSlide = el.children[0];
   if (!firstSlide) return;
 
-  const slideWidth = firstSlide.getBoundingClientRect().width;
-  if (!slideWidth) return;
+  const secondSlide = el.children[1];
+  const slideStep = secondSlide
+    ? secondSlide.offsetLeft - firstSlide.offsetLeft
+    : firstSlide.getBoundingClientRect().width;
+
+  if (!slideStep) return;
 
   const nextIndex = Math.min(
     displayImages.length - 1,
-    Math.max(0, Math.round(el.scrollLeft / slideWidth))
+    Math.max(0, Math.round(el.scrollLeft / slideStep))
   );
 
   setActiveImageIndex(nextIndex);
@@ -829,6 +840,64 @@ const handleGalleryTouchMove = (e) => {
   }
 };
 
+const handleGalleryPointerDown = (e) => {
+  if (isMobile || e.pointerType === 'touch') return;
+
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  galleryDragRef.current = {
+    isDown: true,
+    startX: e.clientX,
+    scrollLeft: el.scrollLeft,
+    hasMoved: false
+  };
+
+  el.setPointerCapture?.(e.pointerId);
+  el.classList.add('is-dragging');
+};
+
+const handleGalleryPointerMove = (e) => {
+  const drag = galleryDragRef.current;
+
+  if (isMobile || !drag.isDown) return;
+
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  const deltaX = e.clientX - drag.startX;
+
+  if (Math.abs(deltaX) > 4) {
+    drag.hasMoved = true;
+    galleryWasDraggingRef.current = true;
+  }
+
+  el.scrollLeft = drag.scrollLeft - deltaX;
+};
+
+const handleGalleryPointerEnd = (e) => {
+  const el = mobileGalleryRef.current;
+  const drag = galleryDragRef.current;
+
+  if (el) {
+    el.releasePointerCapture?.(e.pointerId);
+    el.classList.remove('is-dragging');
+  }
+
+  galleryDragRef.current = {
+    isDown: false,
+    startX: 0,
+    scrollLeft: 0,
+    hasMoved: false
+  };
+
+  if (drag.hasMoved) {
+    window.setTimeout(() => {
+      galleryWasDraggingRef.current = false;
+    }, 0);
+  }
+};
+
 const handleGalleryImageClick = (idx) => {
   if (galleryWasDraggingRef.current) {
     galleryWasDraggingRef.current = false;
@@ -855,6 +924,11 @@ return (
   onScroll={handleMobileGalleryScroll}
   onTouchStart={handleGalleryTouchStart}
   onTouchMove={handleGalleryTouchMove}
+  onPointerDown={handleGalleryPointerDown}
+  onPointerMove={handleGalleryPointerMove}
+  onPointerUp={handleGalleryPointerEnd}
+  onPointerCancel={handleGalleryPointerEnd}
+  onPointerLeave={handleGalleryPointerEnd}
 >
       {displayImages.map((img, idx) => {
         const imageKey = `${current?.sku || product.id}-${idx}`;
@@ -870,19 +944,20 @@ return (
 >
             <div className="product-gallery-image-box">
   <img
-    data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-                ref={el => {
-                  if (idx === 0) {
-                    mainImageRef.current = el;
-                  } else if (mainImageRef.current === el) {
-                    mainImageRef.current = null;
-                  }
-                }}
-                src={img}
-                alt={`${displayTitle} ${idx + 1}`}
-                className="product-gallery-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-              />
+  data-pdp-primary-image={idx === activeImageIndex ? 'true' : undefined}
+  draggable={false}
+  ref={el => {
+    if (idx === 0) {
+      mainImageRef.current = el;
+    } else if (mainImageRef.current === el) {
+      mainImageRef.current = null;
+    }
+  }}
+  src={img}
+  alt={`${displayTitle} ${idx + 1}`}
+  className="product-gallery-image"
+  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+/>
             </div>
           </div>
         );
