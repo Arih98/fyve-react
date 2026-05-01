@@ -1109,6 +1109,10 @@ body.size-panel-open {
 }
 
 @media (min-width: 769px) {
+  .product-detail-container {
+    padding-left: 30px;
+  }
+
   .images-container {
     flex: 1 1 auto;
     width: auto;
@@ -1120,7 +1124,7 @@ body.size-panel-open {
     flex: 0 0 500px;
     width: 500px;
     max-width: 500px;
-    margin-left: 0;
+    margin-left: 30px;
     margin-right: 30px;
   }
 
@@ -1142,7 +1146,6 @@ body.size-panel-open {
   .product-image-gallery-track {
     display: flex;
     flex-direction: row;
-    gap: 20px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
