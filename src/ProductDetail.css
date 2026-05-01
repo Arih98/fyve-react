@@ -1,7 +1,9 @@
 .product-detail-container {
   display: flex;
   width: 100%;
-  max-width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
   padding-bottom: 125px;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -181,7 +183,6 @@
 
 .product-attributes {
   margin-top: 10px;
-  padding-bottom: 30px;
 }
 
 .attribute-group {
