@@ -1091,7 +1091,7 @@ return (
     animate={{ x: 0, y: 0, opacity: 1 }}
 transition={{
   duration: 0.5,
-  delay: isMobile ? 0 : 0.55,
+  delay: isMobile ? 0 : 0.65,
   ease: [0.16, 1, 0.3, 1]
 }}
   >
