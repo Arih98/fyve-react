@@ -260,7 +260,7 @@ animateAccordion(isSizeGuideOpen, sizeGuidePanelRef.current, sizeGuideIconRef.cu
 animateAccordion(isDescriptionOpen, descriptionPanelRef.current, descriptionIconRef.current);
 animateAccordion(isDeliveryOpen, deliveryPanelRef.current, deliveryIconRef.current);
 
-}, [isSizeGuideOpen, isDescriptionOpen, isDeliveryOpen, displayMaterialsDescription, sizeChartRows.length]);
+}, [isSizeGuideOpen, isDescriptionOpen, isDeliveryOpen, displayMaterialsDescription, sizeChartRows.length, isMobile]);
 
 const getOrderedOptions = useCallback((attrName) => {
   const rawOptions = getAvailableOptions(attrName) || [];
