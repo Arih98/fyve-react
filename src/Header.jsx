@@ -486,16 +486,16 @@ const handleSearchProductClick = (product, selectedColorOverride = '', displayOv
 
       searchPreparedTransitionRef.current = null;
     } else {
-      startProductImageTransition({
-        src: data.sourceSrc,
-        fromElement: data.sourceEl,
-        toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-        duration: window.innerWidth <= 768 ? 620 : 700,
-        minTargetTop: window.innerWidth <= 768 ? 80 : 0,
-        zIndex: 100200,
-        restoreFromElement: true,
-        hideTarget: true
-      });
+startProductImageTransition({
+  src: sourceSrc,
+  fromElement: sourceEl,
+  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+  duration: window.innerWidth <= 768 ? 620 : 700,
+  minTargetTop: window.innerWidth <= 768 ? 80 : 0,
+  zIndex: 100200,
+  restoreFromElement: false,
+  hideTarget: true
+});
     }
 
     navigate(data.destination, {

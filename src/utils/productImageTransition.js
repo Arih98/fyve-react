@@ -1,8 +1,11 @@
 let activeClone = null;
 let activeAnimation = null;
-let activeSourceElement = null;
-let activeRestoreFromElement = true;
-let activeToken = 0;
+
+let lastTransitionStart = {
+  src: '',
+  fromElement: null,
+  time: 0
+};
 
 const waitForNextFrame = () =>
   new Promise((resolve) => {
@@ -158,60 +161,65 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
   clone.style.boxSizing = fromStyle.boxSizing || 'border-box';
   clone.style.transformOrigin = 'center center';
   clone.style.willChange = 'left, top, width, height, opacity, border-radius';
-  clone.style.opacity = '1';
+  clone.style.opacity = '0';
 
   document.body.appendChild(clone);
 
   return clone;
 };
 
-const cancelActiveTransition = ({ restoreSource = true } = {}) => {
-  activeToken += 1;
+export const startProductImageTransition = async ({
+  src,
+  fromElement,
+  toElementGetter,
+  duration = 750,
+  minTargetTop = 0,
+  zIndex = 999999,
+  restoreFromElement = true,
+  hideTarget = true
+}) => {
+  if (!src || !fromElement) return;
 
-  if (activeAnimation) {
-    try {
-      activeAnimation.cancel();
-    } catch {}
+  const currentTime = performance.now();
+
+  if (
+    lastTransitionStart.src === src &&
+    lastTransitionStart.fromElement === fromElement &&
+    currentTime - lastTransitionStart.time < 220
+  ) {
+    return;
   }
 
-  if (restoreSource && activeSourceElement && activeRestoreFromElement) {
-    activeSourceElement.style.opacity = '';
+  lastTransitionStart = {
+    src,
+    fromElement,
+    time: currentTime
+  };
+
+  document.body.classList.add('product-image-transition-active');
+
+  const removeActiveClass = () => {
+    document.body.classList.remove('product-image-transition-active');
+  };
+
+  if (activeAnimation) {
+    activeAnimation.cancel();
+    activeAnimation = null;
   }
 
   if (activeClone) {
     activeClone.remove();
+    activeClone = null;
   }
-
-  activeClone = null;
-  activeAnimation = null;
-  activeSourceElement = null;
-  activeRestoreFromElement = true;
-  document.body.classList.remove('product-image-transition-active');
-};
-
-const createPreparedSession = ({
-  src,
-  fromElement,
-  zIndex = 999999,
-  restoreFromElement = true
-}) => {
-  if (!src || !fromElement) return null;
-
-  cancelActiveTransition({ restoreSource: true });
-
-  const token = activeToken + 1;
-  activeToken = token;
 
   const fromRect = getRect(fromElement);
 
   if (!fromRect.width || !fromRect.height) {
-    document.body.classList.remove('product-image-transition-active');
-    return null;
+    removeActiveClass();
+    return;
   }
 
   const fromStyle = window.getComputedStyle(fromElement);
-
-  document.body.classList.add('product-image-transition-active');
 
   const clone = createClone({
     src,
@@ -220,32 +228,10 @@ const createPreparedSession = ({
     zIndex
   });
 
-  fromElement.style.opacity = '0';
-
   activeClone = clone;
-  activeSourceElement = fromElement;
-  activeRestoreFromElement = restoreFromElement;
 
-  return {
-    token,
-    clone,
-    fromElement,
-    fromRect,
-    restoreFromElement
-  };
-};
-
-const playPreparedSession = async (
-  session,
-  {
-    toElementGetter,
-    duration = 750,
-    minTargetTop = 0,
-    hideTarget = true
-  } = {}
-) => {
-  if (!session || !session.clone || !session.fromElement) return;
-  if (session.token !== activeToken) return;
+  fromElement.style.opacity = '0';
+  clone.style.opacity = '1';
 
   const stableTargetPromise = waitForStableElementRect(toElementGetter, {
     maxAttempts: 90,
@@ -254,16 +240,22 @@ const playPreparedSession = async (
     hideElementWhileWaiting: hideTarget
   });
 
-  await waitForImageReady(session.clone);
-
-  if (session.token !== activeToken || !session.clone.isConnected) return;
+  await waitForImageReady(clone);
 
   const stableTarget = await stableTargetPromise;
 
-  if (session.token !== activeToken || !session.clone.isConnected) return;
-
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
-    cancelActiveTransition({ restoreSource: true });
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
+    }
+
+    clone.remove();
+
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    removeActiveClass();
     return;
   }
 
@@ -275,11 +267,19 @@ const playPreparedSession = async (
       toElement.style.opacity = '';
     }
 
-    cancelActiveTransition({ restoreSource: true });
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
+    }
+
+    clone.remove();
+
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    removeActiveClass();
     return;
   }
-
-  const fromRect = session.fromRect;
 
   const toRect = {
     left: stableRect.left,
@@ -294,15 +294,15 @@ const playPreparedSession = async (
   const finalLeft = toRect.left + (toRect.width - finalWidth) / 2;
   const finalTop = toRect.top + (toRect.height - finalHeight) / 2;
 
-  session.clone.style.left = `${fromRect.left}px`;
-  session.clone.style.top = `${fromRect.top}px`;
-  session.clone.style.width = `${fromRect.width}px`;
-  session.clone.style.height = `${fromRect.height}px`;
-  session.clone.style.objectFit = 'cover';
+  clone.style.left = `${fromRect.left}px`;
+  clone.style.top = `${fromRect.top}px`;
+  clone.style.width = `${fromRect.width}px`;
+  clone.style.height = `${fromRect.height}px`;
+  clone.style.objectFit = 'cover';
 
-  session.clone.getBoundingClientRect();
+  clone.getBoundingClientRect();
 
-  const animation = session.clone.animate(
+  const animation = clone.animate(
     [
       {
         left: `${fromRect.left}px`,
@@ -332,7 +332,6 @@ const playPreparedSession = async (
 
   const cleanup = () => {
     if (cleaned) return;
-    if (session.token !== activeToken) return;
 
     cleaned = true;
 
@@ -340,79 +339,37 @@ const playPreparedSession = async (
       toElement.style.opacity = '';
     }
 
-    if (session.restoreFromElement && session.fromElement) {
-      session.fromElement.style.opacity = '';
+    if (restoreFromElement) {
+      fromElement.style.opacity = '';
     }
 
-    if (session.clone) {
-      session.clone.remove();
+    clone.remove();
+    removeActiveClass();
+
+    if (activeClone === clone) {
+      activeClone = null;
     }
 
-    activeClone = null;
-    activeAnimation = null;
-    activeSourceElement = null;
-    activeRestoreFromElement = true;
-    document.body.classList.remove('product-image-transition-active');
+    if (activeAnimation === animation) {
+      activeAnimation = null;
+    }
   };
 
   animation.addEventListener('finish', cleanup, { once: true });
   animation.addEventListener('cancel', cleanup, { once: true });
 };
 
-export const prepareProductImageTransition = ({
-  src,
-  fromElement,
-  zIndex = 999999,
-  restoreFromElement = true
-}) => {
-  const session = createPreparedSession({
-    src,
-    fromElement,
-    zIndex,
-    restoreFromElement
-  });
-
-  if (!session) return null;
-
-  return {
-    play(options) {
-      return playPreparedSession(session, options);
-    },
-    cancel() {
-      if (session.token === activeToken) {
-        cancelActiveTransition({ restoreSource: true });
-      }
-    }
-  };
-};
-
-export const startProductImageTransition = async ({
-  src,
-  fromElement,
-  toElementGetter,
-  duration = 750,
-  minTargetTop = 0,
-  zIndex = 999999,
-  restoreFromElement = true,
-  hideTarget = true
-}) => {
-  const prepared = prepareProductImageTransition({
-    src,
-    fromElement,
-    zIndex,
-    restoreFromElement
-  });
-
-  if (!prepared) return;
-
-  return prepared.play({
-    toElementGetter,
-    duration,
-    minTargetTop,
-    hideTarget
-  });
-};
-
 export const clearProductImageTransitionClone = () => {
-  cancelActiveTransition({ restoreSource: true });
+  if (activeAnimation) {
+    activeAnimation.cancel();
+    activeAnimation = null;
+  }
+
+  if (activeClone) {
+    activeClone.remove();
+    activeClone = null;
+  }
+
+  activeClone = null;
+  document.body.classList.remove('product-image-transition-active');
 };
