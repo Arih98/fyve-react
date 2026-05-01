@@ -1186,11 +1186,11 @@ const menuItems = [
       { id: 'bloomsbury', name: 'The Bloomsbury Collection', path: '/products?category=the-bloomsbury-collection' }
     ]
   },
-  { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/api/Uploads/LOOK_11_2043-1.webp' },
-  { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/api/Uploads/LOOK-9_1416.webp' },
-  { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/api/Uploads/LOOK-9_1650.jpg' },
-  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/api/Uploads/LOOK-2_191222.webp' },
-  { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/api/Uploads/LOOK-6_582.webp' },
+  { id: 'boy', name: 'BOY', path: '/products?category=boy', image: '/assets/DSC06727copy-1-web.webp' },
+  { id: 'girl', name: 'GIRL', path: '/products?category=girl', image: '/assets/DSC08194copy-2-web.webp' },
+  { id: 'baby', name: 'BABY', path: '/products?category=baby', image: '/assets/DSC07108copycopy-web.webp' },
+  { id: 'our-story', name: 'Our Story', path: '/#our-story', image: '/DSC07888copy-1-web.webp' },
+  { id: 'lookbook', name: 'Lookbook', path: '/#lookbook', image: '/assets/DSC07888copy-1-web.webp },
 ];
 
 const handleToggleMenu = () => {
