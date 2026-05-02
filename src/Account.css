@@ -451,13 +451,59 @@
   align-items: center;
   justify-content: center;
   min-height: 55px;
+  height: 52px;
+  padding: 0 50px;
+  border: 1.2px solid #4A494A;
   border-radius: 999px;
+  background: #4A494A;
+  color: #fff;
   font-family: quasimoda, sans-serif;
+  font-size: 1.1em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
   cursor: pointer;
   text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.account-logout-button,
+.account-auth-button:hover:not(:disabled) {
+  background: #333;
+  border-color: #333;
+  color: #fff;
+}
+
+.account-auth-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.account-logout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  height: 52px;
+  padding: 0 50px;
+  border: 1.2px solid #4A494A;
+  border-radius: 999px;
+  background: #fff;
+  color: #4A494A;
+  font-family: quasimoda, sans-serif;
+  font-size: 1.1em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.account-logout-button:hover {
+  background: #f1f1f1;
+  color: #4A494A;
+}
+
 .account-card-link {
   display: inline-flex;
   align-items: center;
@@ -467,23 +513,6 @@
   font-family: quasimoda, sans-serif;
   cursor: pointer;
   text-decoration: none;
-}
-
-.account-auth-button,
-.account-logout-button {
-  border: none;
-  padding: 0 50px;
-  background: #fff;
-  border: 1.2px solid #4A494A;
-  font-size: 1.1em;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: #4A494A;
-}
-
-.account-auth-button:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 
 .account-success-popup {
@@ -1655,17 +1684,12 @@
 
 .account-auth-button,
 .account-card-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-height: 50px;
-  border-radius: 999px;
-  font-family: quasimoda, sans-serif;
   font-size: 1.13em;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  cursor: pointer;
-  text-decoration: none;
+}
+
+.account-auth-button {
+  width: 100%;
 }
 
 .account-logout-button-desktop {
