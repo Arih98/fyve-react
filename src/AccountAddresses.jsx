@@ -156,7 +156,7 @@ function SectionHeader({ title, editingTitle, isEditing, onEdit }) {
         onClick={onEdit}
         aria-label={isEditing ? `Close ${title}` : `Edit ${title}`}
       >
-        <img src={isEditing ? '/assets/DarkClose.svg' : '/assets/edit-pencil-icon.svg'} alt="" />
+        <img src={isEditing ? '/assets/CloseDark.svg' : '/assets/edit-pencil-icon.svg'} alt="" />
       </button>
     </div>
   );

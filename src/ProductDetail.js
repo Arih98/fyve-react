@@ -1207,7 +1207,7 @@ onClick={closeSizePanel}
   className="size-panel-close"
 onClick={closeSizePanel}
 >
-  <img src="/assets/DarkClose.svg" alt="" className="size-panel-close-icon" />
+  <img src="/assets/CloseDark.svg" alt="" className="size-panel-close-icon" />
 </button>
                   </div>
 
