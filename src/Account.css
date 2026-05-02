@@ -1266,9 +1266,16 @@
 
 .account-floating-field select:focus,
 .account-floating-field select:focus-visible {
-  outline: none;
-  box-shadow: none;
-  border-color: #e8e7e6;
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #e8e7e6 !important;
+}
+
+.returns-item select:focus,
+.returns-item select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #dad8d2 !important;
 }
 
 @media (max-width: 768px) {
