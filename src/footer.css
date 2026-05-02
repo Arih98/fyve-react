@@ -30,7 +30,7 @@
 
 .footer-fyve-logo {
   display: block;
-  width: 100%;
+  width: min(720px, 80vw);
   max-width: 100%;
   height: auto;
 }
@@ -61,6 +61,14 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 14px;
+  min-width: 0;
+}
+
+.footer-link-items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -115,7 +123,6 @@
 }
 
 @media (max-width: 768px) {
-
   .footer {
     background: linear-gradient(180deg, #fff 0, #fff 46%, #f1dbd1 0, #f1dbd1);
     box-sizing: border-box;
@@ -123,6 +130,10 @@
     min-height: 420px;
     padding: 60px 40px 95px;
 }
+
+  .footer-fyve-logo {
+    width: 100%;
+  }
 
   .footer-links {
     display: grid;
