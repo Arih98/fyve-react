@@ -30,18 +30,18 @@
 
 .footer-fyve-logo {
   display: block;
-  width: min(720px, 80vw);
+  width: min(1020px, 80vw);
   max-width: 100%;
   height: auto;
 }
 
 .footer-london {
   font-family: quasimoda, sans-serif !important;
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(12px, 1.5vw, 20px);
-  letter-spacing: 2.9em;
+  letter-spacing: 4.5em;
   color: #4A494A;
-  margin-top: -1em;
+  margin-top: 1em;
 }
 
 .footer-links {
