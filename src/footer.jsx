@@ -56,6 +56,17 @@ const Footer = () => {
   </div>
 
   <div className="footer-link-row">
+    <span className="footer-heading">Shop:</span>
+
+    <div className="footer-link-items">
+      <a href="/products?category=ss26">SS26</a>
+      <a href="/products?category=boy">Boy</a>
+      <a href="/products?category=girl">Girl</a>
+      <a href="/products?category=baby">Baby</a>
+    </div>
+  </div>
+
+  <div className="footer-link-row">
     <span className="footer-heading">Stay updated:</span>
 
     <div className="footer-link-items footer-stay-updated">
