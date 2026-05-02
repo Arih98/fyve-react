@@ -458,8 +458,6 @@ if (scale === 1 && swipeRef.current.isSwiping) {
   <span className="fyve-fullscreen-gallery-close-line" />
   <span className="fyve-fullscreen-gallery-close-line" />
 </button>
-          ×
-        </button>
 
         <div
           ref={stageRef}
