@@ -19,19 +19,37 @@
   z-index: 40;
   width: 48px;
   height: 48px;
+  padding: 0;
   border: 1px solid #4a494a;
   border-radius: 999px;
   background: #fff;
   color: #4a494a;
-  font-size: 32px;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   backdrop-filter: blur(8px);
+  appearance: none;
+  -webkit-appearance: none;
 }
 
+.fyve-fullscreen-gallery-close-line {
+  position: absolute;
+  width: 17px;
+  height: 1px;
+  background: #4a494a;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+}
+
+.fyve-fullscreen-gallery-close-line:first-child {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.fyve-fullscreen-gallery-close-line:last-child {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
 
 .fyve-fullscreen-gallery-nav {
   position: relative;
@@ -149,7 +167,10 @@
     right: 18px;
     width: 40px;
     height: 40px;
-    font-size: 21px;
+  }
+
+  .fyve-fullscreen-gallery-close-line {
+    width: 15px;
   }
 
   .fyve-fullscreen-gallery-image {

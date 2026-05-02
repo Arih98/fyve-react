@@ -449,12 +449,15 @@ if (scale === 1 && swipeRef.current.isSwiping) {
         className="fyve-fullscreen-gallery-shell"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          type="button"
-          className="fyve-fullscreen-gallery-close"
-          onClick={closeGallery}
-          aria-label="Close gallery"
-        >
+<button
+  type="button"
+  className="fyve-fullscreen-gallery-close"
+  onClick={closeGallery}
+  aria-label="Close gallery"
+>
+  <span className="fyve-fullscreen-gallery-close-line" />
+  <span className="fyve-fullscreen-gallery-close-line" />
+</button>
           ×
         </button>
 
