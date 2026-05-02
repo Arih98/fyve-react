@@ -32,6 +32,7 @@ import './Account.css'
 import Returns from './pages/Returns'
 import ReturnConfirmation from './pages/ReturnConfirmation'
 import FAQ from './FAQ'
+import ReturnsPolicy from './ReturnsPolicy';
 import Footer from './Footer';
 
 const ProductDetailWrapper = () => {
@@ -121,6 +122,7 @@ function AppContent() {
 <Route path="/returns/confirmation" element={<ReturnConfirmation />} />
 <Route path="/return-confirmation" element={<ReturnConfirmation />} />
 <Route path="/faq" element={<FAQ />} />
+<Route path="/returns-policy" element={<ReturnsPolicy />} />
 <Route path="/login" element={<Login />} />
 <Route path="/signup" element={<Signup />} />
               <Route

@@ -386,13 +386,6 @@
   background: #f4f4f4;
 }
 
-.account-page select:focus,
-.account-section-page select:focus {
-  outline: none;
-  box-shadow: none;
-  border-color: #dad8d2;
-}
-
 .account-floating-field {
   position: relative;
   display: block;
