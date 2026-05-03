@@ -33,7 +33,6 @@ const Retailers = () => {
     <main className="retailers-page">
       <section className="retailers-hero">
         <div className="retailers-shell">
-          <p className="retailers-kicker">Stockists</p>
           <h1>Retailers</h1>
           <p className="retailers-intro">
             Discover selected stores that carry FYVE pieces.
