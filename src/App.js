@@ -31,6 +31,7 @@ import CheckoutSuccess from './CheckoutSuccess'
 import './Account.css'
 import Returns from './pages/Returns'
 import ReturnConfirmation from './pages/ReturnConfirmation'
+import Retailers from './Retailers';
 import FAQ from './FAQ'
 import ReturnsPolicy from './ReturnsPolicy';
 import OurStory from './OurStory';
@@ -122,6 +123,7 @@ function AppContent() {
 <Route path="/returns" element={<Returns />} />
 <Route path="/returns/confirmation" element={<ReturnConfirmation />} />
 <Route path="/return-confirmation" element={<ReturnConfirmation />} />
+<Route path="/retailers" element={<Retailers />} />
 <Route path="/faq" element={<FAQ />} />
 <Route path="/our-story" element={<OurStory />} />
 <Route path="/returns-policy" element={<ReturnsPolicy />} />

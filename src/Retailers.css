@@ -1,0 +1,118 @@
+.retailers-page {
+  min-height: 100vh;
+  background: #fff;
+  color: #4A494A;
+}
+
+.retailers-shell {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.retailers-hero {
+  padding: 130px 20px 54px;
+  box-sizing: border-box;
+}
+
+.retailers-kicker {
+  margin: 0 0 16px;
+  font-family: quasimoda, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(74, 73, 74, 0.62);
+}
+
+.retailers-hero h1 {
+  margin: 0;
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: clamp(3.4rem, 8vw, 8rem);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+  color: #4A494A;
+}
+
+.retailers-intro {
+  max-width: 560px;
+  margin: 28px 0 0;
+  font-family: quasimoda, sans-serif;
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+  font-weight: 300;
+  line-height: 1.45;
+  letter-spacing: -0.03em;
+  color: #4A494A;
+}
+
+.retailers-list-section {
+  padding: 0 20px 90px;
+  box-sizing: border-box;
+}
+
+.retailers-list {
+  border-top: 1.5px solid #e8e7e6;
+}
+
+.retailer-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.55fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  min-height: 88px;
+  border-bottom: 1.5px solid #e8e7e6;
+}
+
+.retailer-location {
+  font-family: quasimoda, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(74, 73, 74, 0.55);
+}
+
+.retailer-store {
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: clamp(1.45rem, 2.7vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #4A494A;
+}
+
+@media (max-width: 768px) {
+  .retailers-hero {
+    padding: 118px 16px 42px;
+  }
+
+  .retailers-hero h1 {
+    font-size: clamp(3rem, 17vw, 5.4rem);
+  }
+
+  .retailers-intro {
+    margin-top: 22px;
+    font-size: 1.05rem;
+  }
+
+  .retailers-list-section {
+    padding: 0 16px 64px;
+  }
+
+  .retailer-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    min-height: auto;
+    padding: 22px 0;
+  }
+
+  .retailer-location {
+    font-size: 0.78rem;
+  }
+
+  .retailer-store {
+    font-size: 1.65rem;
+  }
+}
