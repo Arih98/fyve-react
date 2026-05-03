@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { getOrderDetail } from './api/account';
 import { lookupReturnOrder, createReturnRequest } from './api/returns';
 import { useAuth } from './context/AuthContext';
@@ -49,7 +49,10 @@ function getStatusClass(status) {
 
 export default function AccountOrderDetail() {
   const { orderId } = useParams();
-  const { user, authLoading } = useAuth();
+const [searchParams] = useSearchParams();
+const returnSectionRef = useRef(null);
+const shouldScrollToReturn = searchParams.get('return') === '1';
+const { authLoading } = useAuth();
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -150,6 +153,26 @@ export default function AccountOrderDetail() {
     active = false;
   };
 }, [authLoading, orderId, order?.billing_address?.email]);
+
+useEffect(() => {
+  if (!shouldScrollToReturn) return;
+  if (authLoading || loading || returnChecking || !order) return;
+
+  const frame = requestAnimationFrame(() => {
+    const el = returnSectionRef.current;
+
+    if (!el) return;
+
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 100;
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth'
+    });
+  });
+
+  return () => cancelAnimationFrame(frame);
+}, [shouldScrollToReturn, authLoading, loading, returnChecking, order]);
 
   const handleQuantityChange = (itemId, value) => {
     setSelectedItems((prev) => ({
@@ -332,10 +355,10 @@ export default function AccountOrderDetail() {
                 </div>
               </section>
 
-              <section className="account-order-detail-panel">
-                <div className="account-order-detail-panel-header">
-                  <h2>Return this order</h2>
-                </div>
+              <section ref={returnSectionRef} id="return-this-order" className="account-order-detail-panel">
+  <div className="account-order-detail-panel-header">
+    <h2>Return this order</h2>
+  </div>
 
                 {returnChecking ? (
   <p className="account-page-subtitle">Checking return eligibility...</p>
