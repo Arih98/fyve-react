@@ -12,14 +12,14 @@
 }
 
 .retailers-hero {
-  padding: 80px 30px 64px;
+  padding: 80px 30px 80px;
   box-sizing: border-box;
 }
 
 .retailers-hero h1 {
   margin: 0;
   font-family: "ArizonaFlare", sans-serif;
-  font-size: clamp(3.6rem, 5vw, 8.8rem);
+  font-size: clamp(2rem, 4vw, 4.5rem);
   font-weight: 500;
   line-height: 0.9;
   letter-spacing: -0.04em;
