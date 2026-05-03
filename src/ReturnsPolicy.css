@@ -7,9 +7,9 @@
 
 .returns-policy-shell {
   width: 100%;
-  max-width: 980px;
+  max-width: 1240px;
   margin: 0 auto;
-  color: #4A494A;
+  box-sizing: border-box;
 }
 
 .returns-policy-shell h1 {
