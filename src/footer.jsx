@@ -46,7 +46,7 @@ const Footer = () => {
 
       <div className="footer-links">
   <div className="footer-link-row">
-    <span className="footer-heading">Quick links:</span>
+    <span className="footer-heading">Quick links</span>
 
     <div className="footer-link-items">
       <a href="/faq">FAQ</a>
@@ -56,7 +56,7 @@ const Footer = () => {
   </div>
 
   <div className="footer-link-row">
-    <span className="footer-heading">Shop:</span>
+    <span className="footer-heading">Shop</span>
 
     <div className="footer-link-items">
       <a href="/products?category=ss26">SS26</a>
@@ -67,7 +67,7 @@ const Footer = () => {
   </div>
 
   <div className="footer-link-row">
-    <span className="footer-heading">Stay updated:</span>
+    <span className="footer-heading">Stay updated</span>
 
     <div className="footer-link-items footer-stay-updated">
       <a href="https://www.instagram.com/fyvelondon/" target="_blank" rel="noopener noreferrer">
