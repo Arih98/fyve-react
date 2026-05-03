@@ -1,0 +1,109 @@
+.shipping-policy-page {
+  min-height: 100vh;
+  background: #fff;
+  color: #4A494A;
+  padding: 130px 20px 80px;
+  box-sizing: border-box;
+}
+
+.shipping-policy-shell {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.shipping-policy-kicker {
+  margin: 0 0 16px;
+  font-family: quasimoda, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(74, 73, 74, 0.62);
+}
+
+.shipping-policy-shell h1 {
+  margin: 0 0 44px;
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: clamp(3.2rem, 8vw, 7.5rem);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+  color: #4A494A;
+}
+
+.shipping-policy-section {
+  padding: 34px 0;
+  border-top: 1.5px solid #e8e7e6;
+}
+
+.shipping-policy-section:last-child {
+  border-bottom: 1.5px solid #e8e7e6;
+}
+
+.shipping-policy-section h2 {
+  margin: 0 0 18px;
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #4A494A;
+}
+
+.shipping-policy-section p,
+.shipping-policy-section li {
+  font-family: quasimoda, sans-serif;
+  font-size: 1.08rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: #4A494A;
+}
+
+.shipping-policy-section p {
+  margin: 0 0 14px;
+}
+
+.shipping-policy-section p:last-child {
+  margin-bottom: 0;
+}
+
+.shipping-policy-section ul {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.shipping-policy-section li {
+  margin-bottom: 12px;
+}
+
+.shipping-policy-section li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .shipping-policy-page {
+    padding: 118px 16px 56px;
+  }
+
+  .shipping-policy-shell h1 {
+    margin-bottom: 34px;
+    font-size: clamp(3rem, 15vw, 5rem);
+  }
+
+  .shipping-policy-section {
+    padding: 28px 0;
+  }
+
+  .shipping-policy-section h2 {
+    font-size: 1.55rem;
+  }
+
+  .shipping-policy-section p,
+  .shipping-policy-section li {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}

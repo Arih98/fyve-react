@@ -33,6 +33,7 @@ import Returns from './pages/Returns'
 import ReturnConfirmation from './pages/ReturnConfirmation'
 import Retailers from './Retailers';
 import FAQ from './FAQ'
+import ShippingPolicy from './ShippingPolicy';
 import ReturnsPolicy from './ReturnsPolicy';
 import OurStory from './OurStory';
 import Footer from './Footer';
@@ -126,6 +127,7 @@ function AppContent() {
 <Route path="/retailers" element={<Retailers />} />
 <Route path="/faq" element={<FAQ />} />
 <Route path="/our-story" element={<OurStory />} />
+<Route path="/shipping-policy" element={<ShippingPolicy />} />
 <Route path="/returns-policy" element={<ReturnsPolicy />} />
 <Route path="/login" element={<Login />} />
 <Route path="/signup" element={<Signup />} />
