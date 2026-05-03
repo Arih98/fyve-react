@@ -1057,7 +1057,6 @@
   width: 112px;
   height: 112px;
   object-fit: cover;
-  border-radius: 14px;
   background: #f4f4f4;
 }
 
@@ -1668,7 +1667,6 @@
 .account-order-detail-item-image {
   width: 82px;
   height: 82px;
-  border-radius: 12px;
 }
 
 .account-order-detail-item-info h3 {
