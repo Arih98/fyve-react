@@ -270,6 +270,15 @@ const [cartAddedPopupItem, setCartAddedPopupItem] = useState(null);
 const [isCartAddedPopupImageVisible, setIsCartAddedPopupImageVisible] = useState(false);
 const [cartAddedPopupStatus, setCartAddedPopupStatus] = useState('adding');
 const { user, authLoading } = useAuth();
+const accountInitial = useMemo(() => {
+  if (!user) return '';
+
+  const source = user.first_name || user.username || user.email || '';
+
+  return source.trim().charAt(0).toUpperCase();
+}, [user]);
+
+const showAccountInitial = Boolean(user && accountInitial);
 const [searchProductVisibleCount, setSearchProductVisibleCount] = useState(6);
 const [searchProductColors, setSearchProductColors] = useState({});
 const [allProducts, setAllProducts] = useState([]);
@@ -1162,9 +1171,20 @@ const handleToggleMenu = () => {
           <img src={searchIconSrc} alt="" />
         </button>
 
-        <button className="mobile-nav-icon" onClick={handleAccountClick}>
-          <img src={accountIconSrc} alt="Account" />
-        </button>
+        <button
+  type="button"
+  className={`mobile-nav-icon header-account-button${showAccountInitial ? ' has-account-initial' : ''}`}
+  onClick={handleAccountClick}
+  aria-label={user ? 'Account' : 'Log in'}
+>
+  {showAccountInitial ? (
+    <span className="header-account-initial">
+      {accountInitial}
+    </span>
+  ) : (
+    <img src={accountIconSrc} alt="" />
+  )}
+</button>
 
         <div className="header-bag-dropdown-wrap" ref={desktopCartRef}>
           <button

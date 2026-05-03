@@ -435,10 +435,42 @@
   margin-top: 0;
 }
 
+.header-account-button {
+  color: var(--header-icon-color);
+}
+
+.header-account-initial {
+  width: 28px;
+  height: 28px;
+  border: 1.3px solid var(--header-icon-color);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--header-icon-color);
+  font-family: quasimoda, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  box-sizing: border-box;
+}
+
+.mobile-header.first-header.home-transparent .header-account-initial {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
 .hero-side-left .london-text {
   left: 8vw;
 }
+
+.mobile-header .header-account-initial {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
 
 .hero-side-right .london-text {
   left: -8vw;
