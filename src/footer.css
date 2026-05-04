@@ -79,7 +79,6 @@
   font-family: "ArizonaFlare", sans-serif;
   font-weight: 500;
   font-size: clamp(12px, 1vw, 16px);
-  text-transform: uppercase;
 }
 
 .footer-links a {
@@ -113,7 +112,7 @@
 .footer-form button {
   border: none;
   background: transparent;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   cursor: pointer;
   padding: 0;
 }
