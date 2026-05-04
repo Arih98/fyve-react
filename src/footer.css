@@ -48,7 +48,7 @@
   display: grid;
   grid-template-columns: max-content max-content max-content 1fr;
   align-items: start;
-  column-gap: clamp(32px, 4vw, 64px);
+  column-gap: clamp(48px, 6vw, 96px);
   width: min(1400px, 100%);
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
