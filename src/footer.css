@@ -53,7 +53,6 @@
   width: min(900px, 100%);
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
-  text-transform: uppercase;
 }
 
 .footer-link-row {
