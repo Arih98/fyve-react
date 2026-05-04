@@ -50,7 +50,7 @@
   justify-content: center;
   align-items: start;
   gap: clamp(45px, 8vw, 120px);
-  width: min(900px, 100%);
+  width: min(1400px, 100%);
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
 }
@@ -106,7 +106,7 @@
   font-size: clamp(12px, 1vw, 15px);
   line-height: 1.4;
   text-transform: none;
-  max-width: 260px;
+  max-width: 400px;
 }
 
 .footer-form {
