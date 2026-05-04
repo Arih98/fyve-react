@@ -48,18 +48,19 @@ const Footer = () => {
   <div className="footer-link-row">
     <span className="footer-heading">Quick links</span>
 
-    <div className="footer-link-items">
-      <a href="/faq">FAQ</a>
-      <a href="/returns">Return Policy</a>
-      <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
-    </div>
+<div className="footer-link-items">
+  <a href="/faq">FAQ</a>
+  <a href="/returns-policy">Return Policy</a>
+  <a href="/our-story">Our Story</a>
+  <a href="/shipping-policy">Shipping Policy</a>
+  <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
+</div>
   </div>
 
   <div className="footer-link-row">
     <span className="footer-heading">Shop</span>
 
     <div className="footer-link-items">
-      <a href="/products?category=ss26">SS26</a>
       <a href="/products?category=boy">Boy</a>
       <a href="/products?category=girl">Girl</a>
       <a href="/products?category=baby">Baby</a>
