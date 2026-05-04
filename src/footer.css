@@ -98,6 +98,7 @@
 .footer-newsletter-text {
   margin: 0;
   color: #4A494A;
+  font-family: quasimoda, sans-serif;
   font-size: clamp(12px, 1vw, 15px);
   line-height: 1.4;
   text-transform: none;
@@ -130,7 +131,7 @@
   border-bottom: 1px solid #4A494A;
   background: transparent;
   outline: none;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   color: #4A494A;
   padding: 8px 48px 8px 0;
   box-sizing: border-box;
@@ -141,7 +142,7 @@
   right: 0;
   border: none;
   background: transparent;
-  font: inherit;
+  font-family: quasimoda, sans-serif;
   color: #4A494A;
   cursor: pointer;
   padding: 0;
@@ -180,7 +181,7 @@
   }
 
   .footer-london {
-  font-family: quasimoda, sans-serif !important;
+  font-family: quasimoda, sans-serif;
   font-weight: 700;
   font-size: clamp(12px, 1.5vw, 20px);
   letter-spacing: 1.5em;
