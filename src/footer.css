@@ -86,11 +86,6 @@
   color: #4A494A;
   font-family: quasimoda, sans-serif;
   font-size: clamp(12px, 1vw, 16px);
-  transition: opacity 0.2s ease;
-}
-
-.footer-links a:hover {
-  opacity: 0.6;
 }
 
 .footer-newsletter {
