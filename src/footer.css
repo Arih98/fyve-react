@@ -122,6 +122,19 @@
   white-space: nowrap;
 }
 
+.footer-instagram-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-instagram-link img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
 @media (max-width: 768px) {
   .footer {
     background: linear-gradient(180deg, #fff 0, #fff 19%, #f1dbd1 0, #f1dbd1);

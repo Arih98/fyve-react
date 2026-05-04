@@ -70,9 +70,15 @@ const Footer = () => {
     <span className="footer-heading">Stay updated</span>
 
     <div className="footer-link-items footer-stay-updated">
-      <a href="https://www.instagram.com/fyvelondon/" target="_blank" rel="noopener noreferrer">
-        Instagram
-      </a>
+<a
+  className="footer-instagram-link"
+  href="https://www.instagram.com/fyvelondon/"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <span>Follow us on</span>
+  <img src="/assets/InstagramLogo.svg" alt="Instagram" />
+</a>
 
       <form className="footer-form" onSubmit={handleSubmit}>
         <input
