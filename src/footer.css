@@ -46,13 +46,17 @@
 
 .footer-links {
   display: grid;
-  grid-template-columns: repeat(4, minmax(140px, 1fr));
-  justify-content: center;
+  grid-template-columns: max-content max-content max-content 1fr;
   align-items: start;
-  gap: 0;
+  column-gap: clamp(32px, 4vw, 64px);
   width: min(1400px, 100%);
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
+}
+
+.footer-link-row:last-child {
+  justify-self: end;
+  width: min(400px, 100%);
 }
 
 .footer-link-row {
