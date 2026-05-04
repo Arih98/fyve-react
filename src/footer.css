@@ -1,5 +1,5 @@
 .footer {
-  min-height: 420px;
+  min-height: 820px;
   padding: 80px 40px 60px;
   display: flex;
   flex-direction: column;
@@ -8,8 +8,8 @@
   background: linear-gradient(
     to bottom,
     #fff 0%,
-    #fff 46%,
-    #f1dbd1 46%,
+    #fff 29%,
+    #f1dbd1 29%,
     #f1dbd1 100%
   );
   box-sizing: border-box;
