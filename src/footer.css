@@ -46,10 +46,10 @@
 
 .footer-links {
   display: grid;
-  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
   justify-content: center;
   align-items: start;
-  gap: clamp(45px, 8vw, 120px);
+  gap: clamp(35px, 6vw, 90px);
   width: min(1400px, 100%);
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);

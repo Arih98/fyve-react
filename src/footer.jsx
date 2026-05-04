@@ -46,16 +46,23 @@ const Footer = () => {
 
       <div className="footer-links">
   <div className="footer-link-row">
-    <span className="footer-heading">Quick links</span>
+  <span className="footer-heading">Quick links</span>
 
-<div className="footer-link-items">
-  <a href="/faq">FAQ</a>
-  <a href="/returns-policy">Return Policy</a>
-  <a href="/our-story">Our Story</a>
-  <a href="/shipping-policy">Shipping Policy</a>
-  <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
-</div>
+  <div className="footer-link-items">
+    <a href="/faq">FAQ</a>
+    <a href="/our-story">Our Story</a>
+    <a href="mailto:hello@fyvelondon.com">hello@fyvelondon.com</a>
   </div>
+</div>
+
+<div className="footer-link-row">
+  <span className="footer-heading">Store Policies</span>
+
+  <div className="footer-link-items">
+    <a href="/returns-policy">Return Policy</a>
+    <a href="/shipping-policy">Shipping Policy</a>
+  </div>
+</div>
 
   <div className="footer-link-row">
     <span className="footer-heading">Shop</span>
