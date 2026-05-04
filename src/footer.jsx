@@ -81,18 +81,26 @@ const Footer = () => {
   <img src="/assets/InstagramLogo.svg" alt="Instagram" />
 </a>
 
-      <form className="footer-form" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={submitting}>
-          {submitting ? '...' : 'Submit'}
-        </button>
-      </form>
+      <div className="footer-newsletter">
+  <p className="footer-newsletter-text">
+    Receive information about new collections, exclusive releases and FYVE updates.
+  </p>
+
+  <form className="footer-form" onSubmit={handleSubmit}>
+    <div className="footer-input-wrap">
+      <input
+        type="email"
+        placeholder="Your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <button type="submit" disabled={submitting}>
+        {submitting ? '...' : 'Send'}
+      </button>
+    </div>
+  </form>
+</div>
 
       {message && <span className="footer-form-message">{message}</span>}
     </div>
