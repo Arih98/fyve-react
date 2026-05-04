@@ -78,14 +78,14 @@
 .footer-heading {
   font-family: "ArizonaFlare", sans-serif;
   font-weight: 500;
-  font-size: clamp(12px, 1vw, 16px);
+  font-size: clamp(14px, 1.15vw, 18px);
 }
 
 .footer-links a {
   text-decoration: none;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
-  font-size: clamp(12px, 1vw, 16px);
+  font-size: clamp(14px, 1.15vw, 18px);
 }
 
 .footer-newsletter {
@@ -99,7 +99,7 @@
   margin: 0;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
-  font-size: clamp(12px, 1vw, 15px);
+  font-size: clamp(14px, 1.15vw, 18px);
   line-height: 1.4;
   text-transform: none;
   max-width: 400px;
@@ -112,7 +112,7 @@
 .footer-form-message {
   color: #4A494A;
   font-family: quasimoda, sans-serif;
-  font-size: clamp(12px, 1vw, 14px);
+  font-size: clamp(13px, 1vw, 16px);
   line-height: 1.3;
   white-space: nowrap;
 }
