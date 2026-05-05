@@ -1,6 +1,7 @@
 .footer {
-  --footer-gradient-split: clamp(180px, 28vw, 285px);
-
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 980px;
   padding: 80px 40px 60px;
   display: flex;
@@ -8,17 +9,13 @@
   align-items: center;
   justify-content: flex-end;
   gap: clamp(60px, 6vw, 110px);
-  background: linear-gradient(
-    to bottom,
-    #fff 0,
-    #fff var(--footer-gradient-split),
-    #f1dbd1 var(--footer-gradient-split),
-    #f1dbd1 100%
-  );
+  background: #fff;
   box-sizing: border-box;
 }
 
 .footer-brand {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,6 +26,19 @@
   letter-spacing: 2px;
   line-height: 1;
   margin-bottom: 0;
+}
+
+.footer-brand::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 200vh;
+  transform: translateX(-50%);
+  background: #f1dbd1;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .footer-fyve-logo {
@@ -56,6 +66,8 @@
   width: 100%;
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
+    position: relative;
+  z-index: 1;
 }
 
 .footer-link-row {
