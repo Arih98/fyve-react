@@ -439,149 +439,172 @@
   color: var(--header-icon-color);
 }
 
-.home-float-section {
+.results-float-section {
   position: relative;
   width: 100%;
-  min-height: 145vh;
-  overflow: hidden;
+  height: 113.7vw;
+  min-height: 980px;
+  max-height: 1350px;
   background: #F1DBD1;
+  overflow: hidden;
   z-index: 2;
 }
 
-.home-float-inner {
+.results-float-stage {
   position: relative;
   width: 100%;
-  min-height: 145vh;
+  height: 100%;
 }
 
-.home-float-item {
+.results-parallax-item {
   will-change: transform;
 }
 
-.home-float-copy {
+.results-before-after-title {
   position: absolute;
-  top: 38%;
-  left: 0;
-  right: 0;
-  z-index: 5;
-  width: min(620px, calc(100% - 40px));
-  margin: 0 auto;
+  top: 26.87%;
+  left: 2.91%;
+  width: 94.18%;
+  z-index: 4;
   text-align: center;
+  pointer-events: none;
 }
 
-.home-float-kicker {
-  margin: 0 0 16px;
+.results-before-after-title span {
+  display: block;
   font-family: "Quasimoda", sans-serif;
-  font-size: 0.9vw;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-size: clamp(70px, 14vw, 210px);
+  font-weight: 200;
+  line-height: 0.8;
+  letter-spacing: -0.08em;
   text-transform: uppercase;
-  color: #4A494A;
+  color: #fff;
+  white-space: nowrap;
 }
 
-.home-float-title {
-  margin: 0;
-  font-family: "ArizonaFlare", sans-serif;
-  font-size: clamp(58px, 8vw, 130px);
-  font-weight: 500;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
-  color: #4A494A;
-}
-
-.home-float-text {
-  max-width: 430px;
-  margin: 26px auto 0;
-  font-family: "Quasimoda", sans-serif;
-  font-size: 1.15vw;
-  line-height: 1.45;
-  color: #4A494A;
-}
-
-.home-float-image {
+.results-img-wrap {
   position: absolute;
-  z-index: 2;
+  display: block;
   overflow: hidden;
+  z-index: 3;
+  aspect-ratio: 2 / 3;
 }
 
-.home-float-image img {
+.results-img-wrap img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  user-select: none;
+  transition: transform 0.8s ease;
+}
+
+.results-img-wrap:hover img {
+  transform: scale(1.04);
+}
+
+.results-img-wrap-5 {
+  top: 18.37%;
+  left: 75%;
+  width: 16.666%;
+}
+
+.results-img-wrap-4 {
+  top: 33.03%;
+  left: 33.333%;
+  width: 25%;
+}
+
+.results-img-wrap-3 {
+  top: 11.04%;
+  left: 8.333%;
+  width: 16.666%;
+}
+
+.results-img-wrap-2 {
+  top: 55.02%;
+  left: 25%;
+  width: 16.666%;
+}
+
+.results-img-wrap-1 {
+  top: 66.01%;
+  left: 66.666%;
+  width: 16.666%;
+}
+
+.results-float-emblem {
+  position: absolute;
+  top: 84.16%;
+  left: 54.49%;
+  width: 16.01%;
+  aspect-ratio: 1 / 1;
+  z-index: 2;
+  opacity: 0.75;
   pointer-events: none;
 }
 
-.home-float-image-1 {
-  left: 8vw;
-  top: 16%;
-  width: 23vw;
-  aspect-ratio: 4 / 5;
-}
-
-.home-float-image-2 {
-  right: 9vw;
-  top: 13%;
-  width: 18vw;
-  aspect-ratio: 3 / 4;
-}
-
-.home-float-image-3 {
-  left: 58vw;
-  top: 58%;
-  width: 24vw;
-  aspect-ratio: 4 / 5;
+.results-float-emblem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 @media (max-width: 768px) {
-.home-float-section {
-  min-height: 120vh;
+
+  .results-float-section {
+  height: 150vh;
+  min-height: 900px;
+  max-height: none;
 }
 
-.home-float-inner {
-  min-height: 120vh;
+.results-before-after-title {
+  top: 28%;
+  left: 4%;
+  width: 92%;
 }
 
-.home-float-copy {
-  top: 34%;
-  width: calc(100% - 50px);
+.results-before-after-title span {
+  font-size: 23vw;
+  line-height: 0.82;
+  white-space: normal;
 }
 
-.home-float-kicker {
-  font-size: 3.2vw;
+.results-img-wrap-5 {
+  top: 12%;
+  left: 63%;
+  width: 34%;
 }
 
-.home-float-title {
-  font-size: 14vw;
-  line-height: 0.9;
+.results-img-wrap-4 {
+  top: 28%;
+  left: 18%;
+  width: 50%;
 }
 
-.home-float-text {
-  max-width: 28ch;
-  margin-top: 20px;
-  font-size: 4.2vw;
-  line-height: 1.35;
+.results-img-wrap-3 {
+  top: 8%;
+  left: -6%;
+  width: 34%;
 }
 
-.home-float-image-1 {
-  left: -8vw;
-  top: 14%;
-  width: 48vw;
+.results-img-wrap-2 {
+  top: 58%;
+  left: 8%;
+  width: 36%;
 }
 
-.home-float-image-2 {
-  right: -10vw;
-  top: 22%;
-  width: 43vw;
+.results-img-wrap-1 {
+  top: 68%;
+  left: 58%;
+  width: 36%;
 }
 
-.home-float-image-3 {
-  left: 34vw;
-  top: 64%;
-  width: 52vw;
+.results-float-emblem {
+  top: 82%;
+  left: 38%;
+  width: 24%;
 }
-
 .hero-side-left .london-text {
   left: 8vw;
 }

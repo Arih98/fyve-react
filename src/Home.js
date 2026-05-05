@@ -293,8 +293,6 @@ gsap.set('.london-below', { opacity: 0 })
   }, [londonFadeDelay])
 
   useEffect(() => {
-  let stampObserver = null
-
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
 
@@ -311,9 +309,9 @@ gsap.set('.london-below', { opacity: 0 })
       }
     })
 
-    gsap.utils.toArray('.home-float-item').forEach((item) => {
-      const start = item.dataset.floatStart || 50
-      const end = item.dataset.floatEnd || -10
+    gsap.utils.toArray('.results-parallax-item').forEach((item) => {
+      const start = Number(item.dataset.resultsStart || 50)
+      const end = Number(item.dataset.resultsEnd || -10)
 
       gsap.fromTo(item, {
         y: `${start}vh`
@@ -322,7 +320,7 @@ gsap.set('.london-below', { opacity: 0 })
         ease: 'none',
         immediateRender: true,
         scrollTrigger: {
-          trigger: '.home-float-section',
+          trigger: '.results-float-section',
           start: 'top bottom',
           end: 'bottom top',
           scrub: true,
@@ -335,7 +333,7 @@ gsap.set('.london-below', { opacity: 0 })
     const stamp = document.querySelector('.section1-stamp')
 
     if (stamp) {
-      stampObserver = Observer.create({
+      Observer.create({
         type: 'wheel,touch,scroll',
         onDown: () => {
           rotation -= 5
@@ -351,10 +349,7 @@ gsap.set('.london-below', { opacity: 0 })
     }
   })
 
-  return () => {
-    if (stampObserver) stampObserver.kill()
-    ctx.revert()
-  }
+  return () => ctx.revert()
 }, [])
 
   return (
@@ -473,26 +468,34 @@ gsap.set('.london-below', { opacity: 0 })
         </div>
       </div>
 
-      <div className="home-float-section">
-  <div className="home-float-inner">
-    <div className="home-float-copy home-float-item" data-float-start="22" data-float-end="-10">
-      <p className="home-float-kicker">FYVE London</p>
-      <h2 className="home-float-title">Softly made for little moments</h2>
-      <p className="home-float-text">
-        Refined childrenswear with a quiet British charm, made for special days and everyday beauty.
-      </p>
+      <div className="results-float-section">
+  <div className="results-float-stage">
+    <div className="results-before-after-title results-parallax-item" data-results-start="50" data-results-end="-10">
+      <span>Before/After</span>
     </div>
 
-    <div className="home-float-image home-float-image-1 home-float-item" data-float-start="52" data-float-end="-18">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-5 results-parallax-item" data-results-start="18" data-results-end="-32">
       <img src="/assets/home/fyve-girls-british-dress.webp" alt="" draggable="false" />
-    </div>
+    </a>
 
-    <div className="home-float-image home-float-image-2 home-float-item" data-float-start="36" data-float-end="-24">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-4 results-parallax-item" data-results-start="10" data-results-end="-22">
       <img src="/assets/home/fyve-detail-british-childrens-fashion.webp" alt="" draggable="false" />
-    </div>
+    </a>
 
-    <div className="home-float-image home-float-image-3 home-float-item" data-float-start="64" data-float-end="-6">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-3 results-parallax-item" data-results-start="16" data-results-end="-28">
       <img src="/assets/home/FYVE-SS26-WF7672.webp" alt="" draggable="false" />
+    </a>
+
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-2 results-parallax-item" data-results-start="24" data-results-end="-42">
+      <img src="/assets/home/FYVE-SS26-WF767233.webp" alt="" draggable="false" />
+    </a>
+
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-1 results-parallax-item" data-results-start="8" data-results-end="-14">
+      <img src="/assets/home/fyve-london-hero.webp" alt="" draggable="false" />
+    </a>
+
+    <div className="results-float-emblem">
+      <img src="/assets/FYVE-White-Logo.svg" alt="" draggable="false" />
     </div>
   </div>
 </div>
