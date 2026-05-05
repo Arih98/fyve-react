@@ -450,37 +450,43 @@
   z-index: 2;
 }
 
-.results-float-stage {
+.results-float-row {
   position: relative;
   width: 100%;
   height: 100%;
+  padding-top: 8vw;
+  padding-bottom: 8vw;
+  box-sizing: border-box;
   isolation: isolate;
 }
 
-.results-parallax-item {
-  will-change: transform;
+.results-icon-wrapper {
+  position: absolute;
+  left: 0;
+  top: 8.33%;
+  width: 100%;
+  height: 59.32%;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .results-before-after-title {
   position: absolute;
-  top: 26.87%;
-  left: 2.91%;
-  width: 94.18%;
+  top: 43.83%;
+  left: 0;
+  width: 100%;
   z-index: 1;
-  text-align: center;
   pointer-events: none;
+  will-change: transform;
 }
 
-.results-before-after-title span {
+.results-before-after-title img {
   display: block;
-  font-family: "Quasimoda", sans-serif;
-  font-size: clamp(70px, 14vw, 210px);
-  font-weight: 200;
-  line-height: 0.8;
-  letter-spacing: -0.08em;
-  text-transform: uppercase;
-  color: #fff;
-  white-space: nowrap;
+  width: 94.18%;
+  height: auto;
+  margin: 0 auto;
+  user-select: none;
+  pointer-events: none;
 }
 
 .results-img-wrap {
@@ -489,10 +495,7 @@
   overflow: hidden;
   z-index: 3;
   aspect-ratio: 2 / 3;
-}
-
-.results-float-emblem {
-  z-index: 2;
+  will-change: transform;
 }
 
 .results-img-wrap img {
@@ -500,59 +503,58 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s ease;
-}
-
-.results-img-wrap:hover img {
-  transform: scale(1.04);
+  user-select: none;
 }
 
 .results-img-wrap-5 {
-  top: 18.37%;
+  top: 21.2966%;
   left: 75%;
   width: 16.666%;
 }
 
 .results-img-wrap-4 {
-  top: 33.03%;
+  top: 40.5436%;
   left: 33.333%;
   width: 25%;
 }
 
 .results-img-wrap-3 {
-  top: 11.04%;
+  top: 16.2746%;
   left: 8.333%;
   width: 16.666%;
 }
 
 .results-img-wrap-2 {
-  top: 55.02%;
+  top: 55.6107%;
   left: 25%;
   width: 16.666%;
 }
 
 .results-img-wrap-1 {
-  top: 66.01%;
+  top: 75.7972%;
   left: 66.666%;
   width: 16.666%;
 }
 
-.results-float-emblem {
+.results-outline-button {
   position: absolute;
-  top: 84.16%;
-  left: 54.49%;
-  width: 16.01%;
-  aspect-ratio: 1 / 1;
-  z-index: 2;
-  opacity: 0.75;
-  pointer-events: none;
-}
-
-.results-float-emblem img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  left: 54.4643%;
+  top: 96.2149%;
+  width: 180px;
+  height: 180px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Quasimoda", sans-serif;
+  font-size: 14px;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background: transparent;
 }
 
 @media (max-width: 768px) {

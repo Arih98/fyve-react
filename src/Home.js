@@ -469,34 +469,36 @@ gsap.set('.london-below', { opacity: 0 })
       </div>
 
       <div className="results-float-section">
-  <div className="results-float-stage">
-    <div className="results-before-after-title results-parallax-item" data-results-start="50" data-results-end="-10">
-      <span>SS26</span>
+  <div className="results-float-row">
+    <div className="results-icon-wrapper">
+      <div className="results-before-after-title results-parallax-item" data-results-start="50" data-results-end="-10">
+        <img src="/assets/home/before-after-title.png" alt="Before/After" draggable="false" />
+      </div>
     </div>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-5 results-parallax-item" data-results-start="18" data-results-end="-32">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-5 results-parallax-item" data-results-start="0" data-results-end="-28">
       <img src="/assets/home/fyve-girls-british-dress.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-4 results-parallax-item" data-results-start="10" data-results-end="-22">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-4 results-parallax-item" data-results-start="0" data-results-end="-14">
       <img src="/assets/home/fyve-detail-british-childrens-fashion.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-3 results-parallax-item" data-results-start="16" data-results-end="-28">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-3 results-parallax-item" data-results-start="0" data-results-end="-21">
       <img src="/assets/home/FYVE-SS26-WF7672.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-2 results-parallax-item" data-results-start="24" data-results-end="-42">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-2 results-parallax-item" data-results-start="0" data-results-end="-35">
       <img src="/assets/home/FYVE-SS26-WF767233.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-1 results-parallax-item" data-results-start="8" data-results-end="-14">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-1 results-parallax-item" data-results-start="0" data-results-end="-7">
       <img src="/assets/home/fyve-london-hero.webp" alt="" draggable="false" />
     </a>
 
-    <div className="results-float-emblem">
-      <img src="/assets/FYVE-White-Logo.svg" alt="" draggable="false" />
-    </div>
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-outline-button">
+      See the collection
+    </a>
   </div>
 </div>
 
