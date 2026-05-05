@@ -47,16 +47,15 @@
 .footer-links {
   display: grid;
   grid-template-columns: max-content max-content max-content minmax(420px, 560px);
-  justify-content: space-between;
+  justify-content: center;
   align-items: start;
-  column-gap: clamp(48px, 6vw, 96px);
+  column-gap: clamp(56px, 6vw, 96px);
   width: min(1400px, 100%);
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
 }
 
 .footer-link-row:last-child {
-  justify-self: end;
   width: 100%;
   max-width: 560px;
   align-items: flex-start;
