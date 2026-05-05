@@ -4,6 +4,7 @@ import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
+import { freezeFyveLenisAtCurrentScroll, fyveScrollTo, resizeFyveLenis } from '../utils/lenisControls';
 import './ProductsPage.css';
 import { fyveScrollTo } from '../utils/lenisControls';
 
@@ -115,10 +116,20 @@ description: product.description || '',
   price: product.price
 }));
 
-  const handleProductClick = (item) => {
+const forceProductRouteTop = () => {
+  fyveScrollTo(0, { immediate: true, force: true });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  resizeFyveLenis();
+};
+
+const handleProductClick = (item) => {
   if (clickLockRef.current) return;
   clickLockRef.current = true;
-    const sourceEl = imageRefs.current.get(item.displayId);
+
+  freezeFyveLenisAtCurrentScroll();
+
+  const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
         ? item.gallery[0]
@@ -162,15 +173,21 @@ const colorQuery = selectedProductColor
       sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
     }
 
-    navigate(targetPath, {
-      state: {
-        product: targetProduct,
-        initialColor: item.selectedColor,
-        transitionSourceDisplayId: item.displayId,
-        transitionSourceSrc: sourceSrc,
-        fromProductGrid: true
-      }
-    });
+forceProductRouteTop();
+
+navigate(targetPath, {
+  state: {
+    product: targetProduct,
+    initialColor: item.selectedColor,
+    transitionSourceDisplayId: item.displayId,
+    transitionSourceSrc: sourceSrc,
+    fromProductGrid: true
+  }
+});
+
+requestAnimationFrame(forceProductRouteTop);
+setTimeout(forceProductRouteTop, 50);
+setTimeout(forceProductRouteTop, 150);
   };
 
   const currentProducts = isMobile
