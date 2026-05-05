@@ -1,12 +1,8 @@
 .footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
+  position: relative;
   isolation: isolate;
   overflow: hidden;
-  height: var(--footer-reveal-height);
+  min-height: 980px;
   padding: 80px 40px 60px;
   display: flex;
   flex-direction: column;
@@ -235,13 +231,13 @@
     display: none;
   }
 
-.footer {
-  background: linear-gradient(180deg, #fff 0, #fff 12.9%, #f1dbd1 0, #f1dbd1);
-  box-sizing: border-box;
-  justify-content: space-between;
-  height: var(--footer-reveal-height);
-  padding: 60px 30px 95px;
-}
+  .footer {
+    background: linear-gradient(180deg, #fff 0, #fff 12.9%, #f1dbd1 0, #f1dbd1);
+    box-sizing: border-box;
+    justify-content: space-between;
+    min-height: 420px;
+    padding: 60px 30px 95px;
+  }
 
   .footer-fyve-logo {
     width: 100%;

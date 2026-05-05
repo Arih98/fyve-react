@@ -63,7 +63,6 @@ body::-webkit-scrollbar {
 :root {
   --announcement-height: 36px;
   --desktop-header-height: 110px;
-  --footer-reveal-height: 100svh;
 }
 
 .App {
@@ -74,29 +73,12 @@ body::-webkit-scrollbar {
 }
 
 .site-content {
-  position: relative;
-  z-index: 2;
   padding-top: calc(var(--announcement-height) + var(--desktop-header-height));
-  margin-bottom: var(--footer-reveal-height);
-  background: #fff;
-}
-
-.site-content-home {
-  padding-top: 0;
 }
 
 @media (max-width: 768px) {
-  :root {
-    --footer-reveal-height: 760px;
-  }
-
   .site-content {
     padding-top: var(--announcement-height);
     padding-bottom: 90px;
-    margin-bottom: var(--footer-reveal-height);
-  }
-
-  .site-content-home {
-    padding-top: 0;
   }
 }
