@@ -66,6 +66,13 @@ body::-webkit-scrollbar {
   --footer-reveal-height: 980px;
 }
 
+.App {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: #fff;
+}
+
 .site-content {
   position: relative;
   z-index: 2;
@@ -74,8 +81,8 @@ body::-webkit-scrollbar {
   background: #fff;
 }
 
-.route-loading-space {
-  min-height: 100vh;
+.site-content-home {
+  padding-top: 0;
 }
 
 @media (max-width: 768px) {
@@ -87,5 +94,9 @@ body::-webkit-scrollbar {
     padding-top: var(--announcement-height);
     padding-bottom: 90px;
     margin-bottom: var(--footer-reveal-height);
+  }
+
+  .site-content-home {
+    padding-top: 0;
   }
 }

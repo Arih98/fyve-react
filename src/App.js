@@ -54,7 +54,7 @@ const Layout = () => {
       {showAnnouncementBar && <AnnouncementBar />}
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
-      <div className={location.pathname === '/' ? '' : 'site-content'}>
+      <div className={`site-content ${location.pathname === '/' ? 'site-content-home' : ''}`}>
         <LayoutGroup>
           <AnimatePresence initial={false} mode="wait">
             <motion.div
