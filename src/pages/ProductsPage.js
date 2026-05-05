@@ -5,6 +5,7 @@ import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
+import { fyveScrollTo } from '../utils/lenisControls';
 
 const ProductsPage = () => {
   const productsPerPage = 16;
@@ -184,7 +185,7 @@ const totalPages = isMobile
     const next = new URLSearchParams(searchParams);
     next.set('page', String(page));
     setSearchParams(next);
-    window.scrollTo(0, 0);
+    fyveScrollTo(0, { immediate: true, force: true });
   };
 
   if (loading) {

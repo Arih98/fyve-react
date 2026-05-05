@@ -399,6 +399,22 @@ useEffect(() => {
   };
 }, [isMobile, displayImages.length, current?.sku, product?.id]);
 
+const stopLenisTransition = () => {
+  window.dispatchEvent(
+    new CustomEvent('fyve:lenis-stop', {
+      detail: { reason: 'product-image-transition' }
+    })
+  );
+};
+
+const startLenisTransition = () => {
+  window.dispatchEvent(
+    new CustomEvent('fyve:lenis-start', {
+      detail: { reason: 'product-image-transition' }
+    })
+  );
+};
+
 const colorValueKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
 const colorValue = colorValueKey ? selectedAttributes[colorValueKey] || '' : '';
 const currentItemId = current?.id || product?.id;
@@ -1190,12 +1206,14 @@ onClick={openSizePanel}
 
             {isSizePanelOpen && (
 <div
+  data-lenis-prevent
   className="size-panel-backdrop"
 onClick={closeSizePanel}
 >
-                <div
-                  className="size-panel"
-                  role="dialog"
+<div
+  data-lenis-prevent
+  className="size-panel"
+  role="dialog"
                   aria-modal="true"
                   aria-label="Select a size"
                   onClick={(e) => e.stopPropagation()}

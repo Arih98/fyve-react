@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import LenisRoot from './LenisRoot';
 import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
 import Home from './Home';
 import ProductsPage from './pages/ProductsPage';
@@ -77,42 +78,14 @@ const Layout = () => {
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const originalScrollTo = window.scrollTo;
-    const originalScroll = window.scroll;
-    const originalScrollIntoView = Element.prototype.scrollIntoView;
-    const originalFocus = HTMLElement.prototype.focus;
-
-    window.scrollTo = function (...args) {
-      return originalScrollTo.apply(window, args);
-    };
-
-    window.scroll = function (...args) {
-      return originalScroll.apply(window, args);
-    };
-
-    Element.prototype.scrollIntoView = function (...args) {
-      return originalScrollIntoView.apply(this, args);
-    };
-
-    HTMLElement.prototype.focus = function (...args) {
-      return originalFocus.apply(this, args);
-    };
-
-    return () => {
-      window.scrollTo = originalScrollTo;
-      window.scroll = originalScroll;
-      Element.prototype.scrollIntoView = originalScrollIntoView;
-      HTMLElement.prototype.focus = originalFocus;
-    };
-  }, []);
 
   return (
     <MenuContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
       <CartProvider>
-        <AuthProvider>
-          <ScrollManager />
-          <Routes>
+<AuthProvider>
+  <LenisRoot />
+  <ScrollManager />
+  <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />

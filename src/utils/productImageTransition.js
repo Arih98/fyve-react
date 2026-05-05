@@ -242,6 +242,8 @@ export const startProductImageTransition = async ({
     return;
   }
 
+  stopLenisTransition();
+
   const fromStyle = window.getComputedStyle(fromElement);
   const previousFromOpacity = fromElement.style.opacity;
 
@@ -268,20 +270,22 @@ export const startProductImageTransition = async ({
   const imageReady = await waitForImageReady(clone);
 
   if (!imageReady || runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-    targetWaitController.abort();
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
+  targetWaitController.abort();
+  fromElement.style.opacity = previousFromOpacity;
+  clone.remove();
 
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    if (runId === transitionRunId) {
-      document.body.classList.remove('product-image-transition-active');
-    }
-
-    return;
+  if (activeClone === clone) {
+    activeClone = null;
   }
+
+  if (runId === transitionRunId) {
+    document.body.classList.remove('product-image-transition-active');
+  }
+
+  startLenisTransition();
+
+  return;
+}
 
   fromElement.style.opacity = '0';
   clone.style.opacity = '1';
@@ -408,6 +412,7 @@ export const startProductImageTransition = async ({
     if (runId === transitionRunId) {
       document.body.classList.remove('product-image-transition-active');
     }
+    startLenisTransition();
   };
 
   animation.addEventListener('finish', cleanup, { once: true });

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
+import { fyveScrollTo, resizeFyveLenis } from '../utils/lenisControls';
 
 const scrollPositions = new Map();
 
@@ -28,20 +29,25 @@ export default function ScrollManager() {
     };
   }, [location.pathname, location.search]);
 
-    useEffect(() => {
+  useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
+    const scrollTopNow = () => {
+      fyveScrollTo(0, { immediate: true, force: true });
+      requestAnimationFrame(resizeFyveLenis);
+    };
+
     if (location.pathname === '/') {
-      window.scrollTo(0, 0);
+      scrollTopNow();
 
       requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
+        scrollTopNow();
 
         requestAnimationFrame(() => {
-          window.scrollTo(0, 0);
+          scrollTopNow();
 
           setTimeout(() => {
-            window.scrollTo(0, 0);
+            scrollTopNow();
           }, 300);
         });
       });
@@ -58,16 +64,17 @@ export default function ScrollManager() {
       }
 
       const savedY = scrollPositions.get(pageKey) ?? 0;
-      window.scrollTo(0, savedY);
+      fyveScrollTo(savedY, { immediate: true, force: true });
+      requestAnimationFrame(resizeFyveLenis);
       return;
     }
 
-        if (location.state?.fromProductGrid) {
-      window.scrollTo(0, 0);
+    if (location.state?.fromProductGrid) {
+      scrollTopNow();
       return;
     }
 
-    window.scrollTo(0, 0);
+    scrollTopNow();
   }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 
   return null;
