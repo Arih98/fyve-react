@@ -87,7 +87,7 @@ body::-webkit-scrollbar {
 
 @media (max-width: 768px) {
   :root {
-    --footer-reveal-height: 620px;
+    --footer-reveal-height: 760px;
   }
 
   .site-content {
