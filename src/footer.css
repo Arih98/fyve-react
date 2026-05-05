@@ -220,11 +220,10 @@
 }
 
 .footer-instagram-link img {
-  display: inline;
+  display: inline-block;
   width: 75px;
   height: auto;
   vertical-align: middle;
-  margin-left: 8px;
 }
 
 @media (max-width: 768px) {
