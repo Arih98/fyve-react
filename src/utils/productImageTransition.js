@@ -1,3 +1,5 @@
+import { freezeFyveLenisAtCurrentScroll, startFyveLenis } from './lenisControls';
+
 let activeClone = null;
 let activeAnimation = null;
 let activeTargetWaitController = null;
@@ -17,6 +19,11 @@ const startLenisTransition = () => {
       detail: { reason: 'product-image-transition' }
     })
   );
+};
+
+const restartLenisTransition = () => {
+  startFyveLenis();
+  startLenisTransition();
 };
 
 const waitForNextFrame = () =>
@@ -234,6 +241,9 @@ export const startProductImageTransition = async ({
 }) => {
   if (!src || !fromElement) return;
 
+  freezeFyveLenisAtCurrentScroll();
+  stopLenisTransition();
+
   transitionRunId += 1;
   const runId = transitionRunId;
 
@@ -255,10 +265,9 @@ export const startProductImageTransition = async ({
   const fromRect = getRect(fromElement);
 
   if (!fromRect.width || !fromRect.height) {
+    restartLenisTransition();
     return;
   }
-
-  stopLenisTransition();
 
   const fromStyle = window.getComputedStyle(fromElement);
   const previousFromOpacity = fromElement.style.opacity;
@@ -308,17 +317,19 @@ export const startProductImageTransition = async ({
 
   const stableTarget = await stableTargetPromise;
 
-  if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-    stableTarget?.restore?.();
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
+if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
+  stableTarget?.restore?.();
+  fromElement.style.opacity = previousFromOpacity;
+  clone.remove();
 
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    return;
+  if (activeClone === clone) {
+    activeClone = null;
   }
+
+  restartLenisTransition();
+
+  return;
+}
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
     fromElement.style.opacity = previousFromOpacity;
@@ -428,7 +439,7 @@ export const startProductImageTransition = async ({
     if (runId === transitionRunId) {
       document.body.classList.remove('product-image-transition-active');
     }
-    startLenisTransition();
+restartLenisTransition();
   };
 
   animation.addEventListener('finish', cleanup, { once: true });
