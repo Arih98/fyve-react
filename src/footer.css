@@ -38,7 +38,7 @@
 .footer-london {
   font-family: quasimoda, sans-serif !important;
   font-weight: 700;
-  font-size: clamp(12px, 1.5vw, 20px);
+  font-size: clamp(16px, 2vw, 28px);
   letter-spacing: 4.5em;
   color: #4A494A;
   margin-top: 1.5em;
