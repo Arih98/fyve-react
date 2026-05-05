@@ -15,11 +15,12 @@ const ProductsPage = () => {
   const imageRefs = useRef(new Map());
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
-const clickLockRef = useRef(false);
+  const clickLockRef = useRef(false);
 
   const selectedCategory = searchParams.get('category') || '';
+  const prevCategoryRef = useRef(selectedCategory);
 
-  const { data: products, loading, error, meta } = useProducts({
+  const { data: products, loading, error } = useProducts({
     page: 1,
     perPage: 200,
     category: selectedCategory
@@ -74,6 +75,16 @@ const clickLockRef = useRef(false);
   useEffect(() => {
     sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
   }, [visibleCount, selectedCategory]);
+
+useEffect(() => {
+  if (prevCategoryRef.current === selectedCategory) return;
+
+  prevCategoryRef.current = selectedCategory;
+
+  const next = new URLSearchParams(searchParams);
+  next.set('page', '1');
+  setSearchParams(next, { replace: true });
+}, [selectedCategory, searchParams, setSearchParams]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -165,9 +176,9 @@ const colorQuery = selectedProductColor
     ? display.slice(0, visibleCount)
     : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
-  const totalPages = isMobile
-    ? 1
-    : Math.max(1, meta?.totalPages || Math.ceil(display.length / productsPerPage));
+const totalPages = isMobile
+  ? 1
+  : Math.max(1, Math.ceil(display.length / productsPerPage));
 
   const handlePageChange = (page) => {
     const next = new URLSearchParams(searchParams);
