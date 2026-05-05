@@ -30,7 +30,7 @@
 
 .footer-fyve-logo {
   display: block;
-  width: min(1020px, 80vw);
+  width: 100vw;
   max-width: 100%;
   height: auto;
 }
@@ -50,7 +50,7 @@
   justify-content: space-between;
   align-items: start;
   column-gap: 0;
-  width: min(1400px, 100%);
+  width: 100%;
   white-space: normal;
   font-size: clamp(12px, 1vw, 16px);
 }
