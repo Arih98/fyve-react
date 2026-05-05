@@ -454,6 +454,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  isolation: isolate;
 }
 
 .results-parallax-item {
@@ -465,7 +466,7 @@
   top: 26.87%;
   left: 2.91%;
   width: 94.18%;
-  z-index: 4;
+  z-index: 1;
   text-align: center;
   pointer-events: none;
 }
@@ -488,6 +489,10 @@
   overflow: hidden;
   z-index: 3;
   aspect-ratio: 2 / 3;
+}
+
+.results-float-emblem {
+  z-index: 2;
 }
 
 .results-img-wrap img {
