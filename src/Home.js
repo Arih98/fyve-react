@@ -471,7 +471,7 @@ gsap.set('.london-below', { opacity: 0 })
       <div className="results-float-section">
   <div className="results-float-stage">
     <div className="results-before-after-title results-parallax-item" data-results-start="50" data-results-end="-10">
-      <span>Before/After</span>
+      <span>SS26</span>
     </div>
 
     <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-5 results-parallax-item" data-results-start="18" data-results-end="-32">
