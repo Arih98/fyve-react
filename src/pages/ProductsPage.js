@@ -6,7 +6,6 @@ import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import { freezeFyveLenisAtCurrentScroll, fyveScrollTo, resizeFyveLenis } from '../utils/lenisControls';
 import './ProductsPage.css';
-import { fyveScrollTo } from '../utils/lenisControls';
 
 const ProductsPage = () => {
   const productsPerPage = 16;
