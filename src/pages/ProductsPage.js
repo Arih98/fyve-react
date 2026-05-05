@@ -4,7 +4,6 @@ import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
-import { freezeFyveLenisAtCurrentScroll, fyveScrollTo, resizeFyveLenis } from '../utils/lenisControls';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -115,20 +114,10 @@ description: product.description || '',
   price: product.price
 }));
 
-const forceProductRouteTop = () => {
-  fyveScrollTo(0, { immediate: true, force: true });
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-  resizeFyveLenis();
-};
-
-const handleProductClick = (item) => {
+  const handleProductClick = (item) => {
   if (clickLockRef.current) return;
   clickLockRef.current = true;
-
-  freezeFyveLenisAtCurrentScroll();
-
-  const sourceEl = imageRefs.current.get(item.displayId);
+    const sourceEl = imageRefs.current.get(item.displayId);
     const sourceSrc =
       item.gallery && item.gallery.length > 0
         ? item.gallery[0]
@@ -172,21 +161,15 @@ const colorQuery = selectedProductColor
       sessionStorage.setItem(`productsVisibleCount:${selectedCategory || 'all'}`, String(visibleCount));
     }
 
-forceProductRouteTop();
-
-navigate(targetPath, {
-  state: {
-    product: targetProduct,
-    initialColor: item.selectedColor,
-    transitionSourceDisplayId: item.displayId,
-    transitionSourceSrc: sourceSrc,
-    fromProductGrid: true
-  }
-});
-
-requestAnimationFrame(forceProductRouteTop);
-setTimeout(forceProductRouteTop, 50);
-setTimeout(forceProductRouteTop, 150);
+    navigate(targetPath, {
+      state: {
+        product: targetProduct,
+        initialColor: item.selectedColor,
+        transitionSourceDisplayId: item.displayId,
+        transitionSourceSrc: sourceSrc,
+        fromProductGrid: true
+      }
+    });
   };
 
   const currentProducts = isMobile
@@ -201,7 +184,7 @@ const totalPages = isMobile
     const next = new URLSearchParams(searchParams);
     next.set('page', String(page));
     setSearchParams(next);
-    fyveScrollTo(0, { immediate: true, force: true });
+    window.scrollTo(0, 0);
   };
 
   if (loading) {

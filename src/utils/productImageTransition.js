@@ -1,30 +1,7 @@
-import { freezeFyveLenisAtCurrentScroll, startFyveLenis } from './lenisControls';
-
 let activeClone = null;
 let activeAnimation = null;
 let activeTargetWaitController = null;
 let transitionRunId = 0;
-
-const stopLenisTransition = () => {
-  window.dispatchEvent(
-    new CustomEvent('fyve:lenis-stop', {
-      detail: { reason: 'product-image-transition' }
-    })
-  );
-};
-
-const startLenisTransition = () => {
-  window.dispatchEvent(
-    new CustomEvent('fyve:lenis-start', {
-      detail: { reason: 'product-image-transition' }
-    })
-  );
-};
-
-const restartLenisTransition = () => {
-  startFyveLenis();
-  startLenisTransition();
-};
 
 const waitForNextFrame = () =>
   new Promise((resolve) => {
@@ -241,9 +218,6 @@ export const startProductImageTransition = async ({
 }) => {
   if (!src || !fromElement) return;
 
-  freezeFyveLenisAtCurrentScroll();
-  stopLenisTransition();
-
   transitionRunId += 1;
   const runId = transitionRunId;
 
@@ -265,7 +239,6 @@ export const startProductImageTransition = async ({
   const fromRect = getRect(fromElement);
 
   if (!fromRect.width || !fromRect.height) {
-    restartLenisTransition();
     return;
   }
 
@@ -295,79 +268,71 @@ export const startProductImageTransition = async ({
   const imageReady = await waitForImageReady(clone);
 
   if (!imageReady || runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-  targetWaitController.abort();
-  fromElement.style.opacity = previousFromOpacity;
-  clone.remove();
+    targetWaitController.abort();
+    fromElement.style.opacity = previousFromOpacity;
+    clone.remove();
 
-  if (activeClone === clone) {
-    activeClone = null;
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    if (runId === transitionRunId) {
+      document.body.classList.remove('product-image-transition-active');
+    }
+
+    return;
   }
-
-  if (runId === transitionRunId) {
-    document.body.classList.remove('product-image-transition-active');
-  }
-
-  restartLenisTransition();
-
-  return;
-}
 
   fromElement.style.opacity = '0';
   clone.style.opacity = '1';
 
   const stableTarget = await stableTargetPromise;
 
-if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-  stableTarget?.restore?.();
-  fromElement.style.opacity = previousFromOpacity;
-  clone.remove();
+  if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
+    stableTarget?.restore?.();
+    fromElement.style.opacity = previousFromOpacity;
+    clone.remove();
 
-  if (activeClone === clone) {
-    activeClone = null;
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    return;
   }
-
-  restartLenisTransition();
-
-  return;
-}
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
-  fromElement.style.opacity = previousFromOpacity;
-  clone.remove();
+    fromElement.style.opacity = previousFromOpacity;
+    clone.remove();
 
-  if (activeClone === clone) {
-    activeClone = null;
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    if (runId === transitionRunId) {
+      document.body.classList.remove('product-image-transition-active');
+    }
+
+    return;
   }
-
-  if (runId === transitionRunId) {
-    document.body.classList.remove('product-image-transition-active');
-  }
-
-  restartLenisTransition();
-
-  return;
-}
 
   const toElement = stableTarget.element;
   const stableRect = stableTarget.rect;
 
   if (!stableRect.width || !stableRect.height) {
-  stableTarget.restore?.();
-  fromElement.style.opacity = previousFromOpacity;
-  clone.remove();
+    stableTarget.restore?.();
+    fromElement.style.opacity = previousFromOpacity;
+    clone.remove();
 
-  if (activeClone === clone) {
-    activeClone = null;
+    if (activeClone === clone) {
+      activeClone = null;
+    }
+
+    if (runId === transitionRunId) {
+      document.body.classList.remove('product-image-transition-active');
+    }
+
+    return;
   }
-
-  if (runId === transitionRunId) {
-    document.body.classList.remove('product-image-transition-active');
-  }
-
-  restartLenisTransition();
-
-  return;
-}
 
   const toRect = {
     left: stableRect.left,
@@ -443,7 +408,6 @@ if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
     if (runId === transitionRunId) {
       document.body.classList.remove('product-image-transition-active');
     }
-restartLenisTransition();
   };
 
   animation.addEventListener('finish', cleanup, { once: true });
@@ -469,5 +433,4 @@ export const clearProductImageTransitionClone = () => {
   }
 
   document.body.classList.remove('product-image-transition-active');
-  restartLenisTransition();
 };

@@ -308,37 +308,6 @@ const [isDesktopCartOpen, setIsDesktopCartOpen] = useState(false);
 const desktopCartRef = useRef(null);
 const [pdpMobileAddLabel, setPdpMobileAddLabel] = useState('Add to Bag');
 const [pdpMobileAddDisabled, setPdpMobileAddDisabled] = useState(false);
-useEffect(() => {
-  window.dispatchEvent(
-    new CustomEvent(isSearchOpen ? 'fyve:lenis-stop' : 'fyve:lenis-start', {
-      detail: { reason: 'search' }
-    })
-  );
-
-  return () => {
-    window.dispatchEvent(
-      new CustomEvent('fyve:lenis-start', {
-        detail: { reason: 'search' }
-      })
-    );
-  };
-}, [isSearchOpen]);
-
-useEffect(() => {
-  window.dispatchEvent(
-    new CustomEvent(isMenuOpen ? 'fyve:lenis-stop' : 'fyve:lenis-start', {
-      detail: { reason: 'menu' }
-    })
-  );
-
-  return () => {
-    window.dispatchEvent(
-      new CustomEvent('fyve:lenis-start', {
-        detail: { reason: 'menu' }
-      })
-    );
-  };
-}, [isMenuOpen]);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
@@ -1232,7 +1201,7 @@ const handleToggleMenu = () => {
           </button>
 
           {!isMobile && (
-            <div data-lenis-prevent className={`desktop-cart-dropdown${isDesktopCartOpen ? ' open' : ''}`}>
+            <div className={`desktop-cart-dropdown${isDesktopCartOpen ? ' open' : ''}`}>
               <Cart variant="panel" onClose={() => setIsDesktopCartOpen(false)} />
             </div>
           )}
@@ -1244,8 +1213,7 @@ const handleToggleMenu = () => {
 
 {!usePdpBottomAddVariant && (
   <div
-  data-lenis-prevent
-  className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
+    className={`custom-search-container${isSearchOpen ? ' active' : ''}${isSearchClosing ? ' closing' : ''}`}
     aria-hidden={!isSearchOpen}
     role="dialog"
     aria-modal={isSearchOpen ? 'true' : undefined}
@@ -1607,7 +1575,6 @@ onClick={(e) => {
 )}
 
       <div
-  data-lenis-prevent
   className={`mobile-menu${(menuState === 'open' || (!isMobile && menuState === 'closing')) ? ' active' : ''}${(!isMobile && menuState === 'closing') ? ' closing' : ''}${hideHeader ? ' hide-header' : ''}`}>
         <div className="menu-background"></div>
         <div className="menu-content">

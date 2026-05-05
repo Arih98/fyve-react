@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
-import { fyveScrollTo, resizeFyveLenis } from '../utils/lenisControls';
 
 const scrollPositions = new Map();
 
@@ -29,30 +28,20 @@ export default function ScrollManager() {
     };
   }, [location.pathname, location.search]);
 
-  useEffect(() => {
+    useEffect(() => {
     const pageKey = `${location.pathname}${location.search}`;
 
-    const scrollTopNow = () => {
-      fyveScrollTo(0, { immediate: true, force: true });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-
-      requestAnimationFrame(() => {
-        resizeFyveLenis();
-      });
-    };
-
     if (location.pathname === '/') {
-      scrollTopNow();
+      window.scrollTo(0, 0);
 
       requestAnimationFrame(() => {
-        scrollTopNow();
+        window.scrollTo(0, 0);
 
         requestAnimationFrame(() => {
-          scrollTopNow();
+          window.scrollTo(0, 0);
 
           setTimeout(() => {
-            scrollTopNow();
+            window.scrollTo(0, 0);
           }, 300);
         });
       });
@@ -69,53 +58,16 @@ export default function ScrollManager() {
       }
 
       const savedY = scrollPositions.get(pageKey) ?? 0;
-      fyveScrollTo(savedY, { immediate: true, force: true });
-      requestAnimationFrame(resizeFyveLenis);
+      window.scrollTo(0, savedY);
       return;
     }
 
-    if (location.state?.fromProductGrid) {
-      let cancelled = false;
-
-      const forceProductRouteTop = () => {
-        if (cancelled) return;
-
-        scrollTopNow();
-
-        requestAnimationFrame(() => {
-          if (cancelled) return;
-          scrollTopNow();
-        });
-      };
-
-      const handleLenisStart = (event) => {
-        if (event.detail?.reason !== 'product-image-transition') return;
-
-        requestAnimationFrame(forceProductRouteTop);
-        setTimeout(forceProductRouteTop, 50);
-        setTimeout(forceProductRouteTop, 150);
-      };
-
-      window.addEventListener('fyve:lenis-start', handleLenisStart);
-
-      forceProductRouteTop();
-
-      const timers = [
-        setTimeout(forceProductRouteTop, 80),
-        setTimeout(forceProductRouteTop, 220),
-        setTimeout(forceProductRouteTop, 520),
-        setTimeout(forceProductRouteTop, 900),
-        setTimeout(forceProductRouteTop, 1250)
-      ];
-
-      return () => {
-        cancelled = true;
-        timers.forEach(clearTimeout);
-        window.removeEventListener('fyve:lenis-start', handleLenisStart);
-      };
+        if (location.state?.fromProductGrid) {
+      window.scrollTo(0, 0);
+      return;
     }
 
-    scrollTopNow();
+    window.scrollTo(0, 0);
   }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 
   return null;
