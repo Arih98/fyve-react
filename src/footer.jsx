@@ -49,9 +49,9 @@ const Footer = () => {
   <span className="footer-heading">Company</span>
 
   <div className="footer-link-items">
-    <a href="/faq">FAQ</a>
     <a href="/our-story">Our Story</a>
     <a href="/lookbook">Lookbook</a>
+    <a href="/faq">FAQ</a>
   </div>
 </div>
 
