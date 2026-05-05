@@ -214,6 +214,10 @@
 }
 
 @media (max-width: 768px) {
+.footer-brand::before {
+  display: none;
+}
+
   .footer {
     background: linear-gradient(180deg, #fff 0, #fff 19%, #f1dbd1 0, #f1dbd1);
     box-sizing: border-box;
