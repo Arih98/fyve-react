@@ -3,6 +3,22 @@ let activeAnimation = null;
 let activeTargetWaitController = null;
 let transitionRunId = 0;
 
+const stopLenisTransition = () => {
+  window.dispatchEvent(
+    new CustomEvent('fyve:lenis-stop', {
+      detail: { reason: 'product-image-transition' }
+    })
+  );
+};
+
+const startLenisTransition = () => {
+  window.dispatchEvent(
+    new CustomEvent('fyve:lenis-start', {
+      detail: { reason: 'product-image-transition' }
+    })
+  );
+};
+
 const waitForNextFrame = () =>
   new Promise((resolve) => {
     requestAnimationFrame(() => resolve());
