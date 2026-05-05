@@ -28,7 +28,16 @@
   margin-bottom: 0;
 }
 
-.footer-brand::before {
+.footer-logo-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+
+.footer-logo-wrap::before {
   content: "";
   position: absolute;
   top: 43.5%;
@@ -210,11 +219,10 @@
   width: 75px;
   height: auto;
   object-fit: contain;
-  margin-top: 5px;
 }
 
 @media (max-width: 768px) {
-.footer-brand::before {
+.footer-logo-wrap::before {
   display: none;
 }
 

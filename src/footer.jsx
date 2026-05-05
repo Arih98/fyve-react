@@ -39,10 +39,12 @@ const Footer = () => {
 
   return (
     <footer className="footer">
-      <div className="footer-brand">
-        <img className="footer-fyve-logo" src="/assets/FYVE-WORDMARK.svg" alt="FYVE" />
-        <span className="footer-london">LONDON</span>
-      </div>
+<div className="footer-brand">
+  <div className="footer-logo-wrap">
+    <img className="footer-fyve-logo" src="/assets/FYVE-WORDMARK.svg" alt="FYVE" />
+  </div>
+  <span className="footer-london">LONDON</span>
+</div>
 
       <div className="footer-links">
   <div className="footer-link-row">
