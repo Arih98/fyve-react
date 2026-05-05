@@ -571,12 +571,6 @@
   width: 92%;
 }
 
-.results-before-after-title span {
-  font-size: 23vw;
-  line-height: 0.82;
-  white-space: normal;
-}
-
 .results-img-wrap-5 {
   top: 12%;
   left: 63%;
@@ -607,11 +601,6 @@
   width: 36%;
 }
 
-.results-float-emblem {
-  top: 82%;
-  left: 38%;
-  width: 24%;
-}
 .hero-side-left .london-text {
   left: 8vw;
 }
