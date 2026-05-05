@@ -63,7 +63,7 @@ body::-webkit-scrollbar {
 :root {
   --announcement-height: 36px;
   --desktop-header-height: 110px;
-  --footer-reveal-height: 980px;
+  --footer-reveal-height: 100svh;
 }
 
 .App {
