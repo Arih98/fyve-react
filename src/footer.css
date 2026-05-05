@@ -267,11 +267,13 @@
   .footer-heading {
     font-size: 16px;
     line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   .footer-links a {
     font-size: 16px;
     line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   .footer-newsletter-text {
