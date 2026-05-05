@@ -34,7 +34,12 @@ export default function ScrollManager() {
 
     const scrollTopNow = () => {
       fyveScrollTo(0, { immediate: true, force: true });
-      requestAnimationFrame(resizeFyveLenis);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
+      requestAnimationFrame(() => {
+        resizeFyveLenis();
+      });
     };
 
     if (location.pathname === '/') {
@@ -70,8 +75,44 @@ export default function ScrollManager() {
     }
 
     if (location.state?.fromProductGrid) {
-      scrollTopNow();
-      return;
+      let cancelled = false;
+
+      const forceProductRouteTop = () => {
+        if (cancelled) return;
+
+        scrollTopNow();
+
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+          scrollTopNow();
+        });
+      };
+
+      const handleLenisStart = (event) => {
+        if (event.detail?.reason !== 'product-image-transition') return;
+
+        requestAnimationFrame(forceProductRouteTop);
+        setTimeout(forceProductRouteTop, 50);
+        setTimeout(forceProductRouteTop, 150);
+      };
+
+      window.addEventListener('fyve:lenis-start', handleLenisStart);
+
+      forceProductRouteTop();
+
+      const timers = [
+        setTimeout(forceProductRouteTop, 80),
+        setTimeout(forceProductRouteTop, 220),
+        setTimeout(forceProductRouteTop, 520),
+        setTimeout(forceProductRouteTop, 900),
+        setTimeout(forceProductRouteTop, 1250)
+      ];
+
+      return () => {
+        cancelled = true;
+        timers.forEach(clearTimeout);
+        window.removeEventListener('fyve:lenis-start', handleLenisStart);
+      };
     }
 
     scrollTopNow();
