@@ -30,7 +30,6 @@
 
 .footer-logo-wrap {
   position: relative;
-  z-index: 1;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -58,6 +57,9 @@
 }
 
 .footer-london {
+  position: relative;
+  z-index: 2;
+  display: block;
   font-family: quasimoda, sans-serif !important;
   font-weight: 700;
   font-size: clamp(16px, 2vw, 28px);
