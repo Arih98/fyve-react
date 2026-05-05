@@ -46,7 +46,7 @@
 
 .footer-links {
   display: grid;
-  grid-template-columns: max-content max-content max-content minmax(360px, 640px);
+  grid-template-columns: max-content max-content max-content minmax(420px, 560px);
   justify-content: space-between;
   align-items: start;
   column-gap: clamp(48px, 6vw, 96px);
@@ -58,7 +58,32 @@
 .footer-link-row:last-child {
   justify-self: end;
   width: 100%;
-  max-width: 640px;
+  max-width: 560px;
+  align-items: flex-start;
+}
+
+.footer-link-row:last-child .footer-link-items {
+  align-items: flex-start;
+  width: 100%;
+}
+
+.footer-link-row:last-child .footer-newsletter {
+  align-items: flex-start;
+  width: 100%;
+}
+
+.footer-link-row:last-child .footer-newsletter-text {
+  text-align: left;
+  width: 100%;
+  max-width: none;
+}
+
+.footer-link-row:last-child .footer-form {
+  width: 100%;
+}
+
+.footer-link-row:last-child .footer-input-wrap {
+  width: 100%;
 }
 
 .footer-link-row {
@@ -181,20 +206,20 @@
     justify-content: space-between;
     min-height: 420px;
     padding: 60px 40px 95px;
-}
+  }
 
   .footer-fyve-logo {
     width: 100%;
   }
 
   .footer-london {
-  font-family: quasimoda, sans-serif;
-  font-weight: 700;
-  font-size: clamp(12px, 1.5vw, 20px);
-  letter-spacing: 1.5em;
-  color: #4A494A;
-  margin-top: 1em;
-}
+    font-family: quasimoda, sans-serif;
+    font-weight: 700;
+    font-size: clamp(12px, 1.5vw, 20px);
+    letter-spacing: 1.5em;
+    color: #4A494A;
+    margin-top: 1em;
+  }
 
   .footer-links {
     display: grid;
@@ -220,6 +245,26 @@
     min-width: 0;
   }
 
+  .footer-link-row:last-child .footer-link-items {
+    align-items: flex-start;
+    width: auto;
+  }
+
+  .footer-link-row:last-child .footer-newsletter {
+    align-items: flex-start;
+    width: auto;
+  }
+
+  .footer-link-row:last-child .footer-newsletter-text {
+    text-align: left;
+    max-width: 210px;
+    width: auto;
+  }
+
+  .footer-link-row:last-child .footer-input-wrap {
+    width: 210px;
+  }
+
   .footer-heading {
     line-height: 1.2;
   }
@@ -228,17 +273,9 @@
     line-height: 1.2;
   }
 
-.footer-newsletter-text {
-  max-width: 210px;
-}
-
-.footer-input-wrap {
-  width: 210px;
-}
-
-.footer-input-wrap input {
-  min-width: 0;
-}
+  .footer-input-wrap input {
+    min-width: 0;
+  }
 
   .footer-form-message {
     white-space: normal;
