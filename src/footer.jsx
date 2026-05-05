@@ -90,7 +90,7 @@ const Footer = () => {
 
       <div className="footer-newsletter">
   <p className="footer-newsletter-text">
-    Receive information about new collections, exclusive releases and FYVE updates.
+    Receive information about new collections, and FYVE updates.
   </p>
 
   <form className="footer-form" onSubmit={handleSubmit}>
