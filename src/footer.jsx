@@ -56,6 +56,16 @@ const Footer = () => {
 </div>
 
 <div className="footer-link-row">
+  <span className="footer-heading">Shop</span>
+
+  <div className="footer-link-items">
+    <a href="/products?category=boy">Boy</a>
+    <a href="/products?category=girl">Girl</a>
+    <a href="/products?category=baby">Baby</a>
+  </div>
+</div>
+
+<div className="footer-link-row">
   <span className="footer-heading">Store Policies</span>
 
   <div className="footer-link-items">
@@ -63,16 +73,6 @@ const Footer = () => {
     <a href="/shipping-policy">Shipping Policy</a>
   </div>
 </div>
-
-  <div className="footer-link-row">
-    <span className="footer-heading">Shop</span>
-
-    <div className="footer-link-items">
-      <a href="/products?category=boy">Boy</a>
-      <a href="/products?category=girl">Girl</a>
-      <a href="/products?category=baby">Baby</a>
-    </div>
-  </div>
 
   <div className="footer-link-row">
     <span className="footer-heading">Stay updated</span>
