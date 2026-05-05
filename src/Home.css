@@ -504,6 +504,7 @@
   height: 100%;
   object-fit: cover;
   user-select: none;
+  pointer-events: none;
 }
 
 .results-img-wrap-5 {
@@ -618,6 +619,7 @@
   height: 130px;
   transform: translateX(-50%);
   font-size: 13px;
+  line-height: 1.1;
 }
 
 .hero-side-left .london-text {
