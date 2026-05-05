@@ -1,4 +1,6 @@
 .footer {
+  --footer-gradient-split: clamp(180px, 28vw, 285px);
+
   min-height: 980px;
   padding: 80px 40px 60px;
   display: flex;
@@ -8,9 +10,9 @@
   gap: clamp(60px, 6vw, 110px);
   background: linear-gradient(
     to bottom,
-    #fff 0%,
-    #fff 29%,
-    #f1dbd1 29%,
+    #fff 0,
+    #fff var(--footer-gradient-split),
+    #f1dbd1 var(--footer-gradient-split),
     #f1dbd1 100%
   );
   box-sizing: border-box;
