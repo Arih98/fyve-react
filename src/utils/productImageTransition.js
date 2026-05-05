@@ -307,7 +307,7 @@ export const startProductImageTransition = async ({
     document.body.classList.remove('product-image-transition-active');
   }
 
-  startLenisTransition();
+  restartLenisTransition();
 
   return;
 }
@@ -332,38 +332,42 @@ if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
 }
 
   if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
+  fromElement.style.opacity = previousFromOpacity;
+  clone.remove();
 
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    if (runId === transitionRunId) {
-      document.body.classList.remove('product-image-transition-active');
-    }
-
-    return;
+  if (activeClone === clone) {
+    activeClone = null;
   }
+
+  if (runId === transitionRunId) {
+    document.body.classList.remove('product-image-transition-active');
+  }
+
+  restartLenisTransition();
+
+  return;
+}
 
   const toElement = stableTarget.element;
   const stableRect = stableTarget.rect;
 
   if (!stableRect.width || !stableRect.height) {
-    stableTarget.restore?.();
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
+  stableTarget.restore?.();
+  fromElement.style.opacity = previousFromOpacity;
+  clone.remove();
 
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    if (runId === transitionRunId) {
-      document.body.classList.remove('product-image-transition-active');
-    }
-
-    return;
+  if (activeClone === clone) {
+    activeClone = null;
   }
+
+  if (runId === transitionRunId) {
+    document.body.classList.remove('product-image-transition-active');
+  }
+
+  restartLenisTransition();
+
+  return;
+}
 
   const toRect = {
     left: stableRect.left,
@@ -465,4 +469,5 @@ export const clearProductImageTransitionClone = () => {
   }
 
   document.body.classList.remove('product-image-transition-active');
+  restartLenisTransition();
 };
