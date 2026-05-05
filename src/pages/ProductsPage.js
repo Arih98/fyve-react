@@ -7,7 +7,7 @@ import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
-  const productsPerPage = 12;
+  const productsPerPage = 16;
   const navigate = useNavigate();
   const navigationType = useNavigationType();
   const [searchParams, setSearchParams] = useSearchParams();
