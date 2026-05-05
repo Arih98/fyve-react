@@ -86,7 +86,7 @@ const Footer = () => {
   target="_blank"
   rel="noopener noreferrer"
 >
-  <span>Follow us on</span>
+  <span>Follow us on </span>
   <img src="/assets/InstagramLogo.svg" alt="Instagram" />
 </a>
 
