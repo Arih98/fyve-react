@@ -229,7 +229,7 @@
   }
 
   .footer {
-    background: linear-gradient(180deg, #fff 0, #fff 19%, #f1dbd1 0, #f1dbd1);
+    background: linear-gradient(180deg, #fff 0, #fff 12.9%, #f1dbd1 0, #f1dbd1);
     box-sizing: border-box;
     justify-content: space-between;
     min-height: 420px;
