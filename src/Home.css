@@ -559,16 +559,26 @@
 
 @media (max-width: 768px) {
 
-  .results-float-section {
+ .results-float-section {
   height: 150vh;
   min-height: 900px;
   max-height: none;
 }
 
+.results-icon-wrapper {
+  top: 10%;
+  height: 58%;
+}
+
 .results-before-after-title {
-  top: 28%;
-  left: 4%;
-  width: 92%;
+  top: 38%;
+  left: 0;
+  width: 100%;
+}
+
+.results-before-after-title img {
+  width: 130%;
+  margin-left: -15%;
 }
 
 .results-img-wrap-5 {
@@ -599,6 +609,15 @@
   top: 68%;
   left: 58%;
   width: 36%;
+}
+
+.results-outline-button {
+  top: 88%;
+  left: 50%;
+  width: 130px;
+  height: 130px;
+  transform: translateX(-50%);
+  font-size: 13px;
 }
 
 .hero-side-left .london-text {

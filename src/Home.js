@@ -310,8 +310,8 @@ gsap.set('.london-below', { opacity: 0 })
     })
 
     gsap.utils.toArray('.results-parallax-item').forEach((item) => {
-      const start = Number(item.dataset.resultsStart || 50)
-      const end = Number(item.dataset.resultsEnd || -10)
+const start = Number(item.dataset.resultsStart ?? 0)
+const end = Number(item.dataset.resultsEnd ?? -10)
 
       gsap.fromTo(item, {
         y: `${start}vh`
