@@ -298,24 +298,35 @@
     min-width: 0;
   }
 
+  .footer-link-row:last-child {
+    display: flex;
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
   .footer-link-row:last-child .footer-link-items {
     align-items: flex-start;
-    width: auto;
+    width: 100%;
   }
 
   .footer-link-row:last-child .footer-newsletter {
     align-items: flex-start;
-    width: auto;
+    width: 100%;
   }
 
   .footer-link-row:last-child .footer-newsletter-text {
     text-align: left;
-    max-width: 210px;
-    width: auto;
+    max-width: none;
+    width: 100%;
+  }
+
+  .footer-link-row:last-child .footer-form {
+    width: 100%;
   }
 
   .footer-link-row:last-child .footer-input-wrap {
-    width: 210px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .footer-input-wrap input {
