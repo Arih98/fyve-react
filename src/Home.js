@@ -293,44 +293,69 @@ gsap.set('.london-below', { opacity: 0 })
   }, [londonFadeDelay])
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const isMobile = window.innerWidth <= 768
+  let stampObserver = null
 
-      gsap.to('.section1-img-overlay', {
-        y: '-12vh',
+  const ctx = gsap.context(() => {
+    const isMobile = window.innerWidth <= 768
+
+    gsap.to('.section1-img-overlay', {
+      y: '-12vh',
+      ease: 'none',
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: '.section-1',
+        start: isMobile ? 'top 75%' : 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+        invalidateOnRefresh: true
+      }
+    })
+
+    gsap.utils.toArray('.home-float-item').forEach((item) => {
+      const start = item.dataset.floatStart || 50
+      const end = item.dataset.floatEnd || -10
+
+      gsap.fromTo(item, {
+        y: `${start}vh`
+      }, {
+        y: `${end}vh`,
         ease: 'none',
-        immediateRender: false,
+        immediateRender: true,
         scrollTrigger: {
-          trigger: '.section-1',
-          start: isMobile ? 'top 75%' : 'top bottom',
+          trigger: '.home-float-section',
+          start: 'top bottom',
           end: 'bottom top',
           scrub: true,
           invalidateOnRefresh: true
         }
       })
-
-      let rotation = 0
-      const stamp = document.querySelector('.section1-stamp')
-
-      if (stamp) {
-        Observer.create({
-          type: 'wheel,touch,scroll',
-          onDown: () => {
-            rotation -= 5
-            gsap.to(stamp, { rotation, duration: 0.1, overwrite: true })
-          },
-          onUp: () => {
-            rotation += 5
-            gsap.to(stamp, { rotation, duration: 0.1, overwrite: true })
-          },
-          tolerance: 10,
-          preventDefault: false
-        })
-      }
     })
 
-    return () => ctx.revert()
-  }, [])
+    let rotation = 0
+    const stamp = document.querySelector('.section1-stamp')
+
+    if (stamp) {
+      stampObserver = Observer.create({
+        type: 'wheel,touch,scroll',
+        onDown: () => {
+          rotation -= 5
+          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true })
+        },
+        onUp: () => {
+          rotation += 5
+          gsap.to(stamp, { rotation, duration: 0.1, overwrite: true })
+        },
+        tolerance: 10,
+        preventDefault: false
+      })
+    }
+  })
+
+  return () => {
+    if (stampObserver) stampObserver.kill()
+    ctx.revert()
+  }
+}, [])
 
   return (
     <div className="home-page">
@@ -447,6 +472,30 @@ gsap.set('.london-below', { opacity: 0 })
           </div>
         </div>
       </div>
+
+      <div className="home-float-section">
+  <div className="home-float-inner">
+    <div className="home-float-copy home-float-item" data-float-start="22" data-float-end="-10">
+      <p className="home-float-kicker">FYVE London</p>
+      <h2 className="home-float-title">Softly made for little moments</h2>
+      <p className="home-float-text">
+        Refined childrenswear with a quiet British charm, made for special days and everyday beauty.
+      </p>
+    </div>
+
+    <div className="home-float-image home-float-image-1 home-float-item" data-float-start="52" data-float-end="-18">
+      <img src="/assets/home/fyve-girls-british-dress.webp" alt="" draggable="false" />
+    </div>
+
+    <div className="home-float-image home-float-image-2 home-float-item" data-float-start="36" data-float-end="-24">
+      <img src="/assets/home/fyve-detail-british-childrens-fashion.webp" alt="" draggable="false" />
+    </div>
+
+    <div className="home-float-image home-float-image-3 home-float-item" data-float-start="64" data-float-end="-6">
+      <img src="/assets/home/FYVE-SS26-WF7672.webp" alt="" draggable="false" />
+    </div>
+  </div>
+</div>
 
       <div className="section-2">
         <picture className="section2-bg-picture">
