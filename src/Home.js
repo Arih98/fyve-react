@@ -309,25 +309,39 @@ gsap.set('.london-below', { opacity: 0 })
       }
     })
 
-    gsap.utils.toArray('.results-parallax-item').forEach((item) => {
-const start = Number(item.dataset.resultsStart ?? 0)
-const end = Number(item.dataset.resultsEnd ?? -10)
+   gsap.utils.toArray('.results-img-wrap').forEach((item) => {
+  const amount = Number(item.dataset.resultsAmount || 10)
 
-      gsap.fromTo(item, {
-        y: `${start}vh`
-      }, {
-        y: `${end}vh`,
-        ease: 'none',
-        immediateRender: true,
-        scrollTrigger: {
-          trigger: '.results-float-section',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-          invalidateOnRefresh: true
-        }
-      })
-    })
+  gsap.fromTo(item, {
+    y: `${amount}vh`
+  }, {
+    y: `${-amount}vh`,
+    ease: 'none',
+    immediateRender: true,
+    scrollTrigger: {
+      trigger: item,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+      invalidateOnRefresh: true
+    }
+  })
+})
+
+gsap.fromTo('.results-before-after-title', {
+  y: '50vh'
+}, {
+  y: '-10vh',
+  ease: 'none',
+  immediateRender: true,
+  scrollTrigger: {
+    trigger: '.results-float-section',
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+})
 
     let rotation = 0
     const stamp = document.querySelector('.section1-stamp')
@@ -471,28 +485,28 @@ const end = Number(item.dataset.resultsEnd ?? -10)
       <div className="results-float-section">
   <div className="results-float-row">
     <div className="results-icon-wrapper">
-      <div className="results-before-after-title results-parallax-item" data-results-start="53.8238" data-results-end="-5.862">
+      <div className="results-before-after-title results-parallax-item">
         <img src="/assets/home/before-after-title.png" alt="Before/After" draggable="false" />
       </div>
     </div>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-5 results-parallax-item" data-results-start="20" data-results-end="-15.5556">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-5" data-results-amount="15.5556">
       <img src="/assets/home/fyve-girls-british-dress.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-4 results-parallax-item" data-results-start="10" data-results-end="-7.77778">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-4" data-results-amount="7.77778">
       <img src="/assets/home/fyve-detail-british-childrens-fashion.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-3 results-parallax-item" data-results-start="13.5996" data-results-end="-11.6667">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-3" data-results-amount="11.6667">
       <img src="/assets/home/FYVE-SS26-WF7672.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-2 results-parallax-item" data-results-start="25" data-results-end="-19.4444">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-2" data-results-amount="19.4444">
       <img src="/assets/home/FYVE-SS26-WF767233.webp" alt="" draggable="false" />
     </a>
 
-    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-1 results-parallax-item" data-results-start="5" data-results-end="-3.88889">
+    <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-1" data-results-amount="3.88889">
       <img src="/assets/home/fyve-london-hero.webp" alt="" draggable="false" />
     </a>
 
