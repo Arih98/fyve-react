@@ -473,7 +473,7 @@
 .results-icon-wrapper {
   position: absolute;
   left: 0;
-  top: 0;
+  top: -10%;
   width: 100%;
   height: 59.1594%;
   z-index: 1;
