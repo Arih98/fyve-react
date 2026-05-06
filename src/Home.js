@@ -297,9 +297,9 @@ gsap.set('.london-below', { opacity: 0 })
     const isMobile = window.innerWidth <= 768
 
 gsap.fromTo('.section1-aesthetic-image', {
-  xPercent: -4
+  scale: 1.12
 }, {
-  xPercent: 4,
+  scale: 1,
   ease: 'none',
   immediateRender: false,
   scrollTrigger: {
