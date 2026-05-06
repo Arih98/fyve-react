@@ -463,7 +463,7 @@ gsap.fromTo('.results-before-after-title', {
       <div className="section-1 section1-aesthetic-layout">
   <div className="section1-aesthetic-image-panel">
     <img
-      src="/assets/home/fyve-girls-british-dress.webp"
+      src="/assets/home/fyve-girls-british-dress2.webp"
       alt="Modern British children's fashion by Fyve London"
       className="section1-aesthetic-image"
     />
