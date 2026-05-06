@@ -311,7 +311,7 @@ gsap.fromTo('.section1-aesthetic-image', {
   }
 })
 
-gsap.fromTo('.section1-title-line--offset', {
+gsap.fromTo('.section1-title-line--bottom', {
   xPercent: 0
 }, {
   xPercent: 10,
@@ -471,7 +471,7 @@ gsap.fromTo('.results-before-after-title', {
 
 <h2 className="section1-aesthetic-title">
   <span className="section1-title-line section1-title-line--top">Comfortably Modern</span>
-  <span className="section1-title-line section1-title-line--offset">Distinctly British</span>
+  <span className="section1-title-line section1-title-line--bottom">Distinctly British</span>
 </h2>
 
   <div className="section1-aesthetic-copy-panel">
