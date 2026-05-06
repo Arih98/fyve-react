@@ -326,7 +326,7 @@
   font-family: "ArizonaFlare", sans-serif;
   font-size: clamp(52px, 5.2vw, 104px);
   line-height: 0.88;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   color: #4A494A;
   z-index: 3;
   pointer-events: none;
