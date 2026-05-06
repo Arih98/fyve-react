@@ -469,12 +469,12 @@ gsap.fromTo('.results-before-after-title', {
     />
   </div>
 
-  <div className="section1-aesthetic-copy-panel">
-<h2 className="section1-aesthetic-title">
-  <span className="section1-title-line">Comfortably Modern</span>
-  <span className="section1-title-line section1-title-line--offset">Distinctly British</span>
-</h2>
+  <h2 className="section1-aesthetic-title">
+    <span className="section1-title-line">Comfortably Modern</span>
+    <span className="section1-title-line section1-title-line--offset">Distinctly British</span>
+  </h2>
 
+  <div className="section1-aesthetic-copy-panel">
     <div className="section1-aesthetic-bottom">
       <p className="section1-aesthetic-body">
         Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.

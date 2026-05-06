@@ -303,11 +303,13 @@
 }
 
 .section1-aesthetic-title {
+  --section1-title-offset: 22vw;
   position: absolute;
   top: 22%;
-  left: -12vw;
+  left: 50%;
   z-index: 3;
   margin: 0;
+  transform: translateX(calc(-50% - (var(--section1-title-offset) / 2)));
   font-family: "ArizonaFlare", sans-serif;
   font-size: clamp(58px, 5.8vw, 118px);
   line-height: 0.88;
@@ -322,7 +324,7 @@
 }
 
 .section1-title-line--offset {
-  margin-left: 10vw;
+  margin-left: var(--section1-title-offset);
 }
 
 .section1-aesthetic-bottom {
@@ -776,15 +778,17 @@
 }
 
 .section1-aesthetic-title {
+  --section1-title-offset: 16vw;
   position: relative;
   top: auto;
   left: auto;
+  transform: none;
   font-size: clamp(44px, 13vw, 72px);
   line-height: 0.9;
 }
 
 .section1-title-line--offset {
-  margin-left: 16vw;
+  margin-left: var(--section1-title-offset);
 }
 
 .section1-aesthetic-bottom {
