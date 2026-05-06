@@ -26,24 +26,13 @@ const Home = () => {
   const londonFadeDelay = animationDuration * 0.3
 
   useEffect(() => {
-    if (!lottieRef.current || !introDone.current) return
+  if (!lottieRef.current || !introDone.current) return
 
-    if (inView) {
-      gsap.killTweensOf('.london-below')
-      gsap.set('.london-below', { opacity: 0 })
-      lottieRef.current.goToAndStop(0, true)
-      lottieRef.current.play()
-      gsap.to('.london-below', {
-        opacity: 1,
-        duration: 0.5,
-        delay: londonFadeDelay / 1000
-      })
-    } else {
-      lottieRef.current.goToAndStop(0, true)
-      gsap.killTweensOf('.london-below')
-      gsap.set('.london-below', { opacity: 0 })
-    }
-  }, [inView, londonFadeDelay])
+  if (!inView) return
+
+  lottieRef.current.goToAndStop(0, true)
+  lottieRef.current.play()
+}, [inView])
 
   useEffect(() => {
     const refreshScroll = () => {
@@ -296,20 +285,22 @@ gsap.set('.london-below', { opacity: 0 })
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
     gsap.set('.fyve-image-parallax-wrap', {
-  yPercent: isMobile ? -3 : -5,
-  scale: isMobile ? 1.06 : 1.08,
+  yPercent: isMobile ? -2 : -3,
+  scale: isMobile ? 1.03 : 1.04,
+  force3D: true,
   transformOrigin: 'center center'
 })
 
 gsap.to('.fyve-image-parallax-wrap', {
-  yPercent: isMobile ? 6 : 10,
+  yPercent: isMobile ? 3 : 5,
   scale: 1,
   ease: 'none',
+  force3D: true,
   scrollTrigger: {
     trigger: '.fyve-hero-section',
     start: 'top top',
     end: 'bottom top',
-    scrub: true,
+    scrub: 0.2,
     invalidateOnRefresh: true
   }
 })

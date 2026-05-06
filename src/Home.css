@@ -166,9 +166,9 @@
 
 .fyve-image-parallax-wrap {
   position: absolute;
-  inset: -8vh 0;
+  inset: -4vh 0;
   width: 100%;
-  height: calc(100% + 16vh);
+  height: calc(100% + 8vh);
   transform-origin: center center;
   will-change: transform;
 }
@@ -570,6 +570,34 @@
   text-decoration: none;
   color: #4A494A;
   background: transparent;
+}
+
+.fyve-image-parallax-wrap,
+.fyve-image-scale-wrap,
+.fyve-image-slot,
+.fyve-cover,
+.lottie-container,
+.london-below,
+.section1-aesthetic-image,
+.section1-title-line,
+.results-before-after-title,
+.results-img-wrap {
+  transition: none !important;
+}
+
+.fyve-hero-section,
+.fyve-hero-viewport,
+.fyve-animation-stage,
+.fyve-image-reveal {
+  contain: layout paint;
+}
+
+.fyve-image-parallax-wrap,
+.fyve-image-scale-wrap,
+.fyve-image,
+.section1-aesthetic-image {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
 @media (max-width: 768px) {
