@@ -311,10 +311,25 @@ gsap.fromTo('.section1-aesthetic-image', {
   }
 })
 
+gsap.fromTo('.section1-title-line--top', {
+  xPercent: 0
+}, {
+  xPercent: -18,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: {
+    trigger: '.section-1',
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+})
+
 gsap.fromTo('.section1-title-line--bottom', {
   xPercent: 0
 }, {
-  xPercent: 10,
+  xPercent: 18,
   ease: 'none',
   immediateRender: false,
   scrollTrigger: {

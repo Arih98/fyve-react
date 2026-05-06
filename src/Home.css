@@ -304,15 +304,15 @@
 }
 
 .section1-aesthetic-title {
-  --title-nudge-x: 0vw;
-  --top-line-shift: 15vw;
-  --bottom-line-shift: 2vw;
   position: absolute;
   top: 22%;
   left: 50%;
   width: max-content;
   margin: 0;
-  transform: translateX(calc(-50% + var(--title-nudge-x)));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   font-family: "ArizonaFlare", sans-serif;
   font-size: clamp(52px, 5.2vw, 104px);
   line-height: 0.88;
@@ -325,14 +325,7 @@
 .section1-title-line {
   display: block;
   white-space: nowrap;
-}
-
-.section1-title-line--top {
-  padding-left: var(--top-line-shift);
-}
-
-.section1-title-line--bottom {
-  padding-left: var(--bottom-line-shift);
+  will-change: transform;
 }
 
 .section1-aesthetic-bottom {
@@ -785,20 +778,16 @@
 }
 
 .section1-aesthetic-title {
-  --title-nudge-x: 0vw;
-  --top-line-shift: 0vw;
-  --bottom-line-shift: 10vw;
   position: relative;
   top: auto;
   left: auto;
   width: max-content;
   transform: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   font-size: clamp(44px, 13vw, 72px);
   line-height: 0.9;
-}
-
-.section1-title-line--bottom {
-  padding-left: var(--bottom-line-shift);
 }
 
 .section1-aesthetic-bottom {
