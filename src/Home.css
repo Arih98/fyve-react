@@ -555,9 +555,9 @@
   position: absolute;
   left: 54.4643%;
   top: 78.1738%;
-  width: 180px;
-  height: 180px;
-  border: 1px solid #fff;
+  width: 230px;
+  height: 230px;
+  border: 1px solid #4A494A;
   border-radius: 50%;
   z-index: 4;
   display: flex;
@@ -568,7 +568,7 @@
   line-height: 1.1;
   text-align: center;
   text-decoration: none;
-  color: #fff;
+  color: #4A494A;
   background: transparent;
 }
 
