@@ -338,14 +338,14 @@
 .section1-aesthetic-bottom {
   position: absolute;
   right: 13vw;
-  bottom: clamp(180px, 30vh, 340px);
+  bottom: clamp(130px, 24vh, 280px);
   width: min(28vw, 430px);
 }
 
 .section1-aesthetic-body {
   margin: 0;
   font-family: "Quasimoda", sans-serif;
-  font-size: clamp(18px, 1.35vw, 26px);
+  font-size: clamp(16px, 1.15vw, 22px);
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: 0.06em;
