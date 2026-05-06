@@ -338,18 +338,17 @@
 .section1-aesthetic-bottom {
   position: absolute;
   right: 13vw;
-  bottom: 10vh;
+  bottom: clamp(180px, 30vh, 340px);
   width: min(28vw, 430px);
 }
 
 .section1-aesthetic-body {
   margin: 0;
   font-family: "Quasimoda", sans-serif;
-  font-size: clamp(12px, 0.8vw, 15px);
-  font-weight: 600;
+  font-size: clamp(15px, 1.05vw, 20px);
+  font-weight: 400;
   line-height: 1.45;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: #4A494A;
 }
 
