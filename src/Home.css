@@ -346,24 +346,23 @@
 }
 
 .section1-aesthetic-button {
-  margin-top: 28px;
+  margin-top: 32px;
   font-family: "Quasimoda", sans-serif;
-  font-size: clamp(13px, 0.85vw, 16px);
+  font-size: 1.1vw;
   font-weight: 400;
   text-decoration: none;
-  color: #000;
-  background: #fff;
-  padding: 14px 24px;
+  color: #fff;
+  background: #4A494A;
+  padding: 1vw 1.8vw;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.8vw;
 }
 
 .section1-aesthetic-button img {
-  width: 18px;
+  width: 1.4vw;
   height: auto;
-  filter: invert(1);
 }
 
 .section-2 {
