@@ -334,7 +334,7 @@ gsap.fromTo('.section1-title-line--bottom', {
   immediateRender: false,
   scrollTrigger: {
     trigger: '.section-1',
-    start: 'top bottom',
+    start: 'top 65%',
     end: 'bottom top',
     scrub: true,
     invalidateOnRefresh: true
@@ -368,7 +368,7 @@ gsap.fromTo('.results-before-after-title', {
   immediateRender: true,
   scrollTrigger: {
     trigger: '.results-float-section',
-    start: 'top bottom',
+    start: 'top 65%',
     end: 'bottom top',
     scrub: true,
     invalidateOnRefresh: true
