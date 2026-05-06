@@ -295,6 +295,22 @@ gsap.set('.london-below', { opacity: 0 })
   useEffect(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
+    gsap.fromTo('.fyve-image-parallax-wrap', {
+  yPercent: isMobile ? -3 : -5,
+  scale: isMobile ? 1.06 : 1.08
+}, {
+  yPercent: isMobile ? 6 : 10,
+  scale: 1,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: {
+    trigger: '.fyve-hero-section',
+    start: 'top top',
+    end: 'bottom top',
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+})
 
 gsap.fromTo('.section1-aesthetic-image', {
   scale: 1.2
@@ -432,10 +448,12 @@ gsap.fromTo('.results-before-after-title', {
     <div className="fyve-image-slot">
       <div className="fyve-image-reveal">
         <div className="fyve-image-scale-wrap">
-          <picture className="fyve-image-picture">
-            <source media="(max-width: 768px)" srcSet="/assets/home/fyve-london-hero-mobile.webp" />
-            <img src="/assets/home/fyve-london-hero.webp" alt="Reveal Image" className="fyve-image" />
-          </picture>
+          <div className="fyve-image-parallax-wrap">
+  <picture className="fyve-image-picture">
+    <source media="(max-width: 768px)" srcSet="/assets/home/fyve-hero-children-white.webp" />
+    <img src="/assets/home/fyve-hero-children-white.webp" alt="Fyve London children wearing SS26 collection" className="fyve-image" />
+  </picture>
+</div>
         </div>
         <div className="fyve-cover fyve-cover-left"></div>
         <div className="fyve-cover fyve-cover-right"></div>

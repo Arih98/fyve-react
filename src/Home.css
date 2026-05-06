@@ -164,6 +164,15 @@
   will-change: transform;
 }
 
+.fyve-image-parallax-wrap {
+  position: absolute;
+  inset: -8vh 0;
+  width: 100%;
+  height: calc(100% + 16vh);
+  transform-origin: center center;
+  will-change: transform;
+}
+
 .fyve-image-picture {
   display: block;
   width: 100%;
@@ -175,6 +184,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 58%;
 }
 
 .fyve-cover {
@@ -896,24 +906,32 @@
     inset: 0;
   }
 
-  .fyve-image-picture {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+  .fyve-image-parallax-wrap {
+  position: absolute;
+  inset: -6vh 0;
+  width: 100%;
+  height: calc(100% + 12vh);
+  transform-origin: center center;
+  will-change: transform;
+}
 
-  .fyve-image {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: auto;
-    min-width: 100%;
-    height: 100%;
-    transform: translateX(-50%);
-    object-fit: cover;
-    object-position: center center;
-    display: block;
-  }
+.fyve-image-picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fyve-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  transform: none;
+  object-fit: cover;
+  object-position: center 62%;
+  display: block;
+}
 }
