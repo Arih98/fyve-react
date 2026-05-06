@@ -308,28 +308,21 @@
   left: -12vw;
   z-index: 3;
   margin: 0;
-  font-family: "Quasimoda", sans-serif;
-  font-weight: 200;
-  font-size: clamp(58px, 5.1vw, 112px);
-  line-height: 0.93;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: #fff;
+  font-family: "ArizonaFlare", sans-serif;
+  font-size: clamp(58px, 5.8vw, 118px);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  color: #4A494A;
   pointer-events: none;
 }
 
-.section1-aesthetic-title span {
+.section1-title-line {
   display: block;
   white-space: nowrap;
 }
 
-.section1-title-muted {
-  color: rgba(181, 138, 126, 0.58);
-  margin-left: 7.2vw;
-}
-
-.section1-title-light {
-  color: #fff;
+.section1-title-line--offset {
+  margin-left: 10vw;
 }
 
 .section1-aesthetic-bottom {
@@ -787,11 +780,11 @@
   top: auto;
   left: auto;
   font-size: clamp(44px, 13vw, 72px);
-  line-height: 0.95;
+  line-height: 0.9;
 }
 
-.section1-title-muted {
-  margin-left: 10vw;
+.section1-title-line--offset {
+  margin-left: 16vw;
 }
 
 .section1-aesthetic-bottom {
