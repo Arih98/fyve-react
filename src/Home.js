@@ -295,14 +295,16 @@ gsap.set('.london-below', { opacity: 0 })
   useEffect(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
-    gsap.fromTo('.fyve-image-parallax-wrap', {
+    gsap.set('.fyve-image-parallax-wrap', {
   yPercent: isMobile ? -3 : -5,
-  scale: isMobile ? 1.06 : 1.08
-}, {
+  scale: isMobile ? 1.06 : 1.08,
+  transformOrigin: 'center center'
+})
+
+gsap.to('.fyve-image-parallax-wrap', {
   yPercent: isMobile ? 6 : 10,
   scale: 1,
   ease: 'none',
-  immediateRender: false,
   scrollTrigger: {
     trigger: '.fyve-hero-section',
     start: 'top top',
