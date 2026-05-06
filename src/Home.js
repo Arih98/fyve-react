@@ -329,9 +329,9 @@ gsap.set('.london-below', { opacity: 0 })
 })
 
 gsap.fromTo('.results-before-after-title', {
-  y: '50vh'
+  y: '-10vh'
 }, {
-  y: '-10vh',
+  y: '50vh',
   ease: 'none',
   immediateRender: true,
   scrollTrigger: {
