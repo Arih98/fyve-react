@@ -469,10 +469,10 @@ gsap.fromTo('.results-before-after-title', {
     />
   </div>
 
-  <h2 className="section1-aesthetic-title">
-    <span className="section1-title-line">Comfortably Modern</span>
-    <span className="section1-title-line section1-title-line--offset">Distinctly British</span>
-  </h2>
+<h2 className="section1-aesthetic-title">
+  <span className="section1-title-line section1-title-line--top">Comfortably Modern</span>
+  <span className="section1-title-line section1-title-line--offset">Distinctly British</span>
+</h2>
 
   <div className="section1-aesthetic-copy-panel">
     <div className="section1-aesthetic-bottom">
