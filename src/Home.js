@@ -296,18 +296,35 @@ gsap.set('.london-below', { opacity: 0 })
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
 
-    gsap.to('.section1-img-overlay', {
-      y: '-12vh',
-      ease: 'none',
-      immediateRender: false,
-      scrollTrigger: {
-        trigger: '.section-1',
-        start: isMobile ? 'top 75%' : 'top bottom',
-        end: 'bottom top',
-        scrub: true,
-        invalidateOnRefresh: true
-      }
-    })
+gsap.fromTo('.section1-aesthetic-image', {
+  xPercent: -4
+}, {
+  xPercent: 4,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: {
+    trigger: '.section-1',
+    start: isMobile ? 'top 75%' : 'top bottom',
+    end: 'bottom top',
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+})
+
+gsap.fromTo('.section1-title-muted', {
+  xPercent: 0
+}, {
+  xPercent: 10,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: {
+    trigger: '.section-1',
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: true,
+    invalidateOnRefresh: true
+  }
+})
 
    gsap.utils.toArray('.results-img-wrap').forEach((item) => {
   const amount = Number(item.dataset.resultsAmount || 10)
@@ -443,44 +460,35 @@ gsap.fromTo('.results-before-after-title', {
         </div>
       </div>
 
-      <div className="section-1">
-        <div className="section1-content">
-          <div className="section1-left">
-            <div className="section1-overlay-text">
-              Comfortably Modern, Distinctly British.
-            </div>
+      <div className="section-1 section1-aesthetic-layout">
+  <div className="section1-aesthetic-image-panel">
+    <img
+      src="/assets/home/fyve-girls-british-dress.webp"
+      alt="Modern British children's fashion by Fyve London"
+      className="section1-aesthetic-image"
+    />
+  </div>
 
-            <div className="section1-bottom-content">
-              <p className="section1-body-text">
-                Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
-              </p>
+  <div className="section1-aesthetic-copy-panel">
+    <h2 className="section1-aesthetic-title">
+      <span className="section1-title-muted">Comfortably</span>
+      <span className="section1-title-light">Modern</span>
+      <span className="section1-title-light">Distinctly</span>
+      <span className="section1-title-light">British</span>
+    </h2>
 
-              <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button">
-                Shop Collection
-                <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
-              </a>
-            </div>
-          </div>
+    <div className="section1-aesthetic-bottom">
+      <p className="section1-aesthetic-body">
+        Discover our exquisite luxury children’s clothing, comfortably modern and distinctly British, blending timeless elegance with everyday comfort for little ones.
+      </p>
 
-          <div className="section1-right">
-            <div className="section1-image-stack">
-              <img
-                src="/assets/home/fyve-girls-british-dress.webp"
-                alt="Modern British children's fashion by Fyve London"
-                className="section1-img-main"
-              />
-
-              <div className="section1-img-overlay-wrap">
-                <img
-                  src="/assets/home/fyve-detail-british-childrens-fashion.webp"
-                  alt="Detail of premium children's clothing by Fyve London"
-                  className="section1-img-overlay"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-aesthetic-button">
+        Shop Collection
+        <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
+      </a>
+    </div>
+  </div>
+</div>
 
       <div className="results-float-section">
   <div className="results-float-row">
