@@ -157,6 +157,23 @@
   overflow: hidden;
 }
 
+.fyve-image-reveal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.fyve-image-scale-wrap {
+  z-index: 0;
+}
+
+.fyve-cover {
+  z-index: 2;
+}
+
 .fyve-image-scale-wrap {
   position: absolute;
   inset: 0;
