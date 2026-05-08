@@ -369,10 +369,10 @@ gsap.fromTo('.section1-title-line--bottom', {
   })
 })
 
-const titleTravel = isMobile ? 140 : 120
+const titleTravel = isMobile ? 210 : 185
 
 gsap.fromTo('.results-before-after-title', {
-  y: isMobile ? '-18vh' : '-16vh'
+  y: isMobile ? '-22vh' : '-18vh'
 }, {
   y: `${titleTravel}vh`,
   ease: 'none',
@@ -380,7 +380,7 @@ gsap.fromTo('.results-before-after-title', {
   scrollTrigger: {
     trigger: '.results-float-section',
     start: 'top bottom',
-    end: 'bottom+=35% top',
+    end: 'bottom+=70% top',
     scrub: true,
     invalidateOnRefresh: true
   }
