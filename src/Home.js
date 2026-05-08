@@ -99,6 +99,8 @@ gsap.set('.hero-side-left', { xPercent: expandLeftX, visibility: 'hidden' })
 gsap.set('.hero-side-right', { xPercent: expandRightX, visibility: 'hidden' })
 gsap.set('.fyve-image-slot', { width: '100vw', height: finalHeight })
 gsap.set('.fyve-image-scale-wrap', { scale: 1 })
+gsap.set('.fyve-cover-left', { xPercent: -100 })
+gsap.set('.fyve-cover-right', { xPercent: 100 })
 gsap.set('.lottie-container', { autoAlpha: 1 })
 gsap.set('.london-below', { opacity: 1 })
         gsap.set(document.documentElement, { '--home-announcement-offset': `${announcementHeight}px` })
@@ -116,6 +118,8 @@ gsap.set('.hero-side-left, .hero-side-right', { visibility: 'visible', xPercent:
 gsap.set('.fyve-text', { y: `${fyveTextY}vw` })
 gsap.set('.fyve-image-slot', { width: initialSlotWidth, height: initialSlotHeight })
 gsap.set('.fyve-image-scale-wrap', { scale: 0.94, transformOrigin: 'center center' })
+gsap.set('.fyve-cover-left', { xPercent: 0 })
+gsap.set('.fyve-cover-right', { xPercent: 0 })
 gsap.set('.lottie-container', { autoAlpha: 0 })
 gsap.set('.london-below', { opacity: 0 })
       gsap.set(document.documentElement, { '--home-announcement-offset': '0px' })
@@ -175,6 +179,11 @@ gsap.set('.london-below', { opacity: 0 })
   width: intermediateWidth,
   duration: 0.82 * speed,
   ease: 'expo.inOut'
+}, 'splitReveal+=0.08')
+.to('.fyve-cover-left', {
+  xPercent: -100,
+  duration: 0.82 * speed,
+  ease: 'power3.inOut'
 }, 'splitReveal+=0.08')
 .to('.fyve-cover-right', {
   xPercent: 100,
@@ -439,6 +448,8 @@ gsap.fromTo('.results-before-after-title', {
   </picture>
 </div>
         </div>
+        <div className="fyve-cover fyve-cover-left"></div>
+        <div className="fyve-cover fyve-cover-right"></div>
       </div>
     </div>
   </div>
