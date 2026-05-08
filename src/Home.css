@@ -496,7 +496,7 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
   pointer-events: none;
 }
 
