@@ -379,7 +379,7 @@ gsap.fromTo('.results-before-after-title', {
   immediateRender: true,
   scrollTrigger: {
     trigger: '.results-float-section',
-    start: 'top bottom',
+    start: 'top 55%',
     end: 'bottom+=70% top',
     scrub: true,
     invalidateOnRefresh: true
