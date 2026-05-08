@@ -360,16 +360,25 @@ gsap.fromTo('.section1-title-line--bottom', {
   })
 })
 
+const getBeforeAfterTitleTravel = () => {
+  const section = document.querySelector('.results-float-section')
+  const title = document.querySelector('.results-before-after-title')
+
+  if (!section || !title) return 0
+
+  return section.offsetHeight - title.offsetHeight
+}
+
 gsap.fromTo('.results-before-after-title', {
-  y: '-10vh'
+  y: 0
 }, {
-  y: '50vh',
+  y: () => getBeforeAfterTitleTravel(),
   ease: 'none',
-  immediateRender: true,
+  immediateRender: false,
   scrollTrigger: {
     trigger: '.results-float-section',
     start: 'top bottom',
-    end: 'bottom top',
+    end: 'bottom bottom',
     scrub: true,
     invalidateOnRefresh: true
   }
