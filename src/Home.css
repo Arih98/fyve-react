@@ -617,17 +617,6 @@
   transform-style: preserve-3d;
 }
 
-.results-before-after-title,
-.results-before-after-title img,
-.results-img-wrap {
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-}
-
-.results-before-after-title {
-  transform: translateZ(0);
-}
-
 @media (max-width: 768px) {
 
  .results-float-section {
