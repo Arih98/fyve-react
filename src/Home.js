@@ -369,7 +369,7 @@ gsap.fromTo('.section1-title-line--bottom', {
   })
 })
 
-const titleTravel = isMobile ? 115 : 95
+const titleTravel = isMobile ? 140 : 120
 
 gsap.fromTo('.results-before-after-title', {
   y: isMobile ? '-18vh' : '-16vh'
