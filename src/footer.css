@@ -53,9 +53,14 @@
   display: block;
   width: 100vw;
   max-width: 100%;
-  height: auto;
-  aspect-ratio: 5 / 1;
+  height: clamp(260px, 34vw, 620px);
   overflow: visible;
+}
+
+.footer-fyve-lottie > div,
+.footer-fyve-lottie svg {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .footer-fyve-lottie > div {
@@ -246,10 +251,10 @@
     padding: 60px 30px 95px;
   }
 
-.footer-fyve-lottie {
-  width: 100%;
-  aspect-ratio: 5 / 1;
-}
+  .footer-fyve-lottie {
+    width: 100%;
+    height: clamp(90px, 28vw, 180px);
+  }
 
   .footer-london {
     font-family: quasimoda, sans-serif;
