@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import Lottie from 'lottie-react'
 import './Footer.css'
+import FYVEFooterLottie from './assets/FYVEFotterLottie.json'
 
 const Footer = () => {
   const [email, setEmail] = useState('')
@@ -40,9 +42,16 @@ const Footer = () => {
   return (
     <footer className="footer">
 <div className="footer-brand">
-  <div className="footer-logo-wrap">
-    <img className="footer-fyve-logo" src="/assets/FYVE-WORDMARK.svg" alt="FYVE" />
+<div className="footer-logo-wrap">
+  <div className="footer-fyve-lottie" aria-label="FYVE">
+    <Lottie
+      animationData={FYVEFooterLottie}
+      loop={false}
+      autoplay={true}
+      style={{ width: '100%', height: '100%' }}
+    />
   </div>
+</div>
   <span className="footer-london">LONDON</span>
 </div>
 

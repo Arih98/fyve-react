@@ -49,11 +49,18 @@
   pointer-events: none;
 }
 
-.footer-fyve-logo {
+.footer-fyve-lottie {
   display: block;
   width: 100vw;
   max-width: 100%;
   height: auto;
+  aspect-ratio: 5 / 1;
+  overflow: visible;
+}
+
+.footer-fyve-lottie > div {
+  width: 100%;
+  height: 100%;
 }
 
 .footer-london {
@@ -239,9 +246,10 @@
     padding: 60px 30px 95px;
   }
 
-  .footer-fyve-logo {
-    width: 100%;
-  }
+.footer-fyve-lottie {
+  width: 100%;
+  aspect-ratio: 5 / 1;
+}
 
   .footer-london {
     font-family: quasimoda, sans-serif;
