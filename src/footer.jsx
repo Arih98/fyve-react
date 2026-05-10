@@ -1,12 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Lottie from 'lottie-react'
+import { useInView } from 'react-intersection-observer'
 import './Footer.css'
 import FYVEFooterLottie from './assets/FYVEFotterLottie.json'
+
+
 
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const footerLottieRef = useRef(null)
+const [footerLottieInViewRef, footerLottieInView] = useInView({
+  triggerOnce: false,
+  threshold: 0.35
+})
+
+useEffect(() => {
+  if (!footerLottieRef.current) return
+  if (!footerLottieInView) return
+
+  footerLottieRef.current.goToAndStop(0, true)
+  footerLottieRef.current.play()
+}, [footerLottieInView])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -42,12 +58,13 @@ const Footer = () => {
   return (
     <footer className="footer">
 <div className="footer-brand">
-<div className="footer-logo-wrap">
+<div className="footer-logo-wrap" ref={footerLottieInViewRef}>
   <div className="footer-fyve-lottie" aria-label="FYVE">
     <Lottie
+      lottieRef={footerLottieRef}
       animationData={FYVEFooterLottie}
       loop={false}
-      autoplay={true}
+      autoplay={false}
       style={{ width: '100%', height: '100%' }}
     />
   </div>
