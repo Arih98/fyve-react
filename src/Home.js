@@ -9,6 +9,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(Observer, ScrollTrigger)
 
+ScrollTrigger.config({
+  autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load'
+})
+
 const Home = () => {
   const lottieRef = useRef()
   const heroRef = useRef(null)
@@ -35,29 +39,37 @@ const Home = () => {
 }, [inView])
 
   useEffect(() => {
-    const refreshScroll = () => {
+  let refreshTimer = null
+
+  const refreshScroll = () => {
+    clearTimeout(refreshTimer)
+
+    refreshTimer = setTimeout(() => {
       requestAnimationFrame(() => {
         ScrollTrigger.refresh()
-        setTimeout(() => ScrollTrigger.refresh(), 250)
       })
+    }, 350)
+  }
+
+  window.addEventListener('load', refreshScroll)
+
+  const images = Array.from(document.querySelectorAll('.home-page img'))
+
+  images.forEach((img) => {
+    if (!img.complete) {
+      img.addEventListener('load', refreshScroll)
     }
+  })
 
-    window.addEventListener('load', refreshScroll)
+  return () => {
+    clearTimeout(refreshTimer)
+    window.removeEventListener('load', refreshScroll)
 
-    const images = Array.from(document.querySelectorAll('img'))
     images.forEach((img) => {
-      if (!img.complete) {
-        img.addEventListener('load', refreshScroll)
-      }
+      img.removeEventListener('load', refreshScroll)
     })
-
-    return () => {
-      window.removeEventListener('load', refreshScroll)
-      images.forEach((img) => {
-        img.removeEventListener('load', refreshScroll)
-      })
-    }
-  }, [])
+  }
+}, [])
 
   useEffect(() => {
     const navEntry = performance.getEntriesByType('navigation')[0]
@@ -268,10 +280,11 @@ gsap.set('.london-below', { opacity: 0 })
         }, `lottieIn+=${londonFadeDelay / 1000}`)
     }, heroRef)
 
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-      setTimeout(() => ScrollTrigger.refresh(), 250)
-    })
+setTimeout(() => {
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh()
+  })
+}, 500)
 
     hasAnimated.current = !shouldSkipIntro
 
@@ -300,7 +313,7 @@ gsap.to('.fyve-image-parallax-wrap', {
     trigger: '.fyve-hero-section',
     start: 'top top',
     end: 'bottom top',
-    scrub: 0.2,
+    scrub: true,
     invalidateOnRefresh: true
   }
 })
