@@ -457,10 +457,11 @@ gsap.fromTo('.results-before-after-title', {
       <div className="fyve-image-reveal">
         <div className="fyve-image-scale-wrap">
           <div className="fyve-image-parallax-wrap">
-  <picture className="fyve-image-picture">
-    <source media="(max-width: 768px)" srcSet="/assets/home/fyve-hero-children-white.webp" />
-    <img src="/assets/home/fyve-hero-children-white.webp" alt="Fyve London children wearing SS26 collection" className="fyve-image" />
-  </picture>
+<picture className="fyve-image-picture">
+  <source media="(max-width: 768px)" srcSet="/assets/home/fyve-hero-children-white-mobile.webp" />
+  <source media="(min-width: 769px)" srcSet="/assets/home/fyve-hero-children-white-desktop.webp" />
+  <img src="/assets/home/fyve-hero-children-white-desktop.webp" alt="Fyve London children wearing SS26 collection" className="fyve-image" />
+</picture>
 </div>
         </div>
         <div className="fyve-cover fyve-cover-left"></div>
