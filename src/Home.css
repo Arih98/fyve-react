@@ -183,9 +183,9 @@
 
 .fyve-image-parallax-wrap {
   position: absolute;
-  inset: -4vh 0;
+  inset: -10vh 0;
   width: 100%;
-  height: calc(100% + 8vh);
+  height: calc(100% + 20vh);
   transform-origin: center center;
   will-change: transform;
 }
@@ -201,7 +201,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 68%;
+  object-position: center 58%;
 }
 
 .fyve-cover {

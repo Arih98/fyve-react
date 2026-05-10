@@ -297,15 +297,15 @@ setTimeout(() => {
   useEffect(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
-    gsap.set('.fyve-image-parallax-wrap', {
-  yPercent: isMobile ? -2 : -3,
-  scale: isMobile ? 1.03 : 1.04,
+gsap.set('.fyve-image-parallax-wrap', {
+  y: isMobile ? '-4vh' : '-9vh',
+  scale: isMobile ? 1.04 : 1.06,
   force3D: true,
   transformOrigin: 'center center'
 })
 
 gsap.to('.fyve-image-parallax-wrap', {
-  yPercent: isMobile ? 3 : 5,
+  y: isMobile ? '5vh' : '10vh',
   scale: 1,
   ease: 'none',
   force3D: true,
