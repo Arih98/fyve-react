@@ -59,14 +59,16 @@ useEffect(() => {
     <footer className="footer">
 <div className="footer-brand">
 <div className="footer-logo-wrap" ref={footerLottieInViewRef}>
-  <div className="footer-fyve-lottie" aria-label="FYVE">
-    <Lottie
-      lottieRef={footerLottieRef}
-      animationData={FYVEFooterLottie}
-      loop={false}
-      autoplay={false}
-      style={{ width: '100%', height: '100%' }}
-    />
+  <div className="footer-lottie-container" aria-label="FYVE">
+    <div className="footer-lottie-animation-wrap">
+      <Lottie
+        lottieRef={footerLottieRef}
+        animationData={FYVEFooterLottie}
+        loop={false}
+        autoplay={false}
+        style={{ width: '100%', height: '100%' }}
+      />
+    </div>
   </div>
 </div>
   <span className="footer-london">LONDON</span>
