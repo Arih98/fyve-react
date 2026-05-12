@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import Lottie from 'lottie-react'
 import { useInView } from 'react-intersection-observer'
@@ -22,6 +22,7 @@ const Home = () => {
   const introDone = useRef(false)
   const hasSetHomeIntroPlayed = useRef(false)
   const [inViewRef, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
+  const [heroImageReady, setHeroImageReady] = useState(false)
 
   const setHeroViewportRef = (node) => {
     heroRef.current = node
@@ -528,7 +529,25 @@ gsap.fromTo('.results-before-after-title', {
 <picture className="fyve-image-picture">
   <source media="(max-width: 768px)" srcSet="/assets/home/fyve-hero-children-white-mobile.webp" />
   <source media="(min-width: 769px)" srcSet="/assets/home/fyve-hero-children-white-desktop.webp" />
-  <img src="/assets/home/fyve-hero-children-white-desktop.webp" alt="Fyve London children wearing SS26 collection" className="fyve-image" />
+  <img
+  src="/assets/home/fyve-hero-children-white-desktop.webp"
+  alt="Fyve London children wearing SS26 collection"
+  className={`fyve-image ${heroImageReady ? 'is-loaded' : ''}`}
+  loading="eager"
+  fetchPriority="high"
+  decoding="async"
+  onLoad={(e) => {
+    const img = e.currentTarget
+
+    if (img.decode) {
+      img.decode()
+        .then(() => setHeroImageReady(true))
+        .catch(() => setHeroImageReady(true))
+    } else {
+      setHeroImageReady(true)
+    }
+  }}
+/>
 </picture>
 </div>
         </div>
