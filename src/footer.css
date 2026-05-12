@@ -61,7 +61,6 @@
 }
 
 .footer-lottie-animation-wrap {
-  width: 100vw;
   height: auto;
   min-height: clamp(300px, 42vw, 760px);
   display: flex;
