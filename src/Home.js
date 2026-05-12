@@ -54,52 +54,24 @@ const Home = () => {
 }, [])
 
   useEffect(() => {
-  const isMobile = window.innerWidth <= 768
+  const previousScrollRestoration = window.history.scrollRestoration
 
-  if (isMobile) return
+  window.history.scrollRestoration = 'manual'
 
-  const lenis = new Lenis({
-    lerp: 0.08,
-    wheelMultiplier: 0.85,
-    touchMultiplier: 1,
-    smoothWheel: true,
-    syncTouch: false
-  })
-
-  lenis.scrollTo(0, {
-    immediate: true
-  })
-
-  const onLenisScroll = () => {
-    ScrollTrigger.update()
-  }
-
-  const raf = (time) => {
-    lenis.raf(time * 1000)
-  }
-
-  lenis.on('scroll', onLenisScroll)
-  gsap.ticker.add(raf)
-  gsap.ticker.lagSmoothing(0)
+  window.scrollTo(0, 0)
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+  window.dispatchEvent(new Event('scroll'))
 
   requestAnimationFrame(() => {
-    lenis.scrollTo(0, {
-      immediate: true
-    })
-
-    ScrollTrigger.refresh()
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
     window.dispatchEvent(new Event('scroll'))
   })
 
   return () => {
-    lenis.off('scroll', onLenisScroll)
-    gsap.ticker.remove(raf)
-    lenis.destroy()
-
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-      window.dispatchEvent(new Event('scroll'))
-    })
+    window.history.scrollRestoration = previousScrollRestoration
   }
 }, [])
 
