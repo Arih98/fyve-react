@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import Lottie from 'lottie-react'
 import { useInView } from 'react-intersection-observer'
+import Lenis from 'lenis'
+import 'lenis/dist/lenis.css'
 import './Home.css'
 import FYVEHeroLottie from './assets/FYVEHeroLottie.json'
 import { Observer } from 'gsap/Observer'
@@ -28,6 +30,45 @@ const Home = () => {
 
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000
   const londonFadeDelay = animationDuration * 0.3
+
+  useEffect(() => {
+  const isMobile = window.innerWidth <= 768
+
+  if (isMobile) return
+
+  const lenis = new Lenis({
+    lerp: 0.08,
+    wheelMultiplier: 0.85,
+    touchMultiplier: 1,
+    smoothWheel: true,
+    syncTouch: false
+  })
+
+  const onLenisScroll = () => {
+    ScrollTrigger.update()
+  }
+
+  const raf = (time) => {
+    lenis.raf(time * 1000)
+  }
+
+  lenis.on('scroll', onLenisScroll)
+  gsap.ticker.add(raf)
+  gsap.ticker.lagSmoothing(0)
+
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh()
+  })
+
+  return () => {
+    lenis.off('scroll', onLenisScroll)
+    gsap.ticker.remove(raf)
+    lenis.destroy()
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh()
+    })
+  }
+}, [])
 
   useEffect(() => {
   if (!lottieRef.current || !introDone.current) return
