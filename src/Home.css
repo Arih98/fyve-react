@@ -27,7 +27,7 @@
 .fyve-hero-section {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 110vh;
 }
 
 .fyve-hero-viewport {
@@ -201,7 +201,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 48%;
+  object-position: center 58%;
 }
 
 .fyve-cover {
