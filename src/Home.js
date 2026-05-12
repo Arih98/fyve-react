@@ -59,13 +59,13 @@ useEffect(() => {
 
   if (isMobile) return
 
-  const lenis = new Lenis({
-    lerp: 0.08,
-    wheelMultiplier: 0.85,
-    touchMultiplier: 1,
-    smoothWheel: true,
-    syncTouch: false
-  })
+const lenis = new Lenis({
+  lerp: 0.13,
+  wheelMultiplier: 0.9,
+  touchMultiplier: 1,
+  smoothWheel: true,
+  syncTouch: false
+})
 
   lenis.scrollTo(0, {
     immediate: true
