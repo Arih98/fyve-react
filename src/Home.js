@@ -133,7 +133,7 @@ const ctx = gsap.context(() => {
   const splitRightX = isMobile ? 52 : 64
   const expandLeftX = isMobile ? -280 : -340
   const expandRightX = isMobile ? 280 : 340
-  const finalHeight = isMobile ? '100svh' : '100vh'
+  const finalHeight = isMobile ? '100svh' : '110vh'
   const initialSlotWidth = '0vw'
   const intermediateWidth = isMobile ? '28vw' : '18vw'
   const initialSlotHeight = isMobile ? '50vw' : '14vw'
