@@ -32,6 +32,28 @@ const Home = () => {
   const londonFadeDelay = animationDuration * 0.3
 
   useEffect(() => {
+  const previousScrollRestoration = history.scrollRestoration
+
+  history.scrollRestoration = 'manual'
+
+  window.scrollTo(0, 0)
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+  window.dispatchEvent(new Event('scroll'))
+
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    window.dispatchEvent(new Event('scroll'))
+  })
+
+  return () => {
+    history.scrollRestoration = previousScrollRestoration
+  }
+}, [])
+
+  useEffect(() => {
   const isMobile = window.innerWidth <= 768
 
   if (isMobile) return
@@ -42,6 +64,10 @@ const Home = () => {
     touchMultiplier: 1,
     smoothWheel: true,
     syncTouch: false
+  })
+
+  lenis.scrollTo(0, {
+    immediate: true
   })
 
   const onLenisScroll = () => {
@@ -57,15 +83,22 @@ const Home = () => {
   gsap.ticker.lagSmoothing(0)
 
   requestAnimationFrame(() => {
+    lenis.scrollTo(0, {
+      immediate: true
+    })
+
     ScrollTrigger.refresh()
+    window.dispatchEvent(new Event('scroll'))
   })
 
   return () => {
     lenis.off('scroll', onLenisScroll)
     gsap.ticker.remove(raf)
     lenis.destroy()
+
     requestAnimationFrame(() => {
       ScrollTrigger.refresh()
+      window.dispatchEvent(new Event('scroll'))
     })
   }
 }, [])
