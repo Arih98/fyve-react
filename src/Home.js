@@ -339,14 +339,14 @@ setTimeout(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
 gsap.set('.fyve-image-parallax-wrap', {
-  y: isMobile ? '-4vh' : '1vh',
+  y: isMobile ? '-4vh' : '4vh',
   scale: isMobile ? 1.04 : 1.06,
   force3D: true,
   transformOrigin: 'center center'
 })
 
 gsap.to('.fyve-image-parallax-wrap', {
-  y: isMobile ? '5vh' : '16vh',
+  y: isMobile ? '5vh' : '19vh',
   scale: 1,
   ease: 'none',
   force3D: true,
