@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import Lottie from 'lottie-react'
 import { useInView } from 'react-intersection-observer'
@@ -31,29 +31,7 @@ const Home = () => {
   const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000
   const londonFadeDelay = animationDuration * 0.3
 
-  useEffect(() => {
-  const previousScrollRestoration = history.scrollRestoration
-
-  history.scrollRestoration = 'manual'
-
-  window.scrollTo(0, 0)
-  document.documentElement.scrollTop = 0
-  document.body.scrollTop = 0
-  window.dispatchEvent(new Event('scroll'))
-
-  requestAnimationFrame(() => {
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-    window.dispatchEvent(new Event('scroll'))
-  })
-
-  return () => {
-    history.scrollRestoration = previousScrollRestoration
-  }
-}, [])
-
-  useEffect(() => {
+  useLayoutEffect(() => {
   const previousScrollRestoration = window.history.scrollRestoration
 
   window.history.scrollRestoration = 'manual'
@@ -72,6 +50,50 @@ const Home = () => {
 
   return () => {
     window.history.scrollRestoration = previousScrollRestoration
+  }
+}, [])
+
+useEffect(() => {
+  const isMobile = window.innerWidth <= 768
+
+  if (isMobile) return
+
+  const lenis = new Lenis({
+    lerp: 0.08,
+    wheelMultiplier: 0.85,
+    touchMultiplier: 1,
+    smoothWheel: true,
+    syncTouch: false
+  })
+
+  lenis.scrollTo(0, {
+    immediate: true
+  })
+
+  const onLenisScroll = () => {
+    ScrollTrigger.update()
+  }
+
+  const raf = (time) => {
+    lenis.raf(time * 1000)
+  }
+
+  lenis.on('scroll', onLenisScroll)
+  gsap.ticker.add(raf)
+  gsap.ticker.lagSmoothing(0)
+
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh()
+  })
+
+  return () => {
+    lenis.off('scroll', onLenisScroll)
+    gsap.ticker.remove(raf)
+    lenis.destroy()
+
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh()
+    })
   }
 }, [])
 
