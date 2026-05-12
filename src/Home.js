@@ -523,7 +523,7 @@ gsap.fromTo('.results-before-after-title', {
 
   <div className="fyve-mask">
     <div className="fyve-image-slot">
-      <div className="fyve-image-reveal">
+      <div className={`fyve-image-reveal ${heroImageReady ? 'is-loaded' : ''}`}>
         <div className="fyve-image-scale-wrap">
           <div className="fyve-image-parallax-wrap">
 <picture className="fyve-image-picture">

@@ -164,6 +164,10 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  background: rgba(0, 0, 0, 0);
+}
+
+.fyve-image-reveal.is-loaded::after {
   background: rgba(0, 0, 0, 0.18);
 }
 
