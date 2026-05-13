@@ -390,7 +390,7 @@ gsap.to('.fyve-image-parallax-wrap', {
 })
 
 gsap.fromTo('.section1-aesthetic-image', {
-  scale: 1.2
+  scale: 1.22
 }, {
   scale: 1,
   ease: 'none',
@@ -398,8 +398,8 @@ gsap.fromTo('.section1-aesthetic-image', {
   scrollTrigger: {
     trigger: '.section-1',
     start: 'top bottom',
-    end: 'bottom top',
-    scrub: 0.25,
+    end: 'top 35%',
+    scrub: 0.15,
     invalidateOnRefresh: true
   }
 })
