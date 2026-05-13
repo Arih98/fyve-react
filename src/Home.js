@@ -28,8 +28,6 @@ const Home = () => {
     inViewRef(node)
   }
 
-  const londonFadeDelay = animationDuration * 0.3
-
   useLayoutEffect(() => {
   const previousScrollRestoration = window.history.scrollRestoration
 
