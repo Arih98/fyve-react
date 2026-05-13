@@ -60,8 +60,8 @@ useEffect(() => {
   if (isMobile) return
 
 const lenis = new Lenis({
-  lerp: 0.13,
-  wheelMultiplier: 0.9,
+  lerp: 0.055,
+  wheelMultiplier: 0.55,
   touchMultiplier: 1,
   smoothWheel: true,
   syncTouch: false
@@ -381,8 +381,8 @@ gsap.to('.fyve-image-parallax-wrap', {
   scrollTrigger: {
     trigger: '.fyve-hero-section',
     start: 'top top',
-    end: 'bottom top',
-    scrub: true,
+    end: 'bottom+=15% top',
+    scrub: 0.35,
     invalidateOnRefresh: true
   }
 })
