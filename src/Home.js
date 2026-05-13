@@ -5,7 +5,6 @@ import { useInView } from 'react-intersection-observer'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
 import './Home.css'
-import FYVEHeroLottie from './assets/FYVEHeroLottie.json'
 import { Observer } from 'gsap/Observer'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -29,7 +28,6 @@ const Home = () => {
     inViewRef(node)
   }
 
-  const animationDuration = (FYVEHeroLottie.op - FYVEHeroLottie.ip) / FYVEHeroLottie.fr * 1000
   const londonFadeDelay = animationDuration * 0.3
 
   useLayoutEffect(() => {
@@ -542,19 +540,6 @@ gsap.fromTo('.results-before-after-title', {
           <div className="fyve-ui-layer">
             <div className="home-mobile-top-logo">
               <img src="/assets/FYVE-White-Logo.svg" alt="FYVE Logo" />
-            </div>
-
-            <div className="lottie-container">
-              <div className="lottie-animation-wrap">
-                <Lottie
-                  lottieRef={lottieRef}
-                  animationData={FYVEHeroLottie}
-                  loop={false}
-                  autoplay={false}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-              <div className="london-below">LONDON</div>
             </div>
           </div>
         </div>
