@@ -653,32 +653,6 @@ gsap.fromTo('.results-before-after-title', {
   </div>
 </div>
 
-      <div className="section-2">
-        <picture className="section2-bg-picture">
-          <source media="(max-width: 768px)" srcSet="/assets/home/FYVE-SS26-WF767233.webp" />
-          <img
-            src="/assets/home/FYVE-SS26-WF7672.webp"
-            alt=""
-            className="section2-bg-image"
-          />
-        </picture>
-
-        <div className="section2-inner">
-          <div className="section2-title">SS26</div>
-
-          <div className="section2-mobile-content">
-            <div className="section2-text">
-              Timeless Elegance,<br />
-              Playfully Refined.
-            </div>
-
-            <a href="https://dev.fyvelondon.com/products?category=ss26" className="section1-shop-button section2-shop-button">
-              Shop Collection
-              <img src="/assets/FYVE-button-Arrow-Icon-white.svg" alt="" />
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
