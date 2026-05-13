@@ -398,7 +398,7 @@ gsap.fromTo('.section1-aesthetic-image', {
   scrollTrigger: {
     trigger: '.section-1',
     start: 'top bottom',
-    end: 'top 15%',
+    end: 'top 5%',
     scrub: 0.2,
     invalidateOnRefresh: true
   }
