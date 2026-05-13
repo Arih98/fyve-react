@@ -55,18 +55,46 @@ const Home = () => {
 }, [])
 
 useEffect(() => {
-  const onScroll = () => {
+  const isMobile = window.innerWidth <= 768
+
+  if (isMobile) return
+
+const lenis = new Lenis({
+  lerp: 0.13,
+  wheelMultiplier: 0.9,
+  touchMultiplier: 1,
+  smoothWheel: true,
+  syncTouch: false
+})
+
+  lenis.scrollTo(0, {
+    immediate: true
+  })
+
+  const onLenisScroll = () => {
     ScrollTrigger.update()
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true })
+  const raf = (time) => {
+    lenis.raf(time * 1000)
+  }
+
+  lenis.on('scroll', onLenisScroll)
+  gsap.ticker.add(raf)
+  gsap.ticker.lagSmoothing(0)
 
   requestAnimationFrame(() => {
     ScrollTrigger.refresh()
   })
 
   return () => {
-    window.removeEventListener('scroll', onScroll)
+    lenis.off('scroll', onLenisScroll)
+    gsap.ticker.remove(raf)
+    lenis.destroy()
+
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh()
+    })
   }
 }, [])
 
@@ -339,14 +367,15 @@ setTimeout(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
 gsap.set('.fyve-image-parallax-wrap', {
-  y: isMobile ? '-2vh' : '2vh',
-  scale: 1,
+  y: isMobile ? '-4vh' : '4vh',
+  scale: isMobile ? 1.04 : 1.06,
   force3D: true,
   transformOrigin: 'center center'
 })
 
 gsap.to('.fyve-image-parallax-wrap', {
-  y: isMobile ? '4vh' : '12vh',
+  y: isMobile ? '5vh' : '19vh',
+  scale: 1,
   ease: 'none',
   force3D: true,
   scrollTrigger: {
