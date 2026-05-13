@@ -74,34 +74,27 @@ const Home = () => {
   if (isMobile) return;
 
   const lenis = new Lenis({
-    lerp: 0.095,           // Sweet spot for most devices
-    wheelMultiplier: 0.85,
-    touchMultiplier: 1.2,
+    lerp: 0.09,
+    wheelMultiplier: 0.8,
+    touchMultiplier: 1.5,
     smoothWheel: true,
     syncTouch: false,
     autoRaf: false,
   });
 
-  const onLenisScroll = () => ScrollTrigger.update();
+  lenis.on('scroll', () => ScrollTrigger.update());
 
   const raf = (time) => lenis.raf(time * 1000);
-
-  lenis.on('scroll', onLenisScroll);
   gsap.ticker.add(raf);
   gsap.ticker.lagSmoothing(0);
 
-  // Single refresh after everything is settled
-  const refreshTimer = setTimeout(() => {
-    ScrollTrigger.refresh(true); // force = true
-  }, 800);
+  const refreshTimer = setTimeout(() => ScrollTrigger.refresh(true), 1000);
 
   return () => {
     clearTimeout(refreshTimer);
-    lenis.off('scroll', onLenisScroll);
     gsap.ticker.remove(raf);
     lenis.destroy();
-
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    ScrollTrigger.refresh();
   };
 }, []);
 
@@ -367,133 +360,88 @@ const Home = () => {
   }, [londonFadeDelay])
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const isMobile = window.innerWidth <= 768
+  const ctx = gsap.context(() => {
+    const isMobile = window.innerWidth <= 768;
 
-      gsap.set('.fyve-image-parallax-wrap', {
-        y: isMobile ? '-4vh' : '4vh',
-        scale: isMobile ? 1.04 : 1.06,
-        force3D: true,
-        transformOrigin: 'center center'
-      })
-
-      gsap.to('.fyve-image-parallax-wrap', {
-        y: isMobile ? '5vh' : '19vh',
-        scale: 1,
-        ease: 'none',
-        force3D: true,
-        scrollTrigger: {
-          trigger: '.fyve-hero-section',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,
-          invalidateOnRefresh: true
-        }
-      })
-
-      gsap.fromTo('.section1-aesthetic-image', {
-        scale: 1.2
-      }, {
-        scale: 1,
-        ease: 'none',
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: '.section-1',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.7,
-          invalidateOnRefresh: true
-        }
-      })
-
-      gsap.fromTo('.section1-title-line--top', {
-        xPercent: 0
-      }, {
-        xPercent: -18,
-        ease: 'none',
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: '.section-1',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.6,
-          invalidateOnRefresh: true
-        }
-      })
-
-      gsap.fromTo('.section1-title-line--bottom', {
-        xPercent: 0
-      }, {
-        xPercent: 18,
-        ease: 'none',
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: '.section-1',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.6,
-          invalidateOnRefresh: true
-        }
-      })
-
-      gsap.utils.toArray('.results-img-wrap').forEach((item) => {
-        const amount = Number(item.dataset.resultsAmount || 10)
-
-        gsap.fromTo(item, {
-          y: `${amount}vh`
-        }, {
-          y: `${-amount}vh`,
-          ease: 'none',
-          immediateRender: true,
-          scrollTrigger: {
-            trigger: item,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.6,
-            invalidateOnRefresh: true
-          }
-        })
-      })
-
-      const titleTravel = isMobile ? 260 : 230
-
-      gsap.fromTo('.results-before-after-title', {
-        y: isMobile ? '-22vh' : '-18vh'
-      }, {
-        y: `${titleTravel}vh`,
-        ease: 'none',
-        immediateRender: true,
-        scrollTrigger: {
-          trigger: '.results-float-section',
-          start: 'top 55%',
-          end: 'bottom+=70% top',
-          scrub: 0.6,
-          invalidateOnRefresh: true
-        }
-      })
-
-      let rotation = 0
-      const stamp = document.querySelector('.section1-stamp')
-
-      if (stamp) {
-        Observer.create({
-          type: 'wheel,touch,scroll',
-          onDown: () => {
-            rotation -= 5
-            gsap.to(stamp, { rotation, duration: 0.1, overwrite: true })
-          },
-          onUp: () => {
-            rotation += 5
-            gsap.to(stamp, { rotation, duration: 0.1, overwrite: true })
-          },
-          tolerance: 10,
-          preventDefault: false
-        })
+    // Hero Parallax - softened
+    gsap.to('.fyve-image-parallax-wrap', {
+      y: isMobile ? '5vh' : '19vh',
+      scale: 1,
+      ease: 'none',
+      force3D: true,
+      scrollTrigger: {
+        trigger: '.fyve-hero-section',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.8,           // ← was true
+        invalidateOnRefresh: true
       }
-    })
+    });
 
-    return () => ctx.revert()
-  }, [])
+    // Aesthetic image
+    gsap.fromTo('.section1-aesthetic-image', {
+      scale: 1.2
+    }, {
+      scale: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.section-1',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.7,           // ← was true
+        invalidateOnRefresh: true
+      }
+    });
+
+    // Title lines
+    gsap.fromTo('.section1-title-line--top', { xPercent: 0 }, {
+      xPercent: -18,
+      ease: 'none',
+      scrollTrigger: { scrub: 0.8, ... }   // soften
+    });
+
+    gsap.fromTo('.section1-title-line--bottom', { xPercent: 0 }, {
+      xPercent: 18,
+      ease: 'none',
+      scrollTrigger: { scrub: 0.8, ... }
+    });
+
+    // Results images - most expensive
+    gsap.utils.toArray('.results-img-wrap').forEach((item) => {
+      const amount = Number(item.dataset.resultsAmount || 10);
+      gsap.fromTo(item, {
+        y: `${amount}vh`
+      }, {
+        y: `${-amount}vh`,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.9,                    // ← softened a lot
+          invalidateOnRefresh: true
+        }
+      });
+    });
+
+    // Results title
+    gsap.fromTo('.results-before-after-title', {
+      y: isMobile ? '-22vh' : '-18vh'
+    }, {
+      y: isMobile ? '200vh' : '230vh',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.results-float-section',
+        start: 'top 55%',
+        end: 'bottom+=70% top',
+        scrub: 0.8,
+        invalidateOnRefresh: true
+      }
+    });
+  });
+
+  return () => ctx.revert();
+}, []);
 
   return (
     <div className="home-page">
