@@ -59,42 +59,30 @@ useEffect(() => {
 
   if (isMobile) return
 
-const lenis = new Lenis({
-  lerp: 0.13,
-  wheelMultiplier: 0.9,
-  touchMultiplier: 1,
-  smoothWheel: true,
-  syncTouch: false
-})
-
-  lenis.scrollTo(0, {
-    immediate: true
+  const lenis = new Lenis({
+    lerp: 0.08,
+    wheelMultiplier: 0.7,
+    smoothWheel: true,
+    syncTouch: false,
+    autoRaf: false
   })
-
-  const onLenisScroll = () => {
-    ScrollTrigger.update()
-  }
 
   const raf = (time) => {
     lenis.raf(time * 1000)
   }
 
-  lenis.on('scroll', onLenisScroll)
+  lenis.on('scroll', ScrollTrigger.update)
   gsap.ticker.add(raf)
-  gsap.ticker.lagSmoothing(0)
+  gsap.ticker.lagSmoothing(500, 33)
 
   requestAnimationFrame(() => {
     ScrollTrigger.refresh()
   })
 
   return () => {
-    lenis.off('scroll', onLenisScroll)
+    lenis.off('scroll', ScrollTrigger.update)
     gsap.ticker.remove(raf)
     lenis.destroy()
-
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-    })
   }
 }, [])
 
