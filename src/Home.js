@@ -10,7 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(Observer, ScrollTrigger)
 
 ScrollTrigger.config({
-  autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load'
+  autoRefreshEvents: 'visibilitychange,DOMContentLoaded'
 })
 
 const Home = () => {
@@ -53,18 +53,12 @@ const Home = () => {
 }, [])
 
 useEffect(() => {
-  const onScroll = () => {
-    ScrollTrigger.update()
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true })
-
-  requestAnimationFrame(() => {
+  const raf = requestAnimationFrame(() => {
     ScrollTrigger.refresh()
   })
 
   return () => {
-    window.removeEventListener('scroll', onScroll)
+    cancelAnimationFrame(raf)
   }
 }, [])
 
@@ -79,17 +73,32 @@ useEffect(() => {
 
   useEffect(() => {
   let refreshTimer = null
+  let lastScrollAt = 0
+
+  const markScroll = () => {
+    lastScrollAt = performance.now()
+  }
 
   const refreshScroll = () => {
     clearTimeout(refreshTimer)
 
     refreshTimer = setTimeout(() => {
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh()
-      })
+      const waitForStillness = () => {
+        if (performance.now() - lastScrollAt < 250) {
+          refreshTimer = setTimeout(waitForStillness, 250)
+          return
+        }
+
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh()
+        })
+      }
+
+      waitForStillness()
     }, 350)
   }
 
+  window.addEventListener('scroll', markScroll, { passive: true })
   window.addEventListener('load', refreshScroll)
 
   const images = Array.from(document.querySelectorAll('.home-page img'))
@@ -102,6 +111,7 @@ useEffect(() => {
 
   return () => {
     clearTimeout(refreshTimer)
+    window.removeEventListener('scroll', markScroll)
     window.removeEventListener('load', refreshScroll)
 
     images.forEach((img) => {
@@ -319,11 +329,33 @@ gsap.set('.london-below', { opacity: 0 })
         }, `lottieIn+=${londonFadeDelay / 1000}`)
     }, heroRef)
 
-setTimeout(() => {
-  requestAnimationFrame(() => {
-    ScrollTrigger.refresh()
-  })
-}, 500)
+const refreshAfterIntro = () => {
+  let lastScrollY = window.scrollY
+  let stableFrames = 0
+
+  const check = () => {
+    const currentScrollY = window.scrollY
+
+    if (Math.abs(currentScrollY - lastScrollY) < 1) {
+      stableFrames += 1
+    } else {
+      stableFrames = 0
+    }
+
+    lastScrollY = currentScrollY
+
+    if (stableFrames >= 3) {
+      ScrollTrigger.refresh()
+      return
+    }
+
+    requestAnimationFrame(check)
+  }
+
+  requestAnimationFrame(check)
+}
+
+setTimeout(refreshAfterIntro, 500)
 
     hasAnimated.current = !shouldSkipIntro
 
@@ -352,7 +384,7 @@ gsap.to('.fyve-image-parallax-wrap', {
     trigger: '.fyve-hero-section',
     start: 'top top',
     end: 'bottom top',
-    scrub: true,
+    scrub: 0.35,
     invalidateOnRefresh: true
   }
 })
@@ -367,7 +399,7 @@ gsap.fromTo('.section1-aesthetic-image', {
     trigger: '.section-1',
     start: 'top bottom',
     end: 'bottom top',
-    scrub: true,
+    scrub: 0.25,
     invalidateOnRefresh: true
   }
 })
