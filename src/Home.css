@@ -6,6 +6,18 @@
   font-display: swap;
 }
 
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Extra performance boost */
+.results-img-wrap,
+.fyve-image-parallax-wrap,
+.section1-aesthetic-image {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 .home-mobile-top-logo {
   display: none;
 }

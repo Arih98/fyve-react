@@ -70,46 +70,40 @@ const Home = () => {
   }, [])
 
   useEffect(() => {
-  const isMobile = window.innerWidth <= 768
-
-  if (isMobile) return
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) return;
 
   const lenis = new Lenis({
-    lerp: 0.1,
-    wheelMultiplier: 0.9,
-    touchMultiplier: 1,
+    lerp: 0.095,           // Sweet spot for most devices
+    wheelMultiplier: 0.85,
+    touchMultiplier: 1.2,
     smoothWheel: true,
     syncTouch: false,
-    autoRaf: false
-  })
+    autoRaf: false,
+  });
 
-  const onLenisScroll = () => {
-    ScrollTrigger.update()
-  }
+  const onLenisScroll = () => ScrollTrigger.update();
 
-  const raf = (time) => {
-    lenis.raf(time * 1000)
-  }
+  const raf = (time) => lenis.raf(time * 1000);
 
-  lenis.on('scroll', onLenisScroll)
-  gsap.ticker.add(raf)
-  gsap.ticker.lagSmoothing(0)
+  lenis.on('scroll', onLenisScroll);
+  gsap.ticker.add(raf);
+  gsap.ticker.lagSmoothing(0);
 
+  // Single refresh after everything is settled
   const refreshTimer = setTimeout(() => {
-    ScrollTrigger.refresh()
-  }, 700)
+    ScrollTrigger.refresh(true); // force = true
+  }, 800);
 
   return () => {
-    clearTimeout(refreshTimer)
-    lenis.off('scroll', onLenisScroll)
-    gsap.ticker.remove(raf)
-    lenis.destroy()
+    clearTimeout(refreshTimer);
+    lenis.off('scroll', onLenisScroll);
+    gsap.ticker.remove(raf);
+    lenis.destroy();
 
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-    })
-  }
-}, [])
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+  };
+}, []);
 
   useEffect(() => {
     if (!lottieRef.current || !introDone.current) return
@@ -392,7 +386,7 @@ const Home = () => {
           trigger: '.fyve-hero-section',
           start: 'top top',
           end: 'bottom top',
-          scrub: true,
+          scrub: 0.6,
           invalidateOnRefresh: true
         }
       })
@@ -407,7 +401,7 @@ const Home = () => {
           trigger: '.section-1',
           start: 'top bottom',
           end: 'bottom top',
-          scrub: true,
+          scrub: 0.7,
           invalidateOnRefresh: true
         }
       })
@@ -422,7 +416,7 @@ const Home = () => {
           trigger: '.section-1',
           start: 'top bottom',
           end: 'bottom top',
-          scrub: true,
+          scrub: 0.6,
           invalidateOnRefresh: true
         }
       })
@@ -437,7 +431,7 @@ const Home = () => {
           trigger: '.section-1',
           start: 'top bottom',
           end: 'bottom top',
-          scrub: true,
+          scrub: 0.6,
           invalidateOnRefresh: true
         }
       })
@@ -455,7 +449,7 @@ const Home = () => {
             trigger: item,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: true,
+            scrub: 0.6,
             invalidateOnRefresh: true
           }
         })
@@ -473,7 +467,7 @@ const Home = () => {
           trigger: '.results-float-section',
           start: 'top 55%',
           end: 'bottom+=70% top',
-          scrub: true,
+          scrub: 0.6,
           invalidateOnRefresh: true
         }
       })
