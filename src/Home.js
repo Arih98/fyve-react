@@ -55,34 +55,18 @@ const Home = () => {
 }, [])
 
 useEffect(() => {
-  const isMobile = window.innerWidth <= 768
-
-  if (isMobile) return
-
-  const lenis = new Lenis({
-    lerp: 0.14,
-    wheelMultiplier: 0.65,
-    touchMultiplier: 1,
-    smoothWheel: true,
-    syncTouch: false,
-    normalizeWheel: true
-  })
-
-  const raf = (time) => {
-    lenis.raf(time * 1000)
+  const onScroll = () => {
     ScrollTrigger.update()
   }
 
-  gsap.ticker.add(raf)
-  gsap.ticker.lagSmoothing(500, 33)
+  window.addEventListener('scroll', onScroll, { passive: true })
 
   requestAnimationFrame(() => {
     ScrollTrigger.refresh()
   })
 
   return () => {
-    gsap.ticker.remove(raf)
-    lenis.destroy()
+    window.removeEventListener('scroll', onScroll)
   }
 }, [])
 
