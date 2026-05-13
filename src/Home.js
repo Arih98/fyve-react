@@ -359,89 +359,107 @@ const Home = () => {
     }
   }, [londonFadeDelay])
 
-  useEffect(() => {
-  const ctx = gsap.context(() => {
-    const isMobile = window.innerWidth <= 768;
+    useEffect(() => {
+    const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth <= 768;
 
-    // Hero Parallax - softened
-    gsap.to('.fyve-image-parallax-wrap', {
-      y: isMobile ? '5vh' : '19vh',
-      scale: 1,
-      ease: 'none',
-      force3D: true,
-      scrollTrigger: {
-        trigger: '.fyve-hero-section',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.8,           // ← was true
-        invalidateOnRefresh: true
-      }
-    });
+      // Hero Parallax
+      gsap.to('.fyve-image-parallax-wrap', {
+        y: isMobile ? '5vh' : '19vh',
+        scale: 1,
+        ease: 'none',
+        force3D: true,
+        scrollTrigger: {
+          trigger: '.fyve-hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.8,
+          invalidateOnRefresh: true
+        }
+      });
 
-    // Aesthetic image
-    gsap.fromTo('.section1-aesthetic-image', {
-      scale: 1.2
-    }, {
-      scale: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.section-1',
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 0.7,           // ← was true
-        invalidateOnRefresh: true
-      }
-    });
-
-    // Title lines
-    gsap.fromTo('.section1-title-line--top', { xPercent: 0 }, {
-      xPercent: -18,
-      ease: 'none',
-      scrollTrigger: { scrub: 0.8, ... }   // soften
-    });
-
-    gsap.fromTo('.section1-title-line--bottom', { xPercent: 0 }, {
-      xPercent: 18,
-      ease: 'none',
-      scrollTrigger: { scrub: 0.8, ... }
-    });
-
-    // Results images - most expensive
-    gsap.utils.toArray('.results-img-wrap').forEach((item) => {
-      const amount = Number(item.dataset.resultsAmount || 10);
-      gsap.fromTo(item, {
-        y: `${amount}vh`
+      // Aesthetic image
+      gsap.fromTo('.section1-aesthetic-image', {
+        scale: 1.2
       }, {
-        y: `${-amount}vh`,
+        scale: 1,
         ease: 'none',
         scrollTrigger: {
-          trigger: item,
+          trigger: '.section-1',
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 0.9,                    // ← softened a lot
+          scrub: 0.7,
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Title lines
+      gsap.fromTo('.section1-title-line--top', 
+        { xPercent: 0 }, 
+        {
+          xPercent: -18,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.section-1',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.8,
+            invalidateOnRefresh: true
+          }
+        }
+      );
+
+      gsap.fromTo('.section1-title-line--bottom', 
+        { xPercent: 0 }, 
+        {
+          xPercent: 18,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.section-1',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.8,
+            invalidateOnRefresh: true
+          }
+        }
+      );
+
+      // Results images
+      gsap.utils.toArray('.results-img-wrap').forEach((item) => {
+        const amount = Number(item.dataset.resultsAmount || 10);
+        gsap.fromTo(item, {
+          y: `${amount}vh`
+        }, {
+          y: `${-amount}vh`,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: item,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.9,
+            invalidateOnRefresh: true
+          }
+        });
+      });
+
+      // Results title
+      gsap.fromTo('.results-before-after-title', {
+        y: isMobile ? '-22vh' : '-18vh'
+      }, {
+        y: isMobile ? '200vh' : '230vh',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.results-float-section',
+          start: 'top 55%',
+          end: 'bottom+=70% top',
+          scrub: 0.8,
           invalidateOnRefresh: true
         }
       });
     });
 
-    // Results title
-    gsap.fromTo('.results-before-after-title', {
-      y: isMobile ? '-22vh' : '-18vh'
-    }, {
-      y: isMobile ? '200vh' : '230vh',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.results-float-section',
-        start: 'top 55%',
-        end: 'bottom+=70% top',
-        scrub: 0.8,
-        invalidateOnRefresh: true
-      }
-    });
-  });
-
-  return () => ctx.revert();
-}, []);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div className="home-page">
