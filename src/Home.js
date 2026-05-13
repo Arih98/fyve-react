@@ -355,22 +355,21 @@ setTimeout(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
 gsap.set('.fyve-image-parallax-wrap', {
-  y: isMobile ? '-4vh' : '4vh',
-  scale: isMobile ? 1.04 : 1.06,
+  y: isMobile ? '-2vh' : '2vh',
+  scale: 1,
   force3D: true,
   transformOrigin: 'center center'
 })
 
 gsap.to('.fyve-image-parallax-wrap', {
-  y: isMobile ? '5vh' : '19vh',
-  scale: 1,
+  y: isMobile ? '4vh' : '12vh',
   ease: 'none',
   force3D: true,
   scrollTrigger: {
     trigger: '.fyve-hero-section',
     start: 'top top',
-    end: 'bottom+=15% top',
-    scrub: 0.35,
+    end: 'bottom top',
+    scrub: true,
     invalidateOnRefresh: true
   }
 })
