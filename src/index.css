@@ -199,19 +199,3 @@ body {
     min-height: 100dvh;
   }
 }
-
-html.lenis {
-  height: auto;
-}
-
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
