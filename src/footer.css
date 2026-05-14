@@ -39,7 +39,7 @@
 .footer-logo-wrap::before {
   content: "";
   position: absolute;
-  top: 49.6%;
+  top: 65.5%;
   left: 50%;
   width: 100vw;
   height: 200vh;
@@ -85,7 +85,7 @@
   font-size: clamp(16px, 2vw, 28px);
   letter-spacing: 4.5em;
   color: #4A494A;
-  margin-top: 1.5em;
+  margin-top: 1em;
 }
 
 .footer-links {
