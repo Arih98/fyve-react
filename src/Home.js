@@ -453,14 +453,16 @@ gsap.fromTo('.section1-title-line--bottom', {
   })
 })
 
-const titleTravel = isMobile ? 340 : 310
+const titleStart = () => window.innerHeight * (isMobile ? -0.22 : -0.18)
+const titleEnd = () => window.innerHeight * (isMobile ? 3.4 : 3.1)
 
 gsap.fromTo('.results-before-after-title', {
-  y: isMobile ? '-22vh' : '-18vh'
+  y: titleStart
 }, {
-  y: `${titleTravel}vh`,
+  y: titleEnd,
   ease: 'none',
   immediateRender: true,
+  force3D: true,
   scrollTrigger: {
     trigger: '.results-float-section',
     start: 'top 55%',

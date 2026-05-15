@@ -365,6 +365,18 @@
   will-change: transform;
 }
 
+.results-before-after-title {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.results-before-after-title img {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
 .section1-aesthetic-bottom {
   position: absolute;
   right: 13vw;
