@@ -714,7 +714,7 @@
 
   .lottie-container {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 85px);
+    top: calc(env(safe-area-inset-top, 0px) + 80px);
     left: 50%;
     transform: translateX(-50%);
     width: min(88vw, 520px);
@@ -741,7 +741,7 @@
 
   .london-below {
     width: 100%;
-    margin-top: -50px;
+    margin-top: -55px;
     margin-bottom: 0;
     text-align: center;
     color: #fff;
