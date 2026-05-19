@@ -168,7 +168,7 @@
 }
 
 .fyve-image-reveal.is-loaded::after {
-  background: rgba(0, 0, 0, 0.10);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .fyve-image-scale-wrap {
@@ -569,6 +569,10 @@
 }
 
 @media (max-width: 768px) {
+
+  .fyve-image-reveal.is-loaded::after {
+  background: rgba(0, 0, 0, 0.9);
+}
 
  .results-float-section {
   height: 150vh;
