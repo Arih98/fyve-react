@@ -278,14 +278,14 @@
 
 .footer-lottie-animation-wrap {
   width: 100%;
-  height: clamp(150px, 42vw, 260px);
-  min-height: 0;
+  height: auto;
+  min-height: clamp(150px, 42vw, 260px);
 }
 
 .footer-lottie-animation-wrap > div,
 .footer-lottie-animation-wrap svg {
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
   display: block;
 }
 
