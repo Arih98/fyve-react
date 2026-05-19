@@ -259,36 +259,35 @@
     padding: 60px 30px 95px;
   }
 
-  .footer-brand {
-    width: 100vw;
-    max-width: none;
-    margin-left: calc(50% - 50vw);
-  }
+.footer-brand {
+  width: calc(100vw - 60px);
+  max-width: none;
+}
 
-  .footer-logo-wrap {
-    width: 100vw;
-    max-width: none;
-  }
+.footer-logo-wrap {
+  width: 100%;
+  max-width: none;
+}
 
-  .footer-lottie-container {
-    width: 100vw;
-    max-width: none;
-    left: 0;
-    transform: none;
-  }
+.footer-lottie-container {
+  width: 100%;
+  max-width: none;
+  left: auto;
+  transform: none;
+}
 
-  .footer-lottie-animation-wrap {
-    width: 100vw;
-    height: auto;
-    min-height: clamp(150px, 42vw, 260px);
-  }
+.footer-lottie-animation-wrap {
+  width: 100%;
+  height: auto;
+  min-height: clamp(150px, 42vw, 260px);
+}
 
-  .footer-lottie-animation-wrap > div,
-  .footer-lottie-animation-wrap svg {
-    width: 100% !important;
-    height: auto !important;
-    display: block;
-  }
+.footer-lottie-animation-wrap > div,
+.footer-lottie-animation-wrap svg {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+}
 
   .footer-london {
     font-family: quasimoda, sans-serif;
