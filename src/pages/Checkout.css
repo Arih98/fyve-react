@@ -217,6 +217,7 @@
   color: #4A494A;
   font-family: 'Quasimoda', sans-serif;
   font-size: 17px;
+  letter-spacing: -0.02em;
   text-decoration: underline;
   text-underline-offset: 3px;
   flex: 0 0 auto;
