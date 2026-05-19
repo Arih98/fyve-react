@@ -730,6 +730,8 @@
   .lottie-animation-wrap {
     width: 100%;
     max-height: none;
+    padding-right: 10px;
+    padding-left: 10px;
     aspect-ratio: 1.75 / 1;
     display: flex;
     justify-content: center;
