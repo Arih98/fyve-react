@@ -63,6 +63,7 @@
 .footer-lottie-animation-wrap {
   width: 100%;
   height: auto;
+  min-height: clamp(300px, 42vw, 760px);
   display: flex;
   justify-content: center;
   align-items: center;
