@@ -288,6 +288,8 @@
 .lottie-animation-wrap {
   width: 100vw;
   max-height: none;
+  padding-right: 50px;
+  padding-left: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
