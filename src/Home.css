@@ -168,7 +168,7 @@
 }
 
 .fyve-image-reveal.is-loaded::after {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.10);
 }
 
 .fyve-image-scale-wrap {
