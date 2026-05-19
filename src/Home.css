@@ -697,7 +697,7 @@
 
   .home-mobile-top-logo {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 35px);
+    top: calc(env(safe-area-inset-top, 0px) + 25px);
     left: 45%;
     transform: translateX(-50%);
     z-index: 20;
@@ -714,7 +714,7 @@
 
   .lottie-container {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 10px + 45px + 4px);
+    top: calc(env(safe-area-inset-top, 0px) + 85px);
     left: 50%;
     transform: translateX(-50%);
     width: min(88vw, 520px);
@@ -741,7 +741,7 @@
 
   .london-below {
     width: 100%;
-    margin-top: -32px;
+    margin-top: -50px;
     margin-bottom: 0;
     text-align: center;
     color: #fff;
