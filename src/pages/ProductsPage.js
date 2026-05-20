@@ -1,5 +1,5 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
+import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
@@ -114,6 +114,68 @@ description: product.description || '',
   price: product.price
 }));
 
+const formatCategoryLabel = (slug) => {
+  if (!slug) return 'All Products';
+
+  return slug
+    .split('-')
+    .map(word => word.toLowerCase() === 'ss26' ? 'SS26' : word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+const activeCategory = useMemo(() => {
+  if (!selectedCategory) return null;
+
+  const allCategories = display.flatMap(product =>
+    Array.isArray(product.categories) ? product.categories : []
+  );
+
+  return allCategories.find(category => category.slug === selectedCategory) || {
+    name: formatCategoryLabel(selectedCategory),
+    slug: selectedCategory
+  };
+}, [display, selectedCategory]);
+
+const pageTitle = activeCategory?.name || 'All Products';
+
+const pageBreadcrumbs = useMemo(() => {
+  const items = [
+    {
+      name: 'Products',
+      url: '/products'
+    }
+  ];
+
+  if (activeCategory) {
+    items.push({
+      name: activeCategory.name,
+      url: `/products?category=${activeCategory.slug}`
+    });
+  }
+
+  return items;
+}, [activeCategory]);
+
+const productsPageHeader = (
+  <div className="products-page-header">
+    <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
+      {pageBreadcrumbs.map((item, index) => (
+        <React.Fragment key={item.url}>
+          <Link to={item.url} className="products-page-breadcrumb-link">
+            {item.name}
+          </Link>
+
+          {index < pageBreadcrumbs.length - 1 && (
+            <span className="products-page-breadcrumb-separator">&gt;</span>
+          )}
+        </React.Fragment>
+      ))}
+    </nav>
+
+    <h1 className="products-page-title">{pageTitle}</h1>
+  </div>
+);
+
   const handleProductClick = (item) => {
   if (clickLockRef.current) return;
   clickLockRef.current = true;
@@ -188,35 +250,37 @@ const totalPages = isMobile
   };
 
   if (loading) {
-    return (
-      <div className="products-container">
-        <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+  return (
+    <div className="products-container">
+      <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+        {productsPageHeader}
 
-          <div className="products-grid">
-            {Array.from({ length: 12 }).map((_, i) => (
-<div key={i} className="product-card skeleton-card">
-  <div className="product-image-frame skeleton-image-frame">
-    <div className="product-image-wrapper skeleton-image"></div>
-  </div>
-  <div className="product-info">
-    <div className="skeleton-text skeleton-title"></div>
-    <div className="skeleton-text skeleton-price"></div>
-  </div>
-</div>
-            ))}
-          </div>
+        <div className="products-grid">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="product-card skeleton-card">
+              <div className="product-image-frame skeleton-image-frame">
+                <div className="product-image-wrapper skeleton-image"></div>
+              </div>
+              <div className="product-info">
+                <div className="skeleton-text skeleton-title"></div>
+                <div className="skeleton-text skeleton-price"></div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   if (error) return <div className="products-error">{error.message || String(error)}</div>;
 
   return (
     <div className="products-container">
-      <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+<div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
+  {productsPageHeader}
 
-        <ProductGrid
+  <ProductGrid
           products={currentProducts}
           onProductClick={handleProductClick}
           imageRefs={imageRefs}

@@ -8,6 +8,65 @@
   }
 }
 
+.products-page-header {
+  width: 100%;
+  padding: 0 0 34px;
+  text-align: center;
+}
+
+.products-page-breadcrumbs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 0 0 16px;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4a494a;
+}
+
+.products-page-breadcrumb-link {
+  position: relative;
+  display: inline-flex;
+  color: #4a494a;
+  text-decoration: none;
+  padding-bottom: 3px;
+}
+
+.products-page-breadcrumb-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s ease;
+}
+
+.products-page-breadcrumb-link:hover::after {
+  transform: scaleX(1);
+}
+
+.products-page-breadcrumb-separator {
+  color: #4a494a;
+  opacity: 0.65;
+}
+
+.products-page-title {
+  margin: 0;
+  font-family: "ArizonaFlare", sans-serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 3vw, 4rem);
+  line-height: 1;
+  color: #4a494a;
+}
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -265,6 +324,19 @@
     padding-bottom: 40px;
     box-sizing: border-box;
   }
+
+  .products-page-header {
+  padding: 0 16px 24px;
+}
+
+.products-page-breadcrumbs {
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.products-page-title {
+  font-size: 2rem;
+}
 }
 
 @media (min-width: 769px) {
