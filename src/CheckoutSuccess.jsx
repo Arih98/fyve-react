@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { CartContext } from './CartContext'
 import { clearCheckoutCart } from './api/checkout'
 import { clearStoredCartToken } from './api/request'
+import { useAuth } from './context/AuthContext'
 import './CheckoutSuccess.css'
 
 export default function CheckoutSuccess() {
@@ -14,6 +15,7 @@ export default function CheckoutSuccess() {
   const [error, setError] = useState('')
   const [order, setOrder] = useState(null)
   const { refreshCart, clearCartState } = useContext(CartContext)
+  const { user } = useAuth()
 
   useEffect(() => {
     if (!orderId) {
@@ -223,14 +225,25 @@ export default function CheckoutSuccess() {
             </div>
 
             <div className="checkout-success-actions">
-              <Link className="checkout-success-button" to="/checkout">
-                Return to checkout
-              </Link>
+  {user ? (
+    <Link
+      className="checkout-success-button"
+      to={`/account/orders/${encodeURIComponent(orderId)}`}
+    >
+      View order
+    </Link>
+  ) : (
+    <Link className="checkout-success-button" to="/">
+      Continue shopping
+    </Link>
+  )}
 
-              <Link className="checkout-success-link" to="/">
-                Continue shopping
-              </Link>
-            </div>
+  {user ? (
+    <Link className="checkout-success-link" to="/">
+      Continue shopping
+    </Link>
+  ) : null}
+</div>
           </div>
         </div>
       </div>
@@ -303,17 +316,25 @@ export default function CheckoutSuccess() {
           </div>
 
           <div className="checkout-success-actions">
-<Link
-  className="checkout-success-button"
-  to={`/account/orders/${encodeURIComponent(orderId)}`}
->
-  View order
-</Link>
+  {user ? (
+    <Link
+      className="checkout-success-button"
+      to={`/account/orders/${encodeURIComponent(orderId)}`}
+    >
+      View order
+    </Link>
+  ) : (
+    <Link className="checkout-success-button" to="/">
+      Continue shopping
+    </Link>
+  )}
 
-            <Link className="checkout-success-link" to="/">
-              Continue shopping
-            </Link>
-          </div>
+  {user ? (
+    <Link className="checkout-success-link" to="/">
+      Continue shopping
+    </Link>
+  ) : null}
+</div>
         </div>
       </div>
     </div>
