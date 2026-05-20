@@ -225,24 +225,13 @@ export default function CheckoutSuccess() {
             </div>
 
             <div className="checkout-success-actions">
-  {user ? (
-    <Link
-      className="checkout-success-button"
-      to={`/account/orders/${encodeURIComponent(orderId)}`}
-    >
-      View order
-    </Link>
-  ) : (
-    <Link className="checkout-success-button" to="/">
-      Continue shopping
-    </Link>
-  )}
+  <Link className="checkout-success-button" to="/checkout">
+    Return to checkout
+  </Link>
 
-  {user ? (
-    <Link className="checkout-success-link" to="/">
-      Continue shopping
-    </Link>
-  ) : null}
+  <Link className="checkout-success-link" to="/">
+    Continue shopping
+  </Link>
 </div>
           </div>
         </div>
