@@ -239,6 +239,7 @@ const { cartItems } = useContext(CartContext);
 const isCartPage = location.pathname === '/cart';
 const isCheckoutPage = location.pathname.startsWith('/checkout');
 const isProductDetailPage = /^\/product\/[^/]+$/.test(location.pathname);
+const isProductsPage = location.pathname === '/products';
 const isHomePage = location.pathname === '/';
 const normalDesktopHeaderPages = [
   /^\/account(\/.*)?$/,
@@ -287,6 +288,7 @@ const [isSearchClosing, setIsSearchClosing] = useState(false);
 const searchCloseTimeoutRef = useRef(null);
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
+const useProductsFilterVariant = isMobile && isProductsPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -1125,7 +1127,7 @@ const handleToggleMenu = () => {
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${normalDesktopHeader ? ' desktop-normal-scroll' : ''}${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${normalDesktopHeader ? ' desktop-normal-scroll' : ''}${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${useProductsFilterVariant ? ' products-filter-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant && !useProductsFilterVariant ? ' home-transparent' : ''}`}
 >
   {BurgerIcon}
 
@@ -1142,19 +1144,30 @@ const handleToggleMenu = () => {
         </div>
       )}
     </div>
-  ) : usePdpBottomAddVariant ? (
-    <div className="cart-header-mobile-layout pdp-header-mobile-layout">
-      <div className="cart-header-checkout-container">
-        <button
-          className="cart-header-checkout-button cart-header-checkout-button-mobile pdp-header-add-button"
-          disabled={pdpMobileAddDisabled}
-          onClick={() => window.dispatchEvent(new CustomEvent('pdp:add-to-cart'))}
-        >
-          {pdpMobileAddLabel}
-        </button>
-      </div>
+) : usePdpBottomAddVariant ? (
+  <div className="cart-header-mobile-layout pdp-header-mobile-layout">
+    <div className="cart-header-checkout-container">
+      <button
+        className="cart-header-checkout-button cart-header-checkout-button-mobile pdp-header-add-button"
+        disabled={pdpMobileAddDisabled}
+        onClick={() => window.dispatchEvent(new CustomEvent('pdp:add-to-cart'))}
+      >
+        {pdpMobileAddLabel}
+      </button>
     </div>
-  ) : (
+  </div>
+) : useProductsFilterVariant ? (
+  <div className="cart-header-mobile-layout products-filter-mobile-layout">
+    <div className="cart-header-checkout-container">
+      <button
+        className="cart-header-checkout-button cart-header-checkout-button-mobile products-header-filter-button"
+        onClick={() => window.dispatchEvent(new CustomEvent('products:open-filter-panel'))}
+      >
+        Filter
+      </button>
+    </div>
+  </div>
+) : (
     <>
       <div className="header-logo mobile-hide-logo">
         <img src={logoSrc} alt="FYVE Logo" onClick={() => navigate('/')} />

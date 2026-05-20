@@ -486,7 +486,7 @@
 .products-filter-panel-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 9998;
+  z-index: 100060;
   background: rgba(0, 0, 0, 0.28);
   display: flex;
   justify-content: flex-end;
@@ -625,5 +625,9 @@
 
   .products-filter-panel-footer {
     padding: 16px 20px 22px;
+  }
+  .products-filter-sticky-button,
+  .products-filter-sticky-wrap {
+    display: none !important;
   }
 }
