@@ -17,8 +17,9 @@ const ProductsPage = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const clickLockRef = useRef(false);
 
-  const selectedCategory = searchParams.get('category') || '';
-  const prevCategoryRef = useRef(selectedCategory);
+const selectedCategory = searchParams.get('category') || '';
+const [selectedSubCategory, setSelectedSubCategory] = useState('');
+const prevCategoryRef = useRef(selectedCategory);
 
   const { data: products, loading, error } = useProducts({
     page: 1,
@@ -35,6 +36,10 @@ const ProductsPage = () => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
     setVisibleCount(saved ? Number(saved) : productsPerPage);
   }, [selectedCategory]);
+
+  useEffect(() => {
+  setSelectedSubCategory('');
+}, [selectedCategory]);
 
   useEffect(() => {
     if (!isMobile) return;
@@ -114,6 +119,62 @@ description: product.description || '',
   price: product.price
 }));
 
+const availableFilterCategories = useMemo(() => {
+  const excludedSlugs = new Set([
+    selectedCategory,
+    'ss26',
+    'boy',
+    'girl',
+    'baby',
+    'uncategorized'
+  ]);
+
+  const categoryMap = new Map();
+
+  display.forEach(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+
+    categories.forEach(category => {
+      const slug = category?.slug || '';
+      const name = category?.name || '';
+
+      if (!slug || !name) return;
+      if (excludedSlugs.has(slug)) return;
+      if (slug.includes('collection')) return;
+
+      if (!categoryMap.has(slug)) {
+        categoryMap.set(slug, {
+          id: category.id,
+          name,
+          slug
+        });
+      }
+    });
+  });
+
+  return Array.from(categoryMap.values());
+}, [display, selectedCategory]);
+
+const filteredDisplay = useMemo(() => {
+  if (!selectedSubCategory) return display;
+
+  return display.filter(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+    return categories.some(category => category.slug === selectedSubCategory);
+  });
+}, [display, selectedSubCategory]);
+
+const handleFilterCategoryChange = (slug) => {
+  setSelectedSubCategory(slug);
+  setVisibleCount(productsPerPage);
+
+  const next = new URLSearchParams(searchParams);
+  next.set('page', '1');
+  setSearchParams(next, { replace: true });
+
+  window.scrollTo(0, 0);
+};
+
 const formatCategoryLabel = (slug) => {
   if (!slug) return 'All Products';
 
@@ -173,6 +234,29 @@ const productsPageHeader = (
     </nav>
 
     <h1 className="products-page-title">{pageTitle}</h1>
+
+{availableFilterCategories.length > 0 && (
+  <div className="products-page-filter">
+    <button
+      type="button"
+      className={`products-page-filter-button ${!selectedSubCategory ? 'is-active' : ''}`}
+      onClick={() => handleFilterCategoryChange('')}
+    >
+      All
+    </button>
+
+    {availableFilterCategories.map(category => (
+      <button
+        key={category.slug}
+        type="button"
+        className={`products-page-filter-button ${selectedSubCategory === category.slug ? 'is-active' : ''}`}
+        onClick={() => handleFilterCategoryChange(category.slug)}
+      >
+        {category.name}
+      </button>
+    ))}
+  </div>
+)}
   </div>
 );
 
@@ -234,13 +318,13 @@ const colorQuery = selectedProductColor
     });
   };
 
-  const currentProducts = isMobile
-    ? display.slice(0, visibleCount)
-    : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+const currentProducts = isMobile
+  ? filteredDisplay.slice(0, visibleCount)
+  : filteredDisplay.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
 const totalPages = isMobile
   ? 1
-  : Math.max(1, Math.ceil(display.length / productsPerPage));
+  : Math.max(1, Math.ceil(filteredDisplay.length / productsPerPage));
 
   const handlePageChange = (page) => {
     const next = new URLSearchParams(searchParams);
@@ -287,7 +371,7 @@ const totalPages = isMobile
           placeholderImage={placeholderImage}
         />
 
-        {isMobile && visibleCount < display.length && (
+        {isMobile && visibleCount < filteredDisplay.length && (
           <div className="show-more-wrapper">
             <button
               className="show-more-button"
