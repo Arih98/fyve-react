@@ -103,17 +103,18 @@ function mapBaseProduct(raw) {
     images[0] ||
     thumbnail;
 
-  return {
-    id: raw.id,
-    parentId: raw.id,
-    slug: raw.slug || "",
-    name: raw.name || raw.title || "",
-    title: raw.title || raw.name || "",
-    subtitle: raw.short_description || "",
-    description: raw.description || "",
-short_description: raw.short_description || "",
-shortDescription: raw.short_description || "",
-    price,
+return {
+  id: raw.id,
+  parentId: raw.id,
+  slug: raw.slug || "",
+  name: raw.name || raw.title || "",
+  title: raw.title || raw.name || "",
+  subtitle: raw.short_description || "",
+  description: raw.description || "",
+  short_description: raw.short_description || "",
+  shortDescription: raw.short_description || "",
+  categories: Array.isArray(raw.categories) ? raw.categories : [],
+  price,
     thumbnail,
     hoverImage,
     gallery: gallery.length > 0 ? gallery : [thumbnail, hoverImage].filter(Boolean),
