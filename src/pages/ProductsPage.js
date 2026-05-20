@@ -5,43 +5,6 @@ import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
-const PAGE_CATEGORY_SLUGS = new Set([
-  'ss26',
-  'boy',
-  'girl',
-  'baby',
-  'the-regents-collection',
-  'the-grosvenor-collection',
-  'uncategorized'
-]);
-
-const MAIN_FILTER_CATEGORY_SLUGS = new Set([
-  'dresses',
-  'shorts',
-  'blazer',
-  'bodysuits',
-  'rompers',
-  'shirts',
-  'trousers',
-  'accessories'
-]);
-
-const CATEGORY_LABEL_OVERRIDES = {
-  ss26: 'SS26'
-};
-
-const formatCategoryName = (slug) => {
-  if (!slug) return '';
-
-  if (CATEGORY_LABEL_OVERRIDES[slug]) {
-    return CATEGORY_LABEL_OVERRIDES[slug];
-  }
-
-  return slug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-};
 
 const ProductsPage = () => {
   const productsPerPage = 16;
@@ -54,16 +17,14 @@ const ProductsPage = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const clickLockRef = useRef(false);
 
-const selectedCategory = searchParams.get('category') || '';
-const [selectedMainFilter, setSelectedMainFilter] = useState('');
-const [selectedSubFilter, setSelectedSubFilter] = useState('');
-const prevCategoryRef = useRef(selectedCategory);
+  const selectedCategory = searchParams.get('category') || '';
+  const prevCategoryRef = useRef(selectedCategory);
 
-const { data: products = [], loading, error } = useProducts({
-  page: 1,
-  perPage: 200,
-  category: selectedCategory
-});
+  const { data: products, loading, error } = useProducts({
+    page: 1,
+    perPage: 200,
+    category: selectedCategory
+  });
 
   const [visibleCount, setVisibleCount] = useState(() => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
@@ -74,11 +35,6 @@ const { data: products = [], loading, error } = useProducts({
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
     setVisibleCount(saved ? Number(saved) : productsPerPage);
   }, [selectedCategory]);
-
-useEffect(() => {
-  setSelectedMainFilter('');
-  setSelectedSubFilter('');
-}, [selectedCategory]);
 
   useEffect(() => {
     if (!isMobile) return;
@@ -158,107 +114,6 @@ description: product.description || '',
   price: product.price
 }));
 
-const availableMainFilterCategories = useMemo(() => {
-  const categoryMap = new Map();
-
-  display.forEach(product => {
-    const categories = Array.isArray(product.categories) ? product.categories : [];
-
-    categories.forEach(category => {
-      const slug = category?.slug || '';
-      const name = category?.name || '';
-
-      if (!slug || !name) return;
-      if (!MAIN_FILTER_CATEGORY_SLUGS.has(slug)) return;
-
-      if (!categoryMap.has(slug)) {
-        categoryMap.set(slug, {
-          id: category.id,
-          name,
-          slug
-        });
-      }
-    });
-  });
-
-  return Array.from(categoryMap.values()).sort((a, b) => {
-    const order = Array.from(MAIN_FILTER_CATEGORY_SLUGS);
-    return order.indexOf(a.slug) - order.indexOf(b.slug);
-  });
-}, [display]);
-
-const availableSubFilterCategories = useMemo(() => {
-  if (!selectedMainFilter) return [];
-
-  const categoryMap = new Map();
-
-  display.forEach(product => {
-    const categories = Array.isArray(product.categories) ? product.categories : [];
-    const hasSelectedMainFilter = categories.some(category => category.slug === selectedMainFilter);
-
-    if (!hasSelectedMainFilter) return;
-
-    categories.forEach(category => {
-      const slug = category?.slug || '';
-      const name = category?.name || '';
-
-      if (!slug || !name) return;
-      if (slug === selectedCategory) return;
-      if (slug === selectedMainFilter) return;
-      if (PAGE_CATEGORY_SLUGS.has(slug)) return;
-      if (MAIN_FILTER_CATEGORY_SLUGS.has(slug)) return;
-      if (slug.includes('collection')) return;
-
-      if (!categoryMap.has(slug)) {
-        categoryMap.set(slug, {
-          id: category.id,
-          name,
-          slug
-        });
-      }
-    });
-  });
-
-  return Array.from(categoryMap.values());
-}, [display, selectedCategory, selectedMainFilter]);
-
-const filteredDisplay = useMemo(() => {
-  return display.filter(product => {
-    const categories = Array.isArray(product.categories) ? product.categories : [];
-
-    const matchesMainFilter = selectedMainFilter
-      ? categories.some(category => category.slug === selectedMainFilter)
-      : true;
-
-    const matchesSubFilter = selectedSubFilter
-      ? categories.some(category => category.slug === selectedSubFilter)
-      : true;
-
-    return matchesMainFilter && matchesSubFilter;
-  });
-}, [display, selectedMainFilter, selectedSubFilter]);
-
-const resetProductsPagePosition = () => {
-  setVisibleCount(productsPerPage);
-
-  const next = new URLSearchParams(searchParams);
-  next.set('page', '1');
-  setSearchParams(next, { replace: true });
-
-  window.scrollTo(0, 0);
-};
-
-const handleMainFilterChange = (slug) => {
-  setSelectedMainFilter(slug);
-  setSelectedSubFilter('');
-  resetProductsPagePosition();
-};
-
-const handleSubFilterChange = (slug) => {
-  setSelectedSubFilter(slug);
-  resetProductsPagePosition();
-};
-
 const formatCategoryLabel = (slug) => {
   if (!slug) return 'All Products';
 
@@ -301,10 +156,6 @@ const pageBreadcrumbs = useMemo(() => {
   return items;
 }, [activeCategory]);
 
-const selectedMainFilterCategory = availableMainFilterCategories.find(
-  category => category.slug === selectedMainFilter
-);
-
 const productsPageHeader = (
   <div className="products-page-header">
     <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
@@ -322,61 +173,6 @@ const productsPageHeader = (
     </nav>
 
     <h1 className="products-page-title">{pageTitle}</h1>
-
-    {availableMainFilterCategories.length > 0 && (
-      <div className="products-page-filter">
-        <button
-          type="button"
-          className={`products-page-filter-button ${!selectedMainFilter ? 'is-active' : ''}`}
-          onClick={() => handleMainFilterChange('')}
-        >
-          All
-        </button>
-
-        {availableMainFilterCategories.map(category => (
-          <button
-            key={category.slug}
-            type="button"
-            className={`products-page-filter-button ${selectedMainFilter === category.slug ? 'is-active' : ''}`}
-            onClick={() => handleMainFilterChange(category.slug)}
-          >
-            {category.name}
-          </button>
-        ))}
-      </div>
-    )}
-
-    {selectedMainFilter && availableSubFilterCategories.length > 0 && (
-      <div className="products-page-subfilter">
-        <button
-          type="button"
-          className="products-page-selected-filter-button"
-          onClick={() => handleMainFilterChange('')}
-        >
-          <span>{selectedMainFilterCategory?.name || formatCategoryName(selectedMainFilter)}</span>
-          <span className="products-page-selected-filter-close">×</span>
-        </button>
-
-        <button
-          type="button"
-          className={`products-page-subfilter-button ${!selectedSubFilter ? 'is-active' : ''}`}
-          onClick={() => handleSubFilterChange('')}
-        >
-          All
-        </button>
-
-        {availableSubFilterCategories.map(category => (
-          <button
-            key={category.slug}
-            type="button"
-            className={`products-page-subfilter-button ${selectedSubFilter === category.slug ? 'is-active' : ''}`}
-            onClick={() => handleSubFilterChange(category.slug)}
-          >
-            {category.name}
-          </button>
-        ))}
-      </div>
-    )}
   </div>
 );
 
@@ -438,13 +234,13 @@ const colorQuery = selectedProductColor
     });
   };
 
-const currentProducts = isMobile
-  ? filteredDisplay.slice(0, visibleCount)
-  : filteredDisplay.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+  const currentProducts = isMobile
+    ? display.slice(0, visibleCount)
+    : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
 const totalPages = isMobile
   ? 1
-  : Math.max(1, Math.ceil(filteredDisplay.length / productsPerPage));
+  : Math.max(1, Math.ceil(display.length / productsPerPage));
 
   const handlePageChange = (page) => {
     const next = new URLSearchParams(searchParams);
@@ -491,7 +287,7 @@ const totalPages = isMobile
           placeholderImage={placeholderImage}
         />
 
-        {isMobile && visibleCount < filteredDisplay.length && (
+        {isMobile && visibleCount < display.length && (
           <div className="show-more-wrapper">
             <button
               className="show-more-button"
