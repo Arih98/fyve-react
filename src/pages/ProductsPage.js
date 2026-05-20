@@ -23,6 +23,7 @@ const selectedCategory = searchParams.get('category') || '';
 const [selectedMainFilter, setSelectedMainFilter] = useState('');
 const [selectedSubFilter, setSelectedSubFilter] = useState('');
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+const [filterPanelView, setFilterPanelView] = useState('main');
 const prevCategoryRef = useRef(selectedCategory);
 
 const { data: products = [], meta: productsMeta, loading, error } = useProducts({
@@ -210,6 +211,24 @@ const availableSubFilterCategories = useMemo(() => {
     : [];
 }, [selectedMainFilterGroup]);
 
+const selectedSubFilterCategory = useMemo(() => {
+  if (!selectedSubFilter) return null;
+
+  return availableSubFilterCategories.find(category => category.slug === selectedSubFilter) || null;
+}, [availableSubFilterCategories, selectedSubFilter]);
+
+const selectedFilterLabel = useMemo(() => {
+  if (!selectedMainFilter) return 'All';
+
+  const mainName = selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter);
+
+  if (!selectedSubFilter) return mainName;
+
+  const subName = selectedSubFilterCategory?.name || formatCategoryLabel(selectedSubFilter);
+
+  return `${mainName}, ${subName}`;
+}, [selectedMainFilter, selectedMainFilterGroup, selectedSubFilter, selectedSubFilterCategory]);
+
 const filteredDisplay = useMemo(() => {
   return display.filter(product => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
@@ -248,9 +267,9 @@ const handleSubFilterChange = (slug) => {
 };
 
 useEffect(() => {
-  const handleOpenProductsFilter = () => {
-    setIsFilterPanelOpen(true);
-  };
+const handleOpenProductsFilter = () => {
+  openFilterPanel();
+};
 
   window.addEventListener('products:open-filter-panel', handleOpenProductsFilter);
 
@@ -327,12 +346,22 @@ const productsPageHeader = (
   </div>
 );
 
+const closeFilterPanel = () => {
+  setIsFilterPanelOpen(false);
+  setFilterPanelView('main');
+};
+
+const openFilterPanel = () => {
+  setFilterPanelView('main');
+  setIsFilterPanelOpen(true);
+};
+
 const productsPageFilterPanel = (
   <>
     <button
       type="button"
       className="products-filter-sticky-button"
-      onClick={() => setIsFilterPanelOpen(true)}
+      onClick={openFilterPanel}
     >
       <span>Filter</span>
       {activeFilterCount > 0 && (
@@ -343,7 +372,7 @@ const productsPageFilterPanel = (
 {isFilterPanelOpen && createPortal(
   <div
     className="products-filter-panel-backdrop"
-    onClick={() => setIsFilterPanelOpen(false)}
+    onClick={closeFilterPanel}
   >
         <aside
           className="products-filter-panel"
@@ -364,81 +393,131 @@ const productsPageFilterPanel = (
           </div>
 
           <div className="products-filter-panel-body">
-            <div className="products-filter-panel-section">
-              <h3 className="products-filter-panel-section-title">Category</h3>
+  <div className="products-filter-panel-slider">
+    <div className={`products-filter-panel-track ${filterPanelView === 'category' ? 'is-category-view' : ''}`}>
+      <div className="products-filter-panel-screen">
+        <button
+          type="button"
+          className="products-filter-drill-row"
+          onClick={() => setFilterPanelView('category')}
+        >
+          <span className="products-filter-drill-label">Category</span>
 
-              <div className="products-filter-panel-options">
+          <span className="products-filter-drill-meta">
+            <span className="products-filter-drill-value">{selectedFilterLabel}</span>
+            <img
+              src="/assets/breadcrumbSeparator.svg"
+              alt=""
+              className="products-filter-drill-chevron"
+            />
+          </span>
+        </button>
+      </div>
+
+      <div className="products-filter-panel-screen">
+        <button
+          type="button"
+          className="products-filter-back-row"
+          onClick={() => setFilterPanelView('main')}
+        >
+          <img
+            src="/assets/breadcrumbSeparator.svg"
+            alt=""
+            className="products-filter-back-chevron"
+          />
+          <span>Category</span>
+        </button>
+
+        <div className="products-filter-checkbox-list">
+          <button
+            type="button"
+            className="products-filter-checkbox-row"
+            role="checkbox"
+            aria-checked={!selectedMainFilter}
+            onClick={() => handleMainFilterChange('')}
+          >
+            <span className={`products-filter-checkbox ${!selectedMainFilter ? 'is-checked' : ''}`}></span>
+            <span className="products-filter-checkbox-label">All</span>
+          </button>
+
+          {filterGroups.map(group => {
+            const isSelectedMain = selectedMainFilter === group.slug;
+            const children = Array.isArray(group.children) ? group.children : [];
+
+            return (
+              <div key={group.slug} className="products-filter-checkbox-group">
                 <button
                   type="button"
-                  className={`products-filter-panel-option ${!selectedMainFilter ? 'is-active' : ''}`}
-                  onClick={() => handleMainFilterChange('')}
+                  className="products-filter-checkbox-row"
+                  role="checkbox"
+                  aria-checked={isSelectedMain}
+                  onClick={() => handleMainFilterChange(isSelectedMain ? '' : group.slug)}
                 >
-                  All
+                  <span className={`products-filter-checkbox ${isSelectedMain ? 'is-checked' : ''}`}></span>
+                  <span className="products-filter-checkbox-label">{group.name}</span>
                 </button>
 
-                {filterGroups.map(group => (
-                  <button
-                    key={group.slug}
-                    type="button"
-                    className={`products-filter-panel-option ${selectedMainFilter === group.slug ? 'is-active' : ''}`}
-                    onClick={() => handleMainFilterChange(group.slug)}
-                  >
-                    {group.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {selectedMainFilter && availableSubFilterCategories.length > 0 && (
-              <div className="products-filter-panel-section">
-                <h3 className="products-filter-panel-section-title">
-                  {selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter)}
-                </h3>
-
-                <div className="products-filter-panel-options">
-                  <button
-                    type="button"
-                    className={`products-filter-panel-option ${!selectedSubFilter ? 'is-active' : ''}`}
-                    onClick={() => handleSubFilterChange('')}
-                  >
-                    All
-                  </button>
-
-                  {availableSubFilterCategories.map(category => (
+                {isSelectedMain && children.length > 0 && (
+                  <div className="products-filter-child-checkbox-list">
                     <button
-                      key={category.slug}
                       type="button"
-                      className={`products-filter-panel-option ${selectedSubFilter === category.slug ? 'is-active' : ''}`}
-                      onClick={() => handleSubFilterChange(category.slug)}
+                      className="products-filter-checkbox-row products-filter-child-checkbox-row"
+                      role="checkbox"
+                      aria-checked={!selectedSubFilter}
+                      onClick={() => handleSubFilterChange('')}
                     >
-                      {category.name}
+                      <span className={`products-filter-checkbox ${!selectedSubFilter ? 'is-checked' : ''}`}></span>
+                      <span className="products-filter-checkbox-label">All {group.name}</span>
                     </button>
-                  ))}
-                </div>
+
+                    {children.map(category => {
+                      const isSelectedSub = selectedSubFilter === category.slug;
+
+                      return (
+                        <button
+                          key={category.slug}
+                          type="button"
+                          className="products-filter-checkbox-row products-filter-child-checkbox-row"
+                          role="checkbox"
+                          aria-checked={isSelectedSub}
+                          onClick={() => handleSubFilterChange(isSelectedSub ? '' : category.slug)}
+                        >
+                          <span className={`products-filter-checkbox ${isSelectedSub ? 'is-checked' : ''}`}></span>
+                          <span className="products-filter-checkbox-label">{category.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
           <div className="products-filter-panel-footer">
-            <button
-              type="button"
-              className="products-filter-clear-button"
-              onClick={() => {
-                handleMainFilterChange('');
-                setIsFilterPanelOpen(false);
-              }}
-            >
-              Clear
-            </button>
+  <button
+    type="button"
+    className="products-filter-clear-button"
+    onClick={() => {
+      handleMainFilterChange('');
+      setFilterPanelView('main');
+    }}
+  >
+    Clear
+  </button>
 
-            <button
-              type="button"
-              className="products-filter-apply-button"
-              onClick={() => setIsFilterPanelOpen(false)}
-            >
-              Show products
-            </button>
-          </div>
+  <button
+    type="button"
+    className="products-filter-apply-button"
+    onClick={closeFilterPanel}
+  >
+    Show products
+  </button>
+</div>
         </aside>
   </div>,
   document.body
