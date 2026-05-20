@@ -305,9 +305,9 @@ export default function CheckoutSuccess() {
           <div className="checkout-success-actions">
 <Link
   className="checkout-success-button"
-  to={`/checkout/success?order_id=${encodeURIComponent(orderId)}`}
+  to={`/account/orders/${encodeURIComponent(orderId)}`}
 >
-  View order confirmation
+  View order
 </Link>
 
             <Link className="checkout-success-link" to="/">
