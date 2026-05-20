@@ -1172,13 +1172,33 @@ body.size-panel-open {
     line-height: 1;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #4a494900;
+    color: #4a494a;
   }
 
-  .product-breadcrumb-link {
-    color: #4a494a;
-    text-decoration: none;
-  }
+.product-breadcrumb-link {
+  position: relative;
+  display: inline-flex;
+  color: #4a494a;
+  text-decoration: none;
+  padding-bottom: 3px;
+}
+
+.product-breadcrumb-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s ease;
+}
+
+.product-breadcrumb-link:hover::after {
+  transform: scaleX(1);
+}
 
   .product-breadcrumb-separator {
     color: #4a494a;
