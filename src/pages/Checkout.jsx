@@ -303,7 +303,7 @@ const renderOrderSummary = () => (
             onClick={handleApplyCoupon}
             disabled={couponLoading || isFinalizingOrder}
           >
-            {couponLoading ? 'Applying...' : 'Apply'}
+            {couponLoading ? (couponAction === 'remove' ? 'Removing...' : 'Applying...') : 'Apply'}
           </button>
         </div>
 
@@ -316,13 +316,13 @@ const renderOrderSummary = () => (
             {cart.coupons.map((coupon) => (
               <div key={coupon.code} className="checkout-applied-coupon">
                 <span>{coupon.code}</span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveCoupon(coupon.code)}
-                  disabled={couponLoading || isFinalizingOrder}
-                >
-                  Remove
-                </button>
+<button
+  type="button"
+  onClick={() => handleRemoveCoupon(coupon.code)}
+  disabled={couponLoading || isFinalizingOrder}
+>
+  {couponLoading && couponAction === 'remove' ? 'Removing...' : 'Remove'}
+</button>
               </div>
             ))}
           </div>
@@ -650,6 +650,7 @@ const hasLoadedCheckoutRef = useRef(false)
 const [couponCode, setCouponCode] = useState('')
 const [couponLoading, setCouponLoading] = useState(false)
 const [couponMessage, setCouponMessage] = useState('')
+const [couponAction, setCouponAction] = useState('')
 
 const walletInnerRef = useRef(null)
 const revolutPayInnerRef = useRef(null)
@@ -1443,6 +1444,7 @@ const handleApplyCoupon = async () => {
 
   try {
     setCouponLoading(true)
+    setCouponAction('apply')
     setCouponMessage('')
     setError('')
 
@@ -1468,6 +1470,7 @@ const handleApplyCoupon = async () => {
     setCouponMessage(decodeHtmlEntities(err?.message || 'Failed to apply coupon'))
   } finally {
     setCouponLoading(false)
+    setCouponAction('')
   }
 }
 
@@ -1497,6 +1500,7 @@ const renderFreePaymentOption = () => (
 const handleRemoveCoupon = async (code) => {
   try {
     setCouponLoading(true)
+    setCouponAction('remove')
     setCouponMessage('')
     setError('')
 
@@ -1522,6 +1526,7 @@ const handleRemoveCoupon = async (code) => {
     setCouponMessage(decodeHtmlEntities(err?.message || 'Failed to remove coupon'))
   } finally {
     setCouponLoading(false)
+    setCouponAction('')
   }
 }
 
