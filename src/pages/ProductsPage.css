@@ -446,13 +446,16 @@
 }
 
 .products-filter-sticky-button {
-  position: sticky;
-  top: 95px;
-  z-index: 50;
-  margin: 0 0 24px auto;
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 9000;
+  margin: 0;
   width: fit-content;
-  min-width: 110px;
-  height: 42px;
+  min-width: 118px;
+  height: 44px;
+  padding: 0 22px;
   border: 1px solid #4a494a;
   border-radius: 999px;
   background: #fff;
@@ -465,6 +468,7 @@
   align-items: center;
   justify-content: center;
   gap: 9px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .products-filter-count {
@@ -600,13 +604,16 @@
 }
 
 @media (max-width: 768px) {
-  .products-filter-sticky-button {
-    top: 82px;
-    margin: 0 16px 18px auto;
-    height: 40px;
-    min-width: 96px;
-    font-size: 13px;
-  }
+.products-filter-sticky-button {
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  margin: 0;
+  height: 42px;
+  min-width: 104px;
+  padding: 0 20px;
+  font-size: 13px;
+}
 
   .products-filter-panel {
     width: 100%;
