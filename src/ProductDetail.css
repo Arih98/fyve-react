@@ -1190,7 +1190,7 @@ body.size-panel-open {
 }
 
 .product-details {
-  min-height: 640px;
+  min-height: 620px;
   display: flex;
   flex-direction: column;
 }
@@ -1206,7 +1206,7 @@ body.size-panel-open {
 }
 
 .add-to-cart-button {
-  margin-top: 14px;
+  margin-top: 0;
 }
 
   .product-image-gallery-track {
