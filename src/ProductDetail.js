@@ -647,19 +647,22 @@ const pdpMobileButtonLabel = addToCartLabel;
 
 const productBreadcrumbs = useMemo(() => {
   const categories = Array.isArray(product?.categories) ? product.categories : [];
+  const seen = new Set();
 
-  const collection = categories.find(category => category.slug === 'ss26');
-
-  const audience = categories.find(category =>
-    ['boy', 'girl', 'baby'].includes(category.slug)
-  );
-
-  return [collection, audience].filter(Boolean).map(category => ({
-    id: category.id,
-    name: category.name,
-    slug: category.slug,
-    url: `/products/${category.slug}`
-  }));
+  return categories
+    .filter(category => category?.slug && category?.name)
+    .filter(category => category.slug !== 'uncategorized')
+    .filter(category => {
+      if (seen.has(category.slug)) return false;
+      seen.add(category.slug);
+      return true;
+    })
+    .map(category => ({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      url: `/products/${category.slug}`
+    }));
 }, [product?.categories]);
 
 useEffect(() => {
