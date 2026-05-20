@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { CartContext } from './CartContext';
@@ -645,6 +645,48 @@ const addToCartLabel = hasReachedCartStockLimit
 
 const pdpMobileButtonLabel = addToCartLabel;
 
+const normalizeCategoryLabel = (category) => {
+  if (typeof category === 'string') return category;
+  return category?.name || category?.title || category?.slug || '';
+};
+
+const normalizeCategorySlug = (category) => {
+  const raw = typeof category === 'string'
+    ? category
+    : category?.slug || category?.name || category?.title || '';
+
+  return String(raw)
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
+const productBreadcrumbs = useMemo(() => {
+  const categories = Array.isArray(product?.categories) ? product.categories : [];
+  const priority = ['ss26', 'boy', 'girl', 'baby'];
+  const seen = new Set();
+
+  return categories
+    .map(category => ({
+      label: normalizeCategoryLabel(category),
+      slug: normalizeCategorySlug(category)
+    }))
+    .filter(item => item.label && item.slug)
+    .filter(item => {
+      if (seen.has(item.slug)) return false;
+      seen.add(item.slug);
+      return true;
+    })
+    .sort((a, b) => {
+      const aIndex = priority.indexOf(a.slug);
+      const bIndex = priority.indexOf(b.slug);
+      return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    })
+    .slice(0, 2);
+}, [product?.categories]);
+
 useEffect(() => {
   window.dispatchEvent(
     new CustomEvent('pdp:update-add-to-bag-label', {
@@ -1096,6 +1138,22 @@ transition={{
 }}
   >
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
+{productBreadcrumbs.length > 0 && (
+  <nav className="product-breadcrumbs" aria-label="Product breadcrumbs">
+    {productBreadcrumbs.map((item, index) => (
+      <React.Fragment key={item.slug}>
+        <Link to={`/products/${item.slug}`} className="product-breadcrumb-link">
+          {item.label}
+        </Link>
+
+        {index < productBreadcrumbs.length - 1 && (
+          <span className="product-breadcrumb-separator">&gt;</span>
+        )}
+      </React.Fragment>
+    ))}
+  </nav>
+)}
+
 <h1 className="product-title">{displayTitle}</h1>
 
 <div className="product-price">

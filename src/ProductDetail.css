@@ -1,3 +1,7 @@
+.product-breadcrumbs {
+  display: none;
+}
+
 .product-gallery-image-wrapper {
   transition: opacity 0.45s ease;
 }
@@ -1158,6 +1162,29 @@ body.size-panel-open {
 }
 
 @media (min-width: 769px) {
+  .product-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    font-family: 'Quasimoda', sans-serif;
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #4a494a;
+  }
+
+  .product-breadcrumb-link {
+    color: #4a494a;
+    text-decoration: none;
+  }
+
+  .product-breadcrumb-separator {
+    color: #4a494a;
+    opacity: 0.65;
+  }
+
   .product-gallery-image-wrapper.desktop-gallery-image-hidden {
     opacity: 0;
     pointer-events: none;
