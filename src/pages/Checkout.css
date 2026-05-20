@@ -1018,18 +1018,6 @@ input[readonly] {
   height: 18px;
 }
 
-  .checkout-payment-option-body-inner-card {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  #revolut-card-field {
-    padding: 10px 8px;
-    box-sizing: border-box;
-    width: 100%;
-    overflow: visible;
-  }
-
 .checkout-page-skeleton .checkout-main {
   width: 100%;
 }

@@ -1058,26 +1058,23 @@ if (!cardSession?.revolut_order_token) {
     phone: normalizeUsPhone(snapshot.contact.phone) || undefined,
     billingAddress,
     shippingAddress,
-styles: {
-  default: {
-    color: '#4A494A',
-    backgroundColor: '#ffffff',
-    fontSize: window.innerWidth <= 768 ? '14px' : '16px'
-  },
-  focused: {
-    color: '#4A494A',
-    backgroundColor: '#ffffff',
-    fontSize: window.innerWidth <= 768 ? '14px' : '16px'
-  },
-  invalid: {
-    color: '#c62828',
-    fontSize: window.innerWidth <= 768 ? '14px' : '16px'
-  },
-  completed: {
-    color: '#4A494A',
-    fontSize: window.innerWidth <= 768 ? '14px' : '16px'
-  }
-},
+    styles: {
+      default: {
+        color: '#4A494A',
+        backgroundColor: '#ffffff',
+        fontSize: '16px'
+      },
+      focused: {
+        color: '#4A494A',
+        backgroundColor: '#ffffff'
+      },
+      invalid: {
+        color: '#c62828'
+      },
+      completed: {
+        color: '#4A494A'
+      }
+    },
     onSuccess: async () => {
       try {
         setIsFinalizingOrder(true)
