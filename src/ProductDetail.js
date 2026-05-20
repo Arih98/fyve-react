@@ -680,7 +680,6 @@ const productBreadcrumbs = useMemo(() => {
     }));
 }, [product?.categories]);
 
-const productBreadcrumbs = useMemo(() => {
 useEffect(() => {
   window.dispatchEvent(
     new CustomEvent('pdp:update-add-to-bag-label', {
