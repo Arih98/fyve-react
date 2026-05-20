@@ -143,15 +143,46 @@ const activeCategory = useMemo(() => {
 
 const pageTitle = activeCategory?.name || 'All Products';
 
-const pageBreadcrumbs = useMemo(() => {
-  const items = [
-    {
-      name: 'Products',
-      url: '/products'
-    }
-  ];
+const activeSeasonCategory = useMemo(() => {
+  const categoryMap = new Map();
 
-  if (activeCategory) {
+  display.forEach(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+
+    categories.forEach(category => {
+      if (!category?.slug || !category?.name) return;
+
+      const rootSlug = String(category.root_slug || '').toLowerCase();
+      const parentSlug = String(category.parent_slug || '').toLowerCase();
+
+      if (rootSlug !== 'season' && parentSlug !== 'season') return;
+
+      const current = categoryMap.get(category.slug) || {
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        count: 0
+      };
+
+      current.count += 1;
+      categoryMap.set(category.slug, current);
+    });
+  });
+
+  return Array.from(categoryMap.values()).sort((a, b) => b.count - a.count)[0] || null;
+}, [display]);
+
+const pageBreadcrumbs = useMemo(() => {
+  const items = [];
+
+  if (activeSeasonCategory) {
+    items.push({
+      name: activeSeasonCategory.name,
+      url: `/products?category=${activeSeasonCategory.slug}`
+    });
+  }
+
+  if (activeCategory && activeCategory.slug !== activeSeasonCategory?.slug) {
     items.push({
       name: activeCategory.name,
       url: `/products?category=${activeCategory.slug}`
@@ -159,7 +190,7 @@ const pageBreadcrumbs = useMemo(() => {
   }
 
   return items;
-}, [activeCategory]);
+}, [activeCategory, activeSeasonCategory]);
 
 const filterGroups = useMemo(() => {
   return Array.isArray(productsMeta?.filterGroups) ? productsMeta.filterGroups : [];
