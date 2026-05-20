@@ -645,24 +645,6 @@ const addToCartLabel = hasReachedCartStockLimit
 
 const pdpMobileButtonLabel = addToCartLabel;
 
-const normalizeCategoryLabel = (category) => {
-  if (typeof category === 'string') return category;
-  return category?.name || category?.title || category?.slug || '';
-};
-
-const normalizeCategorySlug = (category) => {
-  const raw = typeof category === 'string'
-    ? category
-    : category?.slug || category?.name || category?.title || '';
-
-  return String(raw)
-    .trim()
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-};
-
 const productBreadcrumbs = useMemo(() => {
   const categories = Array.isArray(product?.categories) ? product.categories : [];
 
@@ -1135,8 +1117,8 @@ transition={{
   <nav className="product-breadcrumbs" aria-label="Product breadcrumbs">
     {productBreadcrumbs.map((item, index) => (
       <React.Fragment key={item.slug}>
-        <Link to={`/products/${item.slug}`} className="product-breadcrumb-link">
-          {item.label}
+        <Link to={item.url} className="product-breadcrumb-link">
+          {item.name}
         </Link>
 
         {index < productBreadcrumbs.length - 1 && (
