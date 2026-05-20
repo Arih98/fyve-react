@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
 import { useProducts } from '../hooks/useProducts';
@@ -298,11 +299,11 @@ const productsPageFilterPanel = (
       )}
     </button>
 
-    {isFilterPanelOpen && (
-      <div
-        className="products-filter-panel-backdrop"
-        onClick={() => setIsFilterPanelOpen(false)}
-      >
+{isFilterPanelOpen && createPortal(
+  <div
+    className="products-filter-panel-backdrop"
+    onClick={() => setIsFilterPanelOpen(false)}
+  >
         <aside
           className="products-filter-panel"
           aria-label="Product filters"
@@ -398,8 +399,9 @@ const productsPageFilterPanel = (
             </button>
           </div>
         </aside>
-      </div>
-    )}
+  </div>,
+  document.body
+)}
   </>
 );
 
