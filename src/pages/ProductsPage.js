@@ -218,7 +218,7 @@ const selectedSubFilterCategory = useMemo(() => {
 }, [availableSubFilterCategories, selectedSubFilter]);
 
 const selectedFilterLabel = useMemo(() => {
-  if (!selectedMainFilter) return 'All';
+  if (!selectedMainFilter) return 'Select';
 
   const mainName = selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter);
 
@@ -429,16 +429,6 @@ const productsPageFilterPanel = (
         </button>
 
         <div className="products-filter-checkbox-list">
-          <button
-            type="button"
-            className="products-filter-checkbox-row"
-            role="checkbox"
-            aria-checked={!selectedMainFilter}
-            onClick={() => handleMainFilterChange('')}
-          >
-            <span className={`products-filter-checkbox ${!selectedMainFilter ? 'is-checked' : ''}`}></span>
-            <span className="products-filter-checkbox-label">All</span>
-          </button>
 
           {filterGroups.map(group => {
             const isSelectedMain = selectedMainFilter === group.slug;
@@ -459,16 +449,6 @@ const productsPageFilterPanel = (
 
                 {isSelectedMain && children.length > 0 && (
                   <div className="products-filter-child-checkbox-list">
-                    <button
-                      type="button"
-                      className="products-filter-checkbox-row products-filter-child-checkbox-row"
-                      role="checkbox"
-                      aria-checked={!selectedSubFilter}
-                      onClick={() => handleSubFilterChange('')}
-                    >
-                      <span className={`products-filter-checkbox ${!selectedSubFilter ? 'is-checked' : ''}`}></span>
-                      <span className="products-filter-checkbox-label">All {group.name}</span>
-                    </button>
 
                     {children.map(category => {
                       const isSelectedSub = selectedSubFilter === category.slug;
