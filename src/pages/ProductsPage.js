@@ -17,6 +17,7 @@ const ProductsPage = () => {
   const placeholderImage = 'https://fyvelondon.com/wp-content/uploads/woocommerce-placeholder.png';
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const clickLockRef = useRef(false);
+  const filterPanelScrollYRef = useRef(0);
 
 const selectedCategory = searchParams.get('category') || '';
 const [selectedMainFilter, setSelectedMainFilter] = useState('');
@@ -257,6 +258,46 @@ useEffect(() => {
     window.removeEventListener('products:open-filter-panel', handleOpenProductsFilter);
   };
 }, []);
+
+useEffect(() => {
+  if (!isFilterPanelOpen) return;
+
+  const scrollY = window.scrollY;
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+  filterPanelScrollYRef.current = scrollY;
+
+  const originalBodyPosition = document.body.style.position;
+  const originalBodyTop = document.body.style.top;
+  const originalBodyLeft = document.body.style.left;
+  const originalBodyRight = document.body.style.right;
+  const originalBodyWidth = document.body.style.width;
+  const originalBodyOverflow = document.body.style.overflow;
+  const originalBodyPaddingRight = document.body.style.paddingRight;
+
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
+
+  if (scrollbarWidth > 0) {
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+  }
+
+  return () => {
+    document.body.style.position = originalBodyPosition;
+    document.body.style.top = originalBodyTop;
+    document.body.style.left = originalBodyLeft;
+    document.body.style.right = originalBodyRight;
+    document.body.style.width = originalBodyWidth;
+    document.body.style.overflow = originalBodyOverflow;
+    document.body.style.paddingRight = originalBodyPaddingRight;
+
+    window.scrollTo(0, filterPanelScrollYRef.current);
+  };
+}, [isFilterPanelOpen]);
 
 const activeFilterCount = [selectedMainFilter, selectedSubFilter].filter(Boolean).length;
 
