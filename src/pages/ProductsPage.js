@@ -444,7 +444,6 @@ const totalPages = isMobile
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
 {productsPageHeader}
-{productsPageFilterPanel}
 
 <div className="products-grid">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -459,6 +458,7 @@ const totalPages = isMobile
             </div>
           ))}
         </div>
+        {productsPageFilterPanel}
       </div>
     </div>
   );
@@ -470,14 +470,15 @@ const totalPages = isMobile
     <div className="products-container">
 <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
 {productsPageHeader}
-{productsPageFilterPanel}
 
 <ProductGrid
-          products={currentProducts}
-          onProductClick={handleProductClick}
-          imageRefs={imageRefs}
-          placeholderImage={placeholderImage}
-        />
+  products={currentProducts}
+  onProductClick={handleProductClick}
+  imageRefs={imageRefs}
+  placeholderImage={placeholderImage}
+/>
+
+{productsPageFilterPanel}
 
         {isMobile && visibleCount < filteredDisplay.length && (
           <div className="show-more-wrapper">
