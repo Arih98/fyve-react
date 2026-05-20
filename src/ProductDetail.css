@@ -1,4 +1,6 @@
-
+.product-breadcrumbs {
+  display: none;
+}
 
 .product-gallery-image-wrapper {
   transition: opacity 0.45s ease;
