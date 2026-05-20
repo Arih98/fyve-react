@@ -314,6 +314,7 @@ body.product-image-transition-active .custom-search-result-image {
   max-height: 50px;
   cursor: pointer;
   transform: scaleX(-1);
+  margin-left: 70px;
 }
 
 .mobile-nav-icons {
