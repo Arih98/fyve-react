@@ -444,3 +444,183 @@
     box-sizing: border-box;
   }
 }
+
+.products-filter-sticky-button {
+  position: sticky;
+  top: 95px;
+  z-index: 50;
+  margin: 0 0 24px auto;
+  width: fit-content;
+  min-width: 110px;
+  height: 42px;
+  border: 1px solid #4a494a;
+  border-radius: 999px;
+  background: #fff;
+  color: #4a494a;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+.products-filter-count {
+  min-width: 19px;
+  height: 19px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #4a494a;
+  color: #fff;
+  font-size: 11px;
+  line-height: 19px;
+  text-align: center;
+}
+
+.products-filter-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.28);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.products-filter-panel {
+  width: min(420px, 100%);
+  height: 100%;
+  background: #fff;
+  color: #4a494a;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -20px 0 40px rgba(0, 0, 0, 0.12);
+}
+
+.products-filter-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 26px;
+  border-bottom: 1px solid #e6e0d8;
+}
+
+.products-filter-panel-title {
+  margin: 0;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4a494a;
+}
+
+.products-filter-panel-close {
+  border: none;
+  background: transparent;
+  color: #4a494a;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.products-filter-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 26px;
+}
+
+.products-filter-panel-section {
+  margin-bottom: 32px;
+}
+
+.products-filter-panel-section-title {
+  margin: 0 0 14px;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4a494a;
+}
+
+.products-filter-panel-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.products-filter-panel-option {
+  border: 1px solid #d9d4cc;
+  background: transparent;
+  color: #4a494a;
+  border-radius: 999px;
+  padding: 10px 17px;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.products-filter-panel-option:hover,
+.products-filter-panel-option.is-active {
+  background: #f1dbd1;
+  border-color: #f1dbd1;
+}
+
+.products-filter-panel-footer {
+  display: flex;
+  gap: 12px;
+  padding: 18px 26px 24px;
+  border-top: 1px solid #e6e0d8;
+}
+
+.products-filter-clear-button,
+.products-filter-apply-button {
+  flex: 1;
+  height: 44px;
+  border-radius: 999px;
+  font-family: 'Quasimoda', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.products-filter-clear-button {
+  border: 1px solid #d9d4cc;
+  background: #fff;
+  color: #4a494a;
+}
+
+.products-filter-apply-button {
+  border: 1px solid #4a494a;
+  background: #4a494a;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .products-filter-sticky-button {
+    top: 82px;
+    margin: 0 16px 18px auto;
+    height: 40px;
+    min-width: 96px;
+    font-size: 13px;
+  }
+
+  .products-filter-panel {
+    width: 100%;
+  }
+
+  .products-filter-panel-header {
+    padding: 20px;
+  }
+
+  .products-filter-panel-body {
+    padding: 22px 20px;
+  }
+
+  .products-filter-panel-footer {
+    padding: 16px 20px 22px;
+  }
+}

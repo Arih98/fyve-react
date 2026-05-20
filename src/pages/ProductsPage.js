@@ -20,6 +20,7 @@ const ProductsPage = () => {
 const selectedCategory = searchParams.get('category') || '';
 const [selectedMainFilter, setSelectedMainFilter] = useState('');
 const [selectedSubFilter, setSelectedSubFilter] = useState('');
+const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 const prevCategoryRef = useRef(selectedCategory);
 
 const { data: products = [], meta: productsMeta, loading, error } = useProducts({
@@ -38,9 +39,10 @@ const { data: products = [], meta: productsMeta, loading, error } = useProducts(
     setVisibleCount(saved ? Number(saved) : productsPerPage);
   }, [selectedCategory]);
 
-  useEffect(() => {
+useEffect(() => {
   setSelectedMainFilter('');
   setSelectedSubFilter('');
+  setIsFilterPanelOpen(false);
 }, [selectedCategory]);
 
   useEffect(() => {
@@ -212,6 +214,8 @@ const handleSubFilterChange = (slug) => {
   resetProductsPagePosition();
 };
 
+const activeFilterCount = [selectedMainFilter, selectedSubFilter].filter(Boolean).length;
+
 const productsPageHeader = (
   <div className="products-page-header">
     <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
@@ -229,63 +233,126 @@ const productsPageHeader = (
     </nav>
 
     <h1 className="products-page-title">{pageTitle}</h1>
-
-    {filterGroups.length > 0 && (
-      <div className="products-page-filter">
-        <button
-          type="button"
-          className={`products-page-filter-button ${!selectedMainFilter ? 'is-active' : ''}`}
-          onClick={() => handleMainFilterChange('')}
-        >
-          All
-        </button>
-
-        {filterGroups.map(group => (
-          <button
-            key={group.slug}
-            type="button"
-            className={`products-page-filter-button ${selectedMainFilter === group.slug ? 'is-active' : ''}`}
-            onClick={() => handleMainFilterChange(group.slug)}
-          >
-            {group.name}
-          </button>
-        ))}
-      </div>
-    )}
-
-    {selectedMainFilter && availableSubFilterCategories.length > 0 && (
-      <div className="products-page-subfilter">
-        <button
-          type="button"
-          className="products-page-selected-filter-button"
-          onClick={() => handleMainFilterChange('')}
-        >
-          <span>{selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter)}</span>
-          <span className="products-page-selected-filter-close">×</span>
-        </button>
-
-        <button
-          type="button"
-          className={`products-page-subfilter-button ${!selectedSubFilter ? 'is-active' : ''}`}
-          onClick={() => handleSubFilterChange('')}
-        >
-          All
-        </button>
-
-        {availableSubFilterCategories.map(category => (
-          <button
-            key={category.slug}
-            type="button"
-            className={`products-page-subfilter-button ${selectedSubFilter === category.slug ? 'is-active' : ''}`}
-            onClick={() => handleSubFilterChange(category.slug)}
-          >
-            {category.name}
-          </button>
-        ))}
-      </div>
-    )}
   </div>
 );
+
+const productsPageFilterPanel = filterGroups.length > 0 ? (
+  <>
+    <button
+      type="button"
+      className="products-filter-sticky-button"
+      onClick={() => setIsFilterPanelOpen(true)}
+    >
+      <span>Filter</span>
+      {activeFilterCount > 0 && (
+        <span className="products-filter-count">{activeFilterCount}</span>
+      )}
+    </button>
+
+    {isFilterPanelOpen && (
+      <div
+        className="products-filter-panel-backdrop"
+        onClick={() => setIsFilterPanelOpen(false)}
+      >
+        <aside
+          className="products-filter-panel"
+          aria-label="Product filters"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="products-filter-panel-header">
+            <h2 className="products-filter-panel-title">Filter</h2>
+
+            <button
+              type="button"
+              className="products-filter-panel-close"
+              onClick={() => setIsFilterPanelOpen(false)}
+              aria-label="Close filter panel"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="products-filter-panel-body">
+            <div className="products-filter-panel-section">
+              <h3 className="products-filter-panel-section-title">Category</h3>
+
+              <div className="products-filter-panel-options">
+                <button
+                  type="button"
+                  className={`products-filter-panel-option ${!selectedMainFilter ? 'is-active' : ''}`}
+                  onClick={() => handleMainFilterChange('')}
+                >
+                  All
+                </button>
+
+                {filterGroups.map(group => (
+                  <button
+                    key={group.slug}
+                    type="button"
+                    className={`products-filter-panel-option ${selectedMainFilter === group.slug ? 'is-active' : ''}`}
+                    onClick={() => handleMainFilterChange(group.slug)}
+                  >
+                    {group.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {selectedMainFilter && availableSubFilterCategories.length > 0 && (
+              <div className="products-filter-panel-section">
+                <h3 className="products-filter-panel-section-title">
+                  {selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter)}
+                </h3>
+
+                <div className="products-filter-panel-options">
+                  <button
+                    type="button"
+                    className={`products-filter-panel-option ${!selectedSubFilter ? 'is-active' : ''}`}
+                    onClick={() => handleSubFilterChange('')}
+                  >
+                    All
+                  </button>
+
+                  {availableSubFilterCategories.map(category => (
+                    <button
+                      key={category.slug}
+                      type="button"
+                      className={`products-filter-panel-option ${selectedSubFilter === category.slug ? 'is-active' : ''}`}
+                      onClick={() => handleSubFilterChange(category.slug)}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="products-filter-panel-footer">
+            <button
+              type="button"
+              className="products-filter-clear-button"
+              onClick={() => {
+                handleMainFilterChange('');
+                setIsFilterPanelOpen(false);
+              }}
+            >
+              Clear
+            </button>
+
+            <button
+              type="button"
+              className="products-filter-apply-button"
+              onClick={() => setIsFilterPanelOpen(false)}
+            >
+              Show products
+            </button>
+          </div>
+        </aside>
+      </div>
+    )}
+  </>
+) : null;
 
   const handleProductClick = (item) => {
   if (clickLockRef.current) return;
@@ -364,9 +431,10 @@ const totalPages = isMobile
   return (
     <div className="products-container">
       <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-        {productsPageHeader}
+{productsPageHeader}
+{productsPageFilterPanel}
 
-        <div className="products-grid">
+<div className="products-grid">
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} className="product-card skeleton-card">
               <div className="product-image-frame skeleton-image-frame">
@@ -389,9 +457,10 @@ const totalPages = isMobile
   return (
     <div className="products-container">
 <div className={`page-wrapper${isMenuOpen ? ' menu-open' : ''}`}>
-  {productsPageHeader}
+{productsPageHeader}
+{productsPageFilterPanel}
 
-  <ProductGrid
+<ProductGrid
           products={currentProducts}
           onProductClick={handleProductClick}
           imageRefs={imageRefs}
