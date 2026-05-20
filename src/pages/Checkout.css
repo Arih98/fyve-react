@@ -495,7 +495,7 @@
   font-family: quasimoda, sans-serif;
   color: #4A494A;
   background-color: #fff;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%234A494A' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5'/></svg>");
+  background-image: url('/assets/Chevron.svg');
   background-repeat: no-repeat;
   background-position: right 14px center;
   background-size: 10px;
@@ -1234,7 +1234,7 @@ input[readonly] {
   font-family: quasimoda, sans-serif;
   color: #4A494A;
   background-color: #fff;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%234A494A' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5'/></svg>");
+  background-image: url('/assets/Chevron.svg');
   background-repeat: no-repeat;
   background-position: right 14px center;
   background-size: 10px;
