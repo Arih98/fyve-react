@@ -62,12 +62,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 0;
+  margin: 0 1px;
 }
 
 .products-page-breadcrumb-separator-icon {
-  width: 8px;
-  height: auto;
+  width: 4px;
+  height: 7px;
   display: block;
+  transform: translateY(-0.5px);
 }
 
 .products-page-title {
