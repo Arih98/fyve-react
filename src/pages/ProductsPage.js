@@ -5,6 +5,43 @@ import { useProducts } from '../hooks/useProducts';
 import ProductGrid from '../components/product/ProductGrid';
 import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
+const PAGE_CATEGORY_SLUGS = new Set([
+  'ss26',
+  'boy',
+  'girl',
+  'baby',
+  'the-regents-collection',
+  'the-grosvenor-collection',
+  'uncategorized'
+]);
+
+const MAIN_FILTER_CATEGORY_SLUGS = new Set([
+  'dresses',
+  'shorts',
+  'blazer',
+  'bodysuits',
+  'rompers',
+  'shirts',
+  'trousers',
+  'accessories'
+]);
+
+const CATEGORY_LABEL_OVERRIDES = {
+  ss26: 'SS26'
+};
+
+const formatCategoryName = (slug) => {
+  if (!slug) return '';
+
+  if (CATEGORY_LABEL_OVERRIDES[slug]) {
+    return CATEGORY_LABEL_OVERRIDES[slug];
+  }
+
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
 
 const ProductsPage = () => {
   const productsPerPage = 16;
@@ -18,7 +55,8 @@ const ProductsPage = () => {
   const clickLockRef = useRef(false);
 
 const selectedCategory = searchParams.get('category') || '';
-const [selectedSubCategory, setSelectedSubCategory] = useState('');
+const [selectedMainFilter, setSelectedMainFilter] = useState('');
+const [selectedSubFilter, setSelectedSubFilter] = useState('');
 const prevCategoryRef = useRef(selectedCategory);
 
 const { data: products = [], loading, error } = useProducts({
@@ -37,8 +75,9 @@ const { data: products = [], loading, error } = useProducts({
     setVisibleCount(saved ? Number(saved) : productsPerPage);
   }, [selectedCategory]);
 
-  useEffect(() => {
-  setSelectedSubCategory('');
+useEffect(() => {
+  setSelectedMainFilter('');
+  setSelectedSubFilter('');
 }, [selectedCategory]);
 
   useEffect(() => {
@@ -119,16 +158,7 @@ description: product.description || '',
   price: product.price
 }));
 
-const availableFilterCategories = useMemo(() => {
-  const excludedSlugs = new Set([
-    selectedCategory,
-    'ss26',
-    'boy',
-    'girl',
-    'baby',
-    'uncategorized'
-  ]);
-
+const availableMainFilterCategories = useMemo(() => {
   const categoryMap = new Map();
 
   display.forEach(product => {
@@ -139,7 +169,44 @@ const availableFilterCategories = useMemo(() => {
       const name = category?.name || '';
 
       if (!slug || !name) return;
-      if (excludedSlugs.has(slug)) return;
+      if (!MAIN_FILTER_CATEGORY_SLUGS.has(slug)) return;
+
+      if (!categoryMap.has(slug)) {
+        categoryMap.set(slug, {
+          id: category.id,
+          name,
+          slug
+        });
+      }
+    });
+  });
+
+  return Array.from(categoryMap.values()).sort((a, b) => {
+    const order = Array.from(MAIN_FILTER_CATEGORY_SLUGS);
+    return order.indexOf(a.slug) - order.indexOf(b.slug);
+  });
+}, [display]);
+
+const availableSubFilterCategories = useMemo(() => {
+  if (!selectedMainFilter) return [];
+
+  const categoryMap = new Map();
+
+  display.forEach(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+    const hasSelectedMainFilter = categories.some(category => category.slug === selectedMainFilter);
+
+    if (!hasSelectedMainFilter) return;
+
+    categories.forEach(category => {
+      const slug = category?.slug || '';
+      const name = category?.name || '';
+
+      if (!slug || !name) return;
+      if (slug === selectedCategory) return;
+      if (slug === selectedMainFilter) return;
+      if (PAGE_CATEGORY_SLUGS.has(slug)) return;
+      if (MAIN_FILTER_CATEGORY_SLUGS.has(slug)) return;
       if (slug.includes('collection')) return;
 
       if (!categoryMap.has(slug)) {
@@ -153,19 +220,25 @@ const availableFilterCategories = useMemo(() => {
   });
 
   return Array.from(categoryMap.values());
-}, [display, selectedCategory]);
+}, [display, selectedCategory, selectedMainFilter]);
 
 const filteredDisplay = useMemo(() => {
-  if (!selectedSubCategory) return display;
-
   return display.filter(product => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
-    return categories.some(category => category.slug === selectedSubCategory);
-  });
-}, [display, selectedSubCategory]);
 
-const handleFilterCategoryChange = (slug) => {
-  setSelectedSubCategory(slug);
+    const matchesMainFilter = selectedMainFilter
+      ? categories.some(category => category.slug === selectedMainFilter)
+      : true;
+
+    const matchesSubFilter = selectedSubFilter
+      ? categories.some(category => category.slug === selectedSubFilter)
+      : true;
+
+    return matchesMainFilter && matchesSubFilter;
+  });
+}, [display, selectedMainFilter, selectedSubFilter]);
+
+const resetProductsPagePosition = () => {
   setVisibleCount(productsPerPage);
 
   const next = new URLSearchParams(searchParams);
@@ -173,6 +246,17 @@ const handleFilterCategoryChange = (slug) => {
   setSearchParams(next, { replace: true });
 
   window.scrollTo(0, 0);
+};
+
+const handleMainFilterChange = (slug) => {
+  setSelectedMainFilter(slug);
+  setSelectedSubFilter('');
+  resetProductsPagePosition();
+};
+
+const handleSubFilterChange = (slug) => {
+  setSelectedSubFilter(slug);
+  resetProductsPagePosition();
 };
 
 const formatCategoryLabel = (slug) => {
@@ -217,6 +301,10 @@ const pageBreadcrumbs = useMemo(() => {
   return items;
 }, [activeCategory]);
 
+const selectedMainFilterCategory = availableMainFilterCategories.find(
+  category => category.slug === selectedMainFilter
+);
+
 const productsPageHeader = (
   <div className="products-page-header">
     <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
@@ -235,28 +323,60 @@ const productsPageHeader = (
 
     <h1 className="products-page-title">{pageTitle}</h1>
 
-{availableFilterCategories.length > 0 && (
-  <div className="products-page-filter">
-    <button
-      type="button"
-      className={`products-page-filter-button ${!selectedSubCategory ? 'is-active' : ''}`}
-      onClick={() => handleFilterCategoryChange('')}
-    >
-      All
-    </button>
+    {availableMainFilterCategories.length > 0 && (
+      <div className="products-page-filter">
+        <button
+          type="button"
+          className={`products-page-filter-button ${!selectedMainFilter ? 'is-active' : ''}`}
+          onClick={() => handleMainFilterChange('')}
+        >
+          All
+        </button>
 
-    {availableFilterCategories.map(category => (
-      <button
-        key={category.slug}
-        type="button"
-        className={`products-page-filter-button ${selectedSubCategory === category.slug ? 'is-active' : ''}`}
-        onClick={() => handleFilterCategoryChange(category.slug)}
-      >
-        {category.name}
-      </button>
-    ))}
-  </div>
-)}
+        {availableMainFilterCategories.map(category => (
+          <button
+            key={category.slug}
+            type="button"
+            className={`products-page-filter-button ${selectedMainFilter === category.slug ? 'is-active' : ''}`}
+            onClick={() => handleMainFilterChange(category.slug)}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+    )}
+
+    {selectedMainFilter && availableSubFilterCategories.length > 0 && (
+      <div className="products-page-subfilter">
+        <button
+          type="button"
+          className="products-page-selected-filter-button"
+          onClick={() => handleMainFilterChange('')}
+        >
+          <span>{selectedMainFilterCategory?.name || formatCategoryName(selectedMainFilter)}</span>
+          <span className="products-page-selected-filter-close">×</span>
+        </button>
+
+        <button
+          type="button"
+          className={`products-page-subfilter-button ${!selectedSubFilter ? 'is-active' : ''}`}
+          onClick={() => handleSubFilterChange('')}
+        >
+          All
+        </button>
+
+        {availableSubFilterCategories.map(category => (
+          <button
+            key={category.slug}
+            type="button"
+            className={`products-page-subfilter-button ${selectedSubFilter === category.slug ? 'is-active' : ''}`}
+            onClick={() => handleSubFilterChange(category.slug)}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+    )}
   </div>
 );
 
