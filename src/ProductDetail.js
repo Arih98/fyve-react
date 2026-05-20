@@ -653,6 +653,21 @@ const productBreadcrumbs = useMemo(() => {
     .filter(category => category?.slug && category?.name)
     .filter(category => category.slug !== 'uncategorized')
     .filter(category => {
+      const rootSlug = String(category.root_slug || '').toLowerCase();
+      const parentSlug = String(category.parent_slug || '').toLowerCase();
+      const pathSlugs = Array.isArray(category.path_slugs) ? category.path_slugs : [];
+
+      if (rootSlug === 'product-type' && parentSlug !== 'product-type') {
+        return false;
+      }
+
+      if (rootSlug === 'product-type' && pathSlugs.length > 2) {
+        return false;
+      }
+
+      return true;
+    })
+    .filter(category => {
       if (seen.has(category.slug)) return false;
       seen.add(category.slug);
       return true;
@@ -661,10 +676,11 @@ const productBreadcrumbs = useMemo(() => {
       id: category.id,
       name: category.name,
       slug: category.slug,
-      url: `/products/${category.slug}`
+      url: `/products?category=${category.slug}`
     }));
 }, [product?.categories]);
 
+const productBreadcrumbs = useMemo(() => {
 useEffect(() => {
   window.dispatchEvent(
     new CustomEvent('pdp:update-add-to-bag-label', {
