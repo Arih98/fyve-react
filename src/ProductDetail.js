@@ -1139,9 +1139,15 @@ transition={{
           {item.name}
         </Link>
 
-        {index < productBreadcrumbs.length - 1 && (
-          <span className="product-breadcrumb-separator">&gt;</span>
-        )}
+{index < productBreadcrumbs.length - 1 && (
+  <span className="product-breadcrumb-separator" aria-hidden="true">
+    <img
+      src="/assets/breadcrumbSeparator.svg"
+      alt=""
+      className="product-breadcrumb-separator-icon"
+    />
+  </span>
+)}
       </React.Fragment>
     ))}
   </nav>

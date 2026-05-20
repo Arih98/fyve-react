@@ -237,9 +237,15 @@ const productsPageHeader = (
             {item.name}
           </Link>
 
-          {index < pageBreadcrumbs.length - 1 && (
-            <span className="products-page-breadcrumb-separator">&gt;</span>
-          )}
+{index < pageBreadcrumbs.length - 1 && (
+  <span className="products-page-breadcrumb-separator" aria-hidden="true">
+    <img
+      src="/assets/breadcrumbSeparator.svg"
+      alt=""
+      className="products-page-breadcrumb-separator-icon"
+    />
+  </span>
+)}
         </React.Fragment>
       ))}
     </nav>

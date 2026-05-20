@@ -58,6 +58,18 @@
   opacity: 0.65;
 }
 
+.products-page-breadcrumb-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.products-page-breadcrumb-separator-icon {
+  width: 8px;
+  height: auto;
+  display: block;
+}
+
 .products-page-title {
   margin: 0;
   font-family: "ArizonaFlare", sans-serif;

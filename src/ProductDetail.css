@@ -2,6 +2,18 @@
   display: none;
 }
 
+.product-breadcrumb-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-breadcrumb-separator-icon {
+  width: 8px;
+  height: auto;
+  display: block;
+}
+
 .product-gallery-image-wrapper {
   transition: opacity 0.45s ease;
 }
