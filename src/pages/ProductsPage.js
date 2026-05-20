@@ -17,14 +17,16 @@ const ProductsPage = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const clickLockRef = useRef(false);
 
-  const selectedCategory = searchParams.get('category') || '';
-  const prevCategoryRef = useRef(selectedCategory);
+const selectedCategory = searchParams.get('category') || '';
+const [selectedMainFilter, setSelectedMainFilter] = useState('');
+const [selectedSubFilter, setSelectedSubFilter] = useState('');
+const prevCategoryRef = useRef(selectedCategory);
 
-  const { data: products, loading, error } = useProducts({
-    page: 1,
-    perPage: 200,
-    category: selectedCategory
-  });
+const { data: products = [], meta: productsMeta, loading, error } = useProducts({
+  page: 1,
+  perPage: 200,
+  category: selectedCategory
+});
 
   const [visibleCount, setVisibleCount] = useState(() => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
@@ -35,6 +37,11 @@ const ProductsPage = () => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
     setVisibleCount(saved ? Number(saved) : productsPerPage);
   }, [selectedCategory]);
+
+  useEffect(() => {
+  setSelectedMainFilter('');
+  setSelectedSubFilter('');
+}, [selectedCategory]);
 
   useEffect(() => {
     if (!isMobile) return;
@@ -126,15 +133,11 @@ const formatCategoryLabel = (slug) => {
 const activeCategory = useMemo(() => {
   if (!selectedCategory) return null;
 
-  const allCategories = display.flatMap(product =>
-    Array.isArray(product.categories) ? product.categories : []
-  );
-
-  return allCategories.find(category => category.slug === selectedCategory) || {
+  return productsMeta?.pageCategory || {
     name: formatCategoryLabel(selectedCategory),
     slug: selectedCategory
   };
-}, [display, selectedCategory]);
+}, [productsMeta?.pageCategory, selectedCategory]);
 
 const pageTitle = activeCategory?.name || 'All Products';
 
@@ -156,6 +159,59 @@ const pageBreadcrumbs = useMemo(() => {
   return items;
 }, [activeCategory]);
 
+const filterGroups = useMemo(() => {
+  return Array.isArray(productsMeta?.filterGroups) ? productsMeta.filterGroups : [];
+}, [productsMeta?.filterGroups]);
+
+const selectedMainFilterGroup = useMemo(() => {
+  if (!selectedMainFilter) return null;
+
+  return filterGroups.find(group => group.slug === selectedMainFilter) || null;
+}, [filterGroups, selectedMainFilter]);
+
+const availableSubFilterCategories = useMemo(() => {
+  return Array.isArray(selectedMainFilterGroup?.children)
+    ? selectedMainFilterGroup.children
+    : [];
+}, [selectedMainFilterGroup]);
+
+const filteredDisplay = useMemo(() => {
+  return display.filter(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+
+    const matchesMainFilter = selectedMainFilter
+      ? categories.some(category => category.slug === selectedMainFilter)
+      : true;
+
+    const matchesSubFilter = selectedSubFilter
+      ? categories.some(category => category.slug === selectedSubFilter)
+      : true;
+
+    return matchesMainFilter && matchesSubFilter;
+  });
+}, [display, selectedMainFilter, selectedSubFilter]);
+
+const resetProductsPagePosition = () => {
+  setVisibleCount(productsPerPage);
+
+  const next = new URLSearchParams(searchParams);
+  next.set('page', '1');
+  setSearchParams(next, { replace: true });
+
+  window.scrollTo(0, 0);
+};
+
+const handleMainFilterChange = (slug) => {
+  setSelectedMainFilter(slug);
+  setSelectedSubFilter('');
+  resetProductsPagePosition();
+};
+
+const handleSubFilterChange = (slug) => {
+  setSelectedSubFilter(slug);
+  resetProductsPagePosition();
+};
+
 const productsPageHeader = (
   <div className="products-page-header">
     <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
@@ -173,6 +229,61 @@ const productsPageHeader = (
     </nav>
 
     <h1 className="products-page-title">{pageTitle}</h1>
+
+    {filterGroups.length > 0 && (
+      <div className="products-page-filter">
+        <button
+          type="button"
+          className={`products-page-filter-button ${!selectedMainFilter ? 'is-active' : ''}`}
+          onClick={() => handleMainFilterChange('')}
+        >
+          All
+        </button>
+
+        {filterGroups.map(group => (
+          <button
+            key={group.slug}
+            type="button"
+            className={`products-page-filter-button ${selectedMainFilter === group.slug ? 'is-active' : ''}`}
+            onClick={() => handleMainFilterChange(group.slug)}
+          >
+            {group.name}
+          </button>
+        ))}
+      </div>
+    )}
+
+    {selectedMainFilter && availableSubFilterCategories.length > 0 && (
+      <div className="products-page-subfilter">
+        <button
+          type="button"
+          className="products-page-selected-filter-button"
+          onClick={() => handleMainFilterChange('')}
+        >
+          <span>{selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter)}</span>
+          <span className="products-page-selected-filter-close">×</span>
+        </button>
+
+        <button
+          type="button"
+          className={`products-page-subfilter-button ${!selectedSubFilter ? 'is-active' : ''}`}
+          onClick={() => handleSubFilterChange('')}
+        >
+          All
+        </button>
+
+        {availableSubFilterCategories.map(category => (
+          <button
+            key={category.slug}
+            type="button"
+            className={`products-page-subfilter-button ${selectedSubFilter === category.slug ? 'is-active' : ''}`}
+            onClick={() => handleSubFilterChange(category.slug)}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+    )}
   </div>
 );
 
@@ -234,13 +345,13 @@ const colorQuery = selectedProductColor
     });
   };
 
-  const currentProducts = isMobile
-    ? display.slice(0, visibleCount)
-    : display.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+const currentProducts = isMobile
+  ? filteredDisplay.slice(0, visibleCount)
+  : filteredDisplay.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
 const totalPages = isMobile
   ? 1
-  : Math.max(1, Math.ceil(display.length / productsPerPage));
+  : Math.max(1, Math.ceil(filteredDisplay.length / productsPerPage));
 
   const handlePageChange = (page) => {
     const next = new URLSearchParams(searchParams);
@@ -287,7 +398,7 @@ const totalPages = isMobile
           placeholderImage={placeholderImage}
         />
 
-        {isMobile && visibleCount < display.length && (
+        {isMobile && visibleCount < filteredDisplay.length && (
           <div className="show-more-wrapper">
             <button
               className="show-more-button"

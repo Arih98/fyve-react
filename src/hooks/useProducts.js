@@ -4,12 +4,14 @@ import { mapProductsForList } from "../domain/product/product.mappers";
 
 export function useProducts({ page = 1, perPage = 24, category = "" } = {}) {
   const [data, setData] = useState([]);
-  const [meta, setMeta] = useState({
-    page,
-    perPage,
-    total: 0,
-    totalPages: 1
-  });
+const [meta, setMeta] = useState({
+  page,
+  perPage,
+  total: 0,
+  totalPages: 1,
+  pageCategory: null,
+  filterGroups: []
+});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -32,14 +34,18 @@ export function useProducts({ page = 1, perPage = 24, category = "" } = {}) {
         const items = mapProductsForList(rawItems);
 
         setData(items);
-        setMeta({
-          page: Array.isArray(response) ? page : response.page || page,
-          perPage: Array.isArray(response) ? perPage : response.per_page || perPage,
-          total: Array.isArray(response) ? items.length : response.total || items.length,
-          totalPages: Array.isArray(response)
-            ? Math.max(1, Math.ceil(items.length / perPage))
-            : response.total_pages || 1
-        });
+setMeta({
+  page: Array.isArray(response) ? page : response.page || page,
+  perPage: Array.isArray(response) ? perPage : response.per_page || perPage,
+  total: Array.isArray(response) ? items.length : response.total || items.length,
+  totalPages: Array.isArray(response)
+    ? Math.max(1, Math.ceil(items.length / perPage))
+    : response.total_pages || 1,
+  pageCategory: Array.isArray(response) ? null : response.page_category || null,
+  filterGroups: Array.isArray(response) || !Array.isArray(response.filter_groups)
+    ? []
+    : response.filter_groups
+});
       } catch (err) {
         if (!active) return;
         setError(err);
