@@ -1179,13 +1179,15 @@ body.size-panel-open {
     min-width: 0;
   }
 
-  .details-container {
-    flex: 0 0 500px;
-    width: 500px;
-    max-width: 500px;
-    margin-left: 1.75rem;
-    margin-right: 1.75rem;
-  }
+.details-container {
+  flex: 0 0 500px;
+  width: 500px;
+  max-width: 500px;
+  margin-top: 16px;
+  margin-left: 1.75rem;
+  margin-right: 1.75rem;
+  align-self: flex-start;
+}
 
   .product-image-gallery-track {
     display: flex;
