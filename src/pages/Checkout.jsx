@@ -1474,29 +1474,6 @@ const handleApplyCoupon = async () => {
   }
 }
 
-const renderFreePaymentOption = () => (
-  <div className="checkout-payment-option checkout-payment-option-free is-selected">
-    <div className="checkout-payment-option-label checkout-payment-option-label-brand">
-      <span className="checkout-payment-option-left">
-        <span className="checkout-payment-option-radio-fake"></span>
-        <span className="checkout-payment-option-title">No payment required</span>
-      </span>
-
-      <span className="checkout-payment-option-free-badge">
-        Free
-      </span>
-    </div>
-
-    <div className="checkout-payment-option-body checkout-payment-option-body-free is-active">
-      <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-free">
-        <div className="checkout-free-payment-copy">
-          Your discount covers the full order. No card details are needed.
-        </div>
-      </div>
-    </div>
-  </div>
-)
-
 const handleRemoveCoupon = async (code) => {
   try {
     setCouponLoading(true)
@@ -2283,29 +2260,29 @@ if (loading || cartLoading || authLoading) {
     </>
   ) : (
     <>
-      <div className="checkout-payment-methods">
-        {renderFreePaymentOption()}
-      </div>
+  <div className="checkout-free-payment-text">
+    No payment required. Your discount covers the full order.
+  </div>
 
-      <div className="checkout-mobile-summary">
-        {renderOrderSummary()}
-      </div>
+  <div className="checkout-mobile-summary">
+    {renderOrderSummary()}
+  </div>
 
-      <button
-        type="button"
-        onClick={handleFreeOrder}
-        disabled={isFinalizingOrder}
-        className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
-      >
-        {isFinalizingOrder ? (
-          <>
-            <span className="checkout-button-spinner"></span>
-            <span>Processing</span>
-          </>
-        ) : (
-          'Place order'
-        )}
-      </button>
+  <button
+    type="button"
+    onClick={handleFreeOrder}
+    disabled={isFinalizingOrder}
+    className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
+  >
+    {isFinalizingOrder ? (
+      <>
+        <span className="checkout-button-spinner"></span>
+        <span>Processing</span>
+      </>
+    ) : (
+      'Place order'
+    )}
+  </button>
     </>
   )}
 </section>

@@ -1,48 +1,4 @@
-.checkout-payment-option-free .checkout-payment-option-label {
-  cursor: default;
-}
-
-.checkout-payment-option-radio-fake {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  min-height: 20px;
-  max-width: 20px;
-  max-height: 20px;
-  flex: 0 0 20px;
-  display: inline-block;
-  border: 1.5px solid #4A494A;
-  border-radius: 50%;
-  background-color: #4A494A;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.checkout-payment-option-radio-fake::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 6.5px;
-  height: 6.5px;
-  background-color: #fff;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.checkout-payment-option-free-badge {
-  font-family: quasimoda, sans-serif;
-  font-size: 15px;
-  color: #4A494A;
-  opacity: 0.75;
-}
-
-.checkout-payment-option-body-inner-free {
-  padding-top: 18px;
-  padding-bottom: 18px;
-}
-
-.checkout-free-payment-copy {
+.checkout-free-payment-text {
   font-family: quasimoda, sans-serif;
   font-size: 16px;
   line-height: 1.4;
