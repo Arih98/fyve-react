@@ -1102,12 +1102,12 @@ input[readonly] {
   }
 
   .checkout-static-field {
-  background: #fff;
-  border: 1.5px solid #dad8d2;
-  border-radius: 4px;
-  box-sizing: border-box;
-  padding: 11px 14px;
-}
+    background: #f9f9f9;
+    border: 1.5px solid #e8e7e6;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 11px 14px;
+  }
 
 .checkout-skeleton-link {
   width: 54px;
