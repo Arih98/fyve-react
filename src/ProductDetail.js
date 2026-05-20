@@ -664,7 +664,16 @@ const normalizeCategorySlug = (category) => {
 };
 
 const productBreadcrumbs = useMemo(() => {
-  const categories = Array.isArray(product?.categories) ? product.categories : [];
+  const sources = [
+    product,
+    loadedProduct,
+    fallbackProduct,
+    effectiveVariation
+  ];
+
+  const categories = sources
+    .flatMap(source => Array.isArray(source?.categories) ? source.categories : [])
+    .filter(Boolean);
 
   const collection = categories.find(category => category.slug === 'ss26');
 
@@ -678,7 +687,7 @@ const productBreadcrumbs = useMemo(() => {
     slug: category.slug,
     url: `/products/${category.slug}`
   }));
-}, [product?.categories]);
+}, [product, loadedProduct, fallbackProduct, effectiveVariation]);
 
 useEffect(() => {
   window.dispatchEvent(
