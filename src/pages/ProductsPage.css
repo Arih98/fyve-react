@@ -67,10 +67,10 @@
 }
 
 .products-page-breadcrumb-separator-icon {
-  width: 4px;
-  height: 7px;
+  width: 5px;
+  height: 9px;
   display: block;
-  transform: translateY(-2px);
+  transform: translateY(-1.6px);
 }
 
 .products-page-title {
