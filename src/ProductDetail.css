@@ -680,6 +680,7 @@ body.size-panel-open {
   line-height: 1.4;
   color: #4A494A;
   font-family: quasimoda, sans-serif;
+  width: 80%;
 }
 
 .product-main-description p {
