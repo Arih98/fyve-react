@@ -21,11 +21,11 @@ const selectedCategory = searchParams.get('category') || '';
 const [selectedSubCategory, setSelectedSubCategory] = useState('');
 const prevCategoryRef = useRef(selectedCategory);
 
-  const { data: products, loading, error } = useProducts({
-    page: 1,
-    perPage: 200,
-    category: selectedCategory
-  });
+const { data: products = [], loading, error } = useProducts({
+  page: 1,
+  perPage: 200,
+  category: selectedCategory
+});
 
   const [visibleCount, setVisibleCount] = useState(() => {
     const saved = sessionStorage.getItem(`productsVisibleCount:${selectedCategory || 'all'}`);
