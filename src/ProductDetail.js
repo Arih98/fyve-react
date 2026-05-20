@@ -665,26 +665,19 @@ const normalizeCategorySlug = (category) => {
 
 const productBreadcrumbs = useMemo(() => {
   const categories = Array.isArray(product?.categories) ? product.categories : [];
-  const priority = ['ss26', 'boy', 'girl', 'baby'];
-  const seen = new Set();
 
-  return categories
-    .map(category => ({
-      label: normalizeCategoryLabel(category),
-      slug: normalizeCategorySlug(category)
-    }))
-    .filter(item => item.label && item.slug)
-    .filter(item => {
-      if (seen.has(item.slug)) return false;
-      seen.add(item.slug);
-      return true;
-    })
-    .sort((a, b) => {
-      const aIndex = priority.indexOf(a.slug);
-      const bIndex = priority.indexOf(b.slug);
-      return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
-    })
-    .slice(0, 2);
+  const collection = categories.find(category => category.slug === 'ss26');
+
+  const audience = categories.find(category =>
+    ['boy', 'girl', 'baby'].includes(category.slug)
+  );
+
+  return [collection, audience].filter(Boolean).map(category => ({
+    id: category.id,
+    name: category.name,
+    slug: category.slug,
+    url: `/products/${category.slug}`
+  }));
 }, [product?.categories]);
 
 useEffect(() => {
