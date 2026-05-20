@@ -1471,6 +1471,29 @@ const handleApplyCoupon = async () => {
   }
 }
 
+const renderFreePaymentOption = () => (
+  <div className="checkout-payment-option checkout-payment-option-free is-selected">
+    <div className="checkout-payment-option-label checkout-payment-option-label-brand">
+      <span className="checkout-payment-option-left">
+        <span className="checkout-payment-option-radio-fake"></span>
+        <span className="checkout-payment-option-title">No payment required</span>
+      </span>
+
+      <span className="checkout-payment-option-free-badge">
+        Free
+      </span>
+    </div>
+
+    <div className="checkout-payment-option-body checkout-payment-option-body-free is-active">
+      <div className="checkout-payment-option-body-inner checkout-payment-option-body-inner-free">
+        <div className="checkout-free-payment-copy">
+          Your discount covers the full order. No card details are needed.
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
 const handleRemoveCoupon = async (code) => {
   try {
     setCouponLoading(true)
@@ -1978,7 +2001,7 @@ if (loading || cartLoading || authLoading) {
 
 
         <section className="checkout-section">
-  <h2>{requiresPayment ? 'Payment' : 'Place order'}</h2>
+  <h2>Payment</h2>
 
   {error && (
     <div className="checkout-error">
@@ -1987,29 +2010,29 @@ if (loading || cartLoading || authLoading) {
   )}
 
   {requiresPayment ? (
-  <>
-    <div className="checkout-payment-methods">
+    <>
+      <div className="checkout-payment-methods">
   {cardAvailable && (
     <div className={`checkout-payment-option ${selectedPaymentMethod === 'card' ? 'is-selected' : ''}`}>
-<label className="checkout-payment-option-label checkout-payment-option-label-card">
-  <span className="checkout-payment-option-left">
-    <input
-      type="radio"
-      name="payment_method"
-      value="card"
-      checked={selectedPaymentMethod === 'card'}
-      onChange={() => setSelectedPaymentMethod('card')}
-      disabled={isFinalizingOrder}
-    />
-    <span className="checkout-payment-option-title">Pay by card</span>
-  </span>
+      <label className="checkout-payment-option-label checkout-payment-option-label-card">
+        <span className="checkout-payment-option-left">
+          <input
+            type="radio"
+            name="payment_method"
+            value="card"
+            checked={selectedPaymentMethod === 'card'}
+            onChange={() => setSelectedPaymentMethod('card')}
+            disabled={isFinalizingOrder}
+          />
+          <span className="checkout-payment-option-title">Pay by card</span>
+        </span>
 
-  <span className="checkout-card-icons" aria-hidden="true">
-    <img src="/assets/MC.svg" alt="" />
-    <img src="/assets/Visa.svg" alt="" />
-    <img src="/assets/Amex.svg" alt="" />
-  </span>
-</label>
+        <span className="checkout-card-icons" aria-hidden="true">
+          <img src="/assets/MC.svg" alt="" />
+          <img src="/assets/Visa.svg" alt="" />
+          <img src="/assets/Amex.svg" alt="" />
+        </span>
+      </label>
 
       <div
         ref={cardBodyRef}
@@ -2020,10 +2043,11 @@ if (loading || cartLoading || authLoading) {
           className="checkout-payment-option-body-inner checkout-payment-option-body-inner-card"
         >
           <div
-  ref={cardContainerRef}
-  id="revolut-card-field"
-  className={!cardReady ? 'revolut-card-field-loading' : ''}
-></div>
+            ref={cardContainerRef}
+            id="revolut-card-field"
+            className={!cardReady ? 'revolut-card-field-loading' : ''}
+          ></div>
+
           {cardAvailable && !cardReady && renderPaymentMethodSkeleton('card')}
 
           <label className="checkout-billing-toggle">
@@ -2051,43 +2075,44 @@ if (loading || cartLoading || authLoading) {
             Use shipping address as billing address
           </label>
 
-{useDifferentBilling && (
-  <div className="checkout-billing-fields">
-    {fieldErrors.billing_first_name && (
-      <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
-    )}
+          {useDifferentBilling && (
+            <div className="checkout-billing-fields">
+              {fieldErrors.billing_first_name && (
+                <div className="checkout-field-error">{fieldErrors.billing_first_name}</div>
+              )}
 
-    <div className="checkout-row">
-      <input
-        ref={firstNameRef}
-        type="text"
-        placeholder="Billing first name"
-        value={billing.first_name}
-        onChange={(e) => {
-          setBilling((prev) => ({ ...prev, first_name: e.target.value }))
-          setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
-        }}
-      />
+              <div className="checkout-row">
+                <input
+                  ref={firstNameRef}
+                  type="text"
+                  placeholder="Billing first name"
+                  value={billing.first_name}
+                  onChange={(e) => {
+                    setBilling((prev) => ({ ...prev, first_name: e.target.value }))
+                    setFieldErrors((prev) => ({ ...prev, billing_first_name: '' }))
+                  }}
+                />
 
-      <input
-        ref={lastNameRef}
-        type="text"
-        placeholder="Billing last name"
-        value={billing.last_name}
-        onChange={(e) => {
-          setBilling((prev) => ({ ...prev, last_name: e.target.value }))
-          setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
-        }}
-      />
-    </div>
+                <input
+                  ref={lastNameRef}
+                  type="text"
+                  placeholder="Billing last name"
+                  value={billing.last_name}
+                  onChange={(e) => {
+                    setBilling((prev) => ({ ...prev, last_name: e.target.value }))
+                    setFieldErrors((prev) => ({ ...prev, billing_last_name: '' }))
+                  }}
+                />
+              </div>
 
-    <div className="checkout-static-field">
-      United States (US)
-    </div>
+              <div className="checkout-static-field">
+                United States (US)
+              </div>
 
               {fieldErrors.billing_address_1 && (
                 <div className="checkout-field-error">{fieldErrors.billing_address_1}</div>
               )}
+
               <input
                 ref={address1Ref}
                 type="text"
@@ -2109,6 +2134,7 @@ if (loading || cartLoading || authLoading) {
               {fieldErrors.billing_city && (
                 <div className="checkout-field-error">{fieldErrors.billing_city}</div>
               )}
+
               <div className="checkout-row checkout-row-3">
                 <input
                   ref={cityRef}
@@ -2121,21 +2147,21 @@ if (loading || cartLoading || authLoading) {
                   }}
                 />
 
-<select
-  ref={stateRef}
-  value={billing.state}
-  onChange={(e) => {
-    setBilling((prev) => ({ ...prev, state: e.target.value }))
-    setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
-  }}
->
-  <option value="">Billing state</option>
-  {US_STATES.map((state) => (
-    <option key={state.code} value={state.code}>
-      {state.name}
-    </option>
-  ))}
-</select>
+                <select
+                  ref={stateRef}
+                  value={billing.state}
+                  onChange={(e) => {
+                    setBilling((prev) => ({ ...prev, state: e.target.value }))
+                    setFieldErrors((prev) => ({ ...prev, billing_state: '' }))
+                  }}
+                >
+                  <option value="">Billing state</option>
+                  {US_STATES.map((state) => (
+                    <option key={state.code} value={state.code}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
 
                 <input
                   ref={postcodeRef}
@@ -2157,23 +2183,23 @@ if (loading || cartLoading || authLoading) {
 
   {walletAvailable && (
     <div className={`checkout-payment-option ${selectedPaymentMethod === 'wallet' ? 'is-selected' : ''}`}>
-<label className="checkout-payment-option-label checkout-payment-option-label-brand">
-  <span className="checkout-payment-option-left">
-    <input
-      type="radio"
-      name="payment_method"
-      value="wallet"
-      checked={selectedPaymentMethod === 'wallet'}
-      onChange={() => setSelectedPaymentMethod('wallet')}
-      disabled={isFinalizingOrder}
-    />
-    <span className="checkout-payment-option-title">Google Pay</span>
-  </span>
+      <label className="checkout-payment-option-label checkout-payment-option-label-brand">
+        <span className="checkout-payment-option-left">
+          <input
+            type="radio"
+            name="payment_method"
+            value="wallet"
+            checked={selectedPaymentMethod === 'wallet'}
+            onChange={() => setSelectedPaymentMethod('wallet')}
+            disabled={isFinalizingOrder}
+          />
+          <span className="checkout-payment-option-title">Google Pay</span>
+        </span>
 
-  <span className="checkout-payment-brand-icon" aria-hidden="true">
-    <img src="/assets/GPay.svg" alt="" />
-  </span>
-</label>
+        <span className="checkout-payment-brand-icon" aria-hidden="true">
+          <img src="/assets/GPay.svg" alt="" />
+        </span>
+      </label>
 
       <div
         ref={walletBodyRef}
@@ -2192,23 +2218,23 @@ if (loading || cartLoading || authLoading) {
 
   {revolutPayAvailable && (
     <div className={`checkout-payment-option ${selectedPaymentMethod === 'revolut_pay' ? 'is-selected' : ''}`}>
-<label className="checkout-payment-option-label checkout-payment-option-label-brand">
-  <span className="checkout-payment-option-left">
-    <input
-      type="radio"
-      name="payment_method"
-      value="revolut_pay"
-      checked={selectedPaymentMethod === 'revolut_pay'}
-      onChange={() => setSelectedPaymentMethod('revolut_pay')}
-      disabled={isFinalizingOrder}
-    />
-    <span className="checkout-payment-option-title">Revolut Pay</span>
-  </span>
+      <label className="checkout-payment-option-label checkout-payment-option-label-brand">
+        <span className="checkout-payment-option-left">
+          <input
+            type="radio"
+            name="payment_method"
+            value="revolut_pay"
+            checked={selectedPaymentMethod === 'revolut_pay'}
+            onChange={() => setSelectedPaymentMethod('revolut_pay')}
+            disabled={isFinalizingOrder}
+          />
+          <span className="checkout-payment-option-title">Revolut Pay</span>
+        </span>
 
-  <span className="checkout-payment-brand-icon checkout-payment-brand-icon-revolut" aria-hidden="true">
-    <img src="/assets/RevolutPay.svg" alt="" />
-  </span>
-</label>
+        <span className="checkout-payment-brand-icon checkout-payment-brand-icon-revolut" aria-hidden="true">
+          <img src="/assets/RevolutPay.svg" alt="" />
+        </span>
+      </label>
 
       <div
         ref={revolutPayBodyRef}
@@ -2228,35 +2254,43 @@ if (loading || cartLoading || authLoading) {
   )}
 </div>
 
-<div className="checkout-mobile-summary">
-  {renderOrderSummary()}
-</div>
+      <div className="checkout-mobile-summary">
+        {renderOrderSummary()}
+      </div>
 
-  {selectedPaymentMethod === 'card' && (
-  <button
-    type="button"
-    onClick={handleCardPay}
-    disabled={!cardReady || isFinalizingOrder}
-className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
-  >
-    {isFinalizingOrder ? (
-      <>
-        <span className="checkout-button-spinner"></span>
-        <span>Processing</span>
-      </>
-    ) : (
-      'Pay now'
-    )}
-  </button>
-)}
-  </>
-) : (
-    <div className="checkout-free-order">
+      {selectedPaymentMethod === 'card' && (
+        <button
+          type="button"
+          onClick={handleCardPay}
+          disabled={!cardReady || isFinalizingOrder}
+          className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
+        >
+          {isFinalizingOrder ? (
+            <>
+              <span className="checkout-button-spinner"></span>
+              <span>Processing</span>
+            </>
+          ) : (
+            'Pay now'
+          )}
+        </button>
+      )}
+    </>
+  ) : (
+    <>
+      <div className="checkout-payment-methods">
+        {renderFreePaymentOption()}
+      </div>
+
+      <div className="checkout-mobile-summary">
+        {renderOrderSummary()}
+      </div>
+
       <button
         type="button"
         onClick={handleFreeOrder}
         disabled={isFinalizingOrder}
-className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
+        className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
       >
         {isFinalizingOrder ? (
           <>
@@ -2267,7 +2301,7 @@ className={`checkout-pay-button ${isFinalizingOrder ? 'is-loading' : ''}`}
           'Place order'
         )}
       </button>
-    </div>
+    </>
   )}
 </section>
     </div>
