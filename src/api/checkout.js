@@ -44,14 +44,20 @@ export function getCheckoutOrderStatus(orderId) {
 }
 
 export async function clearCheckoutCart() {
-  const cart = await apiRequest('/wc/store/v1/cart')
+  try {
+    await apiRequest('/fyve-checkout/v1/clear-cart', {
+      method: 'POST'
+    })
+  } catch (error) {}
+
+  const cart = await apiRequest('/wc/store/v1/cart').catch(() => null)
   const items = Array.isArray(cart?.items) ? cart.items : []
 
   for (const item of items) {
     if (item?.key) {
       await apiRequest(`/wc/store/v1/cart/items/${encodeURIComponent(item.key)}`, {
         method: 'DELETE'
-      })
+      }).catch(() => null)
     }
   }
 
