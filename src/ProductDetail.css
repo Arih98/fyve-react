@@ -1211,7 +1211,7 @@ body.size-panel-open {
   flex: 0 0 500px;
   width: 500px;
   max-width: 500px;
-  margin-top: 16px;
+  margin-top: 0;
   margin-left: 1.75rem;
   margin-right: 1.75rem;
   align-self: flex-start;
