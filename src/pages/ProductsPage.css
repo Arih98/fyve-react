@@ -446,12 +446,12 @@
 }
 
 .products-filter-sticky-button {
-  position: fixed;
-  left: 50%;
+  position: sticky;
   bottom: 28px;
+  left: 50%;
   transform: translateX(-50%);
-  z-index: 9000;
-  margin: 0;
+  z-index: 50;
+  margin: 0 auto 24px;
   width: fit-content;
   min-width: 118px;
   height: 44px;
@@ -605,10 +605,10 @@
 
 @media (max-width: 768px) {
 .products-filter-sticky-button {
-  left: 50%;
   bottom: 22px;
+  left: 50%;
   transform: translateX(-50%);
-  margin: 0;
+  margin: 0 auto 18px;
   height: 42px;
   min-width: 104px;
   padding: 0 20px;
