@@ -214,6 +214,18 @@ const handleSubFilterChange = (slug) => {
   resetProductsPagePosition();
 };
 
+useEffect(() => {
+  const handleOpenProductsFilter = () => {
+    setIsFilterPanelOpen(true);
+  };
+
+  window.addEventListener('products:open-filter-panel', handleOpenProductsFilter);
+
+  return () => {
+    window.removeEventListener('products:open-filter-panel', handleOpenProductsFilter);
+  };
+}, []);
+
 const activeFilterCount = [selectedMainFilter, selectedSubFilter].filter(Boolean).length;
 
 const productsPageHeader = (
@@ -236,7 +248,7 @@ const productsPageHeader = (
   </div>
 );
 
-const productsPageFilterPanel = filterGroups.length > 0 ? (
+const productsPageFilterPanel = (
   <>
     <button
       type="button"
@@ -352,7 +364,7 @@ const productsPageFilterPanel = filterGroups.length > 0 ? (
       </div>
     )}
   </>
-) : null;
+);
 
   const handleProductClick = (item) => {
   if (clickLockRef.current) return;

@@ -302,7 +302,7 @@ const showBurgerCartBadge =
   !isMenuOpen &&
   !isSearchOpen &&
   displayedBagQuantity > 0 &&
-  (isCartPage || isProductDetailPage);
+  (isCartPage || isProductDetailPage || useProductsFilterVariant);
 
 const totalBagQuantityRef = useRef(totalBagQuantity);
 const isCartAddAnimatingRef = useRef(false);

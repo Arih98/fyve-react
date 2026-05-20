@@ -446,12 +446,9 @@
 }
 
 .products-filter-sticky-button {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%);
-  z-index: 9000;
-  margin: 0;
+  position: relative;
+  z-index: 2;
+  margin: 0 auto 34px;
   width: fit-content;
   min-width: 118px;
   height: 44px;
