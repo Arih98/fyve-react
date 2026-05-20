@@ -303,11 +303,12 @@ export default function CheckoutSuccess() {
           </div>
 
           <div className="checkout-success-actions">
-            {order.received_url ? (
-              <a className="checkout-success-button" href={order.received_url}>
-                View order confirmation
-              </a>
-            ) : null}
+<Link
+  className="checkout-success-button"
+  to={`/checkout/success?order_id=${encodeURIComponent(orderId)}`}
+>
+  View order confirmation
+</Link>
 
             <Link className="checkout-success-link" to="/">
               Continue shopping
