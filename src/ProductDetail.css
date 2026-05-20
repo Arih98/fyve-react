@@ -1189,6 +1189,26 @@ body.size-panel-open {
   align-self: flex-start;
 }
 
+.product-details {
+  min-height: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-attributes {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-attributes .attribute-group:has(.size-picker) {
+  margin-top: auto;
+}
+
+.add-to-cart-button {
+  margin-top: 14px;
+}
+
   .product-image-gallery-track {
     display: flex;
     flex-direction: row;
