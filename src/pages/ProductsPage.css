@@ -866,3 +866,9 @@
     display: none !important;
   }
 }
+
+@media (min-width: 769px) {
+  .product-card .product-title-line + .product-title-line::before {
+    content: " ";
+  }
+}
