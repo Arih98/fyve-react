@@ -20,13 +20,20 @@ const ProductsPage = () => {
   const filterPanelScrollYRef = useRef(0);
 
 const selectedCategory = searchParams.get('category') || '';
-const [selectedMainFilters, setSelectedMainFilters] = useState([]);
-const [selectedSubFilters, setSelectedSubFilters] = useState([]);
-const [selectedColorFilters, setSelectedColorFilters] = useState([]);
-const [selectedSizeFilters, setSelectedSizeFilters] = useState([]);
+const getFilterParamArray = (key) => {
+  return String(searchParams.get(key) || '')
+    .split(',')
+    .map(value => value.trim())
+    .filter(Boolean);
+};
+const [selectedMainFilters, setSelectedMainFilters] = useState(() => getFilterParamArray('type'));
+const [selectedSubFilters, setSelectedSubFilters] = useState(() => getFilterParamArray('subtype'));
+const [selectedColorFilters, setSelectedColorFilters] = useState(() => getFilterParamArray('color'));
+const [selectedSizeFilters, setSelectedSizeFilters] = useState(() => getFilterParamArray('size'));
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 const [filterPanelView, setFilterPanelView] = useState('main');
 const prevCategoryRef = useRef(selectedCategory);
+const hasMountedCategoryRef = useRef(false);
 
 const { data: products = [], meta: productsMeta, loading, error } = useProducts({
   page: 1,
@@ -45,6 +52,11 @@ const { data: products = [], meta: productsMeta, loading, error } = useProducts(
   }, [selectedCategory]);
 
 useEffect(() => {
+  if (!hasMountedCategoryRef.current) {
+    hasMountedCategoryRef.current = true;
+    return;
+  }
+
   setSelectedMainFilters([]);
   setSelectedSubFilters([]);
   setSelectedColorFilters([]);
@@ -99,7 +111,13 @@ useEffect(() => {
   prevCategoryRef.current = selectedCategory;
 
   const next = new URLSearchParams(searchParams);
+
   next.set('page', '1');
+  next.delete('type');
+  next.delete('subtype');
+  next.delete('color');
+  next.delete('size');
+
   setSearchParams(next, { replace: true });
 }, [selectedCategory, searchParams, setSearchParams]);
 
@@ -621,6 +639,36 @@ const filteredDisplay = useMemo(() => {
   selectedSizeFilters
 ]);
 
+const setListParam = (params, key, values) => {
+  if (values.length > 0) {
+    params.set(key, values.join(','));
+  } else {
+    params.delete(key);
+  }
+};
+
+const syncFiltersToUrl = ({
+  mainFilters = selectedMainFilters,
+  subFilters = selectedSubFilters,
+  colorFilters = selectedColorFilters,
+  sizeFilters = selectedSizeFilters,
+  scroll = true
+} = {}) => {
+  const next = new URLSearchParams(searchParams);
+
+  next.set('page', '1');
+  setListParam(next, 'type', mainFilters);
+  setListParam(next, 'subtype', subFilters);
+  setListParam(next, 'color', colorFilters);
+  setListParam(next, 'size', sizeFilters);
+
+  setSearchParams(next, { replace: true });
+
+  if (scroll) {
+    window.scrollTo(0, 0);
+  }
+};
+
 const resetProductsPagePosition = ({ updateUrl = false, scroll = false } = {}) => {
   setVisibleCount(productsPerPage);
 
@@ -1012,12 +1060,19 @@ const isDisabledSize = isSizeFilterDisabled(size.slug);
     type="button"
     className="products-filter-clear-button"
 onClick={() => {
-setSelectedMainFilters([]);
-setSelectedSubFilters([]);
-setSelectedColorFilters([]);
-setSelectedSizeFilters([]);
-setFilterPanelView('main');
-resetProductsPagePosition();
+  setSelectedMainFilters([]);
+  setSelectedSubFilters([]);
+  setSelectedColorFilters([]);
+  setSelectedSizeFilters([]);
+  setFilterPanelView('main');
+  syncFiltersToUrl({
+    mainFilters: [],
+    subFilters: [],
+    colorFilters: [],
+    sizeFilters: [],
+    scroll: false
+  });
+  resetProductsPagePosition();
 }}
   >
     Clear
@@ -1026,10 +1081,10 @@ resetProductsPagePosition();
 <button
   type="button"
   className="products-filter-apply-button"
-  onClick={() => {
-    closeFilterPanel();
-    resetProductsPagePosition({ updateUrl: true, scroll: true });
-  }}
+onClick={() => {
+  closeFilterPanel();
+  syncFiltersToUrl({ scroll: true });
+}}
 >
   Show products
 </button>
