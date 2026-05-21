@@ -79,6 +79,5 @@ body::-webkit-scrollbar {
 @media (max-width: 768px) {
   .site-content {
     padding-top: var(--announcement-height);
-    padding-bottom: 90px;
   }
 }
