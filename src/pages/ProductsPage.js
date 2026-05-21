@@ -687,11 +687,9 @@ productMatchesSizeFilter(product, selectedSizeFilters)
 const isAudienceFilterDisabled = (slug) => {
   if (selectedAudienceFilters.includes(slug)) return false;
 
-  const nextAudienceFilters = [...selectedAudienceFilters, slug];
-
   return !display.some(product =>
     productMatchesAllFilters(product, {
-      audienceFilters: nextAudienceFilters
+      audienceFilters: [slug]
     })
   );
 };
@@ -699,11 +697,9 @@ const isAudienceFilterDisabled = (slug) => {
 const isColorFilterDisabled = (slug) => {
   if (selectedColorFilters.includes(slug)) return false;
 
-  const nextColorFilters = [...selectedColorFilters, slug];
-
   return !display.some(product =>
     productMatchesAllFilters(product, {
-      colorFilters: nextColorFilters
+      colorFilters: [slug]
     })
   );
 };
@@ -711,11 +707,9 @@ const isColorFilterDisabled = (slug) => {
 const isSizeFilterDisabled = (slug) => {
   if (selectedSizeFilters.includes(slug)) return false;
 
-  const nextSizeFilters = [...selectedSizeFilters, slug];
-
   return !display.some(product =>
     productMatchesAllFilters(product, {
-      sizeFilters: nextSizeFilters
+      sizeFilters: [slug]
     })
   );
 };
