@@ -401,8 +401,26 @@ const selectedColorFilterOptions = useMemo(() => {
 
 const selectedColorFilterLabel = formatSelectedFilterLabel(selectedColorFilterOptions);
 
+const getDisplayColorSlugs = (product) => {
+  return Array.from(new Set([
+    product?.selectedColor,
+    product?.selectedStitchingColor,
+    product?.selectedStichingColor,
+    product?.color,
+    product?.colour
+  ]
+    .map(value => getFilterSlug(value))
+    .filter(Boolean)));
+};
+
 const productMatchesColorFilter = (product, colorSlugs) => {
   if (!colorSlugs.length) return true;
+
+  const displayColorSlugs = getDisplayColorSlugs(product);
+
+  if (displayColorSlugs.length > 0) {
+    return displayColorSlugs.some(slug => colorSlugs.includes(slug));
+  }
 
   return getProductColorFilterOptions(product).some(color => colorSlugs.includes(color.slug));
 };
