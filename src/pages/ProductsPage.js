@@ -165,13 +165,66 @@ const formatCategoryLabel = (slug) => {
 const activeCategory = useMemo(() => {
   if (!selectedCategory) return null;
 
-  return productsMeta?.pageCategory || {
+  const allCategories = display.flatMap(product =>
+    Array.isArray(product.categories) ? product.categories : []
+  );
+
+  const categoryFromProducts = allCategories.find(category => category.slug === selectedCategory);
+
+  return categoryFromProducts || productsMeta?.pageCategory || {
     name: formatCategoryLabel(selectedCategory),
     slug: selectedCategory
   };
-}, [productsMeta?.pageCategory, selectedCategory]);
+}, [display, productsMeta?.pageCategory, selectedCategory]);
 
 const pageTitle = activeCategory?.name || 'All Products';
+
+const getCategoryPathSlugs = (category) => {
+  return Array.isArray(category?.path_slugs)
+    ? category.path_slugs.map(slug => String(slug || '').toLowerCase()).filter(Boolean)
+    : [];
+};
+
+const getCategoryRootSlug = (category) => {
+  const pathSlugs = getCategoryPathSlugs(category);
+
+  if (pathSlugs.length > 0) {
+    return pathSlugs[0];
+  }
+
+  return String(category?.root_slug || category?.rootSlug || '').toLowerCase();
+};
+
+const getCategoryDepth = (category) => {
+  const pathSlugs = getCategoryPathSlugs(category);
+
+  if (pathSlugs.length > 0) {
+    return Math.max(0, pathSlugs.length - 1);
+  }
+
+  return category?.parent_slug || category?.parentSlug || category?.parent_id
+    ? 1
+    : 0;
+};
+
+const isCategoryUnderRoot = (category, rootSlug) => {
+  const targetRoot = String(rootSlug || '').toLowerCase();
+  const pathSlugs = getCategoryPathSlugs(category);
+  const categoryRootSlug = getCategoryRootSlug(category);
+
+  return categoryRootSlug === targetRoot || pathSlugs.includes(targetRoot);
+};
+
+const isPrimaryProductsPageCategory = (category) => {
+  if (!category) return true;
+
+  if (getCategoryDepth(category) === 0) return true;
+
+  return (
+    isCategoryUnderRoot(category, 'season') ||
+    isCategoryUnderRoot(category, 'audience')
+  );
+};
 
 const activeSeasonCategory = useMemo(() => {
   const categoryMap = new Map();
@@ -202,7 +255,15 @@ const activeSeasonCategory = useMemo(() => {
   return Array.from(categoryMap.values()).sort((a, b) => b.count - a.count)[0] || null;
 }, [display]);
 
+const shouldShowProductsBreadcrumbs = useMemo(() => {
+  if (!selectedCategory || !activeCategory) return false;
+
+  return !isPrimaryProductsPageCategory(activeCategory);
+}, [selectedCategory, activeCategory]);
+
 const pageBreadcrumbs = useMemo(() => {
+  if (!shouldShowProductsBreadcrumbs) return [];
+
   const items = [];
 
   if (activeSeasonCategory) {
@@ -220,7 +281,7 @@ const pageBreadcrumbs = useMemo(() => {
   }
 
   return items;
-}, [activeCategory, activeSeasonCategory]);
+}, [shouldShowProductsBreadcrumbs, activeCategory, activeSeasonCategory]);
 
 const filterGroups = useMemo(() => {
   return Array.isArray(productsMeta?.filterGroups) ? productsMeta.filterGroups : [];
@@ -948,25 +1009,27 @@ const activeFilterCount =
 
 const productsPageHeader = (
   <div className="products-page-header">
-    <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
-      {pageBreadcrumbs.map((item, index) => (
-        <React.Fragment key={item.url}>
-          <Link to={item.url} className="products-page-breadcrumb-link">
-            {item.name}
-          </Link>
+    {pageBreadcrumbs.length > 1 && (
+  <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">
+    {pageBreadcrumbs.map((item, index) => (
+      <React.Fragment key={item.url}>
+        <Link to={item.url} className="products-page-breadcrumb-link">
+          {item.name}
+        </Link>
 
-{index < pageBreadcrumbs.length - 1 && (
-  <span className="products-page-breadcrumb-separator" aria-hidden="true">
-    <img
-      src="/assets/breadcrumbSeparator.svg"
-      alt=""
-      className="products-page-breadcrumb-separator-icon"
-    />
-  </span>
+        {index < pageBreadcrumbs.length - 1 && (
+          <span className="products-page-breadcrumb-separator" aria-hidden="true">
+            <img
+              src="/assets/breadcrumbSeparator.svg"
+              alt=""
+              className="products-page-breadcrumb-separator-icon"
+            />
+          </span>
+        )}
+      </React.Fragment>
+    ))}
+  </nav>
 )}
-        </React.Fragment>
-      ))}
-    </nav>
 
     <h1 className="products-page-title">{pageTitle}</h1>
   </div>
