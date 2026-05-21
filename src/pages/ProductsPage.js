@@ -22,6 +22,7 @@ const ProductsPage = () => {
 const selectedCategory = searchParams.get('category') || '';
 const [selectedMainFilter, setSelectedMainFilter] = useState('');
 const [selectedSubFilter, setSelectedSubFilter] = useState('');
+const [selectedColorFilter, setSelectedColorFilter] = useState('');
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 const [filterPanelView, setFilterPanelView] = useState('main');
 const prevCategoryRef = useRef(selectedCategory);
@@ -45,7 +46,9 @@ const { data: products = [], meta: productsMeta, loading, error } = useProducts(
 useEffect(() => {
   setSelectedMainFilter('');
   setSelectedSubFilter('');
+  setSelectedColorFilter('');
   setIsFilterPanelOpen(false);
+  setFilterPanelView('main');
 }, [selectedCategory]);
 
   useEffect(() => {
@@ -229,6 +232,143 @@ const selectedFilterLabel = useMemo(() => {
   return `${mainName}, ${subName}`;
 }, [selectedMainFilter, selectedMainFilterGroup, selectedSubFilter, selectedSubFilterCategory]);
 
+const getFilterSlug = (value) =>
+  String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const isColorFilterAttribute = (name) => {
+  const value = String(name || '').trim().toLowerCase();
+
+  return (
+    value === 'color' ||
+    value === 'colour' ||
+    value.includes('color') ||
+    value.includes('colour') ||
+    value.includes('stitching') ||
+    value.includes('stiching')
+  );
+};
+
+const getColorFilterClassName = (value) => {
+  const slug = getFilterSlug(value);
+
+  if (slug === 'sand') return 'sand';
+  if (slug === 'ivory') return 'ivory';
+  if (slug === 'mauve') return 'mauve';
+  if (slug === 'olive') return 'olive';
+  if (slug === 'lavender') return 'lavender';
+  if (slug === 'blue') return 'blue';
+  if (slug === 'oat') return 'oat';
+
+  return '';
+};
+
+const getColorFilterSwatchStyle = (value) => {
+  const slug = getFilterSlug(value);
+
+  const colors = {
+    sand: '#d2c0ab',
+    ivory: '#ebe8de',
+    mauve: '#8d686b',
+    olive: '#655e39',
+    lavender: '#e6e6fa',
+    blue: '#afbbd8',
+    oat: '#e2d3c6'
+  };
+
+  return colors[slug] ? { backgroundColor: colors[slug] } : undefined;
+};
+
+const getProductColorFilterOptions = (product) => {
+  const colorMap = new Map();
+
+  const addColor = (name, slug) => {
+    const colorName = String(name || slug || '').trim();
+    const colorSlug = getFilterSlug(slug || name);
+
+    if (!colorName || !colorSlug) return;
+
+    if (!colorMap.has(colorSlug)) {
+      colorMap.set(colorSlug, {
+        name: colorName,
+        slug: colorSlug
+      });
+    }
+  };
+
+  const attributes = Array.isArray(product?.attributes) ? product.attributes : [];
+
+  attributes.forEach(attribute => {
+    const attributeName = attribute.attribute_name || attribute.name || '';
+
+    if (!isColorFilterAttribute(attributeName)) return;
+
+    const options = Array.isArray(attribute.options) ? attribute.options : [];
+
+    options.forEach(option => {
+      addColor(
+        option.term_name || option.name || option.value || option.term_slug,
+        option.term_slug || option.slug || option.value || option.term_name
+      );
+    });
+  });
+
+  const variations = Array.isArray(product?.variations) ? product.variations : [];
+
+  variations.forEach(variation => {
+    const variationAttributes = Array.isArray(variation.attributes) ? variation.attributes : [];
+
+    variationAttributes.forEach(attribute => {
+      const attributeName = attribute.attribute_name || attribute.name || '';
+
+      if (!isColorFilterAttribute(attributeName)) return;
+
+      addColor(
+        attribute.term_name || attribute.name || attribute.value || attribute.term_slug,
+        attribute.term_slug || attribute.slug || attribute.value || attribute.term_name
+      );
+    });
+  });
+
+  addColor(product?.selectedColor, product?.selectedColor);
+  addColor(product?.selectedStitchingColor, product?.selectedStitchingColor);
+  addColor(product?.selectedStichingColor, product?.selectedStichingColor);
+
+  return Array.from(colorMap.values());
+};
+
+const availableColorFilters = useMemo(() => {
+  const colorMap = new Map();
+
+  display.forEach(product => {
+    getProductColorFilterOptions(product).forEach(color => {
+      if (!colorMap.has(color.slug)) {
+        colorMap.set(color.slug, color);
+      }
+    });
+  });
+
+  return Array.from(colorMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+}, [display]);
+
+const selectedColorFilterOption = useMemo(() => {
+  if (!selectedColorFilter) return null;
+
+  return availableColorFilters.find(color => color.slug === selectedColorFilter) || null;
+}, [availableColorFilters, selectedColorFilter]);
+
+const selectedColorFilterLabel = selectedColorFilterOption?.name || 'Select';
+
+const productMatchesColorFilter = (product, colorSlug) => {
+  if (!colorSlug) return true;
+
+  return getProductColorFilterOptions(product).some(color => color.slug === colorSlug);
+};
+
 const filteredDisplay = useMemo(() => {
   return display.filter(product => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
@@ -241,9 +381,11 @@ const filteredDisplay = useMemo(() => {
       ? categories.some(category => category.slug === selectedSubFilter)
       : true;
 
-    return matchesMainFilter && matchesSubFilter;
+    const matchesColorFilter = productMatchesColorFilter(product, selectedColorFilter);
+
+    return matchesMainFilter && matchesSubFilter && matchesColorFilter;
   });
-}, [display, selectedMainFilter, selectedSubFilter]);
+}, [display, selectedMainFilter, selectedSubFilter, selectedColorFilter]);
 
 const resetProductsPagePosition = () => {
   setVisibleCount(productsPerPage);
@@ -266,10 +408,16 @@ const handleSubFilterChange = (slug) => {
   resetProductsPagePosition();
 };
 
-useEffect(() => {
-const handleOpenProductsFilter = () => {
-  openFilterPanel();
+const handleColorFilterChange = (slug) => {
+  setSelectedColorFilter(slug);
+  resetProductsPagePosition();
 };
+
+useEffect(() => {
+  const handleOpenProductsFilter = () => {
+    setFilterPanelView('main');
+    setIsFilterPanelOpen(true);
+  };
 
   window.addEventListener('products:open-filter-panel', handleOpenProductsFilter);
 
@@ -318,7 +466,7 @@ useEffect(() => {
   };
 }, [isFilterPanelOpen]);
 
-const activeFilterCount = [selectedMainFilter, selectedSubFilter].filter(Boolean).length;
+const activeFilterCount = [selectedMainFilter, selectedSubFilter, selectedColorFilter].filter(Boolean).length;
 
 const productsPageHeader = (
   <div className="products-page-header">
@@ -382,37 +530,56 @@ const productsPageFilterPanel = (
           <div className="products-filter-panel-header">
             <h2 className="products-filter-panel-title">Filter</h2>
 
-            <button
-              type="button"
-              className="products-filter-panel-close"
-              onClick={() => setIsFilterPanelOpen(false)}
-              aria-label="Close filter panel"
-            >
-              ×
-            </button>
+<button
+  type="button"
+  className="products-filter-panel-close"
+  onClick={closeFilterPanel}
+  aria-label="Close filter panel"
+>
+  ×
+</button>
           </div>
 
           <div className="products-filter-panel-body">
   <div className="products-filter-panel-slider">
-    <div className={`products-filter-panel-track ${filterPanelView === 'category' ? 'is-category-view' : ''}`}>
+    <div className={`products-filter-panel-track${filterPanelView === 'category' ? ' is-category-view' : ''}${filterPanelView === 'color' ? ' is-color-view' : ''}`}>
       <div className="products-filter-panel-screen">
-        <button
-          type="button"
-          className="products-filter-drill-row"
-          onClick={() => setFilterPanelView('category')}
-        >
-          <span className="products-filter-drill-label">Category</span>
+  <button
+    type="button"
+    className="products-filter-drill-row"
+    onClick={() => setFilterPanelView('category')}
+  >
+    <span className="products-filter-drill-label">Category</span>
 
-          <span className="products-filter-drill-meta">
-            <span className="products-filter-drill-value">{selectedFilterLabel}</span>
-            <img
-              src="/assets/breadcrumbSeparator.svg"
-              alt=""
-              className="products-filter-drill-chevron"
-            />
-          </span>
-        </button>
-      </div>
+    <span className="products-filter-drill-meta">
+      <span className="products-filter-drill-value">{selectedFilterLabel}</span>
+      <img
+        src="/assets/breadcrumbSeparator.svg"
+        alt=""
+        className="products-filter-drill-chevron"
+      />
+    </span>
+  </button>
+
+  {availableColorFilters.length > 0 && (
+    <button
+      type="button"
+      className="products-filter-drill-row"
+      onClick={() => setFilterPanelView('color')}
+    >
+      <span className="products-filter-drill-label">Color</span>
+
+      <span className="products-filter-drill-meta">
+        <span className="products-filter-drill-value">{selectedColorFilterLabel}</span>
+        <img
+          src="/assets/breadcrumbSeparator.svg"
+          alt=""
+          className="products-filter-drill-chevron"
+        />
+      </span>
+    </button>
+  )}
+</div>
 
       <div className="products-filter-panel-screen">
         <button
@@ -474,6 +641,44 @@ const productsPageFilterPanel = (
           })}
         </div>
       </div>
+    <div className="products-filter-panel-screen">
+  <button
+    type="button"
+    className="products-filter-back-row"
+    onClick={() => setFilterPanelView('main')}
+  >
+    <img
+      src="/assets/breadcrumbSeparator.svg"
+      alt=""
+      className="products-filter-back-chevron"
+    />
+    <span>Color</span>
+  </button>
+
+  <div className="products-filter-checkbox-list">
+    {availableColorFilters.map(color => {
+      const isSelectedColor = selectedColorFilter === color.slug;
+
+      return (
+        <button
+          key={color.slug}
+          type="button"
+          className="products-filter-checkbox-row products-filter-color-row"
+          role="checkbox"
+          aria-checked={isSelectedColor}
+          onClick={() => handleColorFilterChange(isSelectedColor ? '' : color.slug)}
+        >
+          <span className={`products-filter-checkbox ${isSelectedColor ? 'is-checked' : ''}`}></span>
+          <span
+            className={`products-filter-color-dot ${getColorFilterClassName(color.slug)}`}
+            style={getColorFilterSwatchStyle(color.slug)}
+          ></span>
+          <span className="products-filter-checkbox-label">{color.name}</span>
+        </button>
+      );
+    })}
+  </div>
+</div>
     </div>
   </div>
 </div>
@@ -482,10 +687,13 @@ const productsPageFilterPanel = (
   <button
     type="button"
     className="products-filter-clear-button"
-    onClick={() => {
-      handleMainFilterChange('');
-      setFilterPanelView('main');
-    }}
+onClick={() => {
+  setSelectedMainFilter('');
+  setSelectedSubFilter('');
+  setSelectedColorFilter('');
+  setFilterPanelView('main');
+  resetProductsPagePosition();
+}}
   >
     Clear
   </button>

@@ -741,6 +741,53 @@ background: rgba(0, 0, 0, 0.18);
   color: #fff;
 }
 
+.products-filter-panel-track.is-color-view {
+  transform: translateX(-200%);
+}
+
+.products-filter-color-row {
+  gap: 11px;
+}
+
+.products-filter-color-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(74, 73, 74, 0.22);
+  background: #f7f7f7;
+  display: inline-flex;
+  flex: 0 0 18px;
+  box-sizing: border-box;
+}
+
+.products-filter-color-dot.sand {
+  background: #d2c0ab;
+}
+
+.products-filter-color-dot.ivory {
+  background: #ebe8de;
+}
+
+.products-filter-color-dot.mauve {
+  background: #8d686b;
+}
+
+.products-filter-color-dot.olive {
+  background: #655e39;
+}
+
+.products-filter-color-dot.lavender {
+  background: #e6e6fa;
+}
+
+.products-filter-color-dot.blue {
+  background: #afbbd8;
+}
+
+.products-filter-color-dot.oat {
+  background: #e2d3c6;
+}
+
 @media (max-width: 768px) {
   .products-filter-sticky-button {
     bottom: 22px;
