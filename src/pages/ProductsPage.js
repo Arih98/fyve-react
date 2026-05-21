@@ -979,7 +979,7 @@ const productsPageFilterPanel = (
     className="products-filter-drill-row"
     onClick={() => setFilterPanelView('audience')}
   >
-    <span className="products-filter-drill-label">Audience</span>
+    <span className="products-filter-drill-label">Shop For</span>
 
     <span className="products-filter-drill-meta">
       <span className="products-filter-drill-value">{selectedAudienceFilterLabel}</span>
@@ -1107,7 +1107,7 @@ const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
       alt=""
       className="products-filter-back-chevron"
     />
-    <span>Audience</span>
+    <span>Shop For</span>
   </button>
 
   <div className="products-filter-checkbox-list">
