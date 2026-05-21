@@ -20,10 +20,10 @@ const ProductsPage = () => {
   const filterPanelScrollYRef = useRef(0);
 
 const selectedCategory = searchParams.get('category') || '';
-const [selectedMainFilter, setSelectedMainFilter] = useState('');
-const [selectedSubFilter, setSelectedSubFilter] = useState('');
-const [selectedColorFilter, setSelectedColorFilter] = useState('');
-const [selectedSizeFilter, setSelectedSizeFilter] = useState('');
+const [selectedMainFilters, setSelectedMainFilters] = useState([]);
+const [selectedSubFilters, setSelectedSubFilters] = useState([]);
+const [selectedColorFilters, setSelectedColorFilters] = useState([]);
+const [selectedSizeFilters, setSelectedSizeFilters] = useState([]);
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 const [filterPanelView, setFilterPanelView] = useState('main');
 const prevCategoryRef = useRef(selectedCategory);
@@ -45,10 +45,10 @@ const { data: products = [], meta: productsMeta, loading, error } = useProducts(
   }, [selectedCategory]);
 
 useEffect(() => {
-  setSelectedMainFilter('');
-  setSelectedSubFilter('');
-  setSelectedColorFilter('');
-  setSelectedSizeFilter('');
+  setSelectedMainFilters([]);
+  setSelectedSubFilters([]);
+  setSelectedColorFilters([]);
+  setSelectedSizeFilters([]);
   setIsFilterPanelOpen(false);
   setFilterPanelView('main');
 }, [selectedCategory]);
@@ -204,35 +204,53 @@ const filterGroups = useMemo(() => {
   return Array.isArray(productsMeta?.filterGroups) ? productsMeta.filterGroups : [];
 }, [productsMeta?.filterGroups]);
 
-const selectedMainFilterGroup = useMemo(() => {
-  if (!selectedMainFilter) return null;
-
-  return filterGroups.find(group => group.slug === selectedMainFilter) || null;
-}, [filterGroups, selectedMainFilter]);
+const selectedMainFilterGroups = useMemo(() => {
+  return selectedMainFilters
+    .map(slug => filterGroups.find(group => group.slug === slug))
+    .filter(Boolean);
+}, [filterGroups, selectedMainFilters]);
 
 const availableSubFilterCategories = useMemo(() => {
-  return Array.isArray(selectedMainFilterGroup?.children)
-    ? selectedMainFilterGroup.children
-    : [];
-}, [selectedMainFilterGroup]);
+  const categoryMap = new Map();
 
-const selectedSubFilterCategory = useMemo(() => {
-  if (!selectedSubFilter) return null;
+  selectedMainFilterGroups.forEach(group => {
+    const children = Array.isArray(group.children) ? group.children : [];
 
-  return availableSubFilterCategories.find(category => category.slug === selectedSubFilter) || null;
-}, [availableSubFilterCategories, selectedSubFilter]);
+    children.forEach(child => {
+      if (!child?.slug || !child?.name) return;
+
+      if (!categoryMap.has(child.slug)) {
+        categoryMap.set(child.slug, child);
+      }
+    });
+  });
+
+  return Array.from(categoryMap.values());
+}, [selectedMainFilterGroups]);
+
+const selectedSubFilterCategories = useMemo(() => {
+  return selectedSubFilters
+    .map(slug => availableSubFilterCategories.find(category => category.slug === slug))
+    .filter(Boolean);
+}, [availableSubFilterCategories, selectedSubFilters]);
+
+const formatSelectedFilterLabel = (items, fallback = 'Select') => {
+  if (!items.length) return fallback;
+
+  if (items.length <= 2) {
+    return items.map(item => item.name).join(', ');
+  }
+
+  return `${items[0].name}, ${items[1].name} +${items.length - 2}`;
+};
 
 const selectedFilterLabel = useMemo(() => {
-  if (!selectedMainFilter) return 'Select';
+  if (selectedSubFilterCategories.length > 0) {
+    return formatSelectedFilterLabel(selectedSubFilterCategories);
+  }
 
-  const mainName = selectedMainFilterGroup?.name || formatCategoryLabel(selectedMainFilter);
-
-  if (!selectedSubFilter) return mainName;
-
-  const subName = selectedSubFilterCategory?.name || formatCategoryLabel(selectedSubFilter);
-
-  return `${mainName}, ${subName}`;
-}, [selectedMainFilter, selectedMainFilterGroup, selectedSubFilter, selectedSubFilterCategory]);
+  return formatSelectedFilterLabel(selectedMainFilterGroups);
+}, [selectedMainFilterGroups, selectedSubFilterCategories]);
 
 const getFilterSlug = (value) =>
   String(value || '')
@@ -357,18 +375,18 @@ const availableColorFilters = useMemo(() => {
   return Array.from(colorMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 }, [display]);
 
-const selectedColorFilterOption = useMemo(() => {
-  if (!selectedColorFilter) return null;
+const selectedColorFilterOptions = useMemo(() => {
+  return selectedColorFilters
+    .map(slug => availableColorFilters.find(color => color.slug === slug))
+    .filter(Boolean);
+}, [availableColorFilters, selectedColorFilters]);
 
-  return availableColorFilters.find(color => color.slug === selectedColorFilter) || null;
-}, [availableColorFilters, selectedColorFilter]);
+const selectedColorFilterLabel = formatSelectedFilterLabel(selectedColorFilterOptions);
 
-const selectedColorFilterLabel = selectedColorFilterOption?.name || 'Select';
+const productMatchesColorFilter = (product, colorSlugs) => {
+  if (!colorSlugs.length) return true;
 
-const productMatchesColorFilter = (product, colorSlug) => {
-  if (!colorSlug) return true;
-
-  return getProductColorFilterOptions(product).some(color => color.slug === colorSlug);
+  return getProductColorFilterOptions(product).some(color => colorSlugs.includes(color.slug));
 };
 
 const isSizeFilterAttribute = (name) => {
@@ -480,38 +498,55 @@ const availableSizeFilters = useMemo(() => {
   });
 }, [display]);
 
-const selectedSizeFilterOption = useMemo(() => {
-  if (!selectedSizeFilter) return null;
+const selectedSizeFilterOptions = useMemo(() => {
+  return selectedSizeFilters
+    .map(slug => availableSizeFilters.find(size => size.slug === slug))
+    .filter(Boolean);
+}, [availableSizeFilters, selectedSizeFilters]);
 
-  return availableSizeFilters.find(size => size.slug === selectedSizeFilter) || null;
-}, [availableSizeFilters, selectedSizeFilter]);
+const selectedSizeFilterLabel = formatSelectedFilterLabel(selectedSizeFilterOptions);
 
-const selectedSizeFilterLabel = selectedSizeFilterOption?.name || 'Select';
+const productMatchesSizeFilter = (product, sizeSlugs) => {
+  if (!sizeSlugs.length) return true;
 
-const productMatchesSizeFilter = (product, sizeSlug) => {
-  if (!sizeSlug) return true;
-
-  return getProductSizeFilterOptions(product).some(size => size.slug === sizeSlug);
+  return getProductSizeFilterOptions(product).some(size => sizeSlugs.includes(size.slug));
 };
 
 const filteredDisplay = useMemo(() => {
   return display.filter(product => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
+    const productCategorySlugs = new Set(categories.map(category => category.slug).filter(Boolean));
 
-    const matchesMainFilter = selectedMainFilter
-      ? categories.some(category => category.slug === selectedMainFilter)
-      : true;
+    const matchesCategoryFilters = (() => {
+      if (!selectedMainFilters.length && !selectedSubFilters.length) return true;
 
-    const matchesSubFilter = selectedSubFilter
-      ? categories.some(category => category.slug === selectedSubFilter)
-      : true;
+      const selectedSubSet = new Set(selectedSubFilters);
 
-const matchesColorFilter = productMatchesColorFilter(product, selectedColorFilter);
-const matchesSizeFilter = productMatchesSizeFilter(product, selectedSizeFilter);
+      if (selectedMainFilters.length > 0) {
+        return selectedMainFilters.some(mainSlug => {
+          const group = filterGroups.find(item => item.slug === mainSlug);
+          const children = Array.isArray(group?.children) ? group.children : [];
+          const selectedChildren = children
+            .map(child => child.slug)
+            .filter(slug => selectedSubSet.has(slug));
 
-return matchesMainFilter && matchesSubFilter && matchesColorFilter && matchesSizeFilter;
+          if (selectedChildren.length > 0) {
+            return selectedChildren.some(slug => productCategorySlugs.has(slug));
+          }
+
+          return productCategorySlugs.has(mainSlug);
+        });
+      }
+
+      return selectedSubFilters.some(slug => productCategorySlugs.has(slug));
+    })();
+
+    const matchesColorFilter = productMatchesColorFilter(product, selectedColorFilters);
+    const matchesSizeFilter = productMatchesSizeFilter(product, selectedSizeFilters);
+
+    return matchesCategoryFilters && matchesColorFilter && matchesSizeFilter;
   });
-}, [display, selectedMainFilter, selectedSubFilter, selectedColorFilter, selectedSizeFilter]);
+}, [display, filterGroups, selectedMainFilters, selectedSubFilters, selectedColorFilters, selectedSizeFilters]);
 
 const resetProductsPagePosition = () => {
   setVisibleCount(productsPerPage);
@@ -523,24 +558,40 @@ const resetProductsPagePosition = () => {
   window.scrollTo(0, 0);
 };
 
+const toggleFilterValue = (values, slug) => {
+  return values.includes(slug)
+    ? values.filter(value => value !== slug)
+    : [...values, slug];
+};
+
 const handleMainFilterChange = (slug) => {
-  setSelectedMainFilter(slug);
-  setSelectedSubFilter('');
+  const isRemoving = selectedMainFilters.includes(slug);
+  const group = filterGroups.find(item => item.slug === slug);
+  const childSlugs = Array.isArray(group?.children)
+    ? group.children.map(child => child.slug).filter(Boolean)
+    : [];
+
+  setSelectedMainFilters(prev => toggleFilterValue(prev, slug));
+
+  if (isRemoving && childSlugs.length > 0) {
+    setSelectedSubFilters(prev => prev.filter(value => !childSlugs.includes(value)));
+  }
+
   resetProductsPagePosition();
 };
 
 const handleSubFilterChange = (slug) => {
-  setSelectedSubFilter(slug);
+  setSelectedSubFilters(prev => toggleFilterValue(prev, slug));
   resetProductsPagePosition();
 };
 
 const handleColorFilterChange = (slug) => {
-  setSelectedColorFilter(slug);
+  setSelectedColorFilters(prev => toggleFilterValue(prev, slug));
   resetProductsPagePosition();
 };
 
 const handleSizeFilterChange = (slug) => {
-  setSelectedSizeFilter(slug);
+  setSelectedSizeFilters(prev => toggleFilterValue(prev, slug));
   resetProductsPagePosition();
 };
 
@@ -597,7 +648,11 @@ useEffect(() => {
   };
 }, [isFilterPanelOpen]);
 
-const activeFilterCount = [selectedMainFilter, selectedSubFilter, selectedColorFilter, selectedSizeFilter].filter(Boolean).length;
+const activeFilterCount =
+  selectedMainFilters.length +
+  selectedSubFilters.length +
+  selectedColorFilters.length +
+  selectedSizeFilters.length;
 
 const productsPageHeader = (
   <div className="products-page-header">
@@ -748,7 +803,7 @@ const productsPageFilterPanel = (
         <div className="products-filter-checkbox-list">
 
           {filterGroups.map(group => {
-            const isSelectedMain = selectedMainFilter === group.slug;
+            const isSelectedMain = selectedMainFilters.includes(group.slug);
             const children = Array.isArray(group.children) ? group.children : [];
 
             return (
@@ -768,7 +823,7 @@ const productsPageFilterPanel = (
                   <div className="products-filter-child-checkbox-list">
 
                     {children.map(category => {
-                      const isSelectedSub = selectedSubFilter === category.slug;
+                      const isSelectedSub = selectedSubFilters.includes(category.slug);
 
                       return (
                         <button
@@ -807,7 +862,7 @@ const productsPageFilterPanel = (
 
   <div className="products-filter-checkbox-list">
     {availableColorFilters.map(color => {
-      const isSelectedColor = selectedColorFilter === color.slug;
+      const isSelectedColor = selectedColorFilters.includes(color.slug);
 
       return (
         <button
@@ -845,7 +900,7 @@ const productsPageFilterPanel = (
 
   <div className="products-filter-checkbox-list">
     {availableSizeFilters.map(size => {
-      const isSelectedSize = selectedSizeFilter === size.slug;
+      const isSelectedSize = selectedSizeFilters.includes(size.slug);
 
       return (
         <button
@@ -872,10 +927,10 @@ const productsPageFilterPanel = (
     type="button"
     className="products-filter-clear-button"
 onClick={() => {
-setSelectedMainFilter('');
-setSelectedSubFilter('');
-setSelectedColorFilter('');
-setSelectedSizeFilter('');
+setSelectedMainFilters([]);
+setSelectedSubFilters([]);
+setSelectedColorFilters([]);
+setSelectedSizeFilters([]);
 setFilterPanelView('main');
 resetProductsPagePosition();
 }}
