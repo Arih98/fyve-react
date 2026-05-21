@@ -23,6 +23,7 @@ const selectedCategory = searchParams.get('category') || '';
 const [selectedMainFilter, setSelectedMainFilter] = useState('');
 const [selectedSubFilter, setSelectedSubFilter] = useState('');
 const [selectedColorFilter, setSelectedColorFilter] = useState('');
+const [selectedSizeFilter, setSelectedSizeFilter] = useState('');
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 const [filterPanelView, setFilterPanelView] = useState('main');
 const prevCategoryRef = useRef(selectedCategory);
@@ -47,6 +48,7 @@ useEffect(() => {
   setSelectedMainFilter('');
   setSelectedSubFilter('');
   setSelectedColorFilter('');
+  setSelectedSizeFilter('');
   setIsFilterPanelOpen(false);
   setFilterPanelView('main');
 }, [selectedCategory]);
@@ -369,6 +371,129 @@ const productMatchesColorFilter = (product, colorSlug) => {
   return getProductColorFilterOptions(product).some(color => color.slug === colorSlug);
 };
 
+const isSizeFilterAttribute = (name) => {
+  const value = String(name || '').trim().toLowerCase();
+
+  return value === 'size' || value.includes('size');
+};
+
+const getSizeSortValue = (value) => {
+  const text = String(value || '').trim().toLowerCase();
+
+  const rangeMatch = text.match(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\s*(m|mo|month|months|y|yr|yrs|year|years)?/);
+
+  if (rangeMatch) {
+    const first = Number(rangeMatch[1]);
+    const second = Number(rangeMatch[2]);
+    const unit = rangeMatch[3] || '';
+    const average = (first + second) / 2;
+
+    if (unit.startsWith('y')) return average * 12;
+    return average;
+  }
+
+  const singleMatch = text.match(/(\d+(?:\.\d+)?)\s*(m|mo|month|months|y|yr|yrs|year|years)?/);
+
+  if (singleMatch) {
+    const number = Number(singleMatch[1]);
+    const unit = singleMatch[2] || '';
+
+    if (unit.startsWith('y')) return number * 12;
+    return number;
+  }
+
+  return 9999;
+};
+
+const getProductSizeFilterOptions = (product) => {
+  const sizeMap = new Map();
+
+  const addSize = (name, slug) => {
+    const sizeName = String(name || slug || '').trim();
+    const sizeSlug = getFilterSlug(slug || name);
+
+    if (!sizeName || !sizeSlug) return;
+
+    if (!sizeMap.has(sizeSlug)) {
+      sizeMap.set(sizeSlug, {
+        name: sizeName,
+        slug: sizeSlug
+      });
+    }
+  };
+
+  const attributes = Array.isArray(product?.attributes) ? product.attributes : [];
+
+  attributes.forEach(attribute => {
+    const attributeName = attribute.attribute_name || attribute.name || '';
+
+    if (!isSizeFilterAttribute(attributeName)) return;
+
+    const options = Array.isArray(attribute.options) ? attribute.options : [];
+
+    options.forEach(option => {
+      addSize(
+        option.term_name || option.name || option.value || option.term_slug,
+        option.term_slug || option.slug || option.value || option.term_name
+      );
+    });
+  });
+
+  const variations = Array.isArray(product?.variations) ? product.variations : [];
+
+  variations.forEach(variation => {
+    const variationAttributes = Array.isArray(variation.attributes) ? variation.attributes : [];
+
+    variationAttributes.forEach(attribute => {
+      const attributeName = attribute.attribute_name || attribute.name || '';
+
+      if (!isSizeFilterAttribute(attributeName)) return;
+
+      addSize(
+        attribute.term_name || attribute.name || attribute.value || attribute.term_slug,
+        attribute.term_slug || attribute.slug || attribute.value || attribute.term_name
+      );
+    });
+  });
+
+  return Array.from(sizeMap.values());
+};
+
+const availableSizeFilters = useMemo(() => {
+  const sizeMap = new Map();
+
+  display.forEach(product => {
+    getProductSizeFilterOptions(product).forEach(size => {
+      if (!sizeMap.has(size.slug)) {
+        sizeMap.set(size.slug, size);
+      }
+    });
+  });
+
+  return Array.from(sizeMap.values()).sort((a, b) => {
+    const sortA = getSizeSortValue(a.name);
+    const sortB = getSizeSortValue(b.name);
+
+    if (sortA !== sortB) return sortA - sortB;
+
+    return a.name.localeCompare(b.name);
+  });
+}, [display]);
+
+const selectedSizeFilterOption = useMemo(() => {
+  if (!selectedSizeFilter) return null;
+
+  return availableSizeFilters.find(size => size.slug === selectedSizeFilter) || null;
+}, [availableSizeFilters, selectedSizeFilter]);
+
+const selectedSizeFilterLabel = selectedSizeFilterOption?.name || 'Select';
+
+const productMatchesSizeFilter = (product, sizeSlug) => {
+  if (!sizeSlug) return true;
+
+  return getProductSizeFilterOptions(product).some(size => size.slug === sizeSlug);
+};
+
 const filteredDisplay = useMemo(() => {
   return display.filter(product => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
@@ -381,11 +506,12 @@ const filteredDisplay = useMemo(() => {
       ? categories.some(category => category.slug === selectedSubFilter)
       : true;
 
-    const matchesColorFilter = productMatchesColorFilter(product, selectedColorFilter);
+const matchesColorFilter = productMatchesColorFilter(product, selectedColorFilter);
+const matchesSizeFilter = productMatchesSizeFilter(product, selectedSizeFilter);
 
-    return matchesMainFilter && matchesSubFilter && matchesColorFilter;
+return matchesMainFilter && matchesSubFilter && matchesColorFilter && matchesSizeFilter;
   });
-}, [display, selectedMainFilter, selectedSubFilter, selectedColorFilter]);
+}, [display, selectedMainFilter, selectedSubFilter, selectedColorFilter, selectedSizeFilter]);
 
 const resetProductsPagePosition = () => {
   setVisibleCount(productsPerPage);
@@ -410,6 +536,11 @@ const handleSubFilterChange = (slug) => {
 
 const handleColorFilterChange = (slug) => {
   setSelectedColorFilter(slug);
+  resetProductsPagePosition();
+};
+
+const handleSizeFilterChange = (slug) => {
+  setSelectedSizeFilter(slug);
   resetProductsPagePosition();
 };
 
@@ -466,7 +597,7 @@ useEffect(() => {
   };
 }, [isFilterPanelOpen]);
 
-const activeFilterCount = [selectedMainFilter, selectedSubFilter, selectedColorFilter].filter(Boolean).length;
+const activeFilterCount = [selectedMainFilter, selectedSubFilter, selectedColorFilter, selectedSizeFilter].filter(Boolean).length;
 
 const productsPageHeader = (
   <div className="products-page-header">
@@ -562,23 +693,42 @@ const productsPageFilterPanel = (
   </button>
 
   {availableColorFilters.length > 0 && (
-    <button
-      type="button"
-      className="products-filter-drill-row"
-      onClick={() => setFilterPanelView('color')}
-    >
-      <span className="products-filter-drill-label">Color</span>
+  <button
+    type="button"
+    className="products-filter-drill-row"
+    onClick={() => setFilterPanelView('color')}
+  >
+    <span className="products-filter-drill-label">Color</span>
 
-      <span className="products-filter-drill-meta">
-        <span className="products-filter-drill-value">{selectedColorFilterLabel}</span>
-        <img
-          src="/assets/breadcrumbSeparator.svg"
-          alt=""
-          className="products-filter-drill-chevron"
-        />
-      </span>
-    </button>
-  )}
+    <span className="products-filter-drill-meta">
+      <span className="products-filter-drill-value">{selectedColorFilterLabel}</span>
+      <img
+        src="/assets/breadcrumbSeparator.svg"
+        alt=""
+        className="products-filter-drill-chevron"
+      />
+    </span>
+  </button>
+)}
+
+{availableSizeFilters.length > 0 && (
+  <button
+    type="button"
+    className="products-filter-drill-row"
+    onClick={() => setFilterPanelView('size')}
+  >
+    <span className="products-filter-drill-label">Size</span>
+
+    <span className="products-filter-drill-meta">
+      <span className="products-filter-drill-value">{selectedSizeFilterLabel}</span>
+      <img
+        src="/assets/breadcrumbSeparator.svg"
+        alt=""
+        className="products-filter-drill-chevron"
+      />
+    </span>
+  </button>
+)}
 </div>
 
       <div className="products-filter-panel-screen">
@@ -679,6 +829,40 @@ const productsPageFilterPanel = (
     })}
   </div>
 </div>
+    <div className="products-filter-panel-screen">
+  <button
+    type="button"
+    className="products-filter-back-row"
+    onClick={() => setFilterPanelView('main')}
+  >
+    <img
+      src="/assets/breadcrumbSeparator.svg"
+      alt=""
+      className="products-filter-back-chevron"
+    />
+    <span>Size</span>
+  </button>
+
+  <div className="products-filter-checkbox-list">
+    {availableSizeFilters.map(size => {
+      const isSelectedSize = selectedSizeFilter === size.slug;
+
+      return (
+        <button
+          key={size.slug}
+          type="button"
+          className="products-filter-checkbox-row products-filter-size-row"
+          role="checkbox"
+          aria-checked={isSelectedSize}
+          onClick={() => handleSizeFilterChange(isSelectedSize ? '' : size.slug)}
+        >
+          <span className={`products-filter-checkbox ${isSelectedSize ? 'is-checked' : ''}`}></span>
+          <span className="products-filter-checkbox-label">{size.name}</span>
+        </button>
+      );
+    })}
+  </div>
+</div>
     </div>
   </div>
 </div>
@@ -688,11 +872,12 @@ const productsPageFilterPanel = (
     type="button"
     className="products-filter-clear-button"
 onClick={() => {
-  setSelectedMainFilter('');
-  setSelectedSubFilter('');
-  setSelectedColorFilter('');
-  setFilterPanelView('main');
-  resetProductsPagePosition();
+setSelectedMainFilter('');
+setSelectedSubFilter('');
+setSelectedColorFilter('');
+setSelectedSizeFilter('');
+setFilterPanelView('main');
+resetProductsPagePosition();
 }}
   >
     Clear
