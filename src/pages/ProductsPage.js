@@ -673,7 +673,7 @@ const productsPageFilterPanel = (
 
           <div className="products-filter-panel-body">
   <div className="products-filter-panel-slider">
-    <div className={`products-filter-panel-track${filterPanelView === 'category' ? ' is-category-view' : ''}${filterPanelView === 'color' ? ' is-color-view' : ''}`}>
+    <div className={`products-filter-panel-track${filterPanelView === 'category' ? ' is-category-view' : ''}${filterPanelView === 'color' ? ' is-color-view' : ''}${filterPanelView === 'size' ? ' is-size-view' : ''}`}>
       <div className="products-filter-panel-screen">
   <button
     type="button"
