@@ -874,6 +874,14 @@ const activeFilterCount =
   selectedColorFilters.length +
   selectedSizeFilters.length;
 
+  useEffect(() => {
+  window.dispatchEvent(new CustomEvent('products:filter-count-change', {
+    detail: {
+      count: activeFilterCount
+    }
+  }));
+}, [activeFilterCount]);
+
 const productsPageHeader = (
   <div className="products-page-header">
     <nav className="products-page-breadcrumbs" aria-label="Products breadcrumbs">

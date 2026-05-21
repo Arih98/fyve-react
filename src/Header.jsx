@@ -289,6 +289,7 @@ const searchCloseTimeoutRef = useRef(null);
 const useCartHeaderVariant = isMobile && isCartPage && !isMenuOpen && !isSearchOpen && !isSearchClosing && cartItems.length > 0;
 const usePdpBottomAddVariant = isMobile && isProductDetailPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
 const useProductsFilterVariant = isMobile && isProductsPage && !isMenuOpen && !isSearchOpen && !isSearchClosing;
+const [productsFilterCount, setProductsFilterCount] = useState(0);
 
 const totalBagQuantity = useMemo(
   () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -528,6 +529,18 @@ if (!targetEl || !sourceImageEl || !startRect) {
     });
   });
 };
+
+useEffect(() => {
+  const handleProductsFilterCountChange = (event) => {
+    setProductsFilterCount(Number(event.detail?.count || 0));
+  };
+
+  window.addEventListener('products:filter-count-change', handleProductsFilterCountChange);
+
+  return () => {
+    window.removeEventListener('products:filter-count-change', handleProductsFilterCountChange);
+  };
+}, []);
 
 useEffect(() => {
   return () => {
@@ -1159,12 +1172,19 @@ const handleToggleMenu = () => {
 ) : useProductsFilterVariant ? (
   <div className="cart-header-mobile-layout products-filter-mobile-layout">
     <div className="cart-header-checkout-container">
-      <button
-        className="cart-header-checkout-button cart-header-checkout-button-mobile products-header-filter-button"
-        onClick={() => window.dispatchEvent(new CustomEvent('products:open-filter-panel'))}
-      >
-        Filter
-      </button>
+<button
+  type="button"
+  className="cart-header-checkout-button cart-header-checkout-button-mobile products-header-filter-button"
+  onClick={() => window.dispatchEvent(new CustomEvent('products:open-filter-panel'))}
+>
+  <span>Filter</span>
+
+  {productsFilterCount > 0 && (
+    <span className="products-header-filter-count">
+      {productsFilterCount}
+    </span>
+  )}
+</button>
     </div>
   </div>
 ) : (

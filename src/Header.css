@@ -1395,6 +1395,26 @@ body.search-open {
   color: #ffffff;
 }
 
+.products-header-filter-button {
+  position: relative;
+  gap: 8px;
+}
+
+.products-header-filter-count {
+  min-width: 19px;
+  height: 19px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #fff;
+  color: #4a494a;
+  font-family: quasimoda, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 19px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
 @media (max-width: 768px) {
   .mobile-header.first-header.products-filter-page-header {
     --nav-top-padding: 10px;
