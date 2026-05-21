@@ -1405,12 +1405,13 @@ body.search-open {
   height: 19px;
   padding: 0 6px;
   border-radius: 999px;
-  background: #fff;
-  color: #4a494a;
+  border: 1px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
   font-family: quasimoda, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  line-height: 19px;
+  line-height: 17px;
   text-align: center;
   box-sizing: border-box;
 }
