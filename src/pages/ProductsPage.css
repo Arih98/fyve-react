@@ -796,6 +796,23 @@ background: rgba(0, 0, 0, 0.18);
   gap: 13px;
 }
 
+.products-filter-checkbox-row:disabled,
+.products-filter-checkbox-row.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.products-filter-checkbox-row:disabled .products-filter-checkbox,
+.products-filter-checkbox-row.is-disabled .products-filter-checkbox {
+  border-color: #d8d2cc;
+  background: #f7f7f7;
+}
+
+.products-filter-checkbox-row:disabled .products-filter-color-dot,
+.products-filter-checkbox-row.is-disabled .products-filter-color-dot {
+  opacity: 0.45;
+}
+
 @media (max-width: 768px) {
   .products-filter-sticky-button {
     bottom: 22px;

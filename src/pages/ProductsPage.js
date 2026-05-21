@@ -512,41 +512,114 @@ const productMatchesSizeFilter = (product, sizeSlugs) => {
   return getProductSizeFilterOptions(product).some(size => sizeSlugs.includes(size.slug));
 };
 
-const filteredDisplay = useMemo(() => {
-  return display.filter(product => {
+const productMatchesCategoryFilters = (product, mainFilters, subFilters) => {
+  const categories = Array.isArray(product.categories) ? product.categories : [];
+  const productCategorySlugs = new Set(categories.map(category => category.slug).filter(Boolean));
+
+  if (!mainFilters.length && !subFilters.length) return true;
+
+  const selectedSubSet = new Set(subFilters);
+
+  if (mainFilters.length > 0) {
+    return mainFilters.some(mainSlug => {
+      const group = filterGroups.find(item => item.slug === mainSlug);
+      const children = Array.isArray(group?.children) ? group.children : [];
+      const selectedChildren = children
+        .map(child => child.slug)
+        .filter(slug => selectedSubSet.has(slug));
+
+      if (selectedChildren.length > 0) {
+        return selectedChildren.some(slug => productCategorySlugs.has(slug));
+      }
+
+      return productCategorySlugs.has(mainSlug);
+    });
+  }
+
+  return subFilters.some(slug => productCategorySlugs.has(slug));
+};
+
+const productMatchesAllFilters = (
+  product,
+  {
+    mainFilters = selectedMainFilters,
+    subFilters = selectedSubFilters,
+    colorFilters = selectedColorFilters,
+    sizeFilters = selectedSizeFilters
+  } = {}
+) => {
+  return (
+    productMatchesCategoryFilters(product, mainFilters, subFilters) &&
+    productMatchesColorFilter(product, colorFilters) &&
+    productMatchesSizeFilter(product, sizeFilters)
+  );
+};
+
+const isMainFilterDisabled = (slug) => {
+  if (selectedMainFilters.includes(slug)) return false;
+
+  return !display.some(product => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
     const productCategorySlugs = new Set(categories.map(category => category.slug).filter(Boolean));
 
-    const matchesCategoryFilters = (() => {
-      if (!selectedMainFilters.length && !selectedSubFilters.length) return true;
-
-      const selectedSubSet = new Set(selectedSubFilters);
-
-      if (selectedMainFilters.length > 0) {
-        return selectedMainFilters.some(mainSlug => {
-          const group = filterGroups.find(item => item.slug === mainSlug);
-          const children = Array.isArray(group?.children) ? group.children : [];
-          const selectedChildren = children
-            .map(child => child.slug)
-            .filter(slug => selectedSubSet.has(slug));
-
-          if (selectedChildren.length > 0) {
-            return selectedChildren.some(slug => productCategorySlugs.has(slug));
-          }
-
-          return productCategorySlugs.has(mainSlug);
-        });
-      }
-
-      return selectedSubFilters.some(slug => productCategorySlugs.has(slug));
-    })();
-
-    const matchesColorFilter = productMatchesColorFilter(product, selectedColorFilters);
-    const matchesSizeFilter = productMatchesSizeFilter(product, selectedSizeFilters);
-
-    return matchesCategoryFilters && matchesColorFilter && matchesSizeFilter;
+    return (
+      productCategorySlugs.has(slug) &&
+      productMatchesColorFilter(product, selectedColorFilters) &&
+      productMatchesSizeFilter(product, selectedSizeFilters)
+    );
   });
-}, [display, filterGroups, selectedMainFilters, selectedSubFilters, selectedColorFilters, selectedSizeFilters]);
+};
+
+const isSubFilterDisabled = (parentSlug, slug) => {
+  if (selectedSubFilters.includes(slug)) return false;
+
+  return !display.some(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+    const productCategorySlugs = new Set(categories.map(category => category.slug).filter(Boolean));
+
+    return (
+      productCategorySlugs.has(parentSlug) &&
+      productCategorySlugs.has(slug) &&
+      productMatchesColorFilter(product, selectedColorFilters) &&
+      productMatchesSizeFilter(product, selectedSizeFilters)
+    );
+  });
+};
+
+const isColorFilterDisabled = (slug) => {
+  if (selectedColorFilters.includes(slug)) return false;
+
+  const nextColorFilters = [...selectedColorFilters, slug];
+
+  return !display.some(product =>
+    productMatchesAllFilters(product, {
+      colorFilters: nextColorFilters
+    })
+  );
+};
+
+const isSizeFilterDisabled = (slug) => {
+  if (selectedSizeFilters.includes(slug)) return false;
+
+  const nextSizeFilters = [...selectedSizeFilters, slug];
+
+  return !display.some(product =>
+    productMatchesAllFilters(product, {
+      sizeFilters: nextSizeFilters
+    })
+  );
+};
+
+const filteredDisplay = useMemo(() => {
+  return display.filter(product => productMatchesAllFilters(product));
+}, [
+  display,
+  filterGroups,
+  selectedMainFilters,
+  selectedSubFilters,
+  selectedColorFilters,
+  selectedSizeFilters
+]);
 
 const resetProductsPagePosition = ({ updateUrl = false, scroll = false } = {}) => {
   setVisibleCount(productsPerPage);
@@ -807,40 +880,44 @@ const productsPageFilterPanel = (
         <div className="products-filter-checkbox-list">
 
           {filterGroups.map(group => {
-            const isSelectedMain = selectedMainFilters.includes(group.slug);
-            const children = Array.isArray(group.children) ? group.children : [];
+const isSelectedMain = selectedMainFilters.includes(group.slug);
+const isDisabledMain = isMainFilterDisabled(group.slug);
+const children = Array.isArray(group.children) ? group.children : [];
 
             return (
               <div key={group.slug} className="products-filter-checkbox-group">
-                <button
-                  type="button"
-                  className="products-filter-checkbox-row"
-                  role="checkbox"
-                  aria-checked={isSelectedMain}
-                  onClick={() => handleMainFilterChange(isSelectedMain ? '' : group.slug)}
-                >
-                  <span className={`products-filter-checkbox ${isSelectedMain ? 'is-checked' : ''}`}></span>
-                  <span className="products-filter-checkbox-label">{group.name}</span>
-                </button>
+<button
+  type="button"
+  className={`products-filter-checkbox-row ${isDisabledMain ? 'is-disabled' : ''}`}
+  role="checkbox"
+  aria-checked={isSelectedMain}
+  disabled={isDisabledMain}
+  onClick={() => handleMainFilterChange(group.slug)}
+>
+  <span className={`products-filter-checkbox ${isSelectedMain ? 'is-checked' : ''}`}></span>
+  <span className="products-filter-checkbox-label">{group.name}</span>
+</button>
 
                 {isSelectedMain && children.length > 0 && (
                   <div className="products-filter-child-checkbox-list">
 
                     {children.map(category => {
                       const isSelectedSub = selectedSubFilters.includes(category.slug);
+const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
 
                       return (
-                        <button
-                          key={category.slug}
-                          type="button"
-                          className="products-filter-checkbox-row products-filter-child-checkbox-row"
-                          role="checkbox"
-                          aria-checked={isSelectedSub}
-                          onClick={() => handleSubFilterChange(isSelectedSub ? '' : category.slug)}
-                        >
-                          <span className={`products-filter-checkbox ${isSelectedSub ? 'is-checked' : ''}`}></span>
-                          <span className="products-filter-checkbox-label">{category.name}</span>
-                        </button>
+<button
+  key={category.slug}
+  type="button"
+  className={`products-filter-checkbox-row products-filter-child-checkbox-row ${isDisabledSub ? 'is-disabled' : ''}`}
+  role="checkbox"
+  aria-checked={isSelectedSub}
+  disabled={isDisabledSub}
+  onClick={() => handleSubFilterChange(category.slug)}
+>
+  <span className={`products-filter-checkbox ${isSelectedSub ? 'is-checked' : ''}`}></span>
+  <span className="products-filter-checkbox-label">{category.name}</span>
+</button>
                       );
                     })}
                   </div>
@@ -866,24 +943,26 @@ const productsPageFilterPanel = (
 
   <div className="products-filter-checkbox-list">
     {availableColorFilters.map(color => {
-      const isSelectedColor = selectedColorFilters.includes(color.slug);
+const isSelectedColor = selectedColorFilters.includes(color.slug);
+const isDisabledColor = isColorFilterDisabled(color.slug);
 
       return (
-        <button
-          key={color.slug}
-          type="button"
-          className="products-filter-checkbox-row products-filter-color-row"
-          role="checkbox"
-          aria-checked={isSelectedColor}
-          onClick={() => handleColorFilterChange(isSelectedColor ? '' : color.slug)}
-        >
-          <span className={`products-filter-checkbox ${isSelectedColor ? 'is-checked' : ''}`}></span>
-          <span
-            className={`products-filter-color-dot ${getColorFilterClassName(color.slug)}`}
-            style={getColorFilterSwatchStyle(color.slug)}
-          ></span>
-          <span className="products-filter-checkbox-label">{color.name}</span>
-        </button>
+<button
+  key={color.slug}
+  type="button"
+  className={`products-filter-checkbox-row products-filter-color-row ${isDisabledColor ? 'is-disabled' : ''}`}
+  role="checkbox"
+  aria-checked={isSelectedColor}
+  disabled={isDisabledColor}
+  onClick={() => handleColorFilterChange(color.slug)}
+>
+  <span className={`products-filter-checkbox ${isSelectedColor ? 'is-checked' : ''}`}></span>
+  <span
+    className={`products-filter-color-dot ${getColorFilterClassName(color.slug)}`}
+    style={getColorFilterSwatchStyle(color.slug)}
+  ></span>
+  <span className="products-filter-checkbox-label">{color.name}</span>
+</button>
       );
     })}
   </div>
@@ -905,19 +984,21 @@ const productsPageFilterPanel = (
   <div className="products-filter-checkbox-list">
     {availableSizeFilters.map(size => {
       const isSelectedSize = selectedSizeFilters.includes(size.slug);
+const isDisabledSize = isSizeFilterDisabled(size.slug);
 
       return (
-        <button
-          key={size.slug}
-          type="button"
-          className="products-filter-checkbox-row products-filter-size-row"
-          role="checkbox"
-          aria-checked={isSelectedSize}
-          onClick={() => handleSizeFilterChange(isSelectedSize ? '' : size.slug)}
-        >
-          <span className={`products-filter-checkbox ${isSelectedSize ? 'is-checked' : ''}`}></span>
-          <span className="products-filter-checkbox-label">{size.name}</span>
-        </button>
+<button
+  key={size.slug}
+  type="button"
+  className={`products-filter-checkbox-row products-filter-size-row ${isDisabledSize ? 'is-disabled' : ''}`}
+  role="checkbox"
+  aria-checked={isSelectedSize}
+  disabled={isDisabledSize}
+  onClick={() => handleSizeFilterChange(size.slug)}
+>
+  <span className={`products-filter-checkbox ${isSelectedSize ? 'is-checked' : ''}`}></span>
+  <span className="products-filter-checkbox-label">{size.name}</span>
+</button>
       );
     })}
   </div>
