@@ -28,6 +28,7 @@ const getFilterParamArray = (key) => {
 };
 const [selectedMainFilters, setSelectedMainFilters] = useState(() => getFilterParamArray('type'));
 const [selectedSubFilters, setSelectedSubFilters] = useState(() => getFilterParamArray('subtype'));
+const [selectedAudienceFilters, setSelectedAudienceFilters] = useState(() => getFilterParamArray('audience'));
 const [selectedColorFilters, setSelectedColorFilters] = useState(() => getFilterParamArray('color'));
 const [selectedSizeFilters, setSelectedSizeFilters] = useState(() => getFilterParamArray('size'));
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
@@ -57,10 +58,11 @@ useEffect(() => {
     return;
   }
 
-  setSelectedMainFilters([]);
-  setSelectedSubFilters([]);
-  setSelectedColorFilters([]);
-  setSelectedSizeFilters([]);
+setSelectedMainFilters([]);
+setSelectedSubFilters([]);
+setSelectedAudienceFilters([]);
+setSelectedColorFilters([]);
+setSelectedSizeFilters([]);
   setIsFilterPanelOpen(false);
   setFilterPanelView('main');
 }, [selectedCategory]);
@@ -113,10 +115,11 @@ useEffect(() => {
   const next = new URLSearchParams(searchParams);
 
   next.set('page', '1');
-  next.delete('type');
-  next.delete('subtype');
-  next.delete('color');
-  next.delete('size');
+next.delete('type');
+next.delete('subtype');
+next.delete('audience');
+next.delete('color');
+next.delete('size');
 
   setSearchParams(next, { replace: true });
 }, [selectedCategory, searchParams, setSearchParams]);
@@ -269,6 +272,61 @@ const selectedFilterLabel = useMemo(() => {
 
   return formatSelectedFilterLabel(selectedMainFilterGroups);
 }, [selectedMainFilterGroups, selectedSubFilterCategories]);
+
+const availableAudienceFilters = useMemo(() => {
+  const audienceMap = new Map();
+
+  display.forEach(product => {
+    const categories = Array.isArray(product.categories) ? product.categories : [];
+
+    categories.forEach(category => {
+      if (!category?.slug || !category?.name) return;
+
+      const rootSlug = String(category.root_slug || '').toLowerCase();
+      const parentSlug = String(category.parent_slug || '').toLowerCase();
+
+      if (rootSlug !== 'audience' && parentSlug !== 'audience') return;
+      if (category.slug === 'audience') return;
+
+      if (!audienceMap.has(category.slug)) {
+        audienceMap.set(category.slug, {
+          id: category.id,
+          name: category.name,
+          slug: category.slug
+        });
+      }
+    });
+  });
+
+  const preferredOrder = ['boy', 'girl', 'baby'];
+
+  return Array.from(audienceMap.values()).sort((a, b) => {
+    const aIndex = preferredOrder.indexOf(a.slug);
+    const bIndex = preferredOrder.indexOf(b.slug);
+
+    if (aIndex !== -1 || bIndex !== -1) {
+      return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    }
+
+    return a.name.localeCompare(b.name);
+  });
+}, [display]);
+
+const selectedAudienceFilterOptions = useMemo(() => {
+  return selectedAudienceFilters
+    .map(slug => availableAudienceFilters.find(audience => audience.slug === slug))
+    .filter(Boolean);
+}, [availableAudienceFilters, selectedAudienceFilters]);
+
+const selectedAudienceFilterLabel = formatSelectedFilterLabel(selectedAudienceFilterOptions);
+
+const productMatchesAudienceFilter = (product, audienceSlugs) => {
+  if (!audienceSlugs.length) return true;
+
+  const categories = Array.isArray(product.categories) ? product.categories : [];
+
+  return categories.some(category => audienceSlugs.includes(category.slug));
+};
 
 const getFilterSlug = (value) =>
   String(value || '')
@@ -577,18 +635,20 @@ const productMatchesCategoryFilters = (product, mainFilters, subFilters) => {
 
 const productMatchesAllFilters = (
   product,
-  {
-    mainFilters = selectedMainFilters,
-    subFilters = selectedSubFilters,
-    colorFilters = selectedColorFilters,
-    sizeFilters = selectedSizeFilters
-  } = {}
+{
+  mainFilters = selectedMainFilters,
+  subFilters = selectedSubFilters,
+  audienceFilters = selectedAudienceFilters,
+  colorFilters = selectedColorFilters,
+  sizeFilters = selectedSizeFilters
+} = {}
 ) => {
-  return (
-    productMatchesCategoryFilters(product, mainFilters, subFilters) &&
-    productMatchesColorFilter(product, colorFilters) &&
-    productMatchesSizeFilter(product, sizeFilters)
-  );
+return (
+  productMatchesCategoryFilters(product, mainFilters, subFilters) &&
+  productMatchesAudienceFilter(product, audienceFilters) &&
+  productMatchesColorFilter(product, colorFilters) &&
+  productMatchesSizeFilter(product, sizeFilters)
+);
 };
 
 const isMainFilterDisabled = (slug) => {
@@ -598,11 +658,12 @@ const isMainFilterDisabled = (slug) => {
     const categories = Array.isArray(product.categories) ? product.categories : [];
     const productCategorySlugs = new Set(categories.map(category => category.slug).filter(Boolean));
 
-    return (
-      productCategorySlugs.has(slug) &&
-      productMatchesColorFilter(product, selectedColorFilters) &&
-      productMatchesSizeFilter(product, selectedSizeFilters)
-    );
+return (
+  productCategorySlugs.has(slug) &&
+  productMatchesAudienceFilter(product, selectedAudienceFilters) &&
+  productMatchesColorFilter(product, selectedColorFilters) &&
+  productMatchesSizeFilter(product, selectedSizeFilters)
+);
   });
 };
 
@@ -616,10 +677,23 @@ const isSubFilterDisabled = (parentSlug, slug) => {
     return (
       productCategorySlugs.has(parentSlug) &&
       productCategorySlugs.has(slug) &&
-      productMatchesColorFilter(product, selectedColorFilters) &&
-      productMatchesSizeFilter(product, selectedSizeFilters)
+productMatchesAudienceFilter(product, selectedAudienceFilters) &&
+productMatchesColorFilter(product, selectedColorFilters) &&
+productMatchesSizeFilter(product, selectedSizeFilters)
     );
   });
+};
+
+const isAudienceFilterDisabled = (slug) => {
+  if (selectedAudienceFilters.includes(slug)) return false;
+
+  const nextAudienceFilters = [...selectedAudienceFilters, slug];
+
+  return !display.some(product =>
+    productMatchesAllFilters(product, {
+      audienceFilters: nextAudienceFilters
+    })
+  );
 };
 
 const isColorFilterDisabled = (slug) => {
@@ -652,9 +726,10 @@ const filteredDisplay = useMemo(() => {
   display,
   filterGroups,
   selectedMainFilters,
-  selectedSubFilters,
-  selectedColorFilters,
-  selectedSizeFilters
+selectedSubFilters,
+selectedAudienceFilters,
+selectedColorFilters,
+selectedSizeFilters
 ]);
 
 const setListParam = (params, key, values) => {
@@ -668,6 +743,7 @@ const setListParam = (params, key, values) => {
 const syncFiltersToUrl = ({
   mainFilters = selectedMainFilters,
   subFilters = selectedSubFilters,
+  audienceFilters = selectedAudienceFilters,
   colorFilters = selectedColorFilters,
   sizeFilters = selectedSizeFilters,
   scroll = true
@@ -675,10 +751,11 @@ const syncFiltersToUrl = ({
   const next = new URLSearchParams(searchParams);
 
   next.set('page', '1');
-  setListParam(next, 'type', mainFilters);
-  setListParam(next, 'subtype', subFilters);
-  setListParam(next, 'color', colorFilters);
-  setListParam(next, 'size', sizeFilters);
+setListParam(next, 'type', mainFilters);
+setListParam(next, 'subtype', subFilters);
+setListParam(next, 'audience', audienceFilters);
+setListParam(next, 'color', colorFilters);
+setListParam(next, 'size', sizeFilters);
 
   setSearchParams(next, { replace: true });
 
@@ -725,6 +802,11 @@ const handleMainFilterChange = (slug) => {
 
 const handleSubFilterChange = (slug) => {
   setSelectedSubFilters(prev => toggleFilterValue(prev, slug));
+  resetProductsPagePosition();
+};
+
+const handleAudienceFilterChange = (slug) => {
+  setSelectedAudienceFilters(prev => toggleFilterValue(prev, slug));
   resetProductsPagePosition();
 };
 
@@ -794,6 +876,7 @@ useEffect(() => {
 const activeFilterCount =
   selectedMainFilters.length +
   selectedSubFilters.length +
+  selectedAudienceFilters.length +
   selectedColorFilters.length +
   selectedSizeFilters.length;
 
@@ -871,7 +954,7 @@ const productsPageFilterPanel = (
 
           <div className="products-filter-panel-body">
   <div className="products-filter-panel-slider">
-    <div className={`products-filter-panel-track${filterPanelView === 'category' ? ' is-category-view' : ''}${filterPanelView === 'color' ? ' is-color-view' : ''}${filterPanelView === 'size' ? ' is-size-view' : ''}`}>
+    <div className={`products-filter-panel-track${filterPanelView === 'category' ? ' is-category-view' : ''}${filterPanelView === 'audience' ? ' is-audience-view' : ''}${filterPanelView === 'color' ? ' is-color-view' : ''}${filterPanelView === 'size' ? ' is-size-view' : ''}`}>
       <div className="products-filter-panel-screen">
   <button
     type="button"
@@ -889,6 +972,25 @@ const productsPageFilterPanel = (
       />
     </span>
   </button>
+
+  {availableAudienceFilters.length > 0 && (
+  <button
+    type="button"
+    className="products-filter-drill-row"
+    onClick={() => setFilterPanelView('audience')}
+  >
+    <span className="products-filter-drill-label">Audience</span>
+
+    <span className="products-filter-drill-meta">
+      <span className="products-filter-drill-value">{selectedAudienceFilterLabel}</span>
+      <img
+        src="/assets/breadcrumbSeparator.svg"
+        alt=""
+        className="products-filter-drill-chevron"
+      />
+    </span>
+  </button>
+)}
 
   {availableColorFilters.length > 0 && (
   <button
@@ -993,6 +1095,44 @@ const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
           })}
         </div>
       </div>
+
+      <div className="products-filter-panel-screen">
+  <button
+    type="button"
+    className="products-filter-back-row"
+    onClick={() => setFilterPanelView('main')}
+  >
+    <img
+      src="/assets/breadcrumbSeparator.svg"
+      alt=""
+      className="products-filter-back-chevron"
+    />
+    <span>Audience</span>
+  </button>
+
+  <div className="products-filter-checkbox-list">
+    {availableAudienceFilters.map(audience => {
+      const isSelectedAudience = selectedAudienceFilters.includes(audience.slug);
+      const isDisabledAudience = isAudienceFilterDisabled(audience.slug);
+
+      return (
+        <button
+          key={audience.slug}
+          type="button"
+          className={`products-filter-checkbox-row products-filter-audience-row ${isDisabledAudience ? 'is-disabled' : ''}`}
+          role="checkbox"
+          aria-checked={isSelectedAudience}
+          disabled={isDisabledAudience}
+          onClick={() => handleAudienceFilterChange(audience.slug)}
+        >
+          <span className={`products-filter-checkbox ${isSelectedAudience ? 'is-checked' : ''}`}></span>
+          <span className="products-filter-checkbox-label">{audience.name}</span>
+        </button>
+      );
+    })}
+  </div>
+</div>
+
     <div className="products-filter-panel-screen">
   <button
     type="button"
@@ -1078,18 +1218,20 @@ const isDisabledSize = isSizeFilterDisabled(size.slug);
     type="button"
     className="products-filter-clear-button"
 onClick={() => {
-  setSelectedMainFilters([]);
-  setSelectedSubFilters([]);
-  setSelectedColorFilters([]);
-  setSelectedSizeFilters([]);
+setSelectedMainFilters([]);
+setSelectedSubFilters([]);
+setSelectedAudienceFilters([]);
+setSelectedColorFilters([]);
+setSelectedSizeFilters([]);
   setFilterPanelView('main');
-  syncFiltersToUrl({
-    mainFilters: [],
-    subFilters: [],
-    colorFilters: [],
-    sizeFilters: [],
-    scroll: false
-  });
+syncFiltersToUrl({
+  mainFilters: [],
+  subFilters: [],
+  audienceFilters: [],
+  colorFilters: [],
+  sizeFilters: [],
+  scroll: false
+});
   resetProductsPagePosition();
 }}
   >

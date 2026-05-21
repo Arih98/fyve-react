@@ -737,8 +737,24 @@ background: rgba(0, 0, 0, 0.18);
   color: #fff;
 }
 
-.products-filter-panel-track.is-color-view {
+.products-filter-panel-track.is-audience-view {
   transform: translateX(-200%);
+}
+
+.products-filter-panel-track.is-color-view {
+  transform: translateX(-300%);
+}
+
+.products-filter-panel-track.is-size-view {
+  transform: translateX(-400%);
+}
+
+.products-filter-audience-row {
+  gap: 13px;
+}
+
+.products-filter-audience-row {
+  gap: 13px;
 }
 
 .products-filter-color-row {
@@ -782,10 +798,6 @@ background: rgba(0, 0, 0, 0.18);
 
 .products-filter-color-dot.oat {
   background: #e2d3c6;
-}
-
-.products-filter-panel-track.is-size-view {
-  transform: translateX(-300%);
 }
 
 .products-filter-size-row {
