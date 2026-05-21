@@ -548,14 +548,18 @@ const filteredDisplay = useMemo(() => {
   });
 }, [display, filterGroups, selectedMainFilters, selectedSubFilters, selectedColorFilters, selectedSizeFilters]);
 
-const resetProductsPagePosition = () => {
+const resetProductsPagePosition = ({ updateUrl = false, scroll = false } = {}) => {
   setVisibleCount(productsPerPage);
 
-  const next = new URLSearchParams(searchParams);
-  next.set('page', '1');
-  setSearchParams(next, { replace: true });
+  if (updateUrl) {
+    const next = new URLSearchParams(searchParams);
+    next.set('page', '1');
+    setSearchParams(next, { replace: true });
+  }
 
-  window.scrollTo(0, 0);
+  if (scroll) {
+    window.scrollTo(0, 0);
+  }
 };
 
 const toggleFilterValue = (values, slug) => {
@@ -938,13 +942,16 @@ resetProductsPagePosition();
     Clear
   </button>
 
-  <button
-    type="button"
-    className="products-filter-apply-button"
-    onClick={closeFilterPanel}
-  >
-    Show products
-  </button>
+<button
+  type="button"
+  className="products-filter-apply-button"
+  onClick={() => {
+    closeFilterPanel();
+    resetProductsPagePosition({ updateUrl: true, scroll: true });
+  }}
+>
+  Show products
+</button>
 </div>
         </aside>
   </div>,
