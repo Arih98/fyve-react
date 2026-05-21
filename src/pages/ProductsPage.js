@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useSearchParams, useNavigationType } from 'react-router-dom';
 import { MenuContext } from '../MenuContext';
@@ -18,6 +18,7 @@ const ProductsPage = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const clickLockRef = useRef(false);
   const filterPanelScrollYRef = useRef(0);
+  const filterPanelHistoryPushedRef = useRef(false);
 
 const selectedCategory = searchParams.get('category') || '';
 const getFilterParamArray = (key) => {
@@ -814,10 +815,57 @@ const handleSizeFilterChange = (slug) => {
   resetProductsPagePosition();
 };
 
+const closeFilterPanel = useCallback(({ fromPopState = false, afterBack = null } = {}) => {
+  setIsFilterPanelOpen(false);
+  setFilterPanelView('main');
+
+  if (fromPopState) {
+    filterPanelHistoryPushedRef.current = false;
+    return;
+  }
+
+  if (filterPanelHistoryPushedRef.current) {
+    filterPanelHistoryPushedRef.current = false;
+
+    if (typeof afterBack === 'function') {
+      const handleAfterBack = () => {
+        window.removeEventListener('popstate', handleAfterBack);
+        window.setTimeout(afterBack, 0);
+      };
+
+      window.addEventListener('popstate', handleAfterBack);
+    }
+
+    window.history.back();
+    return;
+  }
+
+  if (typeof afterBack === 'function') {
+    afterBack();
+  }
+}, []);
+
+const openFilterPanel = useCallback(() => {
+  setFilterPanelView('main');
+  setIsFilterPanelOpen(true);
+
+  if (window.innerWidth <= 768 && !filterPanelHistoryPushedRef.current) {
+    filterPanelHistoryPushedRef.current = true;
+
+    window.history.pushState(
+      {
+        ...(window.history.state || {}),
+        fyveFilterPanelOpen: true
+      },
+      '',
+      window.location.href
+    );
+  }
+}, []);
+
 useEffect(() => {
   const handleOpenProductsFilter = () => {
-    setFilterPanelView('main');
-    setIsFilterPanelOpen(true);
+    openFilterPanel();
   };
 
   window.addEventListener('products:open-filter-panel', handleOpenProductsFilter);
@@ -825,7 +873,23 @@ useEffect(() => {
   return () => {
     window.removeEventListener('products:open-filter-panel', handleOpenProductsFilter);
   };
-}, []);
+}, [openFilterPanel]);
+
+useEffect(() => {
+  const handlePopState = () => {
+    if (!filterPanelHistoryPushedRef.current) return;
+
+    closeFilterPanel({
+      fromPopState: true
+    });
+  };
+
+  window.addEventListener('popstate', handlePopState);
+
+  return () => {
+    window.removeEventListener('popstate', handlePopState);
+  };
+}, [closeFilterPanel]);
 
 useEffect(() => {
   if (!isFilterPanelOpen) return;
@@ -907,16 +971,6 @@ const productsPageHeader = (
     <h1 className="products-page-title">{pageTitle}</h1>
   </div>
 );
-
-const closeFilterPanel = () => {
-  setIsFilterPanelOpen(false);
-  setFilterPanelView('main');
-};
-
-const openFilterPanel = () => {
-  setFilterPanelView('main');
-  setIsFilterPanelOpen(true);
-};
 
 const productsPageFilterPanel = (
   <>
@@ -1220,20 +1274,12 @@ const isDisabledSize = isSizeFilterDisabled(size.slug);
     type="button"
     className="products-filter-clear-button"
 onClick={() => {
-setSelectedMainFilters([]);
-setSelectedSubFilters([]);
-setSelectedAudienceFilters([]);
-setSelectedColorFilters([]);
-setSelectedSizeFilters([]);
+  setSelectedMainFilters([]);
+  setSelectedSubFilters([]);
+  setSelectedAudienceFilters([]);
+  setSelectedColorFilters([]);
+  setSelectedSizeFilters([]);
   setFilterPanelView('main');
-syncFiltersToUrl({
-  mainFilters: [],
-  subFilters: [],
-  audienceFilters: [],
-  colorFilters: [],
-  sizeFilters: [],
-  scroll: false
-});
   resetProductsPagePosition();
 }}
   >
@@ -1244,8 +1290,11 @@ syncFiltersToUrl({
   type="button"
   className="products-filter-apply-button"
 onClick={() => {
-  closeFilterPanel();
-  syncFiltersToUrl({ scroll: true });
+  closeFilterPanel({
+    afterBack: () => {
+      syncFiltersToUrl({ scroll: true });
+    }
+  });
 }}
 >
   Show products
