@@ -1333,21 +1333,37 @@ const isDisabledSize = isSizeFilterDisabled(size.slug);
 </div>
 
           <div className="products-filter-panel-footer">
-  <button
-    type="button"
-    className="products-filter-clear-button"
-onClick={() => {
-  setSelectedMainFilters([]);
-  setSelectedSubFilters([]);
-  setSelectedAudienceFilters([]);
-  setSelectedColorFilters([]);
-  setSelectedSizeFilters([]);
-  setFilterPanelView('main');
-  resetProductsPagePosition();
-}}
-  >
-    Clear
-  </button>
+<button
+  type="button"
+  className="products-filter-clear-button"
+  onClick={() => {
+    const emptyFilters = {
+      mainFilters: [],
+      subFilters: [],
+      audienceFilters: [],
+      colorFilters: [],
+      sizeFilters: []
+    };
+
+    setSelectedMainFilters([]);
+    setSelectedSubFilters([]);
+    setSelectedAudienceFilters([]);
+    setSelectedColorFilters([]);
+    setSelectedSizeFilters([]);
+    setVisibleCount(productsPerPage);
+
+    closeFilterPanel({
+      afterBack: () => {
+        syncFiltersToUrl({
+          ...emptyFilters,
+          scroll: true
+        });
+      }
+    });
+  }}
+>
+  Clear
+</button>
 
 <button
   type="button"
