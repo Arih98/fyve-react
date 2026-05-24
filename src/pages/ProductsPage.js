@@ -1049,6 +1049,18 @@ const activeFilterCount =
   }));
 }, [activeFilterCount]);
 
+const getFilterPanelTitle = (view) => {
+  const titles = {
+    main: 'Filter',
+    category: 'Category',
+    audience: 'Shop For',
+    color: 'Color',
+    size: 'Size'
+  };
+
+  return titles[view] || 'Filter';
+};
+
 const productsPageHeader = (
   <div className="products-page-header">
     {pageBreadcrumbs.length > 1 && (
@@ -1100,18 +1112,34 @@ const productsPageFilterPanel = (
           aria-label="Product filters"
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="products-filter-panel-header">
-            <h2 className="products-filter-panel-title">Filter</h2>
+          <div className={`products-filter-panel-header ${filterPanelView === 'main' ? '' : 'is-subview'}`.trim()}>
+  {filterPanelView === 'main' ? (
+    <h2 className="products-filter-panel-title">Filter</h2>
+  ) : (
+    <button
+      type="button"
+      className="products-filter-back-row products-filter-panel-back-button"
+      onClick={() => changeFilterPanelView('main')}
+      aria-label={`Back to filter menu from ${getFilterPanelTitle(filterPanelView)}`}
+    >
+      <img
+        src="/assets/breadcrumbSeparator.svg"
+        alt=""
+        className="products-filter-back-chevron"
+      />
+      <span>{getFilterPanelTitle(filterPanelView)}</span>
+    </button>
+  )}
 
-<button
-  type="button"
-  className="products-filter-panel-close"
-  onClick={closeFilterPanel}
-  aria-label="Close filter panel"
->
-  ×
-</button>
-          </div>
+  <button
+    type="button"
+    className="products-filter-panel-close"
+    onClick={closeFilterPanel}
+    aria-label="Close filter panel"
+  >
+    ×
+  </button>
+</div>
 
           <div className="products-filter-panel-body">
   <div className="products-filter-panel-slider">
@@ -1193,18 +1221,6 @@ const productsPageFilterPanel = (
 </div>
 
 <div className={getFilterPanelScreenClass('category')}>
-        <button
-          type="button"
-          className="products-filter-back-row"
-          onClick={() => changeFilterPanelView('main')}
-        >
-          <img
-            src="/assets/breadcrumbSeparator.svg"
-            alt=""
-            className="products-filter-back-chevron"
-          />
-          <span>Category</span>
-        </button>
 
         <div className="products-filter-checkbox-list">
 
@@ -1257,20 +1273,7 @@ const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
         </div>
       </div>
 
-      <div className={getFilterPanelScreenClass('audience')}>
-  <button
-    type="button"
-    className="products-filter-back-row"
-    onClick={() => changeFilterPanelView('main')}
-  >
-    <img
-      src="/assets/breadcrumbSeparator.svg"
-      alt=""
-      className="products-filter-back-chevron"
-    />
-    <span>Shop For</span>
-  </button>
-
+<div className={getFilterPanelScreenClass('audience')}>
   <div className="products-filter-checkbox-list">
     {availableAudienceFilters.map(audience => {
       const isSelectedAudience = selectedAudienceFilters.includes(audience.slug);
@@ -1295,18 +1298,6 @@ const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
 </div>
 
     <div className={getFilterPanelScreenClass('color')}>
-  <button
-    type="button"
-    className="products-filter-back-row"
-    onClick={() => changeFilterPanelView('main')}
-  >
-    <img
-      src="/assets/breadcrumbSeparator.svg"
-      alt=""
-      className="products-filter-back-chevron"
-    />
-    <span>Color</span>
-  </button>
 
   <div className="products-filter-checkbox-list">
     {availableColorFilters.map(color => {
@@ -1335,18 +1326,6 @@ const isDisabledColor = isColorFilterDisabled(color.slug);
   </div>
 </div>
     <div className={getFilterPanelScreenClass('size')}>
-  <button
-    type="button"
-    className="products-filter-back-row"
-    onClick={() => changeFilterPanelView('main')}
-  >
-    <img
-      src="/assets/breadcrumbSeparator.svg"
-      alt=""
-      className="products-filter-back-chevron"
-    />
-    <span>Size</span>
-  </button>
 
   <div className="products-filter-checkbox-list">
     {availableSizeFilters.map(size => {
