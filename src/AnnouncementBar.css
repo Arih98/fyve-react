@@ -1,3 +1,7 @@
+:root {
+  --announcement-height: 36px;
+}
+
 .announcement-bar {
   position: fixed;
   top: 0;
@@ -16,8 +20,7 @@
   display: flex;
   width: max-content;
   min-width: 100%;
-  will-change: transform;
-  /* Remove the CSS animation completely */
+  animation: announcement-marquee 22s linear infinite;
 }
 
 .announcement-group {
@@ -25,7 +28,6 @@
   align-items: center;
   flex-shrink: 0;
   width: max-content;
-  padding-right: 40px; /* spacing between repeats */
 }
 
 .announcement-group span {
@@ -33,21 +35,48 @@
   align-items: center;
   white-space: nowrap;
   flex-shrink: 0;
+  padding-right: 48px;
   font-family: 'Quasimoda', sans-serif;
   font-weight: 400;
   font-size: 14px;
   text-transform: uppercase;
-  padding-right: 48px;
 }
 
-/* Pause when menu is open */
-.announcement-bar.menu-open .announcement-marquee {
-  animation-play-state: paused; /* won't do anything but harmless */
+@keyframes announcement-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.announcement-bar.menu-open {
+  background: #f1dbd1;
 }
 
 @media (max-width: 768px) {
+  :root {
+    --announcement-height: 43px;
+  }
+
+.announcement-bar.cart-style:not(.menu-open) {
+  background: #ffffff;
+}
+
+  .announcement-marquee {
+    animation: announcement-marquee 10s linear infinite;
+  }
+
   .announcement-group span {
     font-size: 12px;
+    font-weight: 500;
     padding-right: 36px;
   }
+}
+
+body.search-open .announcement-bar {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
