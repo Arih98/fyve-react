@@ -14,9 +14,9 @@ const ProductPrice = ({ price }) => {
     <p className="product-price">
       {isOnSale ? (
         <>
-          <span className="strike-price">${formatPrice(regular)}</span>
+          <span>${formatPrice(current)}</span>
           {' '}
-          <span className="sale-price">${formatPrice(current)}</span>
+          <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>${regular}</span>
         </>
       ) : (
         <span>${formatPrice(current)}</span>
