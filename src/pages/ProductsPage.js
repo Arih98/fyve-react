@@ -34,6 +34,48 @@ const [selectedColorFilters, setSelectedColorFilters] = useState(() => getFilter
 const [selectedSizeFilters, setSelectedSizeFilters] = useState(() => getFilterParamArray('size'));
 const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 const [filterPanelView, setFilterPanelView] = useState('main');
+const [previousFilterPanelView, setPreviousFilterPanelView] = useState(null);
+const [isFilterPanelAnimating, setIsFilterPanelAnimating] = useState(false);
+const [filterPanelDirection, setFilterPanelDirection] = useState('forward');
+const filterPanelAnimationTimeoutRef = useRef(null);
+
+const resetFilterPanelView = useCallback(() => {
+  window.clearTimeout(filterPanelAnimationTimeoutRef.current);
+  setPreviousFilterPanelView(null);
+  setIsFilterPanelAnimating(false);
+  setFilterPanelDirection('forward');
+  setFilterPanelView('main');
+}, []);
+
+const changeFilterPanelView = useCallback((nextView) => {
+  if (nextView === filterPanelView) return;
+
+  window.clearTimeout(filterPanelAnimationTimeoutRef.current);
+
+  setPreviousFilterPanelView(filterPanelView);
+  setFilterPanelDirection(nextView === 'main' ? 'backward' : 'forward');
+  setFilterPanelView(nextView);
+  setIsFilterPanelAnimating(true);
+
+  filterPanelAnimationTimeoutRef.current = window.setTimeout(() => {
+    setPreviousFilterPanelView(null);
+    setIsFilterPanelAnimating(false);
+  }, 560);
+}, [filterPanelView]);
+
+const getFilterPanelScreenClass = useCallback((view) => {
+  return [
+    'products-filter-panel-screen',
+    filterPanelView === view ? 'is-active' : '',
+    previousFilterPanelView === view ? 'is-exiting' : ''
+  ].filter(Boolean).join(' ');
+}, [filterPanelView, previousFilterPanelView]);
+
+useEffect(() => {
+  return () => {
+    window.clearTimeout(filterPanelAnimationTimeoutRef.current);
+  };
+}, []);
 const prevCategoryRef = useRef(selectedCategory);
 const hasMountedCategoryRef = useRef(false);
 
@@ -65,8 +107,8 @@ setSelectedAudienceFilters([]);
 setSelectedColorFilters([]);
 setSelectedSizeFilters([]);
   setIsFilterPanelOpen(false);
-  setFilterPanelView('main');
-}, [selectedCategory]);
+  resetFilterPanelView();
+}, [selectedCategory, resetFilterPanelView]);
 
   useEffect(() => {
     if (!isMobile) return;
@@ -878,7 +920,7 @@ const handleSizeFilterChange = (slug) => {
 
 const closeFilterPanel = useCallback(({ fromPopState = false, afterBack = null } = {}) => {
   setIsFilterPanelOpen(false);
-  setFilterPanelView('main');
+  resetFilterPanelView();
 
   if (fromPopState) {
     filterPanelHistoryPushedRef.current = false;
@@ -904,10 +946,10 @@ const closeFilterPanel = useCallback(({ fromPopState = false, afterBack = null }
   if (typeof afterBack === 'function') {
     afterBack();
   }
-}, []);
+}, [resetFilterPanelView]);
 
 const openFilterPanel = useCallback(() => {
-  setFilterPanelView('main');
+  resetFilterPanelView();
   setIsFilterPanelOpen(true);
 
   if (window.innerWidth <= 768 && !filterPanelHistoryPushedRef.current) {
@@ -922,7 +964,7 @@ const openFilterPanel = useCallback(() => {
       window.location.href
     );
   }
-}, []);
+}, [resetFilterPanelView]);
 
 useEffect(() => {
   const handleOpenProductsFilter = () => {
@@ -1073,12 +1115,12 @@ const productsPageFilterPanel = (
 
           <div className="products-filter-panel-body">
   <div className="products-filter-panel-slider">
-    <div className={`products-filter-panel-track${filterPanelView === 'category' ? ' is-category-view' : ''}${filterPanelView === 'audience' ? ' is-audience-view' : ''}${filterPanelView === 'color' ? ' is-color-view' : ''}${filterPanelView === 'size' ? ' is-size-view' : ''}`}>
-      <div className="products-filter-panel-screen">
+<div className={`products-filter-panel-track ${isFilterPanelAnimating ? 'is-animating' : ''} is-${filterPanelDirection}`}>
+  <div className={getFilterPanelScreenClass('main')}>
   <button
     type="button"
     className="products-filter-drill-row"
-    onClick={() => setFilterPanelView('category')}
+    onClick={() => changeFilterPanelView('category')}
   >
     <span className="products-filter-drill-label">Category</span>
 
@@ -1096,7 +1138,7 @@ const productsPageFilterPanel = (
   <button
     type="button"
     className="products-filter-drill-row"
-    onClick={() => setFilterPanelView('audience')}
+    onClick={() => changeFilterPanelView('audience')}
   >
     <span className="products-filter-drill-label">Shop For</span>
 
@@ -1115,7 +1157,7 @@ const productsPageFilterPanel = (
   <button
     type="button"
     className="products-filter-drill-row"
-    onClick={() => setFilterPanelView('color')}
+    onClick={() => changeFilterPanelView('color')}
   >
     <span className="products-filter-drill-label">Color</span>
 
@@ -1134,7 +1176,7 @@ const productsPageFilterPanel = (
   <button
     type="button"
     className="products-filter-drill-row"
-    onClick={() => setFilterPanelView('size')}
+    onClick={() => changeFilterPanelView('size')}
   >
     <span className="products-filter-drill-label">Size</span>
 
@@ -1150,11 +1192,11 @@ const productsPageFilterPanel = (
 )}
 </div>
 
-      <div className="products-filter-panel-screen">
+<div className={getFilterPanelScreenClass('category')}>
         <button
           type="button"
           className="products-filter-back-row"
-          onClick={() => setFilterPanelView('main')}
+          onClick={() => changeFilterPanelView('main')}
         >
           <img
             src="/assets/breadcrumbSeparator.svg"
@@ -1215,11 +1257,11 @@ const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
         </div>
       </div>
 
-      <div className="products-filter-panel-screen">
+      <div className={getFilterPanelScreenClass('audience')}>
   <button
     type="button"
     className="products-filter-back-row"
-    onClick={() => setFilterPanelView('main')}
+    onClick={() => changeFilterPanelView('main')}
   >
     <img
       src="/assets/breadcrumbSeparator.svg"
@@ -1252,11 +1294,11 @@ const isDisabledSub = isSubFilterDisabled(group.slug, category.slug);
   </div>
 </div>
 
-    <div className="products-filter-panel-screen">
+    <div className={getFilterPanelScreenClass('color')}>
   <button
     type="button"
     className="products-filter-back-row"
-    onClick={() => setFilterPanelView('main')}
+    onClick={() => changeFilterPanelView('main')}
   >
     <img
       src="/assets/breadcrumbSeparator.svg"
@@ -1292,11 +1334,11 @@ const isDisabledColor = isColorFilterDisabled(color.slug);
     })}
   </div>
 </div>
-    <div className="products-filter-panel-screen">
+    <div className={getFilterPanelScreenClass('size')}>
   <button
     type="button"
     className="products-filter-back-row"
-    onClick={() => setFilterPanelView('main')}
+    onClick={() => changeFilterPanelView('main')}
   >
     <img
       src="/assets/breadcrumbSeparator.svg"

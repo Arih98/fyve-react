@@ -737,35 +737,59 @@
   display: block;
   position: relative;
   height: 100%;
+  overflow: hidden;
   transform: none !important;
   transition: none !important;
 }
 
 .products-filter-panel-screen {
   display: none;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   overflow-y: auto;
   padding: 26px;
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
+  background: #fff;
+  pointer-events: none;
 }
 
-.products-filter-panel-track:not(.is-category-view):not(.is-audience-view):not(.is-color-view):not(.is-size-view) > .products-filter-panel-screen:nth-child(1) {
+.products-filter-panel-screen.is-active,
+.products-filter-panel-screen.is-exiting {
   display: block;
 }
 
-.products-filter-panel-track.is-category-view > .products-filter-panel-screen:nth-child(2),
-.products-filter-panel-track.is-audience-view > .products-filter-panel-screen:nth-child(3),
-.products-filter-panel-track.is-color-view > .products-filter-panel-screen:nth-child(4),
-.products-filter-panel-track.is-size-view > .products-filter-panel-screen:nth-child(5) {
-  display: block;
-  animation: productsFilterSlideInRight 0.34s cubic-bezier(0.31, 0, 0.14, 1) both;
+.products-filter-panel-screen.is-active {
+  pointer-events: auto;
+  z-index: 2;
 }
 
-@keyframes productsFilterSlideInRight {
+.products-filter-panel-screen.is-exiting {
+  pointer-events: none;
+  z-index: 1;
+}
+
+.products-filter-panel-track.is-animating.is-forward .products-filter-panel-screen.is-active {
+  animation: productsFilterEnterFromRight 560ms cubic-bezier(0.31, 0, 0.14, 1) both;
+}
+
+.products-filter-panel-track.is-animating.is-forward .products-filter-panel-screen.is-exiting {
+  animation: productsFilterExitToLeft 560ms cubic-bezier(0.31, 0, 0.14, 1) both;
+}
+
+.products-filter-panel-track.is-animating.is-backward .products-filter-panel-screen.is-active {
+  animation: productsFilterEnterFromLeft 560ms cubic-bezier(0.31, 0, 0.14, 1) both;
+}
+
+.products-filter-panel-track.is-animating.is-backward .products-filter-panel-screen.is-exiting {
+  animation: productsFilterExitToRight 560ms cubic-bezier(0.31, 0, 0.14, 1) both;
+}
+
+@keyframes productsFilterEnterFromRight {
   from {
-    transform: translateX(34px);
+    transform: translateX(100%);
   }
 
   to {
@@ -773,13 +797,33 @@
   }
 }
 
-@keyframes productsFilterSlideInLeft {
+@keyframes productsFilterExitToLeft {
   from {
-    transform: translateX(-34px);
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes productsFilterEnterFromLeft {
+  from {
+    transform: translateX(-100%);
   }
 
   to {
     transform: translateX(0);
+  }
+}
+
+@keyframes productsFilterExitToRight {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
   }
 }
 
