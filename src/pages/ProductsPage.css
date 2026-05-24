@@ -753,7 +753,6 @@
 
 .products-filter-panel-track:not(.is-category-view):not(.is-audience-view):not(.is-color-view):not(.is-size-view) > .products-filter-panel-screen:nth-child(1) {
   display: block;
-  animation: productsFilterSlideInLeft 0.34s cubic-bezier(0.31, 0, 0.14, 1) both;
 }
 
 .products-filter-panel-track.is-category-view > .products-filter-panel-screen:nth-child(2),
@@ -766,24 +765,20 @@
 
 @keyframes productsFilterSlideInRight {
   from {
-    opacity: 0;
     transform: translateX(34px);
   }
 
   to {
-    opacity: 1;
     transform: translateX(0);
   }
 }
 
 @keyframes productsFilterSlideInLeft {
   from {
-    opacity: 0;
     transform: translateX(-34px);
   }
 
   to {
-    opacity: 1;
     transform: translateX(0);
   }
 }
