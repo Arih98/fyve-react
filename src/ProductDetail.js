@@ -745,32 +745,23 @@ useEffect(() => {
   if (!hasSelectedSize) return;
   if (!current) return;
 
-  let cancelled = false;
-
   const addAfterSizeSelection = async () => {
     pendingHeaderAddAfterSizeRef.current = false;
 
     const added = await handleAddToCart();
 
-    if (cancelled) return;
-
-    if (added) {          // <-- remove the isSizePanelOpen check entirely
-      closeSizePanel();   //     closeSizePanel is safe to call even if already closed
+    if (added) {
+      closeSizePanel();
     }
   };
 
   addAfterSizeSelection();
-
-  return () => {
-    cancelled = true;
-  };
 }, [
   hasSelectedSize,
   sizeValue,
   current?.id,
   handleAddToCart,
-  isSizePanelOpen,   // <-- add this
-  closeSizePanel     // already here, just make sure it stays
+  closeSizePanel
 ]);
 
 useEffect(() => {
