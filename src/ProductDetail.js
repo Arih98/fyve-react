@@ -754,8 +754,8 @@ useEffect(() => {
 
     if (cancelled) return;
 
-    if (added && isSizePanelOpen) {
-      closeSizePanel();
+    if (added) {          // <-- remove the isSizePanelOpen check entirely
+      closeSizePanel();   //     closeSizePanel is safe to call even if already closed
     }
   };
 
@@ -769,8 +769,8 @@ useEffect(() => {
   sizeValue,
   current?.id,
   handleAddToCart,
-  isSizePanelOpen,
-  closeSizePanel
+  isSizePanelOpen,   // <-- add this
+  closeSizePanel     // already here, just make sure it stays
 ]);
 
 useEffect(() => {
