@@ -525,6 +525,7 @@ const sizeAttrName = attributeNames.find(isSizeAttribute);
 const sizeValue = sizeAttrName ? selectedAttributes[sizeAttrName] || '' : '';
 
 if (product.product_type === 'variable' && sizeAttrName && !sizeValue) {
+  pendingHeaderAddAfterSizeRef.current = true;
   openSizePanel();
   return false;
 }
