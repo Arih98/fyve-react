@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
 import './AnnouncementBar.css';
@@ -9,10 +9,29 @@ const AnnouncementBar = () => {
   const location = useLocation();
   const { isMenuOpen } = useContext(MenuContext);
   const isCartPage = location.pathname === '/cart';
+  const marqueeRef = useRef(null);
+
+  useEffect(() => {
+    const marquee = marqueeRef.current;
+    if (!marquee) return;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Small trick to reduce jump on tab return
+        marquee.style.animationPlayState = 'paused';
+        void marquee.offsetWidth; // Force reflow
+        marquee.style.animationPlayState = 'running';
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   return (
     <div className={`announcement-bar${isCartPage ? ' cart-style' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
-      <div className="announcement-marquee">
+      <div className="announcement-marquee" ref={marqueeRef}>
         <div className="announcement-group">
           {items.map((item, index) => (
             <span key={`group1-${index}`}>{item}</span>
