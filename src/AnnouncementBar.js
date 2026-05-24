@@ -3,43 +3,74 @@ import { useLocation } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
 import './AnnouncementBar.css';
 
-const items = Array(10).fill('FREE SHIPPING SITEWIDE');
+const TEXT = 'FREE SHIPPING SITEWIDE';
+const REPEATS = 12; // more repeats = smoother
 
 const AnnouncementBar = () => {
   const location = useLocation();
   const { isMenuOpen } = useContext(MenuContext);
   const isCartPage = location.pathname === '/cart';
-  const marqueeRef = useRef(null);
+  const containerRef = useRef(null);
+  const animationRef = useRef(null);
+  const isPausedRef = useRef(false);
 
   useEffect(() => {
-    const marquee = marqueeRef.current;
-    if (!marquee) return;
+    const container = containerRef.current;
+    if (!container) return;
 
+    let startTime = Date.now();
+    const speed = 22; // seconds for one full cycle (adjust as needed)
+
+    const animate = () => {
+      if (isPausedRef.current) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      const elapsed = (Date.now() - startTime) / 1000;
+      const progress = (elapsed % speed) / speed;
+      const translateX = -50 * progress; // -50% because we duplicate the content
+
+      container.style.transform = `translateX(${translateX}%)`;
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    // Start animation
+    animationRef.current = requestAnimationFrame(animate);
+
+    // Handle tab switching
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // Small trick to reduce jump on tab return
-        marquee.style.animationPlayState = 'paused';
-        void marquee.offsetWidth; // Force reflow
-        marquee.style.animationPlayState = 'running';
+        // Small delay + reset timing to prevent jump
+        isPausedRef.current = true;
+        setTimeout(() => {
+          startTime = Date.now();           // Reset timing
+          isPausedRef.current = false;
+        }, 80);
+      } else {
+        isPausedRef.current = true;
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   return (
     <div className={`announcement-bar${isCartPage ? ' cart-style' : ''}${isMenuOpen ? ' menu-open' : ''}`}>
-      <div className="announcement-marquee" ref={marqueeRef}>
+      <div className="announcement-marquee" ref={containerRef}>
         <div className="announcement-group">
-          {items.map((item, index) => (
-            <span key={`group1-${index}`}>{item}</span>
+          {Array(REPEATS).fill(TEXT).map((item, i) => (
+            <span key={i}>{item}</span>
           ))}
         </div>
         <div className="announcement-group" aria-hidden="true">
-          {items.map((item, index) => (
-            <span key={`group2-${index}`}>{item}</span>
+          {Array(REPEATS).fill(TEXT).map((item, i) => (
+            <span key={`dup-${i}`}>{item}</span>
           ))}
         </div>
       </div>
