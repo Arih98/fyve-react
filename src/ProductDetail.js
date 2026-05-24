@@ -776,7 +776,7 @@ useEffect(() => {
 useEffect(() => {
   pendingHeaderAddAfterSizeRef.current = false;
   setIsSizePanelOpen(false);
-}, [product?.id, colorValue]);
+}, [product?.id]);
 
 useEffect(() => {
   if (!isMobile || !isSizePanelOpen) {
