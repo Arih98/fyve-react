@@ -24,7 +24,14 @@ const ProductDetail = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
-  const relatedProductImageRefs = useRef(new Map());
+const relatedProductImageRefs = useRef(new Map());
+const relatedProductsViewportRef = useRef(null);
+const relatedProductsTouchStartX = useRef(0);
+const relatedProductsTouchDeltaX = useRef(0);
+const relatedProductsWheelLockRef = useRef(false);
+const relatedProductsWheelUnlockRef = useRef(0);
+const [relatedProductsIndex, setRelatedProductsIndex] = useState(0);
+const [relatedProductsMeasureTick, setRelatedProductsMeasureTick] = useState(0);
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showDesktopSecondaryImages, setShowDesktopSecondaryImages] = useState(!location.state?.fromProductGrid);
@@ -238,6 +245,97 @@ const handleRelatedProductClick = (relItem, index) => {
       fromProductGrid: true
     }
   });
+};
+
+useEffect(() => {
+  setRelatedProductsIndex(prev => Math.min(prev, Math.max(0, relatedProducts.length - 1)));
+}, [relatedProducts.length]);
+
+useEffect(() => {
+  const handleResize = () => {
+    setRelatedProductsMeasureTick(value => value + 1);
+    setRelatedProductsIndex(prev => Math.min(prev, Math.max(0, relatedProducts.length - 1)));
+  };
+
+  window.addEventListener('resize', handleResize);
+
+  return () => window.removeEventListener('resize', handleResize);
+}, [relatedProducts.length]);
+
+const getRelatedProductsTranslateX = () => {
+  relatedProductsMeasureTick;
+
+  const viewport = relatedProductsViewportRef.current;
+  if (!viewport) return 0;
+
+  const track = viewport.querySelector('.related-products-track');
+  const firstCard = track?.querySelector('.related-product-card');
+
+  if (!track || !firstCard) return 0;
+
+  const viewportWidth = viewport.clientWidth;
+  const cardWidth = firstCard.getBoundingClientRect().width;
+  const trackStyle = window.getComputedStyle(track);
+  const gap = parseFloat(trackStyle.columnGap || trackStyle.gap || '0') || 0;
+  const step = cardWidth + gap;
+  const trackWidth = relatedProducts.length * cardWidth + Math.max(0, relatedProducts.length - 1) * gap;
+  const maxTranslate = Math.max(0, trackWidth - viewportWidth);
+
+  if (relatedProductsIndex <= 0) return 0;
+  if (relatedProductsIndex >= relatedProducts.length - 1) return maxTranslate;
+
+  const centeredOffset = (viewportWidth - cardWidth) / 2;
+  const rawTranslate = relatedProductsIndex * step - centeredOffset;
+
+  return Math.max(0, Math.min(rawTranslate, maxTranslate));
+};
+
+const handleRelatedProductsTouchStart = (e) => {
+  relatedProductsTouchStartX.current = e.touches[0].clientX;
+  relatedProductsTouchDeltaX.current = 0;
+};
+
+const handleRelatedProductsTouchMove = (e) => {
+  relatedProductsTouchDeltaX.current = e.touches[0].clientX - relatedProductsTouchStartX.current;
+};
+
+const handleRelatedProductsTouchEnd = () => {
+  const threshold = 50;
+  const deltaX = relatedProductsTouchDeltaX.current;
+  const maxIndex = Math.max(0, relatedProducts.length - 1);
+
+  if (deltaX <= -threshold) {
+    setRelatedProductsIndex(prev => Math.min(prev + 1, maxIndex));
+  } else if (deltaX >= threshold) {
+    setRelatedProductsIndex(prev => Math.max(prev - 1, 0));
+  }
+
+  relatedProductsTouchStartX.current = 0;
+  relatedProductsTouchDeltaX.current = 0;
+};
+
+const handleRelatedProductsWheel = (e) => {
+  const absX = Math.abs(e.deltaX);
+  const absY = Math.abs(e.deltaY);
+
+  if (absX < 4) return;
+  if (absX < absY * 1.15) return;
+
+  e.preventDefault();
+
+  if (relatedProductsWheelLockRef.current) return;
+
+  const maxIndex = Math.max(0, relatedProducts.length - 1);
+  const direction = e.deltaX > 0 ? 1 : -1;
+
+  relatedProductsWheelLockRef.current = true;
+  window.clearTimeout(relatedProductsWheelUnlockRef.current);
+
+  setRelatedProductsIndex(prev => Math.max(0, Math.min(prev + direction, maxIndex)));
+
+  relatedProductsWheelUnlockRef.current = window.setTimeout(() => {
+    relatedProductsWheelLockRef.current = false;
+  }, 360);
 };
 
   const getColorClassName = (term) => {
@@ -1435,40 +1533,55 @@ const productAccordions = (
 const relatedProductsSlider = relatedProducts.length > 0 ? (
   <div className="related-products-container">
     <h2 className="related-products-title">Related Products</h2>
-    <div className="related-products-grid">
-      {relatedProducts.map((relItem, index) => {
-        const relatedKey = getRelatedProductKey(relItem, index);
 
-        return (
-          <button
-            key={relatedKey}
-            type="button"
-            className="related-product-card"
-            onClick={() => handleRelatedProductClick(relItem, index)}
-          >
-            <div className="related-product-image-wrap">
-              <img
-                ref={el => {
-                  if (el) {
-                    relatedProductImageRefs.current.set(relatedKey, el);
-                  } else {
-                    relatedProductImageRefs.current.delete(relatedKey);
-                  }
-                }}
-                src={getDisplayImage(relItem)}
-                alt={relItem.displayTitle}
-                className="related-product-image"
-                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-              />
-            </div>
+    <div
+      ref={relatedProductsViewportRef}
+      className="related-products-carousel"
+      onTouchStart={handleRelatedProductsTouchStart}
+      onTouchMove={handleRelatedProductsTouchMove}
+      onTouchEnd={handleRelatedProductsTouchEnd}
+      onWheel={handleRelatedProductsWheel}
+    >
+      <div
+        className="related-products-track"
+        style={{
+          transform: `translate3d(-${getRelatedProductsTranslateX()}px, 0, 0)`
+        }}
+      >
+        {relatedProducts.map((relItem, index) => {
+          const relatedKey = getRelatedProductKey(relItem, index);
 
-            <div className="related-product-info">
-              <h3 className="related-product-title">{relItem.displayTitle}</h3>
-              <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
-            </div>
-          </button>
-        );
-      })}
+          return (
+            <button
+              key={relatedKey}
+              type="button"
+              className="related-product-card"
+              onClick={() => handleRelatedProductClick(relItem, index)}
+            >
+              <div className="related-product-image-wrap">
+                <img
+                  ref={el => {
+                    if (el) {
+                      relatedProductImageRefs.current.set(relatedKey, el);
+                    } else {
+                      relatedProductImageRefs.current.delete(relatedKey);
+                    }
+                  }}
+                  src={getDisplayImage(relItem)}
+                  alt={relItem.displayTitle}
+                  className="related-product-image"
+                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                />
+              </div>
+
+              <div className="related-product-info">
+                <h3 className="related-product-title">{relItem.displayTitle}</h3>
+                <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   </div>
 ) : null;
