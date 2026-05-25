@@ -51,6 +51,9 @@ const galleryMouseDragRef = useRef({
   pointerId: null,
   startX: 0,
   scrollLeft: 0,
+  currentScrollLeft: 0,
+  targetScrollLeft: 0,
+  animationFrame: 0,
   moved: false
 });
 
@@ -925,6 +928,46 @@ const handleGalleryImageClick = (idx) => {
   openImageViewer(idx);
 };
 
+const snapGalleryToNearestSlide = useCallback((behavior = 'smooth') => {
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  const children = Array.from(el.children);
+  if (!children.length) return;
+
+  const nearest = children.reduce((closest, child) => {
+    const currentDistance = Math.abs(child.offsetLeft - el.scrollLeft);
+    const closestDistance = Math.abs(closest.offsetLeft - el.scrollLeft);
+
+    return currentDistance < closestDistance ? child : closest;
+  }, children[0]);
+
+  el.scrollTo({
+    left: nearest.offsetLeft,
+    behavior
+  });
+}, []);
+
+const animateGalleryDragScroll = useCallback(() => {
+  const el = mobileGalleryRef.current;
+  const dragState = galleryMouseDragRef.current;
+
+  if (!el || !dragState.isDragging) {
+    dragState.animationFrame = 0;
+    return;
+  }
+
+  const distance = dragState.targetScrollLeft - dragState.currentScrollLeft;
+  const nextScrollLeft = Math.abs(distance) < 0.5
+    ? dragState.targetScrollLeft
+    : dragState.currentScrollLeft + distance * 0.32;
+
+  dragState.currentScrollLeft = nextScrollLeft;
+  el.scrollLeft = nextScrollLeft;
+
+  dragState.animationFrame = requestAnimationFrame(animateGalleryDragScroll);
+}, []);
+
 const handleGalleryPointerDown = (e) => {
   if (isMobile) return;
   if (e.pointerType !== 'mouse') return;
@@ -938,6 +981,9 @@ const handleGalleryPointerDown = (e) => {
     pointerId: e.pointerId,
     startX: e.clientX,
     scrollLeft: el.scrollLeft,
+    currentScrollLeft: el.scrollLeft,
+    targetScrollLeft: el.scrollLeft,
+    animationFrame: 0,
     moved: false
   };
 
@@ -957,17 +1003,20 @@ const handleGalleryPointerMove = (e) => {
   if (!dragState.isDragging) return;
   if (dragState.pointerId !== e.pointerId) return;
 
-  const el = mobileGalleryRef.current;
-  if (!el) return;
-
   const deltaX = e.clientX - dragState.startX;
 
-  if (Math.abs(deltaX) > 5) {
+  if (Math.abs(deltaX) > 12) {
     dragState.moved = true;
     galleryWasDraggingRef.current = true;
   }
 
-  el.scrollLeft = dragState.scrollLeft - deltaX;
+  if (!dragState.moved) return;
+
+  dragState.targetScrollLeft = dragState.scrollLeft - deltaX;
+
+  if (!dragState.animationFrame) {
+    dragState.animationFrame = requestAnimationFrame(animateGalleryDragScroll);
+  }
 };
 
 const handleGalleryPointerEnd = (e) => {
@@ -977,6 +1026,10 @@ const handleGalleryPointerEnd = (e) => {
   if (dragState.pointerId !== e.pointerId) return;
 
   const moved = dragState.moved;
+
+  if (dragState.animationFrame) {
+    cancelAnimationFrame(dragState.animationFrame);
+  }
 
   if (e.currentTarget.releasePointerCapture) {
     try {
@@ -989,15 +1042,22 @@ const handleGalleryPointerEnd = (e) => {
     pointerId: null,
     startX: 0,
     scrollLeft: 0,
+    currentScrollLeft: 0,
+    targetScrollLeft: 0,
+    animationFrame: 0,
     moved: false
   };
 
   setIsGalleryMouseDragging(false);
 
   if (moved) {
+    requestAnimationFrame(() => {
+      snapGalleryToNearestSlide('smooth');
+    });
+
     window.setTimeout(() => {
       galleryWasDraggingRef.current = false;
-    }, 120);
+    }, 160);
   }
 };
 

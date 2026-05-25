@@ -1200,8 +1200,15 @@ body.size-panel-open {
 
 @media (min-width: 769px) {
 
-    .product-image-gallery-track.is-mouse-dragging,
-  .product-image-gallery-track.is-mouse-dragging .product-gallery-image-wrapper {
+  .product-image-gallery-track.is-mouse-dragging {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .product-image-gallery-track.is-mouse-dragging .product-gallery-image-wrapper,
+  .product-image-gallery-track.is-mouse-dragging .product-gallery-image {
     cursor: grabbing;
   }
 
