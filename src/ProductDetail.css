@@ -1200,18 +1200,6 @@ body.size-panel-open {
 
 @media (min-width: 769px) {
 
-  .product-image-gallery-track.is-mouse-dragging {
-    scroll-snap-type: none;
-    scroll-behavior: auto;
-    cursor: grabbing;
-    user-select: none;
-  }
-
-  .product-image-gallery-track.is-mouse-dragging .product-gallery-image-wrapper,
-  .product-image-gallery-track.is-mouse-dragging .product-gallery-image {
-    cursor: grabbing;
-  }
-
 .details-container {
   flex: 0 0 31.3vw;
   width: 31.3vw;
@@ -1320,10 +1308,11 @@ body.size-panel-open {
   justify-content: flex-start;
 }
 
-.product-image-gallery {
-  width: 100%;
-  max-width: none;
-}
+  .product-image-gallery {
+    width: 100%;
+    max-width: none;
+    overflow: hidden;
+  }
 
 .images-container {
   flex: 1 1 auto;
@@ -1337,17 +1326,27 @@ body.size-panel-open {
     flex-direction: row;
     width: 100%;
     gap: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scroll-snap-stop: always;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
+    scroll-snap-type: none;
+    scroll-snap-stop: normal;
+    -webkit-overflow-scrolling: auto;
     scrollbar-width: none;
-    overscroll-behavior-x: contain;
+    overscroll-behavior-x: auto;
+    cursor: var(--fyve-cursor-plus);
+    will-change: transform;
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.31, 0, 0.14, 1);
   }
 
   .product-image-gallery-track::-webkit-scrollbar {
     display: none;
+  }
+
+  .product-image-gallery-track.is-mouse-dragging,
+  .product-image-gallery-track.is-mouse-dragging .product-gallery-image-wrapper,
+  .product-image-gallery-track.is-mouse-dragging .product-gallery-image {
+    cursor: grabbing;
+    user-select: none;
   }
 
   .product-gallery-image-wrapper,

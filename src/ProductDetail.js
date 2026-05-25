@@ -50,13 +50,16 @@ const galleryMouseDragRef = useRef({
   isDragging: false,
   pointerId: null,
   startX: 0,
-  startScrollLeft: 0,
-  lastScrollLeft: 0,
+  startTranslateX: 0,
+  lastTranslateX: 0,
   lastTime: 0,
   velocity: 0,
-  snapFrame: 0,
-  moved: false
+  moved: false,
+  settleTimeout: 0
 });
+
+const [galleryTranslateX, setGalleryTranslateX] = useState(0);
+const [isGallerySettling, setIsGallerySettling] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -933,107 +936,93 @@ const clampGalleryValue = (value, min, max) => {
   return Math.min(Math.max(value, min), max);
 };
 
-const getGalleryMaxScrollLeft = (el) => {
-  return Math.max(0, el.scrollWidth - el.clientWidth);
-};
+const getDesktopGalleryMaxTranslate = useCallback(() => {
+  const el = mobileGalleryRef.current;
+  if (!el) return 0;
 
-const getGallerySnapPoints = useCallback((el) => {
-  const maxScrollLeft = getGalleryMaxScrollLeft(el);
-
-  const points = Array.from(el.children).map(child => {
-    return Math.min(child.offsetLeft, maxScrollLeft);
-  });
-
-  points.push(maxScrollLeft);
-
-  return Array.from(new Set(points.map(value => Math.round(value)))).sort((a, b) => a - b);
+  return Math.min(0, el.clientWidth - el.scrollWidth);
 }, []);
 
-const getClosestGallerySnapPoint = useCallback((el, value) => {
-  const points = getGallerySnapPoints(el);
+const getDesktopGallerySnapPoints = useCallback(() => {
+  const el = mobileGalleryRef.current;
+  if (!el) return [0];
 
-  if (!points.length) return 0;
+  const maxTranslate = getDesktopGalleryMaxTranslate();
+  const maxScroll = Math.abs(maxTranslate);
+
+  const points = Array.from(el.children).map(child => {
+    const scrollPoint = Math.min(child.offsetLeft, maxScroll);
+    return -scrollPoint;
+  });
+
+  points.push(maxTranslate);
+
+  return Array.from(new Set(points.map(value => Math.round(value)))).sort((a, b) => b - a);
+}, [getDesktopGalleryMaxTranslate]);
+
+const getClosestDesktopGallerySnapPoint = useCallback((value) => {
+  const points = getDesktopGallerySnapPoints();
 
   return points.reduce((closest, point) => {
     return Math.abs(point - value) < Math.abs(closest - value) ? point : closest;
-  }, points[0]);
-}, [getGallerySnapPoints]);
+  }, points[0] || 0);
+}, [getDesktopGallerySnapPoints]);
 
-const animateGalleryToScrollLeft = useCallback((targetScrollLeft, duration = 300) => {
+const updateDesktopGalleryActiveIndex = useCallback((translateX) => {
   const el = mobileGalleryRef.current;
   if (!el) return;
 
-  const dragState = galleryMouseDragRef.current;
+  const scrollEquivalent = Math.abs(translateX);
+  const children = Array.from(el.children);
+  if (!children.length) return;
 
-  if (dragState.snapFrame) {
-    cancelAnimationFrame(dragState.snapFrame);
-  }
+  const nextIndex = children.reduce((closestIndex, child, index) => {
+    const currentDistance = Math.abs(child.offsetLeft - scrollEquivalent);
+    const closestDistance = Math.abs(children[closestIndex].offsetLeft - scrollEquivalent);
 
-  const maxScrollLeft = getGalleryMaxScrollLeft(el);
-  const startScrollLeft = el.scrollLeft;
-  const endScrollLeft = clampGalleryValue(targetScrollLeft, 0, maxScrollLeft);
-  const startTime = performance.now();
+    return currentDistance < closestDistance ? index : closestIndex;
+  }, 0);
 
-  if (Math.abs(endScrollLeft - startScrollLeft) < 1) {
-    el.scrollLeft = endScrollLeft;
-    dragState.snapFrame = 0;
-    return;
-  }
+  setActiveImageIndex(Math.max(0, Math.min(displayImages.length - 1, nextIndex)));
+}, [displayImages.length]);
 
-  const tick = (now) => {
-    const progress = clampGalleryValue((now - startTime) / duration, 0, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
+const settleDesktopGalleryTo = useCallback((targetTranslateX) => {
+  const target = clampGalleryValue(targetTranslateX, getDesktopGalleryMaxTranslate(), 0);
 
-    el.scrollLeft = startScrollLeft + (endScrollLeft - startScrollLeft) * eased;
+  window.clearTimeout(galleryMouseDragRef.current.settleTimeout);
 
-    if (progress < 1) {
-      dragState.snapFrame = requestAnimationFrame(tick);
-    } else {
-      el.scrollLeft = endScrollLeft;
-      dragState.snapFrame = 0;
-    }
-  };
+  setIsGallerySettling(true);
+  setGalleryTranslateX(target);
+  updateDesktopGalleryActiveIndex(target);
 
-  dragState.snapFrame = requestAnimationFrame(tick);
-}, []);
-
-const snapGalleryToNearestSlide = useCallback((projectedScrollLeft = null, duration = 300) => {
-  const el = mobileGalleryRef.current;
-  if (!el) return;
-
-  const value = projectedScrollLeft === null ? el.scrollLeft : projectedScrollLeft;
-  const target = getClosestGallerySnapPoint(el, value);
-
-  animateGalleryToScrollLeft(target, duration);
-}, [getClosestGallerySnapPoint, animateGalleryToScrollLeft]);
+  galleryMouseDragRef.current.settleTimeout = window.setTimeout(() => {
+    setIsGallerySettling(false);
+  }, 320);
+}, [getDesktopGalleryMaxTranslate, updateDesktopGalleryActiveIndex]);
 
 const handleGalleryPointerDown = (e) => {
   if (isMobile) return;
   if (e.pointerType !== 'mouse') return;
   if (e.button !== 0) return;
 
-  const el = mobileGalleryRef.current;
-  if (!el) return;
+  window.clearTimeout(galleryMouseDragRef.current.settleTimeout);
 
   const now = performance.now();
-
-  if (galleryMouseDragRef.current.snapFrame) {
-    cancelAnimationFrame(galleryMouseDragRef.current.snapFrame);
-  }
 
   galleryMouseDragRef.current = {
     isDragging: true,
     pointerId: e.pointerId,
     startX: e.clientX,
-    startScrollLeft: el.scrollLeft,
-    lastScrollLeft: el.scrollLeft,
+    startTranslateX: galleryTranslateX,
+    lastTranslateX: galleryTranslateX,
     lastTime: now,
     velocity: 0,
-    snapFrame: 0,
-    moved: false
+    moved: false,
+    settleTimeout: 0
   };
 
   galleryWasDraggingRef.current = false;
+  setIsGallerySettling(false);
   setIsGalleryMouseDragging(true);
 
   if (e.currentTarget.setPointerCapture) {
@@ -1047,29 +1036,32 @@ const handleGalleryPointerMove = (e) => {
   if (!dragState.isDragging) return;
   if (dragState.pointerId !== e.pointerId) return;
 
-  const el = mobileGalleryRef.current;
-  if (!el) return;
-
   const now = performance.now();
   const deltaX = e.clientX - dragState.startX;
-  const maxScrollLeft = getGalleryMaxScrollLeft(el);
-  const dragSpeed = 1.55;
-const nextScrollLeft = clampGalleryValue(dragState.startScrollLeft - deltaX * dragSpeed, 0, maxScrollLeft);
 
-  if (Math.abs(deltaX) > 8) {
+  if (Math.abs(deltaX) > 4) {
     dragState.moved = true;
     galleryWasDraggingRef.current = true;
   }
 
   if (!dragState.moved) return;
 
+  const dragRatio = 0.95;
+  const maxTranslate = getDesktopGalleryMaxTranslate();
+  const nextTranslateX = clampGalleryValue(
+    dragState.startTranslateX + deltaX * dragRatio,
+    maxTranslate,
+    0
+  );
+
   const deltaTime = Math.max(1, now - dragState.lastTime);
 
-  dragState.velocity = (nextScrollLeft - dragState.lastScrollLeft) / deltaTime;
-  dragState.lastScrollLeft = nextScrollLeft;
+  dragState.velocity = (nextTranslateX - dragState.lastTranslateX) / deltaTime;
+  dragState.lastTranslateX = nextTranslateX;
   dragState.lastTime = now;
 
-  el.scrollLeft = nextScrollLeft;
+  setGalleryTranslateX(nextTranslateX);
+  updateDesktopGalleryActiveIndex(nextTranslateX);
 };
 
 const handleGalleryPointerEnd = (e) => {
@@ -1078,11 +1070,7 @@ const handleGalleryPointerEnd = (e) => {
   if (!dragState.isDragging) return;
   if (dragState.pointerId !== e.pointerId) return;
 
-  const el = mobileGalleryRef.current;
   const moved = dragState.moved;
-  const projectedScrollLeft = el
-    ? el.scrollLeft + dragState.velocity * 220
-    : null;
 
   if (e.currentTarget.releasePointerCapture) {
     try {
@@ -1094,25 +1082,31 @@ const handleGalleryPointerEnd = (e) => {
     isDragging: false,
     pointerId: null,
     startX: 0,
-    startScrollLeft: 0,
-    lastScrollLeft: 0,
+    startTranslateX: 0,
+    lastTranslateX: 0,
     lastTime: 0,
     velocity: 0,
-    snapFrame: dragState.snapFrame,
-    moved: false
+    moved: false,
+    settleTimeout: dragState.settleTimeout
   };
 
   setIsGalleryMouseDragging(false);
 
-  if (moved) {
-    requestAnimationFrame(() => {
-      snapGalleryToNearestSlide(projectedScrollLeft, 300);
-    });
-
-    window.setTimeout(() => {
-      galleryWasDraggingRef.current = false;
-    }, 220);
+  if (!moved) {
+    galleryWasDraggingRef.current = false;
+    return;
   }
+
+  const projectedTranslateX = galleryTranslateX + dragState.velocity * 180;
+  const targetTranslateX = getClosestDesktopGallerySnapPoint(projectedTranslateX);
+
+  requestAnimationFrame(() => {
+    settleDesktopGalleryTo(targetTranslateX);
+  });
+
+  window.setTimeout(() => {
+    galleryWasDraggingRef.current = false;
+  }, 240);
 };
 
 const productAccordions = (
@@ -1284,6 +1278,11 @@ return (
 <div
   ref={mobileGalleryRef}
   className={`product-image-gallery-track ${isGalleryMouseDragging ? 'is-mouse-dragging' : ''}`}
+  style={!isMobile ? {
+    transform: `translate3d(${galleryTranslateX}px, 0, 0)`,
+    transitionDuration: isGallerySettling ? '300ms' : '0ms',
+    transitionDelay: '0ms'
+  } : undefined}
   onScroll={handleMobileGalleryScroll}
   onTouchStart={handleGalleryTouchStart}
   onTouchMove={handleGalleryTouchMove}
