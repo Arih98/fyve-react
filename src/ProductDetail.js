@@ -50,10 +50,11 @@ const galleryMouseDragRef = useRef({
   isDragging: false,
   pointerId: null,
   startX: 0,
-  scrollLeft: 0,
-  currentScrollLeft: 0,
-  targetScrollLeft: 0,
-  animationFrame: 0,
+  startScrollLeft: 0,
+  lastScrollLeft: 0,
+  lastTime: 0,
+  velocity: 0,
+  snapFrame: 0,
   moved: false
 });
 
@@ -928,45 +929,83 @@ const handleGalleryImageClick = (idx) => {
   openImageViewer(idx);
 };
 
-const snapGalleryToNearestSlide = useCallback((behavior = 'smooth') => {
+const clampGalleryValue = (value, min, max) => {
+  return Math.min(Math.max(value, min), max);
+};
+
+const getGalleryMaxScrollLeft = (el) => {
+  return Math.max(0, el.scrollWidth - el.clientWidth);
+};
+
+const getGallerySnapPoints = useCallback((el) => {
+  const maxScrollLeft = getGalleryMaxScrollLeft(el);
+
+  const points = Array.from(el.children).map(child => {
+    return Math.min(child.offsetLeft, maxScrollLeft);
+  });
+
+  points.push(maxScrollLeft);
+
+  return Array.from(new Set(points.map(value => Math.round(value)))).sort((a, b) => a - b);
+}, []);
+
+const getClosestGallerySnapPoint = useCallback((el, value) => {
+  const points = getGallerySnapPoints(el);
+
+  if (!points.length) return 0;
+
+  return points.reduce((closest, point) => {
+    return Math.abs(point - value) < Math.abs(closest - value) ? point : closest;
+  }, points[0]);
+}, [getGallerySnapPoints]);
+
+const animateGalleryToScrollLeft = useCallback((targetScrollLeft, duration = 300) => {
   const el = mobileGalleryRef.current;
   if (!el) return;
 
-  const children = Array.from(el.children);
-  if (!children.length) return;
-
-  const nearest = children.reduce((closest, child) => {
-    const currentDistance = Math.abs(child.offsetLeft - el.scrollLeft);
-    const closestDistance = Math.abs(closest.offsetLeft - el.scrollLeft);
-
-    return currentDistance < closestDistance ? child : closest;
-  }, children[0]);
-
-  el.scrollTo({
-    left: nearest.offsetLeft,
-    behavior
-  });
-}, []);
-
-const animateGalleryDragScroll = useCallback(() => {
-  const el = mobileGalleryRef.current;
   const dragState = galleryMouseDragRef.current;
 
-  if (!el || !dragState.isDragging) {
-    dragState.animationFrame = 0;
+  if (dragState.snapFrame) {
+    cancelAnimationFrame(dragState.snapFrame);
+  }
+
+  const maxScrollLeft = getGalleryMaxScrollLeft(el);
+  const startScrollLeft = el.scrollLeft;
+  const endScrollLeft = clampGalleryValue(targetScrollLeft, 0, maxScrollLeft);
+  const startTime = performance.now();
+
+  if (Math.abs(endScrollLeft - startScrollLeft) < 1) {
+    el.scrollLeft = endScrollLeft;
+    dragState.snapFrame = 0;
     return;
   }
 
-  const distance = dragState.targetScrollLeft - dragState.currentScrollLeft;
-  const nextScrollLeft = Math.abs(distance) < 0.5
-    ? dragState.targetScrollLeft
-    : dragState.currentScrollLeft + distance * 0.32;
+  const tick = (now) => {
+    const progress = clampGalleryValue((now - startTime) / duration, 0, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
 
-  dragState.currentScrollLeft = nextScrollLeft;
-  el.scrollLeft = nextScrollLeft;
+    el.scrollLeft = startScrollLeft + (endScrollLeft - startScrollLeft) * eased;
 
-  dragState.animationFrame = requestAnimationFrame(animateGalleryDragScroll);
+    if (progress < 1) {
+      dragState.snapFrame = requestAnimationFrame(tick);
+    } else {
+      el.scrollLeft = endScrollLeft;
+      dragState.snapFrame = 0;
+    }
+  };
+
+  dragState.snapFrame = requestAnimationFrame(tick);
 }, []);
+
+const snapGalleryToNearestSlide = useCallback((projectedScrollLeft = null, duration = 300) => {
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  const value = projectedScrollLeft === null ? el.scrollLeft : projectedScrollLeft;
+  const target = getClosestGallerySnapPoint(el, value);
+
+  animateGalleryToScrollLeft(target, duration);
+}, [getClosestGallerySnapPoint, animateGalleryToScrollLeft]);
 
 const handleGalleryPointerDown = (e) => {
   if (isMobile) return;
@@ -976,14 +1015,21 @@ const handleGalleryPointerDown = (e) => {
   const el = mobileGalleryRef.current;
   if (!el) return;
 
+  const now = performance.now();
+
+  if (galleryMouseDragRef.current.snapFrame) {
+    cancelAnimationFrame(galleryMouseDragRef.current.snapFrame);
+  }
+
   galleryMouseDragRef.current = {
     isDragging: true,
     pointerId: e.pointerId,
     startX: e.clientX,
-    scrollLeft: el.scrollLeft,
-    currentScrollLeft: el.scrollLeft,
-    targetScrollLeft: el.scrollLeft,
-    animationFrame: 0,
+    startScrollLeft: el.scrollLeft,
+    lastScrollLeft: el.scrollLeft,
+    lastTime: now,
+    velocity: 0,
+    snapFrame: 0,
     moved: false
   };
 
@@ -1003,20 +1049,28 @@ const handleGalleryPointerMove = (e) => {
   if (!dragState.isDragging) return;
   if (dragState.pointerId !== e.pointerId) return;
 
-  const deltaX = e.clientX - dragState.startX;
+  const el = mobileGalleryRef.current;
+  if (!el) return;
 
-  if (Math.abs(deltaX) > 12) {
+  const now = performance.now();
+  const deltaX = e.clientX - dragState.startX;
+  const maxScrollLeft = getGalleryMaxScrollLeft(el);
+  const nextScrollLeft = clampGalleryValue(dragState.startScrollLeft - deltaX, 0, maxScrollLeft);
+
+  if (Math.abs(deltaX) > 8) {
     dragState.moved = true;
     galleryWasDraggingRef.current = true;
   }
 
   if (!dragState.moved) return;
 
-  dragState.targetScrollLeft = dragState.scrollLeft - deltaX;
+  const deltaTime = Math.max(1, now - dragState.lastTime);
 
-  if (!dragState.animationFrame) {
-    dragState.animationFrame = requestAnimationFrame(animateGalleryDragScroll);
-  }
+  dragState.velocity = (nextScrollLeft - dragState.lastScrollLeft) / deltaTime;
+  dragState.lastScrollLeft = nextScrollLeft;
+  dragState.lastTime = now;
+
+  el.scrollLeft = nextScrollLeft;
 };
 
 const handleGalleryPointerEnd = (e) => {
@@ -1025,11 +1079,11 @@ const handleGalleryPointerEnd = (e) => {
   if (!dragState.isDragging) return;
   if (dragState.pointerId !== e.pointerId) return;
 
+  const el = mobileGalleryRef.current;
   const moved = dragState.moved;
-
-  if (dragState.animationFrame) {
-    cancelAnimationFrame(dragState.animationFrame);
-  }
+  const projectedScrollLeft = el
+    ? el.scrollLeft + dragState.velocity * 220
+    : null;
 
   if (e.currentTarget.releasePointerCapture) {
     try {
@@ -1041,10 +1095,11 @@ const handleGalleryPointerEnd = (e) => {
     isDragging: false,
     pointerId: null,
     startX: 0,
-    scrollLeft: 0,
-    currentScrollLeft: 0,
-    targetScrollLeft: 0,
-    animationFrame: 0,
+    startScrollLeft: 0,
+    lastScrollLeft: 0,
+    lastTime: 0,
+    velocity: 0,
+    snapFrame: dragState.snapFrame,
     moved: false
   };
 
@@ -1052,12 +1107,12 @@ const handleGalleryPointerEnd = (e) => {
 
   if (moved) {
     requestAnimationFrame(() => {
-      snapGalleryToNearestSlide('smooth');
+      snapGalleryToNearestSlide(projectedScrollLeft, 300);
     });
 
     window.setTimeout(() => {
       galleryWasDraggingRef.current = false;
-    }, 160);
+    }, 220);
   }
 };
 
