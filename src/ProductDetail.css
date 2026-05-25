@@ -1176,14 +1176,9 @@ body.size-panel-open {
     font-size: 14px;
   }
 
-  .related-products-container {
+ .related-products-container {
   padding: 12px 0 20px 12px;
   padding-top: 20px;
-}
-
-.related-products-container::before {
-  left: 12px;
-  right: 12px;
 }
 
 .related-products-title {
@@ -1195,6 +1190,7 @@ body.size-panel-open {
 .related-products-carousel {
   width: 100%;
   overflow: hidden;
+  touch-action: pan-y;
   box-sizing: border-box;
 }
 
