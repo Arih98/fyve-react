@@ -1002,6 +1002,7 @@ body.size-panel-open {
   font-family: quasimoda, sans-serif;
   letter-spacing: -0.05px;
   margin: 0;
+  width: 90%;
 }
 
   .accordion-description-content,
