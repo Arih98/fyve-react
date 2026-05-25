@@ -636,7 +636,43 @@ return true;
   openSizePanel
 ]);
 
-const currentTotalPrice = Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0).toFixed(2)
+const formatPdpPrice = (value) => {
+  const number = Number(String(value ?? '').replace(/[^0-9.-]/g, ''));
+  return Number.isFinite(number) ? number.toFixed(2) : '';
+};
+
+const getPdpPriceNumber = (value) => {
+  const number = Number(String(value ?? '').replace(/[^0-9.-]/g, ''));
+  return Number.isFinite(number) ? number : null;
+};
+
+const pdpCurrentPrice = getPdpPriceNumber(
+  current?.price?.current ??
+  current?.sale_price ??
+  current?.salePrice ??
+  current?.price ??
+  product?.price?.current ??
+  product?.sale_price ??
+  product?.salePrice ??
+  product?.price
+);
+
+const pdpRegularPrice = getPdpPriceNumber(
+  current?.price?.regular ??
+  current?.regular_price ??
+  current?.regularPrice ??
+  product?.price?.regular ??
+  product?.regular_price ??
+  product?.regularPrice
+);
+
+const pdpIsOnSale =
+  Boolean(current?.price?.isOnSale ?? product?.price?.isOnSale) ||
+  (
+    pdpCurrentPrice !== null &&
+    pdpRegularPrice !== null &&
+    pdpRegularPrice > pdpCurrentPrice
+  );
 
 const addToCartLabel = hasReachedCartStockLimit
   ? 'In your bag'
@@ -1148,7 +1184,15 @@ transition={{
 <h1 className="product-title">{displayTitle}</h1>
 
 <div className="product-price">
-  ${currentTotalPrice}
+  {pdpIsOnSale && pdpRegularPrice !== null ? (
+    <>
+      <span className="product-price-current">${formatPdpPrice(pdpCurrentPrice)}</span>
+      {' '}
+      <span className="product-price-regular">${formatPdpPrice(pdpRegularPrice)}</span>
+    </>
+  ) : (
+    <span className="product-price-current">${formatPdpPrice(pdpCurrentPrice)}</span>
+  )}
 </div>
 
 {displayMainDescription && (
