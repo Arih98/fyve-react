@@ -75,6 +75,19 @@
   opacity: 0;
 }
 
+.product-accordions-desktop .related-products-container,
+.product-accordions-mobile .related-products-container {
+  margin-top: 28px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.product-accordions-desktop .related-products-container::before,
+.product-accordions-mobile .related-products-container::before {
+  left: 0;
+  right: 0;
+}
+
 .related-products-container {
   width: 100%;
   max-width: 100%;

@@ -157,8 +157,30 @@ const current = product ? (isVariableProduct ? effectiveVariation : product) : n
   const availableStockRaw = current?.stockQuantity ?? current?.stock_quantity ?? null;
   const availableStock = availableStockRaw === null ? null : Number(availableStockRaw);
 
-  const relatedProducts = useRelatedProducts(product, effectiveVariation, allProducts, isColorLikeAttributeName);
-  const handleRelatedClick = useRelatedProductNavigation(allProducts);
+const automaticRelatedProducts = useRelatedProducts(product, effectiveVariation, allProducts, isColorLikeAttributeName);
+
+const variationRelatedProducts = useMemo(() => {
+  const items = Array.isArray(effectiveVariation?.related_products) ? effectiveVariation.related_products : [];
+
+  return items
+    .filter(Boolean)
+    .map((item, index) => ({
+      ...item,
+      displayId: item.displayId || item.display_id || item.variationId || item.id || `related-${index}`,
+      displayTitle: item.displayTitle || item.title || item.name || '',
+      displayGallery: Array.isArray(item.displayGallery)
+        ? item.displayGallery
+        : Array.isArray(item.gallery)
+          ? item.gallery
+          : item.image
+            ? [item.image]
+            : [],
+      displayPrice: item.displayPrice || item.price || 0
+    }));
+}, [effectiveVariation?.related_products]);
+
+const relatedProducts = variationRelatedProducts.length ? variationRelatedProducts : automaticRelatedProducts;
+const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
@@ -1354,6 +1376,29 @@ const productAccordions = (
   </>
 );
 
+const relatedProductsSlider = relatedProducts.length > 0 ? (
+  <div className="related-products-container">
+    <h2 className="related-products-title">Related Products</h2>
+    <div className="related-products-grid">
+      {relatedProducts.map(relItem => (
+        <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
+          <motion.img
+            initial={false}
+            src={getDisplayImage(relItem)}
+            alt={relItem.displayTitle}
+            className="related-product-image"
+            onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+          />
+          <div className="related-product-info">
+            <h3 className="related-product-title">{relItem.displayTitle}</h3>
+            <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+) : null;
+
   if (loading && !product) return <div className="product-not-found">Loading product...</div>;
   if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
   if (!product) return <div className="product-not-found">Product not found</div>;
@@ -1425,11 +1470,12 @@ return (
             )}
           </div>
 
-          {!isMobile && (
-            <div className="product-accordions-desktop">
-              {productAccordions}
-            </div>
-          )}
+{!isMobile && (
+  <div className="product-accordions-desktop">
+    {productAccordions}
+    {relatedProductsSlider}
+  </div>
+)}
         </div>
 
         {showDetails && (
@@ -1692,6 +1738,7 @@ onClick={closeSizePanel}
 {isMobile && (
   <div className="product-accordions-mobile">
     {productAccordions}
+    {relatedProductsSlider}
   </div>
 )}
     </div>
