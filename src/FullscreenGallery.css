@@ -1,6 +1,6 @@
 :root {
-  --fyve-cursor-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='17' fill='%234a494a' stroke='%234a494a' stroke-width='2'/%3E%3Cpath d='M24 16v16M16 24h16' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 24 24, zoom-in;
-  --fyve-cursor-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='17' fill='%234a494a' stroke='%234a494a' stroke-width='2'/%3E%3Cpath d='M16 24h16' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 24 24, zoom-out;
+  --fyve-cursor-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='17' fill='%234a494a' stroke='%234a494a' stroke-width='2'/%3E%3Cpath d='M24 18v12M18 24h12' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 24 24, zoom-in;
+  --fyve-cursor-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='17' fill='%234a494a' stroke='%234a494a' stroke-width='2'/%3E%3Cpath d='M18 24h12' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 24 24, zoom-out;
 }
 
 .fyve-fullscreen-gallery-overlay {
