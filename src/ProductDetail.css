@@ -1195,10 +1195,10 @@ body.size-panel-open {
 @media (min-width: 769px) {
   
 .details-container {
-  flex: 0 1 clamp(360px, 35vw, 520px);
-  width: clamp(360px, 35vw, 520px);
-  max-width: clamp(360px, 35vw, 520px);
-  min-width: 0;
+  flex: 0 1 35vw;
+  width: 35vw;
+  max-width: none;
+  min-width: 360px;
   margin-top: 20px;
   margin-left: 1.75rem;
   margin-right: 1.75rem;
