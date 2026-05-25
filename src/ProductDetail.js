@@ -63,6 +63,12 @@ const galleryMouseDragRef = useRef({
   settleTimeout: 0
 });
 
+const galleryWheelRef = useRef({
+  accumulatedDeltaX: 0,
+  isLocked: false,
+  unlockTimeout: 0
+});
+
 const [galleryTranslateX, setGalleryTranslateX] = useState(0);
 const [isGallerySettling, setIsGallerySettling] = useState(false);
 
@@ -1054,28 +1060,49 @@ const handleGalleryWheel = useCallback((e) => {
 
   e.preventDefault();
 
-  window.clearTimeout(galleryMouseDragRef.current.settleTimeout);
+  if (galleryWheelRef.current.isLocked) {
+    return;
+  }
 
-  const maxTranslate = getDesktopGalleryMaxTranslate();
-  const nextTranslateX = clampGalleryValue(
-    galleryTranslateX - e.deltaX,
-    maxTranslate,
-    0
-  );
+  galleryWheelRef.current.accumulatedDeltaX += e.deltaX;
 
-  setIsGallerySettling(false);
-  setGalleryTranslateX(nextTranslateX);
-  updateDesktopGalleryActiveIndex(nextTranslateX);
+  const wheelThreshold = 38;
 
-  galleryMouseDragRef.current.settleTimeout = window.setTimeout(() => {
-    const targetTranslateX = getClosestDesktopGallerySnapPoint(nextTranslateX);
-    settleDesktopGalleryTo(targetTranslateX);
-  }, 120);
+  if (Math.abs(galleryWheelRef.current.accumulatedDeltaX) < wheelThreshold) {
+    return;
+  }
+
+  const points = getDesktopGallerySnapPoints();
+
+  if (!points.length) {
+    galleryWheelRef.current.accumulatedDeltaX = 0;
+    return;
+  }
+
+  const currentPoint = getClosestDesktopGallerySnapPoint(galleryTranslateX);
+  const currentIndex = points.findIndex(point => point === currentPoint);
+  const direction = galleryWheelRef.current.accumulatedDeltaX > 0 ? 1 : -1;
+  const nextIndex = clampGalleryValue(currentIndex + direction, 0, points.length - 1);
+  const targetTranslateX = points[nextIndex];
+
+  galleryWheelRef.current.accumulatedDeltaX = 0;
+
+  if (targetTranslateX === currentPoint) {
+    return;
+  }
+
+  galleryWheelRef.current.isLocked = true;
+  window.clearTimeout(galleryWheelRef.current.unlockTimeout);
+
+  settleDesktopGalleryTo(targetTranslateX);
+
+  galleryWheelRef.current.unlockTimeout = window.setTimeout(() => {
+    galleryWheelRef.current.isLocked = false;
+  }, 340);
 }, [
   isMobile,
   galleryTranslateX,
-  getDesktopGalleryMaxTranslate,
-  updateDesktopGalleryActiveIndex,
+  getDesktopGallerySnapPoints,
   getClosestDesktopGallerySnapPoint,
   settleDesktopGalleryTo
 ]);
