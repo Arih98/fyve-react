@@ -45,6 +45,14 @@ const deliveryIconRef = useRef(null);
   const sizePanelScrollYRef = useRef(0);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
   const galleryWasDraggingRef = useRef(false);
+  const [isGalleryMouseDragging, setIsGalleryMouseDragging] = useState(false);
+const galleryMouseDragRef = useRef({
+  isDragging: false,
+  pointerId: null,
+  startX: 0,
+  scrollLeft: 0,
+  moved: false
+});
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -917,6 +925,82 @@ const handleGalleryImageClick = (idx) => {
   openImageViewer(idx);
 };
 
+const handleGalleryPointerDown = (e) => {
+  if (isMobile) return;
+  if (e.pointerType !== 'mouse') return;
+  if (e.button !== 0) return;
+
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  galleryMouseDragRef.current = {
+    isDragging: true,
+    pointerId: e.pointerId,
+    startX: e.clientX,
+    scrollLeft: el.scrollLeft,
+    moved: false
+  };
+
+  galleryWasDraggingRef.current = false;
+  setIsGalleryMouseDragging(true);
+
+  if (e.currentTarget.setPointerCapture) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
+  e.preventDefault();
+};
+
+const handleGalleryPointerMove = (e) => {
+  const dragState = galleryMouseDragRef.current;
+
+  if (!dragState.isDragging) return;
+  if (dragState.pointerId !== e.pointerId) return;
+
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  const deltaX = e.clientX - dragState.startX;
+
+  if (Math.abs(deltaX) > 5) {
+    dragState.moved = true;
+    galleryWasDraggingRef.current = true;
+  }
+
+  el.scrollLeft = dragState.scrollLeft - deltaX;
+};
+
+const handleGalleryPointerEnd = (e) => {
+  const dragState = galleryMouseDragRef.current;
+
+  if (!dragState.isDragging) return;
+  if (dragState.pointerId !== e.pointerId) return;
+
+  const moved = dragState.moved;
+
+  if (e.currentTarget.releasePointerCapture) {
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+  }
+
+  galleryMouseDragRef.current = {
+    isDragging: false,
+    pointerId: null,
+    startX: 0,
+    scrollLeft: 0,
+    moved: false
+  };
+
+  setIsGalleryMouseDragging(false);
+
+  if (moved) {
+    window.setTimeout(() => {
+      galleryWasDraggingRef.current = false;
+    }, 120);
+  }
+};
+
 const productAccordions = (
   <>
     <div className="product-description-accordion">
@@ -1083,13 +1167,18 @@ return (
       <motion.div className="product-detail-container">
         <div className="images-container">
           <div className="product-image-gallery">
-            <div
-              ref={mobileGalleryRef}
-              className="product-image-gallery-track"
-              onScroll={handleMobileGalleryScroll}
-              onTouchStart={handleGalleryTouchStart}
-              onTouchMove={handleGalleryTouchMove}
-            >
+<div
+  ref={mobileGalleryRef}
+  className={`product-image-gallery-track ${isGalleryMouseDragging ? 'is-mouse-dragging' : ''}`}
+  onScroll={handleMobileGalleryScroll}
+  onTouchStart={handleGalleryTouchStart}
+  onTouchMove={handleGalleryTouchMove}
+  onPointerDown={handleGalleryPointerDown}
+  onPointerMove={handleGalleryPointerMove}
+  onPointerUp={handleGalleryPointerEnd}
+  onPointerCancel={handleGalleryPointerEnd}
+  onLostPointerCapture={handleGalleryPointerEnd}
+>
               {displayImages.map((img, idx) => {
                 const imageKey = `${current?.sku || product.id}-${idx}`;
 

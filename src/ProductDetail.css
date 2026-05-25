@@ -1192,8 +1192,19 @@ body.size-panel-open {
 }
 }
 
+.product-gallery-image,
+.product-main-image {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 @media (min-width: 769px) {
-  
+
+    .product-image-gallery-track.is-mouse-dragging,
+  .product-image-gallery-track.is-mouse-dragging .product-gallery-image-wrapper {
+    cursor: grabbing;
+  }
+
 .details-container {
   flex: 0 0 31.3vw;
   width: 31.3vw;
