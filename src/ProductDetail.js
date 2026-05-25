@@ -59,6 +59,7 @@ const galleryMouseDragRef = useRef({
   lastTime: 0,
   velocity: 0,
   moved: false,
+  hasPointerCapture: false,
   settleTimeout: 0
 });
 
@@ -1031,21 +1032,12 @@ const handleGalleryPointerDown = (e) => {
     lastTime: now,
     velocity: 0,
     moved: false,
+    hasPointerCapture: false,
     settleTimeout: 0
   };
 
-  galleryLastPointerRef.current = {
-  x: e.clientX,
-  y: e.clientY
-};
-
   galleryWasDraggingRef.current = false;
   setIsGallerySettling(false);
-  setIsGalleryMouseDragging(true);
-
-  if (e.currentTarget.setPointerCapture) {
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }
 };
 
 const handleGalleryWheel = useCallback((e) => {
@@ -1094,10 +1086,20 @@ const handleGalleryPointerMove = (e) => {
   const now = performance.now();
   const deltaX = e.clientX - dragState.startX;
 
-if (Math.abs(deltaX) > 12) {
-  dragState.moved = true;
-  galleryWasDraggingRef.current = true;
-}
+  if (Math.abs(deltaX) > 12) {
+    if (!dragState.moved) {
+      dragState.moved = true;
+      galleryWasDraggingRef.current = true;
+      setIsGalleryMouseDragging(true);
+
+      if (e.currentTarget.setPointerCapture) {
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+          dragState.hasPointerCapture = true;
+        } catch {}
+      }
+    }
+  }
 
   if (!dragState.moved) return;
 
@@ -1126,8 +1128,10 @@ const handleGalleryPointerEnd = (e) => {
   if (dragState.pointerId !== e.pointerId) return;
 
   const moved = dragState.moved;
+  const finalTranslateX = dragState.lastTranslateX;
+  const velocity = dragState.velocity;
 
-  if (e.currentTarget.releasePointerCapture) {
+  if (dragState.hasPointerCapture && e.currentTarget.releasePointerCapture) {
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {}
@@ -1138,10 +1142,11 @@ const handleGalleryPointerEnd = (e) => {
     pointerId: null,
     startX: 0,
     startTranslateX: 0,
-    lastTranslateX: 0,
+    lastTranslateX: finalTranslateX,
     lastTime: 0,
     velocity: 0,
     moved: false,
+    hasPointerCapture: false,
     settleTimeout: dragState.settleTimeout
   };
 
@@ -1152,7 +1157,7 @@ const handleGalleryPointerEnd = (e) => {
     return;
   }
 
-  const projectedTranslateX = galleryTranslateX + dragState.velocity * 180;
+  const projectedTranslateX = finalTranslateX + velocity * 180;
   const targetTranslateX = getClosestDesktopGallerySnapPoint(projectedTranslateX);
 
   requestAnimationFrame(() => {
