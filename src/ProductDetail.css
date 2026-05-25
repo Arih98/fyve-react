@@ -97,15 +97,6 @@
   overflow-x: hidden;
 }
 
-.related-products-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  border-top: 1px solid #c4c4c4;
-}
-
 .related-products-title {
   font-family: "ArizonaFlare", sans-serif;
   font-weight: 500;
