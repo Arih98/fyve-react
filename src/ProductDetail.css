@@ -305,7 +305,7 @@
 
 .visual-color-image-wrap {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
   display: block;
   overflow: hidden;
   background: transparent;
@@ -1178,6 +1178,11 @@ body.size-panel-open {
 
 .visual-color-button {
   width: 58px;
+}
+
+.visual-color-image-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
 }
 
   .color-options {
