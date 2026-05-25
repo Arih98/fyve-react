@@ -337,6 +337,22 @@ const handleRelatedProductsWheel = (e) => {
   }, 360);
 };
 
+const getSelectedAttributeDisplayValue = (attrName) => {
+  const selectedValue = selectedAttributes[attrName];
+
+  if (selectedValue) {
+    return selectedValue;
+  }
+
+  const attrs = Array.isArray(effectiveVariation?.attributes) ? effectiveVariation.attributes : [];
+
+  const match = attrs.find((attr) =>
+    String(attr.attribute_name || attr.name || '').trim().toLowerCase() === String(attrName || '').trim().toLowerCase()
+  );
+
+  return match?.term_name || match?.term_slug || attrName;
+};
+
 const getVariationForAttributeOption = (attrName, term) => {
   if (!Array.isArray(productForOptions?.variations)) return null;
 
@@ -1797,7 +1813,9 @@ transition={{
 
     return (
       <div key={attrName} className="attribute-group">
-        <label className="attribute-label">{attrName}</label>
+        <label className="attribute-label">
+  {isSwatchAttribute ? getSelectedAttributeDisplayValue(attrName) : attrName}
+</label>
 
         {isSwatchAttribute ? (
   <div className="color-options visual-color-options">
@@ -1807,21 +1825,20 @@ transition={{
 
       return (
         <div key={term} className="color-option visual-color-option">
-          <button
-            type="button"
-            onClick={(e) => handleVisualColorChange(attrName, term, e)}
-            className={`visual-color-button ${isSelected ? 'selected' : ''}`}
-            aria-label={`${attrName} ${term}`}
-          >
-            <img
-              src={imageSrc}
-              alt={term}
-              className="visual-color-image"
-              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-            />
-          </button>
-          <span className="color-label">{term}</span>
-        </div>
+  <button
+    type="button"
+    onClick={(e) => handleVisualColorChange(attrName, term, e)}
+    className={`visual-color-button ${isSelected ? 'selected' : ''}`}
+    aria-label={`${attrName} ${term}`}
+  >
+    <img
+      src={imageSrc}
+      alt={term}
+      className="visual-color-image"
+      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+    />
+  </button>
+</div>
       );
     })}
   </div>
