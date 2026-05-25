@@ -1039,8 +1039,6 @@ const handleGalleryPointerDown = (e) => {
   if (e.currentTarget.setPointerCapture) {
     e.currentTarget.setPointerCapture(e.pointerId);
   }
-
-  e.preventDefault();
 };
 
 const handleGalleryPointerMove = (e) => {
@@ -1055,7 +1053,8 @@ const handleGalleryPointerMove = (e) => {
   const now = performance.now();
   const deltaX = e.clientX - dragState.startX;
   const maxScrollLeft = getGalleryMaxScrollLeft(el);
-  const nextScrollLeft = clampGalleryValue(dragState.startScrollLeft - deltaX, 0, maxScrollLeft);
+  const dragSpeed = 1.55;
+const nextScrollLeft = clampGalleryValue(dragState.startScrollLeft - deltaX * dragSpeed, 0, maxScrollLeft);
 
   if (Math.abs(deltaX) > 8) {
     dragState.moved = true;
