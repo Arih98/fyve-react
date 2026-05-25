@@ -185,7 +185,7 @@ const relatedProducts = variationRelatedProducts.length ? variationRelatedProduc
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
-  const getRelatedProductKey = (relItem, index) => {
+const getRelatedProductKey = (relItem, index) => {
   return String(relItem.displayId || relItem.display_id || relItem.variationId || relItem.variation_id || relItem.id || relItem.path || `related-${index}`);
 };
 
@@ -193,12 +193,33 @@ const getRelatedProductColor = (relItem) => {
   return String(relItem.selectedColor || relItem.selected_color || relItem.selectedStitchingColor || relItem.selectedStichingColor || '').trim();
 };
 
+const getRelatedProductParentId = (relItem) => {
+  return String(relItem.parentId || relItem.parent_id || relItem.productId || relItem.product_id || relItem.id || '').trim();
+};
+
+const getRelatedFallbackProduct = (relItem) => {
+  if (relItem.product) {
+    return relItem.product;
+  }
+
+  const parentId = getRelatedProductParentId(relItem);
+  const variationId = String(relItem.variationId || relItem.variation_id || '').trim();
+
+  return allProducts.find((storedProduct) => {
+    if (String(storedProduct.id) === parentId) return true;
+
+    return Array.isArray(storedProduct.variations) && storedProduct.variations.some((variation) =>
+      String(variation.id) === variationId
+    );
+  }) || null;
+};
+
 const getRelatedProductPath = (relItem) => {
   if (relItem.path) {
     return relItem.path;
   }
 
-  const parentId = relItem.parentId || relItem.parent_id || relItem.productId || relItem.product_id || relItem.id;
+  const parentId = getRelatedProductParentId(relItem);
   const color = getRelatedProductColor(relItem);
 
   return color
@@ -213,6 +234,7 @@ const handleRelatedProductClick = (relItem, index) => {
   const isMobileViewport = window.innerWidth <= 768;
   const path = getRelatedProductPath(relItem);
   const initialColor = getRelatedProductColor(relItem);
+  const fallbackProductForNavigation = getRelatedFallbackProduct(relItem);
 
   if (sourceEl) {
     startProductImageTransition({
@@ -227,7 +249,7 @@ const handleRelatedProductClick = (relItem, index) => {
 
   navigate(path, {
     state: {
-      product: relItem.product,
+      product: fallbackProductForNavigation,
       initialColor,
       transitionSourceDisplayId: key,
       transitionSourceSrc: sourceSrc,
@@ -235,6 +257,7 @@ const handleRelatedProductClick = (relItem, index) => {
     }
   });
 };
+
   const getColorClassName = (term) => {
   const value = String(term || '').trim().toLowerCase();
 
