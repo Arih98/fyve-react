@@ -130,6 +130,33 @@ const toggleZoomAtPoint = (clientX, clientY) => {
   clearTapState();
 };
 
+const getCursorPanTranslate = (clientX, clientY, nextScale = scale) => {
+  const stage = stageRef.current;
+  const image = imageRef.current;
+
+  if (!stage || !image || nextScale <= 1) {
+    return { x: 0, y: 0 };
+  }
+
+  const stageRect = stage.getBoundingClientRect();
+  const imageWidth = image.offsetWidth;
+  const imageHeight = image.offsetHeight;
+
+  const scaledWidth = imageWidth * nextScale;
+  const scaledHeight = imageHeight * nextScale;
+
+  const maxX = Math.max(0, (scaledWidth - stageRect.width) / 2);
+  const maxY = Math.max(0, (scaledHeight - stageRect.height) / 2);
+
+  const normalizedX = ((clientX - stageRect.left) / stageRect.width) * 2 - 1;
+  const normalizedY = ((clientY - stageRect.top) / stageRect.height) * 2 - 1;
+
+  return {
+    x: clamp(-normalizedX * maxX, -maxX, maxX),
+    y: clamp(-normalizedY * maxY, -maxY, maxY)
+  };
+};
+
   const goToIndex = (nextIndex) => {
     const clampedIndex = clamp(nextIndex, 0, images.length - 1);
     setCurrentIndex(clampedIndex);
@@ -292,6 +319,11 @@ useEffect(() => {
 
   if (moveX > 6 || moveY > 6) {
     galleryClickRef.current.moved = true;
+  }
+
+  if (e.pointerType === 'mouse' && scale > 1) {
+    setTranslate(getCursorPanTranslate(e.clientX, e.clientY));
+    return;
   }
 
   if (!pointerStateRef.current.isDragging || scale <= 1) return;
