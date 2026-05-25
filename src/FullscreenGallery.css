@@ -130,8 +130,11 @@
 
 @media (min-width: 769px) {
   .fyve-fullscreen-gallery-image {
-    max-width: calc(100vw - 20px);
-    max-height: calc(100vh - 20px);
+    width: 110vw;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
   }
 }
 
