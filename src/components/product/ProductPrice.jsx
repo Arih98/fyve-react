@@ -6,20 +6,22 @@ const formatPrice = (value) => {
 };
 
 const ProductPrice = ({ price }) => {
-  const current = price?.current ?? 0;
+  const current = price?.current ?? price ?? 0;
   const regular = price?.regular ?? current;
-  const isOnSale = !!price?.isOnSale;
+  const isOnSale =
+    Boolean(price?.isOnSale) ||
+    Number(regular) > Number(current);
 
   return (
-    <p className="product-price">
+    <p className={`product-price ${isOnSale ? 'is-on-sale' : ''}`}>
       {isOnSale ? (
         <>
-          <span>${formatPrice(current)}</span>
+          <span className="product-price-current">${formatPrice(current)}</span>
           {' '}
-          <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>${regular}</span>
+          <span className="product-price-regular">${formatPrice(regular)}</span>
         </>
       ) : (
-        <span>${formatPrice(current)}</span>
+        <span className="product-price-current">${formatPrice(current)}</span>
       )}
     </p>
   );
