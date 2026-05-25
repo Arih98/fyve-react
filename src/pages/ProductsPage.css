@@ -349,21 +349,6 @@
   margin: 0;
 }
 
-.product-price-current {
-  display: inline-block;
-}
-
-.product-price-regular {
-  display: inline-block;
-  text-decoration: line-through;
-  opacity: 0.7;
-  font-weight: 300;
-}
-
-.product-price.is-on-sale .product-price-current {
-  font-weight: 700;
-}
-
 .pagination {
   margin-top: 50px;
   text-align: center;
