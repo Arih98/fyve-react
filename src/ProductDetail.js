@@ -1831,14 +1831,12 @@ transition={{
     className={`visual-color-button ${isSelected ? 'selected' : ''}`}
     aria-label={`${attrName} ${term}`}
   >
-<span className="visual-color-image-wrap">
-  <img
-    src={imageSrc}
-    alt={term}
-    className="visual-color-image"
-    onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-  />
-</span>
+    <img
+      src={imageSrc}
+      alt={term}
+      className="visual-color-image"
+      onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+    />
   </button>
 </div>
       );
