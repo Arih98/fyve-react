@@ -197,97 +197,6 @@ const getRelatedProductParentId = (relItem) => {
   return String(relItem.parentId || relItem.parent_id || relItem.productId || relItem.product_id || relItem.id || '').trim();
 };
 
-const getRelatedProductVariationId = (relItem) => {
-  return String(relItem.variationId || relItem.variation_id || relItem.displayId || relItem.display_id || '').trim();
-};
-
-const getRelatedFallbackProduct = (relItem) => {
-  if (relItem.product) {
-    return relItem.product;
-  }
-
-  const parentId = getRelatedProductParentId(relItem);
-  const variationId = getRelatedProductVariationId(relItem);
-  const color = getRelatedProductColor(relItem);
-  const gallery = Array.isArray(relItem.displayGallery)
-    ? relItem.displayGallery
-    : Array.isArray(relItem.gallery)
-      ? relItem.gallery
-      : relItem.image
-        ? [relItem.image]
-        : [];
-
-  const storedProduct = allProducts.find((productItem) => {
-    if (String(productItem.id) === parentId) return true;
-    if (String(productItem.parentId || productItem.parent_id || '') === parentId) return true;
-
-    return Array.isArray(productItem.variations) && productItem.variations.some((variation) =>
-      String(variation.id) === variationId
-    );
-  });
-
-  if (storedProduct) {
-    return storedProduct;
-  }
-
-  const fallbackVariation = {
-    id: variationId || parentId,
-    title: relItem.displayTitle || relItem.title || relItem.name || '',
-    price: relItem.displayPrice?.current ?? relItem.displayPrice ?? relItem.price ?? 0,
-    regular_price: relItem.displayPrice?.regular ?? relItem.regular_price ?? relItem.price ?? 0,
-    sale_price: relItem.displayPrice?.sale ?? relItem.sale_price ?? '',
-    sku: relItem.sku || '',
-    stock_quantity: relItem.stock_quantity ?? relItem.stockQuantity ?? null,
-    stockQuantity: relItem.stockQuantity ?? relItem.stock_quantity ?? null,
-    stock_status: relItem.stock_status || relItem.stockStatus || 'instock',
-    stockStatus: relItem.stockStatus || relItem.stock_status || 'instock',
-    is_in_stock: relItem.is_in_stock ?? true,
-    managing_stock: relItem.managing_stock ?? false,
-    gallery,
-    attributes: color
-      ? [
-          {
-            attribute_name: 'Color',
-            term_name: color,
-            term_slug: color
-          }
-        ]
-      : []
-  };
-
-  return {
-    id: parentId,
-    parentId,
-    title: relItem.displayTitle || relItem.title || relItem.name || '',
-    name: relItem.displayTitle || relItem.title || relItem.name || '',
-    slug: relItem.slug || '',
-    description: relItem.description || '',
-    short_description: relItem.short_description || relItem.shortDescription || '',
-    price: relItem.displayPrice?.current ?? relItem.displayPrice ?? relItem.price ?? 0,
-    regular_price: relItem.displayPrice?.regular ?? relItem.regular_price ?? relItem.price ?? 0,
-    sale_price: relItem.displayPrice?.sale ?? relItem.sale_price ?? '',
-    product_type: variationId ? 'variable' : relItem.product_type || 'simple',
-    gallery,
-    attributes: color
-      ? [
-          {
-            attribute_name: 'Color',
-            attribute_slug: 'pa_color',
-            options: [
-              {
-                term_name: color,
-                term_slug: color
-              }
-            ]
-          }
-        ]
-      : [],
-    variations: variationId ? [fallbackVariation] : [],
-    selected_variation_id: variationId || null,
-    categories: Array.isArray(relItem.categories) ? relItem.categories : []
-  };
-};
-
 const getRelatedProductPath = (relItem) => {
   if (relItem.path) {
     return relItem.path;
@@ -308,7 +217,6 @@ const handleRelatedProductClick = (relItem, index) => {
   const isMobileViewport = window.innerWidth <= 768;
   const path = getRelatedProductPath(relItem);
   const initialColor = getRelatedProductColor(relItem);
-  const fallbackProductForNavigation = getRelatedFallbackProduct(relItem);
 
   if (sourceEl) {
     startProductImageTransition({
@@ -323,7 +231,7 @@ const handleRelatedProductClick = (relItem, index) => {
 
   navigate(path, {
     state: {
-      product: fallbackProductForNavigation,
+      product: relItem.product,
       initialColor,
       transitionSourceDisplayId: key,
       transitionSourceSrc: sourceSrc,
