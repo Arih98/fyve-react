@@ -121,12 +121,28 @@
   flex-direction: column;
   flex: 0 0 300px;
   cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.related-product-image-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f7f7f7;
 }
 
 .related-product-image {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .related-product-info {

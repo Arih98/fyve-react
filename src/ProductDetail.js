@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState, useRef, useContext, useMemo, useCallback } from 'react';
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { startProductImageTransition } from './utils/productImageTransition';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { CartContext } from './CartContext';
@@ -9,7 +10,6 @@ import { useProductSelection } from './hooks/useProductSelection';
 import { useStoredProducts } from './hooks/useStoredProducts';
 import { useScrollDirection } from './hooks/useScrollDirection';
 import { useRelatedProducts } from './hooks/useRelatedProducts';
-import { useRelatedProductNavigation } from './hooks/useRelatedProductNavigation';
 import gsap from 'gsap';
 import FullscreenGallery from './FullscreenGallery';
 
@@ -17,12 +17,14 @@ import FullscreenGallery from './FullscreenGallery';
 const ProductDetail = () => {
   const { cartItems, addItem, loading: cartLoading } = useContext(CartContext);
   const location = useLocation();
+  const navigate = useNavigate();
   const { id: productId } = useParams();
   const [searchParams] = useSearchParams();
   const [cartError, setCartError] = useState(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const mainImageRef = useRef(null);
   const galleryRefs = useRef(new Map());
+  const relatedProductImageRefs = useRef(new Map());
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showDesktopSecondaryImages, setShowDesktopSecondaryImages] = useState(!location.state?.fromProductGrid);
@@ -180,10 +182,59 @@ const variationRelatedProducts = useMemo(() => {
 }, [effectiveVariation?.related_products]);
 
 const relatedProducts = variationRelatedProducts.length ? variationRelatedProducts : automaticRelatedProducts;
-const handleRelatedClick = useRelatedProductNavigation(allProducts);
 
   const getDisplayImage = (relItem) => relItem.displayGallery?.[0] || '/api/Uploads/fallback-image.png';
   const getDisplayPrice = (relItem) => relItem.displayPrice?.current ?? relItem.displayPrice ?? 0;
+  const getRelatedProductKey = (relItem, index) => {
+  return String(relItem.displayId || relItem.display_id || relItem.variationId || relItem.variation_id || relItem.id || relItem.path || `related-${index}`);
+};
+
+const getRelatedProductColor = (relItem) => {
+  return String(relItem.selectedColor || relItem.selected_color || relItem.selectedStitchingColor || relItem.selectedStichingColor || '').trim();
+};
+
+const getRelatedProductPath = (relItem) => {
+  if (relItem.path) {
+    return relItem.path;
+  }
+
+  const parentId = relItem.parentId || relItem.parent_id || relItem.productId || relItem.product_id || relItem.id;
+  const color = getRelatedProductColor(relItem);
+
+  return color
+    ? `/product/${parentId}?color=${encodeURIComponent(color)}`
+    : `/product/${parentId}`;
+};
+
+const handleRelatedProductClick = (relItem, index) => {
+  const key = getRelatedProductKey(relItem, index);
+  const sourceEl = relatedProductImageRefs.current.get(key);
+  const sourceSrc = getDisplayImage(relItem);
+  const isMobileViewport = window.innerWidth <= 768;
+  const path = getRelatedProductPath(relItem);
+  const initialColor = getRelatedProductColor(relItem);
+
+  if (sourceEl) {
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 1 : 999999
+    });
+  }
+
+  navigate(path, {
+    state: {
+      product: relItem.product,
+      initialColor,
+      transitionSourceDisplayId: key,
+      transitionSourceSrc: sourceSrc,
+      fromProductGrid: true
+    }
+  });
+};
   const getColorClassName = (term) => {
   const value = String(term || '').trim().toLowerCase();
 
@@ -1380,21 +1431,39 @@ const relatedProductsSlider = relatedProducts.length > 0 ? (
   <div className="related-products-container">
     <h2 className="related-products-title">Related Products</h2>
     <div className="related-products-grid">
-      {relatedProducts.map(relItem => (
-        <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-          <motion.img
-            initial={false}
-            src={getDisplayImage(relItem)}
-            alt={relItem.displayTitle}
-            className="related-product-image"
-            onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-          />
-          <div className="related-product-info">
-            <h3 className="related-product-title">{relItem.displayTitle}</h3>
-            <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
-          </div>
-        </div>
-      ))}
+      {relatedProducts.map((relItem, index) => {
+        const relatedKey = getRelatedProductKey(relItem, index);
+
+        return (
+          <button
+            key={relatedKey}
+            type="button"
+            className="related-product-card"
+            onClick={() => handleRelatedProductClick(relItem, index)}
+          >
+            <div className="related-product-image-wrap">
+              <img
+                ref={el => {
+                  if (el) {
+                    relatedProductImageRefs.current.set(relatedKey, el);
+                  } else {
+                    relatedProductImageRefs.current.delete(relatedKey);
+                  }
+                }}
+                src={getDisplayImage(relItem)}
+                alt={relItem.displayTitle}
+                className="related-product-image"
+                onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+              />
+            </div>
+
+            <div className="related-product-info">
+              <h3 className="related-product-title">{relItem.displayTitle}</h3>
+              <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
+            </div>
+          </button>
+        );
+      })}
     </div>
   </div>
 ) : null;
