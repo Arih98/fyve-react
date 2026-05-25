@@ -16,6 +16,10 @@
   z-index: 10003;
 }
 
+.announcement-marquee.is-tab-hidden-paused {
+  animation-play-state: paused;
+}
+
 .announcement-marquee {
   display: flex;
   width: max-content;
