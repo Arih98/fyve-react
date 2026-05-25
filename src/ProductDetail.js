@@ -44,6 +44,10 @@ const deliveryIconRef = useRef(null);
   const pendingHeaderAddAfterSizeRef = useRef(false);
   const sizePanelScrollYRef = useRef(0);
   const galleryTouchStartRef = useRef({ x: 0, y: 0 });
+  const galleryLastPointerRef = useRef({
+  x: 0,
+  y: 0
+});
   const galleryWasDraggingRef = useRef(false);
   const [isGalleryMouseDragging, setIsGalleryMouseDragging] = useState(false);
 const galleryMouseDragRef = useRef({
@@ -923,7 +927,16 @@ const handleGalleryTouchMove = (e) => {
   }
 };
 
-const handleGalleryImageClick = (idx) => {
+const handleGalleryImageClick = (idx, e) => {
+  if (!isMobile) {
+    const dragState = galleryMouseDragRef.current;
+
+    if (dragState.moved) {
+      galleryWasDraggingRef.current = false;
+      return;
+    }
+  }
+
   if (galleryWasDraggingRef.current) {
     galleryWasDraggingRef.current = false;
     return;
@@ -1021,6 +1034,11 @@ const handleGalleryPointerDown = (e) => {
     settleTimeout: 0
   };
 
+  galleryLastPointerRef.current = {
+  x: e.clientX,
+  y: e.clientY
+};
+
   galleryWasDraggingRef.current = false;
   setIsGallerySettling(false);
   setIsGalleryMouseDragging(true);
@@ -1029,6 +1047,43 @@ const handleGalleryPointerDown = (e) => {
     e.currentTarget.setPointerCapture(e.pointerId);
   }
 };
+
+const handleGalleryWheel = useCallback((e) => {
+  if (isMobile) return;
+
+  const el = mobileGalleryRef.current;
+  if (!el) return;
+
+  const rawDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if (!rawDelta) return;
+
+  e.preventDefault();
+
+  window.clearTimeout(galleryMouseDragRef.current.settleTimeout);
+
+  const maxTranslate = getDesktopGalleryMaxTranslate();
+  const nextTranslateX = clampGalleryValue(
+    galleryTranslateX - rawDelta,
+    maxTranslate,
+    0
+  );
+
+  setIsGallerySettling(false);
+  setGalleryTranslateX(nextTranslateX);
+  updateDesktopGalleryActiveIndex(nextTranslateX);
+
+  galleryMouseDragRef.current.settleTimeout = window.setTimeout(() => {
+    const targetTranslateX = getClosestDesktopGallerySnapPoint(nextTranslateX);
+    settleDesktopGalleryTo(targetTranslateX);
+  }, 120);
+}, [
+  isMobile,
+  galleryTranslateX,
+  getDesktopGalleryMaxTranslate,
+  updateDesktopGalleryActiveIndex,
+  getClosestDesktopGallerySnapPoint,
+  settleDesktopGalleryTo
+]);
 
 const handleGalleryPointerMove = (e) => {
   const dragState = galleryMouseDragRef.current;
@@ -1039,10 +1094,10 @@ const handleGalleryPointerMove = (e) => {
   const now = performance.now();
   const deltaX = e.clientX - dragState.startX;
 
-  if (Math.abs(deltaX) > 4) {
-    dragState.moved = true;
-    galleryWasDraggingRef.current = true;
-  }
+if (Math.abs(deltaX) > 12) {
+  dragState.moved = true;
+  galleryWasDraggingRef.current = true;
+}
 
   if (!dragState.moved) return;
 
@@ -1286,6 +1341,7 @@ return (
   onScroll={handleMobileGalleryScroll}
   onTouchStart={handleGalleryTouchStart}
   onTouchMove={handleGalleryTouchMove}
+  onWheel={handleGalleryWheel}
   onPointerDown={handleGalleryPointerDown}
   onPointerMove={handleGalleryPointerMove}
   onPointerUp={handleGalleryPointerEnd}
@@ -1301,7 +1357,7 @@ return (
                     }}
                     key={imageKey}
                     className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''} ${!isMobile && idx > 0 && !showDesktopSecondaryImages ? 'desktop-gallery-image-hidden' : ''}`}
-                    onClick={() => handleGalleryImageClick(idx)}
+                    onClick={(e) => handleGalleryImageClick(idx, e)}
                   >
                     <div className="product-gallery-image-box">
                       <img

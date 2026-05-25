@@ -1312,6 +1312,7 @@ body.size-panel-open {
     width: 100%;
     max-width: none;
     overflow: hidden;
+    touch-action: pan-y;
   }
 
 .images-container {
@@ -1336,6 +1337,7 @@ body.size-panel-open {
     will-change: transform;
     transition-property: transform;
     transition-timing-function: cubic-bezier(0.31, 0, 0.14, 1);
+    touch-action: pan-y;
   }
 
   .product-image-gallery-track::-webkit-scrollbar {
