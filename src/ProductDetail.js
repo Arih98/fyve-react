@@ -31,7 +31,7 @@ const relatedProductsTouchDeltaX = useRef(0);
 const relatedProductsWheelLockRef = useRef(false);
 const relatedProductsWheelUnlockRef = useRef(0);
 const [relatedProductsIndex, setRelatedProductsIndex] = useState(0);
-const [relatedProductsMeasureTick, setRelatedProductsMeasureTick] = useState(0);
+const [, setRelatedProductsMeasureTick] = useState(0);
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showDesktopSecondaryImages, setShowDesktopSecondaryImages] = useState(!location.state?.fromProductGrid);
@@ -263,7 +263,6 @@ useEffect(() => {
 }, [relatedProducts.length]);
 
 const getRelatedProductsTranslateX = () => {
-  relatedProductsMeasureTick;
 
   const viewport = relatedProductsViewportRef.current;
   if (!viewport) return 0;
