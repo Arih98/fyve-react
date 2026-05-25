@@ -1201,10 +1201,9 @@ body.size-panel-open {
   min-width: 0;
   margin-top: 20px;
   margin-left: 1.75rem;
-  margin-right: 1.75rem;
+  margin-right: 0;
   align-self: flex-start;
 }
-
   .product-details {
     min-height: 620px;
     display: flex;
@@ -1296,10 +1295,12 @@ body.size-panel-open {
     pointer-events: none;
   }
 
-  .product-detail-container {
-    padding-top: 16px;
-    padding-left: 30px;
-  }
+.product-detail-container {
+  padding-top: 16px;
+  padding-left: 30px;
+  padding-right: 30px;
+  justify-content: space-between;
+}
 
   .product-image-gallery {
     width: 100%;
