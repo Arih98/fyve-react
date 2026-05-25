@@ -909,7 +909,7 @@ body.size-panel-open {
   .product-detail-container {
     flex-direction: column;
     margin-top: 0;
-    padding: 76px 0 110px;
+    padding: 76px 0 0px;
     width: 100%;
   }
 
