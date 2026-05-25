@@ -1046,8 +1046,11 @@ const handleGalleryWheel = useCallback((e) => {
   const el = mobileGalleryRef.current;
   if (!el) return;
 
-  const rawDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-  if (!rawDelta) return;
+  const absX = Math.abs(e.deltaX);
+  const absY = Math.abs(e.deltaY);
+
+  if (absX < 4) return;
+  if (absX < absY * 1.15) return;
 
   e.preventDefault();
 
@@ -1055,7 +1058,7 @@ const handleGalleryWheel = useCallback((e) => {
 
   const maxTranslate = getDesktopGalleryMaxTranslate();
   const nextTranslateX = clampGalleryValue(
-    galleryTranslateX - rawDelta,
+    galleryTranslateX - e.deltaX,
     maxTranslate,
     0
   );
