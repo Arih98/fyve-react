@@ -1547,7 +1547,6 @@ return (
 {!isMobile && (
   <div className="product-accordions-desktop">
     {productAccordions}
-    {relatedProductsSlider}
   </div>
 )}
         </div>
@@ -1818,7 +1817,9 @@ onClick={closeSizePanel}
     </div>
   </motion.div>
 )}
-      </motion.div>
+       </motion.div>
+
+      {!isMobile && relatedProductsSlider}
     </div>
 
 <FullscreenGallery

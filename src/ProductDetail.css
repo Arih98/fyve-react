@@ -82,6 +82,19 @@
   padding-right: 0;
 }
 
+@media (min-width: 769px) {
+  .product-detail-container + .related-products-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 40px 20px 80px;
+    box-sizing: border-box;
+  }
+
+  .product-detail-container + .related-products-container .related-products-grid {
+    width: 100%;
+  }
+}
+
 .product-accordions-desktop .related-products-container::before,
 .product-accordions-mobile .related-products-container::before {
   left: 0;
