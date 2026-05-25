@@ -1237,7 +1237,6 @@ return (
   onPointerMove={handleGalleryPointerMove}
   onPointerUp={handleGalleryPointerEnd}
   onPointerCancel={handleGalleryPointerEnd}
-  onLostPointerCapture={handleGalleryPointerEnd}
 >
               {displayImages.map((img, idx) => {
                 const imageKey = `${current?.sku || product.id}-${idx}`;
