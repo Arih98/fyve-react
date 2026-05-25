@@ -1183,7 +1183,7 @@ transition={{
 
 <h1 className="product-title">{displayTitle}</h1>
 
-<div className="product-price">
+<div className={`product-price ${pdpIsOnSale ? 'is-on-sale' : ''}`}>
   {pdpIsOnSale && pdpRegularPrice !== null ? (
     <>
       <span className="product-price-current">${formatPdpPrice(pdpCurrentPrice)}</span>

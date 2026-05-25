@@ -156,6 +156,10 @@
   opacity: 0.7;
 }
 
+.product-price.is-on-sale .product-price-current {
+  font-weight: 700;
+}
+
 .related-products-gallery {
   display: flex;
   flex-direction: row;
