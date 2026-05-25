@@ -130,8 +130,8 @@
   .fyve-fullscreen-gallery-image {
     width: auto;
     height: auto;
-    max-width: calc(100vw - 60px);
-    max-height: 94vh;
+    max-width: calc(100vw - 40px);
+    max-height: 96vh;
     object-fit: contain;
   }
 }
