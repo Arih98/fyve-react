@@ -1299,18 +1299,18 @@ body.size-panel-open {
   padding-top: 16px;
   padding-left: 30px;
   padding-right: 30px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
-  .product-image-gallery {
-    width: 100%;
-    max-width: 1020px;
-  }
+.product-image-gallery {
+  width: 100%;
+  max-width: none;
+}
 
 .images-container {
   flex: 1 1 auto;
   width: auto;
-  max-width: 1020px;
+  max-width: none;
   min-width: 0;
 }
 
