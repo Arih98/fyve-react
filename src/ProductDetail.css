@@ -119,7 +119,7 @@
 .related-product-card {
   display: flex;
   flex-direction: column;
-  flex: 0 0 300px;
+  flex: 0 0 500px;
   cursor: pointer;
   border: none;
   background: none;
