@@ -337,6 +337,63 @@ const handleRelatedProductsWheel = (e) => {
   }, 360);
 };
 
+const getVariationForAttributeOption = (attrName, term) => {
+  if (!Array.isArray(productForOptions?.variations)) return null;
+
+  const normalizedAttrName = String(attrName || '').trim().toLowerCase();
+  const normalizedTerm = String(term || '').trim().toLowerCase();
+
+  return productForOptions.variations.find((variation) => {
+    const attrs = Array.isArray(variation.attributes) ? variation.attributes : [];
+
+    return attrs.some((attr) => {
+      const name = String(attr.attribute_name || attr.name || '').trim().toLowerCase();
+      const value = String(attr.term_name || attr.term_slug || attr.value || '').trim().toLowerCase();
+
+      return name === normalizedAttrName && value === normalizedTerm;
+    });
+  }) || null;
+};
+
+const getVariationImageForAttributeOption = (attrName, term) => {
+  const variation = getVariationForAttributeOption(attrName, term);
+
+  if (Array.isArray(variation?.gallery) && variation.gallery[0]) {
+    return variation.gallery[0];
+  }
+
+  if (Array.isArray(product?.gallery) && product.gallery[0]) {
+    return product.gallery[0];
+  }
+
+  return product?.thumbnail || '/api/Uploads/fallback-image.png';
+};
+
+const handleVisualColorChange = (attrName, term, e) => {
+  const img = e.currentTarget.querySelector('img');
+  const src = getVariationImageForAttributeOption(attrName, term);
+  const isMobileViewport = window.innerWidth <= 768;
+
+  if (img && src) {
+    startProductImageTransition({
+      src,
+      fromElement: img,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 1 : 999999
+    });
+  }
+
+  handleAttributeChange(attrName, term);
+  setCartError(null);
+  setActiveImageIndex(0);
+
+  if (mobileGalleryRef.current) {
+    mobileGalleryRef.current.scrollLeft = 0;
+  }
+};
+
   const getColorClassName = (term) => {
   const value = String(term || '').trim().toLowerCase();
 
@@ -1743,23 +1800,32 @@ transition={{
         <label className="attribute-label">{attrName}</label>
 
         {isSwatchAttribute ? (
-          <div className="color-options">
-            {options.map(term => (
-              <div key={term} className="color-option">
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleAttributeChange(attrName, term);
-                    setCartError(null);
-                  }}
-                  className={`color-button ${selectedAttributes[attrName] === term ? 'selected' : ''} ${getColorClassName(term)}`}
-                  aria-label={`${attrName} ${term}`}
-                />
-                <span className="color-label">{term}</span>
-              </div>
-            ))}
-          </div>
-        ) : (
+  <div className="color-options visual-color-options">
+    {options.map(term => {
+      const imageSrc = getVariationImageForAttributeOption(attrName, term);
+      const isSelected = selectedAttributes[attrName] === term;
+
+      return (
+        <div key={term} className="color-option visual-color-option">
+          <button
+            type="button"
+            onClick={(e) => handleVisualColorChange(attrName, term, e)}
+            className={`visual-color-button ${isSelected ? 'selected' : ''}`}
+            aria-label={`${attrName} ${term}`}
+          >
+            <img
+              src={imageSrc}
+              alt={term}
+              className="visual-color-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+            />
+          </button>
+          <span className="color-label">{term}</span>
+        </div>
+      );
+    })}
+  </div>
+) : (
           <div className="attribute-pill-options">
             {options.map(term => (
               <button
