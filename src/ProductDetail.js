@@ -1745,29 +1745,6 @@ onClick={closeSizePanel}
   </motion.div>
 )}
       </motion.div>
-
-      {relatedProducts.length > 0 && (
-        <div className="related-products-container">
-          <h2 className="related-products-title">Related Products</h2>
-          <div className="related-products-grid">
-            {relatedProducts.map(relItem => (
-              <div key={relItem.displayId} className="related-product-card" onClick={() => handleRelatedClick(relItem)}>
-                <motion.img
-                  initial={false}
-                  src={getDisplayImage(relItem)}
-                  alt={relItem.displayTitle}
-                  className="related-product-image"
-                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                />
-                <div className="related-product-info">
-                  <h3 className="related-product-title">{relItem.displayTitle}</h3>
-                  <p className="related-product-price">${Number(getDisplayPrice(relItem) || 0).toFixed(2)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
 
 <FullscreenGallery
