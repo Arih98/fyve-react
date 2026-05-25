@@ -118,11 +118,9 @@
 
 .fyve-fullscreen-gallery-image {
   display: block;
-  width: auto;
-  height: auto;
-  max-width: 100vw;
-  max-height: 100vh;
-  object-fit: contain;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
@@ -135,6 +133,16 @@
     max-width: none;
     max-height: none;
     object-fit: contain;
+  }
+}
+
+@media (max-width: 768px) {
+  .fyve-fullscreen-gallery-image {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: cover;
   }
 }
 
