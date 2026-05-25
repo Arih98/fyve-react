@@ -869,7 +869,7 @@ body.size-panel-open {
 }
 
 .product-gallery-image-wrapper {
-  cursor: zoom-in;
+  cursor: var(--fyve-cursor-plus);
 }
 
 @media (max-width: 768px) {

@@ -42,6 +42,12 @@ const swipeRef = useRef({
     originY: 0
   });
 
+  const galleryClickRef = useRef({
+  startX: 0,
+  startY: 0,
+  moved: false
+});
+
   const pinchStateRef = useRef({
     isPinching: false,
     startDistance: 0,
@@ -259,39 +265,64 @@ useEffect(() => {
   };
 
   const handlePointerDown = (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
 
-    if (scale <= 1) return;
-
-    pointerStateRef.current = {
-      isDragging: true,
-      startX: e.clientX,
-      startY: e.clientY,
-      originX: translate.x,
-      originY: translate.y
-    };
-
-    setIsInteracting(true);
+  galleryClickRef.current = {
+    startX: e.clientX,
+    startY: e.clientY,
+    moved: false
   };
+
+  if (scale <= 1) return;
+
+  pointerStateRef.current = {
+    isDragging: true,
+    startX: e.clientX,
+    startY: e.clientY,
+    originX: translate.x,
+    originY: translate.y
+  };
+
+  setIsInteracting(true);
+};
 
   const handlePointerMove = (e) => {
-    if (!pointerStateRef.current.isDragging || scale <= 1) return;
+  const moveX = Math.abs(e.clientX - galleryClickRef.current.startX);
+  const moveY = Math.abs(e.clientY - galleryClickRef.current.startY);
 
-    const deltaX = e.clientX - pointerStateRef.current.startX;
-    const deltaY = e.clientY - pointerStateRef.current.startY;
+  if (moveX > 6 || moveY > 6) {
+    galleryClickRef.current.moved = true;
+  }
 
-    const nextTranslate = {
-      x: pointerStateRef.current.originX + deltaX,
-      y: pointerStateRef.current.originY + deltaY
-    };
+  if (!pointerStateRef.current.isDragging || scale <= 1) return;
 
-    setTranslate(clampTranslate(scale, nextTranslate));
+  const deltaX = e.clientX - pointerStateRef.current.startX;
+  const deltaY = e.clientY - pointerStateRef.current.startY;
+
+  const nextTranslate = {
+    x: pointerStateRef.current.originX + deltaX,
+    y: pointerStateRef.current.originY + deltaY
   };
+
+  setTranslate(clampTranslate(scale, nextTranslate));
+};
 
   const endPointerInteraction = () => {
     pointerStateRef.current.isDragging = false;
     setIsInteracting(false);
   };
+
+  const handleStageClick = (e) => {
+  if (!window.matchMedia('(min-width: 769px)').matches) return;
+  if (galleryClickRef.current.moved) return;
+
+  if (scale > 1) {
+    resetTransform();
+    return;
+  }
+
+  updateScaleAtPoint(2.5, e.clientX, e.clientY);
+};
 
   const clearTapState = () => {
   tapRef.current.lastTapTime = 0;
@@ -460,11 +491,12 @@ if (scale === 1 && swipeRef.current.isSwiping) {
 </button>
 
         <div
-          ref={stageRef}
-          className={`fyve-fullscreen-gallery-stage ${scale > 1 ? 'is-zoomed' : ''} ${isInteracting ? 'is-interacting' : ''}`}
-          onWheel={handleWheel}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
+  ref={stageRef}
+  className={`fyve-fullscreen-gallery-stage ${scale > 1 ? 'is-zoomed' : ''} ${isInteracting ? 'is-interacting' : ''}`}
+  onClick={handleStageClick}
+  onWheel={handleWheel}
+  onPointerDown={handlePointerDown}
+  onPointerMove={handlePointerMove}
           onPointerUp={endPointerInteraction}
           onPointerCancel={endPointerInteraction}
           onPointerLeave={endPointerInteraction}

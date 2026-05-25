@@ -1,3 +1,8 @@
+:root {
+  --fyve-cursor-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='17' fill='white' fill-opacity='0.88' stroke='%234a494a' stroke-width='2'/%3E%3Cpath d='M24 16v16M16 24h16' stroke='%234a494a' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 24 24, zoom-in;
+  --fyve-cursor-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='17' fill='white' fill-opacity='0.88' stroke='%234a494a' stroke-width='2'/%3E%3Cpath d='M16 24h16' stroke='%234a494a' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 24 24, zoom-out;
+}
+
 .fyve-fullscreen-gallery-overlay {
   position: fixed;
   inset: 0;
@@ -89,15 +94,12 @@
   align-items: center;
   justify-content: center;
   touch-action: none;
-  cursor: zoom-in;
+  cursor: var(--fyve-cursor-plus);
 }
 
-.fyve-fullscreen-gallery-stage.is-zoomed {
-  cursor: grab;
-}
-
+.fyve-fullscreen-gallery-stage.is-zoomed,
 .fyve-fullscreen-gallery-stage.is-zoomed.is-interacting {
-  cursor: grabbing;
+  cursor: var(--fyve-cursor-minus);
 }
 
 .fyve-fullscreen-gallery-media {
