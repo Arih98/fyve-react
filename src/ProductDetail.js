@@ -479,7 +479,7 @@ startProductImageTransition({
   fromElement: sourceEl,
   toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
   duration: isMobileViewport ? 520 : 620,
-  minTargetTop: isMobileViewport ? 80 : 0,
+  minTargetTop: -999999,
   zIndex: isMobileViewport ? 1 : 999999,
   fillTarget: true,
   hideFromElement: false,
