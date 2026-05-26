@@ -1063,7 +1063,7 @@ body.size-panel-open {
   justify-content: center;
   align-items: center;
   margin: 0;
-  background: transparent;
+  background: #f7f7f7;
   overflow: visible;
 }
 
