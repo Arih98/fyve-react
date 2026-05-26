@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
 const scrollPositions = new Map();
@@ -6,6 +6,10 @@ const scrollPositions = new Map();
 export default function ScrollManager() {
   const location = useLocation();
   const navigationType = useNavigationType();
+  const previousLocationRef = useRef({
+    pathname: null,
+    search: null
+  });
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -28,8 +32,25 @@ export default function ScrollManager() {
     };
   }, [location.pathname, location.search]);
 
-    useEffect(() => {
+  useEffect(() => {
+    const previousLocation = previousLocationRef.current;
+    const previousPathname = previousLocation.pathname;
+    const previousSearch = previousLocation.search;
     const pageKey = `${location.pathname}${location.search}`;
+    const isFirstRun = previousPathname === null;
+    const pathnameChanged = previousPathname !== location.pathname;
+    const searchChanged = previousSearch !== location.search;
+    const isProductDetailPage = location.pathname.startsWith('/product/');
+    const isSameProductSearchChange = !isFirstRun && !pathnameChanged && searchChanged && isProductDetailPage;
+
+    previousLocationRef.current = {
+      pathname: location.pathname,
+      search: location.search
+    };
+
+    if (isSameProductSearchChange) {
+      return;
+    }
 
     if (location.pathname === '/') {
       window.scrollTo(0, 0);
@@ -62,12 +83,14 @@ export default function ScrollManager() {
       return;
     }
 
-        if (location.state?.fromProductGrid) {
+    if (location.state?.fromProductGrid) {
       window.scrollTo(0, 0);
       return;
     }
 
-    window.scrollTo(0, 0);
+    if (pathnameChanged || isFirstRun) {
+      window.scrollTo(0, 0);
+    }
   }, [location.pathname, location.search, navigationType, location.state?.fromProductGrid]);
 
   return null;
