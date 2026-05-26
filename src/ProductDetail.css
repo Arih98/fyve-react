@@ -1047,7 +1047,8 @@ body.size-panel-open {
     justify-content: center;
     align-items: center;
     margin: 0;
-    aspect-ratio: 3 / 3;
+    aspect-ratio: auto;
+    height: 86vw;
   }
 
   .product-gallery-image-box {
