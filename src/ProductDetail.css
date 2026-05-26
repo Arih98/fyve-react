@@ -1067,28 +1067,30 @@ body.product-image-transition-active .footer {
   scroll-snap-stop: always;
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;
   margin: 0;
-  background: transparent;
-  overflow: hidden;
+  background: #f7f7f7;
+  overflow: visible;
 }
 
 .product-gallery-image-box {
-  width: 100%;
-  height: 100%;
-  max-width: none;
+  width: var(--pdp-mobile-gallery-size);
+  height: var(--pdp-mobile-gallery-size);
+  max-width: 100%;
   background: #f7f7f7;
   overflow: hidden;
   position: relative;
   z-index: 2;
 }
 
-.product-gallery-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+  .product-gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
 
   .product-gallery-progress {
     display: block;
