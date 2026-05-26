@@ -981,7 +981,7 @@ body.size-panel-open {
 
 .mobile-gallery-color-options .attribute-label {
   display: block;
-  padding-top: 10px;
+  padding-top: 5px;
 }
 
 .mobile-gallery-color-label {
@@ -1185,7 +1185,7 @@ body.size-panel-open {
 
 .visual-color-button {
   width: auto;
-  height: 45px;
+  height: 40px;
 }
 
   .color-options {
