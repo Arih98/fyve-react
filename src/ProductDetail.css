@@ -974,13 +974,15 @@ body.size-panel-open {
 
 @media (max-width: 768px) {
 .mobile-gallery-color-options {
-  padding: 0 0 18px;
+  padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
 .mobile-gallery-color-options .attribute-label {
   display: block;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .mobile-gallery-color-label {
