@@ -1894,24 +1894,33 @@ return (
 </div>
         </div>
 
-        {showDetails && (
-          <motion.div
-            className="details-container"
-
-    initial={
-      shouldAnimateDetailsIn
+        <motion.div
+  className="details-container"
+  initial={
+    shouldAnimateDetailsIn
+      ? isMobile
+        ? { y: 30, opacity: 0 }
+        : { x: 80, opacity: 0 }
+      : false
+  }
+  animate={
+    showDetails
+      ? { x: 0, y: 0, opacity: 1 }
+      : shouldAnimateDetailsIn
         ? isMobile
           ? { y: 30, opacity: 0 }
           : { x: 80, opacity: 0 }
-        : false
-    }
-    animate={{ x: 0, y: 0, opacity: 1 }}
-transition={{
-  duration: 0.5,
-  delay: isMobile ? 0 : 0.60,
-  ease: [0.16, 1, 0.3, 1]
-}}
-  >
+        : { x: 0, y: 0, opacity: 1 }
+  }
+  style={{
+    pointerEvents: showDetails ? 'auto' : 'none'
+  }}
+  transition={{
+    duration: 0.5,
+    delay: isMobile ? 0 : 0.60,
+    ease: [0.16, 1, 0.3, 1]
+  }}
+>
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
 {isMobile && mobileColorOptions}
 
@@ -2178,8 +2187,7 @@ onClick={closeSizePanel}
   </div>
 )}
     </div>
-  </motion.div>
-)}
+</motion.div>
        </motion.div>
 
       {!isMobile && relatedProductsSlider}
