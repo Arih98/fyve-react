@@ -482,17 +482,15 @@ startProductImageTransition({
   minTargetTop: isMobileViewport ? 80 : 0,
   zIndex: isMobileViewport ? 1 : 999999,
   fillTarget: true,
-  beforeTargetMeasure: async () => {
-    if (isMobileViewport) {
-      window.scrollTo(0, 0);
+beforeTargetMeasure: async () => {
+  window.scrollTo(0, 0);
 
-      await new Promise(resolve => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(resolve);
-        });
-      });
-    }
-  },
+  await new Promise(resolve => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resolve);
+    });
+  });
+},
   onBeforeRemove: applyChange
 });
 
