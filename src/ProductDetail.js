@@ -456,7 +456,22 @@ const waitForPdpImageToMatch = (expectedSrc) => {
   });
 };
 
-const handleVisualColorChange = (attrName, term, e) => {
+const waitForFrames = (count = 2) => {
+  return new Promise((resolve) => {
+    const step = (remaining) => {
+      if (remaining <= 0) {
+        resolve();
+        return;
+      }
+
+      requestAnimationFrame(() => step(remaining - 1));
+    };
+
+    step(count);
+  });
+};
+
+const handleVisualColorChange = async (attrName, term, e) => {
   const sourceEl = e.currentTarget;
   const src = getVariationTransitionImageForAttributeOption(attrName, term);
   const isMobileViewport = window.innerWidth <= 768;
@@ -473,41 +488,38 @@ const handleVisualColorChange = (attrName, term, e) => {
     await waitForPdpImageToMatch(src);
   };
 
-  if (sourceEl && src) {
-startProductImageTransition({
-  src,
-  fromElement: sourceEl,
-  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-  duration: isMobileViewport ? 520 : 620,
-  minTargetTop: isMobileViewport ? 80 : 0,
-  zIndex: isMobileViewport ? 1 : 999999,
-  fillTarget: true,
-beforeTargetMeasure: async ({ clone }) => {
-  if (clone) {
-    clone.style.zIndex = '999999';
-  }
-
-  await new Promise(resolve => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(resolve);
-    });
-  });
-
-  window.scrollTo(0, 0);
-
-  await new Promise(resolve => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(resolve);
-    });
-  });
-},
-  onBeforeRemove: applyChange
-});
-
+  if (!sourceEl || !src) {
+    applyChange();
     return;
   }
 
-  applyChange();
+  if (!isMobileViewport && window.scrollY > 0) {
+    window.scrollTo(0, 0);
+    await waitForFrames(2);
+  }
+
+  startProductImageTransition({
+    src,
+    fromElement: sourceEl,
+    toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+    duration: isMobileViewport ? 520 : 620,
+    minTargetTop: isMobileViewport ? 80 : 0,
+    zIndex: 999999,
+    fillTarget: true,
+    hideFromElement: false,
+    beforeTargetMeasure: async ({ clone }) => {
+      if (clone) {
+        clone.style.zIndex = '999999';
+      }
+
+      if (isMobileViewport) {
+        await waitForFrames(2);
+        window.scrollTo(0, 0);
+        await waitForFrames(2);
+      }
+    },
+    onBeforeRemove: applyChange
+  });
 };
 
   const getColorClassName = (term) => {

@@ -218,7 +218,8 @@ export const startProductImageTransition = async ({
   fillTarget = false,
   beforeTargetMeasure = null,
   onBeforeRemove = null,
-  onComplete = null
+  onComplete = null,
+  hideFromElement = true
 }) => {
   if (!src || !fromElement) return;
 
@@ -303,8 +304,11 @@ export const startProductImageTransition = async ({
     return;
   }
 
+if (hideFromElement) {
   fromElement.style.opacity = '0';
-  clone.style.opacity = '1';
+}
+
+clone.style.opacity = '1';
 
   try {
     if (typeof beforeTargetMeasure === 'function') {
