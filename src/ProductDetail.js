@@ -1559,6 +1559,64 @@ const handleGalleryPointerEnd = (e) => {
   }, 240);
 };
 
+const isVisualColorAttribute = (attrName) => {
+  const value = String(attrName || '').toLowerCase();
+
+  return (
+    isColorAttribute(attrName) ||
+    value.includes('stiching') ||
+    value.includes('stitching') ||
+    value.includes('colour') ||
+    value.includes('color')
+  );
+};
+
+const mobileColorOptions = product?.product_type === 'variable' ? (
+  <>
+    {attributeNames
+      .filter(attrName => !isSizeAttribute(attrName))
+      .filter(isVisualColorAttribute)
+      .map(attrName => {
+        const options = getOrderedOptions(attrName);
+
+        if (!options.length) return null;
+
+        return (
+          <div key={attrName} className="mobile-gallery-color-options attribute-group">
+            <label className="attribute-label">
+              {getSelectedAttributeDisplayValue(attrName)}
+            </label>
+
+            <div className="color-options visual-color-options">
+              {options.map(term => {
+                const imageSrc = getVariationSwatchImageForAttributeOption(attrName, term);
+                const isSelected = selectedAttributes[attrName] === term;
+
+                return (
+                  <div key={term} className="color-option visual-color-option">
+                    <button
+                      type="button"
+                      onClick={(e) => handleVisualColorChange(attrName, term, e)}
+                      className={`visual-color-button ${isSelected ? 'selected' : ''}`}
+                      aria-label={`${attrName} ${term}`}
+                    >
+                      <img
+                        src={imageSrc}
+                        alt=""
+                        className="visual-color-image"
+                        onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+                      />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+  </>
+) : null;
+
 const productAccordions = (
   <>
     <div className="product-description-accordion">
@@ -1839,6 +1897,7 @@ return (
                 />
               </div>
             )}
+            {isMobile && mobileColorOptions}
           </div>
 
 {!isMobile && (
@@ -1914,6 +1973,7 @@ transition={{
   <div className="product-attributes">
     {attributeNames
   .filter(attrName => !isSizeAttribute(attrName))
+  .filter(attrName => !isMobile || !isVisualColorAttribute(attrName))
   .map(attrName => {
     const options = getOrderedOptions(attrName);
     const isSwatchAttribute =
