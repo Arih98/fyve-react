@@ -981,7 +981,6 @@ body.size-panel-open {
 
 .mobile-gallery-color-options .attribute-label {
   display: block;
-  padding-top: 5px;
 }
 
 .mobile-gallery-color-label {
@@ -1099,8 +1098,7 @@ body.size-panel-open {
   .product-details {
     position: static;
     top: auto;
-    padding-right: 20px;
-    padding-left: 20px;
+    padding: 20px;
   }
 
   .product-details.scroll-up {
@@ -1160,10 +1158,6 @@ body.size-panel-open {
 
   .product-attributes {
     margin-top: 18px;
-  }
-
-  .attribute-group {
-    margin-bottom: 18px;
   }
 
   .attribute-label,
