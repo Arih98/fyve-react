@@ -1892,14 +1892,6 @@ return (
     </div>
   )}
 </div>
-
-{isMobile && mobileColorOptions}
-
-{!isMobile && (
-  <div className="product-accordions-desktop">
-    {productAccordions}
-  </div>
-)}
         </div>
 
         {showDetails && (
@@ -1921,6 +1913,8 @@ transition={{
 }}
   >
     <div className={`product-details ${scrollDirection === 'up' ? 'scroll-up' : ''}`}>
+{isMobile && mobileColorOptions}
+
 {productBreadcrumbs.length > 0 && (
   <nav className="product-breadcrumbs" aria-label="Product breadcrumbs">
     {productBreadcrumbs.map((item, index) => (
@@ -2170,6 +2164,13 @@ onClick={closeSizePanel}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
+
+{!isMobile && (
+  <div className="product-accordions-desktop">
+    {productAccordions}
+  </div>
+)}
+
 {isMobile && (
   <div className="product-accordions-mobile">
     {productAccordions}

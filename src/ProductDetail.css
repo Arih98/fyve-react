@@ -974,7 +974,7 @@ body.size-panel-open {
 
 @media (max-width: 768px) {
 .mobile-gallery-color-options {
-  padding: 25px 20px 0;
+  padding: 0 0 18px;
   margin: 0;
   box-sizing: border-box;
 }
