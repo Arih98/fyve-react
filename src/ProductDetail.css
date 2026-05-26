@@ -981,7 +981,11 @@ body.size-panel-open {
 
 .mobile-gallery-color-options .attribute-label {
   display: block;
-  margin-bottom: 10px;
+}
+
+.mobile-gallery-color-label {
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 
 .mobile-gallery-color-options .visual-color-options {

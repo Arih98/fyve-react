@@ -1582,36 +1582,36 @@ const mobileColorOptions = product?.product_type === 'variable' ? (
         if (!options.length) return null;
 
         return (
-          <div key={attrName} className="mobile-gallery-color-options attribute-group">
-            <label className="attribute-label">
-              {getSelectedAttributeDisplayValue(attrName)}
-            </label>
+<div key={attrName} className="mobile-gallery-color-options attribute-group">
+  <div className="color-options visual-color-options">
+    {options.map(term => {
+      const imageSrc = getVariationSwatchImageForAttributeOption(attrName, term);
+      const isSelected = selectedAttributes[attrName] === term;
 
-            <div className="color-options visual-color-options">
-              {options.map(term => {
-                const imageSrc = getVariationSwatchImageForAttributeOption(attrName, term);
-                const isSelected = selectedAttributes[attrName] === term;
+      return (
+        <div key={term} className="color-option visual-color-option">
+          <button
+            type="button"
+            onClick={(e) => handleVisualColorChange(attrName, term, e)}
+            className={`visual-color-button ${isSelected ? 'selected' : ''}`}
+            aria-label={`${attrName} ${term}`}
+          >
+            <img
+              src={imageSrc}
+              alt=""
+              className="visual-color-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+            />
+          </button>
+        </div>
+      );
+    })}
+  </div>
 
-                return (
-                  <div key={term} className="color-option visual-color-option">
-                    <button
-                      type="button"
-                      onClick={(e) => handleVisualColorChange(attrName, term, e)}
-                      className={`visual-color-button ${isSelected ? 'selected' : ''}`}
-                      aria-label={`${attrName} ${term}`}
-                    >
-                      <img
-                        src={imageSrc}
-                        alt=""
-                        className="visual-color-image"
-                        onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+  <label className="attribute-label mobile-gallery-color-label">
+    {getSelectedAttributeDisplayValue(attrName)}
+  </label>
+</div>
         );
       })}
   </>
