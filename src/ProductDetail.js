@@ -378,6 +378,10 @@ const getVariationSwatchImageForAttributeOption = (attrName, term) => {
     return variation.swatch_image;
   }
 
+  if (variation?.auto_swatch_image) {
+    return variation.auto_swatch_image;
+  }
+
   if (Array.isArray(variation?.gallery) && variation.gallery[0]) {
     return variation.gallery[0];
   }
@@ -398,6 +402,10 @@ const getVariationTransitionImageForAttributeOption = (attrName, term) => {
 
   if (variation?.swatch_image) {
     return variation.swatch_image;
+  }
+
+  if (variation?.auto_swatch_image) {
+    return variation.auto_swatch_image;
   }
 
   if (Array.isArray(product?.gallery) && product.gallery[0]) {
@@ -430,6 +438,45 @@ const handleVisualColorChange = (attrName, term, e) => {
   if (mobileGalleryRef.current) {
     mobileGalleryRef.current.scrollLeft = 0;
   }
+};
+
+const handleVisualColorChange = (attrName, term, e) => {
+  const img = e.currentTarget.querySelector('img');
+  const src = getVariationImageForAttributeOption(attrName, term);
+  const isMobileViewport = window.innerWidth <= 768;
+
+  if (img && src) {
+    startProductImageTransition({
+      src,
+      fromElement: img,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 1 : 999999
+    });
+  }
+
+  handleAttributeChange(attrName, term);
+  setCartError(null);
+  setActiveImageIndex(0);
+
+  if (mobileGalleryRef.current) {
+    mobileGalleryRef.current.scrollLeft = 0;
+  }
+};
+
+  const getColorClassName = (term) => {
+  const value = String(term || '').trim().toLowerCase();
+
+  if (value === 'sand') return 'sand';
+  if (value === 'ivory') return 'ivory';
+  if (value === 'mauve') return 'mauve';
+  if (value === 'olive') return 'olive';
+  if (value === 'lavender') return 'lavender';
+  if (value === 'blue') return 'blue';
+  if (value === 'oat') return 'oat';
+
+  return '';
 };
 
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
