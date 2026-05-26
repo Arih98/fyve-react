@@ -259,169 +259,25 @@ export const startProductImageTransition = async ({
   activeClone = clone;
   document.body.classList.add('product-image-transition-active');
 
-let targetWaitController = null;
-
-const imageReady = await waitForImageReady(clone);
-
-  if (!imageReady || runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-    targetWaitController?.abort();
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
-
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    if (runId === transitionRunId) {
-      document.body.classList.remove('product-image-transition-active');
-    }
-
-    return;
-  }
-
-if (hideFromElement) {
-fromElement.style.opacity = '0';
-clone.style.opacity = '1';
-
-try {
-  if (typeof beforeTargetMeasure === 'function') {
-    await beforeTargetMeasure({
-      clone,
-      fromElement
-    });
-  }
-} catch (error) {
-  console.error(error);
-}
-
-targetWaitController = new AbortController();
-activeTargetWaitController = targetWaitController;
-
-const stableTarget = await waitForStableElementRect(toElementGetter, {
-  maxAttempts: 90,
-  maxFramesPerAttempt: 20,
-  stableFrames: 2,
-  signal: targetWaitController.signal
-});
-
-  if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-    stableTarget?.restore?.();
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
-
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    return;
-  }
-
-  if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
-
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    if (runId === transitionRunId) {
-      document.body.classList.remove('product-image-transition-active');
-    }
-
-    return;
-  }
-
-  const toElement = stableTarget.element;
-  const stableRect = stableTarget.rect;
-
-  if (!stableRect.width || !stableRect.height) {
-    stableTarget.restore?.();
-    fromElement.style.opacity = previousFromOpacity;
-    clone.remove();
-
-    if (activeClone === clone) {
-      activeClone = null;
-    }
-
-    if (runId === transitionRunId) {
-      document.body.classList.remove('product-image-transition-active');
-    }
-
-    return;
-  }
-
-  const toRect = {
-    left: stableRect.left,
-    top: Math.max(stableRect.top, minTargetTop),
-    width: stableRect.width,
-    height: stableRect.height
-  };
-
-const finalRect = fillTarget
-  ? {
-      left: toRect.left,
-      top: toRect.top,
-      width: toRect.width,
-      height: toRect.height
-    }
-  : (() => {
-      const scale = Math.min(toRect.width / fromRect.width, toRect.height / fromRect.height);
-      const width = fromRect.width * scale;
-      const height = fromRect.height * scale;
-
-      return {
-        left: toRect.left + (toRect.width - width) / 2,
-        top: toRect.top + (toRect.height - height) / 2,
-        width,
-        height
-      };
-    })();
-
-  clone.style.left = `${fromRect.left}px`;
-  clone.style.top = `${fromRect.top}px`;
-  clone.style.width = `${fromRect.width}px`;
-  clone.style.height = `${fromRect.height}px`;
-
-  clone.getBoundingClientRect();
-
-  const animation = clone.animate(
-    [
-      {
-        left: `${fromRect.left}px`,
-        top: `${fromRect.top}px`,
-        width: `${fromRect.width}px`,
-        height: `${fromRect.height}px`,
-        opacity: 1
-      },
-{
-  left: `${finalRect.left}px`,
-  top: `${finalRect.top}px`,
-  width: `${finalRect.width}px`,
-  height: `${finalRect.height}px`,
-  opacity: 1
-}
-    ],
-    {
-      duration,
-      easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
-      fill: 'forwards'
-    }
-  );
-
-  activeAnimation = animation;
+  let targetWaitController = null;
+  let stableTarget = null;
+  let toElement = null;
+  let animation = null;
 
   const cleanup = () => {
-    stableTarget.restore?.();
+    stableTarget?.restore?.();
 
     if (toElement && toElement.isConnected) {
       toElement.style.opacity = '';
     }
 
-if (hideFromElement && fromElement && fromElement.isConnected) {
-  fromElement.style.opacity = previousFromOpacity;
-}
+    if (fromElement && fromElement.isConnected) {
+      fromElement.style.opacity = previousFromOpacity;
+    }
 
-    clone.remove();
+    if (clone && clone.isConnected) {
+      clone.remove();
+    }
 
     if (activeClone === clone) {
       activeClone = null;
@@ -440,31 +296,140 @@ if (hideFromElement && fromElement && fromElement.isConnected) {
     }
   };
 
-const finishTransition = async () => {
-  if (activeClone !== clone || activeAnimation !== animation) {
+  const imageReady = await waitForImageReady(clone);
+
+  if (!imageReady || runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
     cleanup();
     return;
   }
 
+  fromElement.style.opacity = '0';
+  clone.style.opacity = '1';
+
   try {
-    if (typeof onBeforeRemove === 'function') {
-      await onBeforeRemove();
+    if (typeof beforeTargetMeasure === 'function') {
+      await beforeTargetMeasure({
+        clone,
+        fromElement
+      });
     }
   } catch (error) {
     console.error(error);
   }
 
-  await waitForNextFrame();
+  targetWaitController = new AbortController();
+  activeTargetWaitController = targetWaitController;
 
-  cleanup();
+  stableTarget = await waitForStableElementRect(toElementGetter, {
+    maxAttempts: 90,
+    maxFramesPerAttempt: 20,
+    stableFrames: 2,
+    signal: targetWaitController.signal
+  });
 
-  if (typeof onComplete === 'function') {
-    onComplete();
+  if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
+    cleanup();
+    return;
   }
-};
 
-animation.addEventListener('finish', finishTransition, { once: true });
-animation.addEventListener('cancel', cleanup, { once: true });
+  if (!stableTarget || !stableTarget.element || !stableTarget.rect) {
+    cleanup();
+    return;
+  }
+
+  toElement = stableTarget.element;
+  const stableRect = stableTarget.rect;
+
+  if (!stableRect.width || !stableRect.height) {
+    cleanup();
+    return;
+  }
+
+  const toRect = {
+    left: stableRect.left,
+    top: Math.max(stableRect.top, minTargetTop),
+    width: stableRect.width,
+    height: stableRect.height
+  };
+
+  const finalRect = fillTarget
+    ? {
+        left: toRect.left,
+        top: toRect.top,
+        width: toRect.width,
+        height: toRect.height
+      }
+    : (() => {
+        const scale = Math.min(toRect.width / fromRect.width, toRect.height / fromRect.height);
+        const width = fromRect.width * scale;
+        const height = fromRect.height * scale;
+
+        return {
+          left: toRect.left + (toRect.width - width) / 2,
+          top: toRect.top + (toRect.height - height) / 2,
+          width,
+          height
+        };
+      })();
+
+  clone.style.left = `${fromRect.left}px`;
+  clone.style.top = `${fromRect.top}px`;
+  clone.style.width = `${fromRect.width}px`;
+  clone.style.height = `${fromRect.height}px`;
+
+  clone.getBoundingClientRect();
+
+  animation = clone.animate(
+    [
+      {
+        left: `${fromRect.left}px`,
+        top: `${fromRect.top}px`,
+        width: `${fromRect.width}px`,
+        height: `${fromRect.height}px`,
+        opacity: 1
+      },
+      {
+        left: `${finalRect.left}px`,
+        top: `${finalRect.top}px`,
+        width: `${finalRect.width}px`,
+        height: `${finalRect.height}px`,
+        opacity: 1
+      }
+    ],
+    {
+      duration,
+      easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
+      fill: 'forwards'
+    }
+  );
+
+  activeAnimation = animation;
+
+  const finishTransition = async () => {
+    if (activeClone !== clone || activeAnimation !== animation) {
+      cleanup();
+      return;
+    }
+
+    try {
+      if (typeof onBeforeRemove === 'function') {
+        await onBeforeRemove();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    await waitForNextFrame();
+
+    cleanup();
+
+    if (typeof onComplete === 'function') {
+      onComplete();
+    }
+  };
+
+  animation.addEventListener('finish', finishTransition, { once: true });
+  animation.addEventListener('cancel', cleanup, { once: true });
 };
 
 export const clearProductImageTransitionClone = () => {
