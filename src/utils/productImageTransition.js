@@ -216,7 +216,7 @@ export const startProductImageTransition = async ({
   minTargetTop = 0,
   zIndex = 999999,
   fillTarget = false,
-  hideFromElement = true,
+  beforeTargetMeasure = null,
   onBeforeRemove = null,
   onComplete = null
 }) => {
@@ -259,20 +259,12 @@ export const startProductImageTransition = async ({
   activeClone = clone;
   document.body.classList.add('product-image-transition-active');
 
-  const targetWaitController = new AbortController();
-  activeTargetWaitController = targetWaitController;
+let targetWaitController = null;
 
-  const stableTargetPromise = waitForStableElementRect(toElementGetter, {
-    maxAttempts: 90,
-    maxFramesPerAttempt: 20,
-    stableFrames: 2,
-    signal: targetWaitController.signal
-  });
-
-  const imageReady = await waitForImageReady(clone);
+const imageReady = await waitForImageReady(clone);
 
   if (!imageReady || runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
-    targetWaitController.abort();
+    targetWaitController?.abort();
     fromElement.style.opacity = previousFromOpacity;
     clone.remove();
 
@@ -288,11 +280,29 @@ export const startProductImageTransition = async ({
   }
 
 if (hideFromElement) {
-  fromElement.style.opacity = '0';
-}
-  clone.style.opacity = '1';
+fromElement.style.opacity = '0';
+clone.style.opacity = '1';
 
-  const stableTarget = await stableTargetPromise;
+try {
+  if (typeof beforeTargetMeasure === 'function') {
+    await beforeTargetMeasure({
+      clone,
+      fromElement
+    });
+  }
+} catch (error) {
+  console.error(error);
+}
+
+targetWaitController = new AbortController();
+activeTargetWaitController = targetWaitController;
+
+const stableTarget = await waitForStableElementRect(toElementGetter, {
+  maxAttempts: 90,
+  maxFramesPerAttempt: 20,
+  stableFrames: 2,
+  signal: targetWaitController.signal
+});
 
   if (runId !== transitionRunId || activeClone !== clone || !clone.isConnected) {
     stableTarget?.restore?.();
