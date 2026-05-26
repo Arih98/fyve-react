@@ -374,6 +374,10 @@ const getVariationForAttributeOption = (attrName, term) => {
 const getVariationImageForAttributeOption = (attrName, term) => {
   const variation = getVariationForAttributeOption(attrName, term);
 
+  if (variation?.swatch_image) {
+    return variation.swatch_image;
+  }
+
   if (Array.isArray(variation?.gallery) && variation.gallery[0]) {
     return variation.gallery[0];
   }
