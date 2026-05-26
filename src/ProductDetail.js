@@ -493,7 +493,7 @@ const handleVisualColorChange = async (attrName, term, e) => {
     return;
   }
 
-  if (!isMobileViewport && window.scrollY > 0) {
+  if (window.scrollY > 0) {
     window.scrollTo(0, 0);
     await waitForFrames(2);
   }
@@ -510,12 +510,6 @@ const handleVisualColorChange = async (attrName, term, e) => {
     beforeTargetMeasure: async ({ clone }) => {
       if (clone) {
         clone.style.zIndex = '999999';
-      }
-
-      if (isMobileViewport) {
-        await waitForFrames(2);
-        window.scrollTo(0, 0);
-        await waitForFrames(2);
       }
     },
     onBeforeRemove: applyChange
