@@ -474,16 +474,17 @@ const handleVisualColorChange = (attrName, term, e) => {
   };
 
   if (sourceEl && src) {
-    startProductImageTransition({
-      src,
-      fromElement: sourceEl,
-      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: isMobileViewport ? 520 : 620,
-      minTargetTop: isMobileViewport ? 80 : 0,
-      zIndex: isMobileViewport ? 1 : 999999,
-      fillTarget: true,
-      onBeforeRemove: applyChange
-    });
+startProductImageTransition({
+  src,
+  fromElement: sourceEl,
+  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+  duration: isMobileViewport ? 520 : 620,
+  minTargetTop: isMobileViewport ? 80 : 0,
+  zIndex: isMobileViewport ? 1 : 999999,
+  fillTarget: true,
+  hideFromElement: false,
+  onBeforeRemove: applyChange
+});
 
     return;
   }

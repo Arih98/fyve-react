@@ -216,6 +216,7 @@ export const startProductImageTransition = async ({
   minTargetTop = 0,
   zIndex = 999999,
   fillTarget = false,
+  hideFromElement = true,
   onBeforeRemove = null,
   onComplete = null
 }) => {
@@ -286,7 +287,9 @@ export const startProductImageTransition = async ({
     return;
   }
 
+if (hideFromElement) {
   fromElement.style.opacity = '0';
+}
   clone.style.opacity = '1';
 
   const stableTarget = await stableTargetPromise;
@@ -404,9 +407,9 @@ const finalRect = fillTarget
       toElement.style.opacity = '';
     }
 
-    if (fromElement && fromElement.isConnected) {
-      fromElement.style.opacity = previousFromOpacity;
-    }
+if (hideFromElement && fromElement && fromElement.isConnected) {
+  fromElement.style.opacity = previousFromOpacity;
+}
 
     clone.remove();
 
