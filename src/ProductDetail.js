@@ -482,7 +482,17 @@ startProductImageTransition({
   minTargetTop: isMobileViewport ? 80 : 0,
   zIndex: isMobileViewport ? 1 : 999999,
   fillTarget: true,
-beforeTargetMeasure: async () => {
+beforeTargetMeasure: async ({ clone }) => {
+  if (clone) {
+    clone.style.zIndex = '999999';
+  }
+
+  await new Promise(resolve => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resolve);
+    });
+  });
+
   window.scrollTo(0, 0);
 
   await new Promise(resolve => {
