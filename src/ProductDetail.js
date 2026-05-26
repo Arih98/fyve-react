@@ -415,31 +415,80 @@ const getVariationTransitionImageForAttributeOption = (attrName, term) => {
   return product?.thumbnail || '/api/Uploads/fallback-image.png';
 };
 
+const waitForPdpImageToMatch = (expectedSrc) => {
+  return new Promise((resolve) => {
+    const startedAt = performance.now();
+
+    const normalize = (value) => {
+      try {
+        return new URL(value, window.location.origin).pathname;
+      } catch {
+        return String(value || '');
+      }
+    };
+
+    const expectedPath = normalize(expectedSrc);
+
+    const check = () => {
+      const img = document.querySelector('[data-pdp-primary-image="true"]');
+      const currentSrc = img?.currentSrc || img?.src || '';
+      const currentPath = normalize(currentSrc);
+
+      if (img && currentPath === expectedPath) {
+        if (typeof img.decode === 'function') {
+          img.decode().catch(() => {}).finally(resolve);
+        } else {
+          resolve();
+        }
+
+        return;
+      }
+
+      if (performance.now() - startedAt > 800) {
+        resolve();
+        return;
+      }
+
+      requestAnimationFrame(check);
+    };
+
+    requestAnimationFrame(check);
+  });
+};
+
 const handleVisualColorChange = (attrName, term, e) => {
-  const img = e.currentTarget;
+  const sourceEl = e.currentTarget;
   const src = getVariationTransitionImageForAttributeOption(attrName, term);
   const isMobileViewport = window.innerWidth <= 768;
 
-  if (img && src) {
+  const applyChange = async () => {
+    handleAttributeChange(attrName, term);
+    setCartError(null);
+    setActiveImageIndex(0);
+
+    if (mobileGalleryRef.current) {
+      mobileGalleryRef.current.scrollLeft = 0;
+    }
+
+    await waitForPdpImageToMatch(src);
+  };
+
+  if (sourceEl && src) {
     startProductImageTransition({
       src,
-      fromElement: img,
+      fromElement: sourceEl,
       toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
       duration: isMobileViewport ? 520 : 620,
       minTargetTop: isMobileViewport ? 80 : 0,
-      zIndex: isMobileViewport ? 1 : 999999
+      zIndex: isMobileViewport ? 1 : 999999,
+      fillTarget: true,
+      onBeforeRemove: applyChange
     });
+
+    return;
   }
 
-window.setTimeout(() => {
-  handleAttributeChange(attrName, term);
-  setCartError(null);
-  setActiveImageIndex(0);
-
-  if (mobileGalleryRef.current) {
-    mobileGalleryRef.current.scrollLeft = 0;
-  }
-}, isMobileViewport ? 430 : 520);
+  applyChange();
 };
 
   const getColorClassName = (term) => {
