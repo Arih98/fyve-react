@@ -440,31 +440,6 @@ const handleVisualColorChange = (attrName, term, e) => {
   }
 };
 
-const handleVisualColorChange = (attrName, term, e) => {
-  const img = e.currentTarget.querySelector('img');
-  const src = getVariationImageForAttributeOption(attrName, term);
-  const isMobileViewport = window.innerWidth <= 768;
-
-  if (img && src) {
-    startProductImageTransition({
-      src,
-      fromElement: img,
-      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-      duration: isMobileViewport ? 520 : 620,
-      minTargetTop: isMobileViewport ? 80 : 0,
-      zIndex: isMobileViewport ? 1 : 999999
-    });
-  }
-
-  handleAttributeChange(attrName, term);
-  setCartError(null);
-  setActiveImageIndex(0);
-
-  if (mobileGalleryRef.current) {
-    mobileGalleryRef.current.scrollLeft = 0;
-  }
-};
-
   const getColorClassName = (term) => {
   const value = String(term || '').trim().toLowerCase();
 
