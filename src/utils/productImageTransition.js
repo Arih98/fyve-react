@@ -214,10 +214,7 @@ export const startProductImageTransition = async ({
   toElementGetter,
   duration = 750,
   minTargetTop = 0,
-  zIndex = 999999,
-  fillTarget = false,
-  onBeforeRemove = null,
-  onComplete = null
+  zIndex = 999999
 }) => {
   if (!src || !fromElement) return;
 
@@ -344,25 +341,11 @@ export const startProductImageTransition = async ({
     height: stableRect.height
   };
 
-const finalRect = fillTarget
-  ? {
-      left: toRect.left,
-      top: toRect.top,
-      width: toRect.width,
-      height: toRect.height
-    }
-  : (() => {
-      const scale = Math.min(toRect.width / fromRect.width, toRect.height / fromRect.height);
-      const width = fromRect.width * scale;
-      const height = fromRect.height * scale;
-
-      return {
-        left: toRect.left + (toRect.width - width) / 2,
-        top: toRect.top + (toRect.height - height) / 2,
-        width,
-        height
-      };
-    })();
+  const scale = Math.min(toRect.width / fromRect.width, toRect.height / fromRect.height);
+  const finalWidth = fromRect.width * scale;
+  const finalHeight = fromRect.height * scale;
+  const finalLeft = toRect.left + (toRect.width - finalWidth) / 2;
+  const finalTop = toRect.top + (toRect.height - finalHeight) / 2;
 
   clone.style.left = `${fromRect.left}px`;
   clone.style.top = `${fromRect.top}px`;
@@ -380,13 +363,13 @@ const finalRect = fillTarget
         height: `${fromRect.height}px`,
         opacity: 1
       },
-{
-  left: `${finalRect.left}px`,
-  top: `${finalRect.top}px`,
-  width: `${finalRect.width}px`,
-  height: `${finalRect.height}px`,
-  opacity: 1
-}
+      {
+        left: `${finalLeft}px`,
+        top: `${finalTop}px`,
+        width: `${finalWidth}px`,
+        height: `${finalHeight}px`,
+        opacity: 1
+      }
     ],
     {
       duration,
@@ -427,31 +410,8 @@ const finalRect = fillTarget
     }
   };
 
-const finishTransition = async () => {
-  if (activeClone !== clone || activeAnimation !== animation) {
-    cleanup();
-    return;
-  }
-
-  try {
-    if (typeof onBeforeRemove === 'function') {
-      await onBeforeRemove();
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
-  await waitForNextFrame();
-
-  cleanup();
-
-  if (typeof onComplete === 'function') {
-    onComplete();
-  }
-};
-
-animation.addEventListener('finish', finishTransition, { once: true });
-animation.addEventListener('cancel', cleanup, { once: true });
+  animation.addEventListener('finish', cleanup, { once: true });
+  animation.addEventListener('cancel', cleanup, { once: true });
 };
 
 export const clearProductImageTransitionClone = () => {
