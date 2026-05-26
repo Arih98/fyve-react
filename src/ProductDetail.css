@@ -1054,6 +1054,11 @@ body.product-image-transition-active .footer {
 .product-image-gallery {
   gap: 0;
   position: relative;
+  background: #f7f7f7;
+}
+
+.product-image-gallery-track {
+  background: #f7f7f7;
 }
 
 .product-gallery-image-wrapper,
@@ -1069,8 +1074,8 @@ body.product-image-transition-active .footer {
   justify-content: center;
   align-items: center;
   margin: 0;
-  background: transparent;
-  overflow: visible;
+  background: #f7f7f7;
+  overflow: hidden;
 }
 
 .product-gallery-image-box {
