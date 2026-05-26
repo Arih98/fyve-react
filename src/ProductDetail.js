@@ -431,6 +431,7 @@ const handleVisualColorChange = (attrName, term, e) => {
     });
   }
 
+window.setTimeout(() => {
   handleAttributeChange(attrName, term);
   setCartError(null);
   setActiveImageIndex(0);
@@ -438,6 +439,7 @@ const handleVisualColorChange = (attrName, term, e) => {
   if (mobileGalleryRef.current) {
     mobileGalleryRef.current.scrollLeft = 0;
   }
+}, isMobileViewport ? 430 : 520);
 };
 
   const getColorClassName = (term) => {
