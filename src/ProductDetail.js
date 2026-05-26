@@ -416,7 +416,7 @@ const getVariationTransitionImageForAttributeOption = (attrName, term) => {
 };
 
 const handleVisualColorChange = (attrName, term, e) => {
-  const img = e.currentTarget.querySelector('img');
+  const img = e.currentTarget;
   const src = getVariationTransitionImageForAttributeOption(attrName, term);
   const isMobileViewport = window.innerWidth <= 768;
 
