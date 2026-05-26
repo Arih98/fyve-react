@@ -973,6 +973,12 @@ body.size-panel-open {
 }
 
 @media (max-width: 768px) {
+
+  body.product-image-transition-active footer,
+body.product-image-transition-active .footer {
+  visibility: hidden;
+}
+
 .mobile-gallery-color-options {
   padding: 0;
   margin: 0;
