@@ -432,20 +432,6 @@ const handleVisualColorChange = (attrName, term, e) => {
   }
 };
 
-  const getColorClassName = (term) => {
-  const value = String(term || '').trim().toLowerCase();
-
-  if (value === 'sand') return 'sand';
-  if (value === 'ivory') return 'ivory';
-  if (value === 'mauve') return 'mauve';
-  if (value === 'olive') return 'olive';
-  if (value === 'lavender') return 'lavender';
-  if (value === 'blue') return 'blue';
-  if (value === 'oat') return 'oat';
-
-  return '';
-};
-
   const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
 const currentColor = (selectedColorKey ? selectedAttributes[selectedColorKey] : null) || 'default';
   const currentDisplayId = `${product?.id || 'unknown'}-${currentColor}`;
