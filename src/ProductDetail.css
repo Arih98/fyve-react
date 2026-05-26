@@ -283,7 +283,7 @@
   align-items: flex-end;
 }
 
-.visual-color-option {
+.color-option.visual-color-option {
   width: auto;
   align-items: center;
   gap: 0;
@@ -291,7 +291,7 @@
   padding-bottom: 8px;
 }
 
-.visual-color-option::after {
+.color-option.visual-color-option::after {
   content: "";
   position: absolute;
   left: 0;
@@ -301,7 +301,7 @@
   background: transparent;
 }
 
-.visual-color-option:has(.visual-color-button.selected)::after {
+.color-option.visual-color-option:has(.visual-color-button.selected)::after {
   background: #4a494a;
 }
 
