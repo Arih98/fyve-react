@@ -371,7 +371,7 @@ const getVariationForAttributeOption = (attrName, term) => {
   }) || null;
 };
 
-const getVariationImageForAttributeOption = (attrName, term) => {
+const getVariationSwatchImageForAttributeOption = (attrName, term) => {
   const variation = getVariationForAttributeOption(attrName, term);
 
   if (variation?.swatch_image) {
@@ -389,9 +389,27 @@ const getVariationImageForAttributeOption = (attrName, term) => {
   return product?.thumbnail || '/api/Uploads/fallback-image.png';
 };
 
+const getVariationTransitionImageForAttributeOption = (attrName, term) => {
+  const variation = getVariationForAttributeOption(attrName, term);
+
+  if (Array.isArray(variation?.gallery) && variation.gallery[0]) {
+    return variation.gallery[0];
+  }
+
+  if (variation?.swatch_image) {
+    return variation.swatch_image;
+  }
+
+  if (Array.isArray(product?.gallery) && product.gallery[0]) {
+    return product.gallery[0];
+  }
+
+  return product?.thumbnail || '/api/Uploads/fallback-image.png';
+};
+
 const handleVisualColorChange = (attrName, term, e) => {
   const img = e.currentTarget.querySelector('img');
-  const src = getVariationImageForAttributeOption(attrName, term);
+  const src = getVariationTransitionImageForAttributeOption(attrName, term);
   const isMobileViewport = window.innerWidth <= 768;
 
   if (img && src) {
@@ -1824,7 +1842,7 @@ transition={{
         {isSwatchAttribute ? (
   <div className="color-options visual-color-options">
     {options.map(term => {
-      const imageSrc = getVariationImageForAttributeOption(attrName, term);
+      const imageSrc = getVariationSwatchImageForAttributeOption(attrName, term);
       const isSelected = selectedAttributes[attrName] === term;
 
       return (
