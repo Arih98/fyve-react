@@ -3,14 +3,14 @@ import { useLocation, useNavigationType } from 'react-router-dom';
 
 const scrollPositions = new Map();
 
-const previousLocationRef = useRef({
-  pathname: location.pathname,
-  search: location.search
-});
-
 export default function ScrollManager() {
   const location = useLocation();
   const navigationType = useNavigationType();
+
+  const previousLocationRef = useRef({
+  pathname: location.pathname,
+  search: location.search
+});
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
