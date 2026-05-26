@@ -183,25 +183,32 @@ const createClone = ({ src, fromRect, fromStyle, zIndex }) => {
 
   clone.src = src;
   clone.alt = '';
+  clone.className = 'fyve-product-image-transition-clone';
+  clone.dataset.fyveProductTransitionClone = 'true';
   clone.setAttribute('aria-hidden', 'true');
-  clone.style.position = 'fixed';
-  clone.style.left = `${fromRect.left}px`;
-  clone.style.top = `${fromRect.top}px`;
-  clone.style.width = `${fromRect.width}px`;
-  clone.style.height = `${fromRect.height}px`;
-  clone.style.display = 'block';
-  clone.style.maxWidth = 'none';
-  clone.style.maxHeight = 'none';
-  clone.style.objectFit = objectFit;
-  clone.style.objectPosition = fromStyle.objectPosition || 'center center';
-  clone.style.pointerEvents = 'none';
-  clone.style.zIndex = String(zIndex);
-  clone.style.background = 'transparent';
-  clone.style.borderRadius = fromStyle.borderRadius || '0px';
-  clone.style.boxSizing = fromStyle.boxSizing || 'border-box';
-  clone.style.transformOrigin = 'center center';
-  clone.style.willChange = 'left, top, width, height, opacity, border-radius';
-  clone.style.opacity = '0';
+
+  Object.assign(clone.style, {
+    position: 'fixed',
+    left: `${fromRect.left}px`,
+    top: `${fromRect.top}px`,
+    width: `${fromRect.width}px`,
+    height: `${fromRect.height}px`,
+    display: 'block',
+    maxWidth: 'none',
+    maxHeight: 'none',
+    margin: '0',
+    objectFit,
+    objectPosition: fromStyle.objectPosition || 'center center',
+    pointerEvents: 'none',
+    zIndex: String(zIndex || 999999),
+    background: 'transparent',
+    borderRadius: fromStyle.borderRadius || '0px',
+    boxSizing: fromStyle.boxSizing || 'border-box',
+    transform: 'none',
+    transformOrigin: 'center center',
+    willChange: 'left, top, width, height, opacity, border-radius',
+    opacity: '0'
+  });
 
   document.body.appendChild(clone);
 
