@@ -1839,66 +1839,67 @@ return (
       <motion.div className="product-detail-container">
         <div className="images-container">
           <div className="product-image-gallery">
-<div
-  ref={mobileGalleryRef}
-  className={`product-image-gallery-track ${isGalleryMouseDragging ? 'is-mouse-dragging' : ''}`}
-  style={!isMobile ? {
-    transform: `translate3d(${galleryTranslateX}px, 0, 0)`,
-    transitionDuration: isGallerySettling ? '300ms' : '0ms',
-    transitionDelay: '0ms'
-  } : undefined}
-  onScroll={handleMobileGalleryScroll}
-  onTouchStart={handleGalleryTouchStart}
-  onTouchMove={handleGalleryTouchMove}
-  onWheel={handleGalleryWheel}
-  onPointerDown={handleGalleryPointerDown}
-  onPointerMove={handleGalleryPointerMove}
-  onPointerUp={handleGalleryPointerEnd}
-  onPointerCancel={handleGalleryPointerEnd}
->
-              {displayImages.map((img, idx) => {
-                const imageKey = `${current?.sku || product.id}-${idx}`;
+  <div
+    ref={mobileGalleryRef}
+    className={`product-image-gallery-track ${isGalleryMouseDragging ? 'is-mouse-dragging' : ''}`}
+    style={!isMobile ? {
+      transform: `translate3d(${galleryTranslateX}px, 0, 0)`,
+      transitionDuration: isGallerySettling ? '300ms' : '0ms',
+      transitionDelay: '0ms'
+    } : undefined}
+    onScroll={handleMobileGalleryScroll}
+    onTouchStart={handleGalleryTouchStart}
+    onTouchMove={handleGalleryTouchMove}
+    onWheel={handleGalleryWheel}
+    onPointerDown={handleGalleryPointerDown}
+    onPointerMove={handleGalleryPointerMove}
+    onPointerUp={handleGalleryPointerEnd}
+    onPointerCancel={handleGalleryPointerEnd}
+  >
+    {displayImages.map((img, idx) => {
+      const imageKey = `${current?.sku || product.id}-${idx}`;
 
-                return (
-                  <div
-                    ref={el => {
-                      galleryRefs.current.set(imageKey, el);
-                    }}
-                    key={imageKey}
-                    className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''} ${!isMobile && idx > 0 && !showDesktopSecondaryImages ? 'desktop-gallery-image-hidden' : ''}`}
-                    onClick={(e) => handleGalleryImageClick(idx, e)}
-                  >
-                    <div className="product-gallery-image-box">
-                      <img
-                        data-pdp-primary-image={idx === 0 ? 'true' : undefined}
-                        ref={el => {
-                          if (idx === 0) {
-                            mainImageRef.current = el;
-                          } else if (mainImageRef.current === el) {
-                            mainImageRef.current = null;
-                          }
-                        }}
-                        src={img}
-                        alt={`${displayTitle} ${idx + 1}`}
-                        className="product-gallery-image"
-                        onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {displayImages.length > 1 && (
-              <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
-                <div
-                  className="product-gallery-progress-bar"
-                  style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
-                />
-              </div>
-            )}
-            {isMobile && mobileColorOptions}
+      return (
+        <div
+          ref={el => {
+            galleryRefs.current.set(imageKey, el);
+          }}
+          key={imageKey}
+          className={`product-gallery-image-wrapper ${idx === 0 ? 'product-gallery-image-wrapper-main' : ''} ${!isMobile && idx > 0 && !showDesktopSecondaryImages ? 'desktop-gallery-image-hidden' : ''}`}
+          onClick={(e) => handleGalleryImageClick(idx, e)}
+        >
+          <div className="product-gallery-image-box">
+            <img
+              data-pdp-primary-image={idx === 0 ? 'true' : undefined}
+              ref={el => {
+                if (idx === 0) {
+                  mainImageRef.current = el;
+                } else if (mainImageRef.current === el) {
+                  mainImageRef.current = null;
+                }
+              }}
+              src={img}
+              alt={`${displayTitle} ${idx + 1}`}
+              className="product-gallery-image"
+              onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+            />
           </div>
+        </div>
+      );
+    })}
+  </div>
+
+  {displayImages.length > 1 && (
+    <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
+      <div
+        className="product-gallery-progress-bar"
+        style={{ width: `${((activeImageIndex + 1) / displayImages.length) * 100}%` }}
+      />
+    </div>
+  )}
+</div>
+
+{isMobile && mobileColorOptions}
 
 {!isMobile && (
   <div className="product-accordions-desktop">
