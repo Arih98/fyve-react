@@ -278,24 +278,41 @@
 }
 
 .visual-color-options {
-  gap: 10px;
+  gap: 14px;
   padding-bottom: 2.3rem;
+  align-items: flex-end;
 }
 
 .visual-color-option {
-  width: 74px;
+  width: auto;
   align-items: center;
   gap: 0;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.visual-color-option::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: transparent;
+}
+
+.visual-color-option:has(.visual-color-button.selected)::after {
+  background: #4a494a;
 }
 
 .visual-color-button {
-  width: 74px;
-  aspect-ratio: 1 / 1;
+  width: auto;
+  height: 74px;
   border: 1px solid transparent;
   border-radius: 0;
   background: transparent;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   display: block;
   appearance: none;
@@ -303,7 +320,15 @@
   -moz-appearance: none;
 }
 
+.visual-color-button.selected {
+  border-color: transparent;
+}
+
 .visual-color-image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  display: block;
   background: transparent;
 }
 
