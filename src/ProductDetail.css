@@ -1038,7 +1038,7 @@ body.size-panel-open {
   }
 
 .images-container {
-  --pdp-mobile-gallery-size: 82vw;
+  --pdp-mobile-gallery-size: 87vw;
   width: 100%;
   max-width: 100%;
   position: relative;
