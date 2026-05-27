@@ -229,7 +229,7 @@ const searchClickLockRef = useRef(false);
 const [searchResults, setSearchResults] = useState([]);
 const [searchLoading, setSearchLoading] = useState(false);
 const [searchError, setSearchError] = useState('');
-  const [activeMenuImage, setActiveMenuImage] = useState('ss25');
+  const [activeMenuImage, setActiveMenuImage] = useState('ss26');
   const [hideHeader, setHideHeader] = useState(false);
   const [isImageAnimating, setIsImageAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
@@ -647,6 +647,31 @@ useEffect(() => {
     });
   }
 }, [isMenuOpen]);
+
+useEffect(() => {
+  if (menuState !== 'open') return;
+
+  setActiveMenuImage('ss26');
+  setIsImageAnimating(false);
+
+  requestAnimationFrame(() => {
+    const images = document.querySelectorAll('.menu-image');
+    const defaultImage = document.querySelector('.menu-image[data-menu-item="ss26"]');
+
+    images.forEach((el) => {
+      gsap.killTweensOf(el);
+      gsap.killTweensOf(el.querySelector('img'));
+      el.style.opacity = '';
+      el.style.zIndex = '';
+    });
+
+    if (defaultImage) {
+      defaultImage.style.opacity = '1';
+      defaultImage.style.zIndex = '2';
+      gsap.set(defaultImage.querySelector('img'), { yPercent: 0 });
+    }
+  });
+}, [menuState]);
 
 useEffect(() => {
   const handleHeaderThemeScroll = () => {
