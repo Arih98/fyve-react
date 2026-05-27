@@ -1432,6 +1432,28 @@ body.product-image-transition-active .footer {
   -webkit-user-drag: none;
 }
 
+.related-products-carousel,
+.related-products-carousel *,
+.related-products-track,
+.related-product-card,
+.related-product-info,
+.related-product-title,
+.related-product-price {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.related-products-carousel {
+  -webkit-touch-callout: none;
+}
+
+.related-product-image {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
 .related-products-carousel.is-mouse-dragging {
   cursor: grabbing;
 }
