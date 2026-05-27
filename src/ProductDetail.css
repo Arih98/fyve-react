@@ -1158,62 +1158,64 @@ body.product-image-transition-active .footer {
   z-index: 1;
 }
 
-.product-image-gallery {
-  gap: 0;
-  position: relative;
-  background: #f7f7f7;
-}
+  .product-image-gallery {
+    background: #f7f7f7;
+    overflow: hidden;
+  }
 
-.product-image-gallery-track {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-snap-stop: always;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-  padding-left: 0;
-  padding-right: 0;
-  box-sizing: border-box;
-  background: #f7f7f7;
-}
+  .product-image-gallery-track {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    padding: 0;
+    box-sizing: border-box;
+    background: #f7f7f7;
+  }
 
-.product-gallery-image-wrapper,
-.product-main-image-wrapper {
-  flex: 0 0 100%;
-  width: 100%;
-  min-width: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  aspect-ratio: 3 / 3;
-  background: #f7f7f7;
-  overflow: hidden;
-}
+  .product-image-gallery-track::-webkit-scrollbar {
+    display: none;
+  }
 
-.product-gallery-image-box {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #f7f7f7;
-  overflow: hidden;
-  position: relative;
-  z-index: 2;
-}
+  .product-gallery-image-wrapper,
+  .product-main-image-wrapper {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: clamp(390px, 86vw, 520px);
+    aspect-ratio: auto;
+    overflow: hidden;
+    background: #f7f7f7;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
 
-.product-gallery-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
+  .product-gallery-image-box {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    overflow: hidden;
+    background: #f7f7f7;
+  }
+
+  .product-gallery-image,
+  .product-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
 
   .product-gallery-progress {
     display: block;

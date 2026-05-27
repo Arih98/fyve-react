@@ -502,8 +502,7 @@
 }
 
 @media (max-width: 768px) {
-
-  .products-page-filter,
+.products-page-filter,
 .products-page-subfilter {
   gap: 8px;
 }
