@@ -986,7 +986,11 @@ useEffect(() => {
 
   gsap.killTweensOf([menu, background, content, imageColumn, ...items, ...images]);
 
-  if (menuState === 'open') {
+gsap.set([background, content, imageColumn, ...items], {
+  clearProps: 'transform'
+});
+
+if (menuState === 'open') {
     setActiveMenuImage('ss26');
     setIsImageAnimating(false);
 
