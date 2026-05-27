@@ -1106,7 +1106,7 @@ body.search-open {
   transform: translateY(-100%);
   background-color: #F1DBD1;
   transition: transform 0.75s ease;
-  transition-delay: 0.05s;
+  transition-delay: 0s;
 }
 
 .mobile-menu.active .menu-background {
@@ -1131,6 +1131,7 @@ body.search-open {
 
 .mobile-menu.active .menu-image-column {
   transform: translateY(0);
+  transition-delay: 0.18s;
 }
 
 .mobile-menu.active.closing .menu-content {
@@ -1177,6 +1178,7 @@ body.search-open {
 .mobile-menu.active .menu-content {
   opacity: 1;
   pointer-events: auto;
+  transition-delay: 0.18s;
 }
 
 .menu-columns {
