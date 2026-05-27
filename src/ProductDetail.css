@@ -1187,7 +1187,7 @@ body.product-image-transition-active .footer {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
-    height: clamp(310px, 70vw, 420px);
+    height: clamp(340px, 76vw, 460px);
     aspect-ratio: auto;
     overflow: hidden;
     background: #f7f7f7;
