@@ -1396,20 +1396,20 @@ body.product-image-transition-active .footer {
 .product-breadcrumbs {
   display: flex;
   align-items: center;
-  gap: clamp(5px, 0.55vw, 8px);
-  margin: 0 0 clamp(14px, 1.35vw, 20px);
+  gap: clamp(4px, 0.45vw, 8px);
+  margin: 0 0 clamp(12px, 1.1vw, 20px);
   font-family: 'Quasimoda', sans-serif;
-  font-size: clamp(11px, 1.05vw, 15px);
+  font-size: clamp(10px, 0.92vw, 15px);
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #4a494a;
 }
 
-  .product-breadcrumb-separator-icon {
-    width: clamp(3.5px, 0.35vw, 5px);
-    height: clamp(6px, 0.62vw, 9px);
-  }
+.product-breadcrumb-separator-icon {
+  width: clamp(3px, 0.28vw, 5px);
+  height: clamp(5.5px, 0.5vw, 9px);
+}
 
 .product-breadcrumb-link {
   position: relative;
