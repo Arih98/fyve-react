@@ -1082,12 +1082,6 @@ const pdpIsOnSale =
   pdpCurrentPrice !== null &&
   pdpRegularPrice !== null &&
   pdpRegularPrice > pdpCurrentPrice;
-  Boolean(current?.price?.isOnSale ?? product?.price?.isOnSale) ||
-  (
-    pdpCurrentPrice !== null &&
-    pdpRegularPrice !== null &&
-    pdpRegularPrice > pdpCurrentPrice
-  );
 
 const addToCartLabel = hasReachedCartStockLimit
   ? 'In your bag'
@@ -1918,7 +1912,7 @@ return (
     })}
   </div>
 
-  {displayImages.length > 1 && (
+    {displayImages.length > 1 && (
     <div className={`product-gallery-progress ${hideGalleryProgress ? 'is-hidden-during-transition' : ''}`}>
       <div
         className="product-gallery-progress-bar"
@@ -1927,6 +1921,12 @@ return (
     </div>
   )}
 </div>
+
+{!isMobile && (
+  <div className="product-accordions-desktop">
+    {productAccordions}
+  </div>
+)}
         </div>
 
         <motion.div
@@ -2208,12 +2208,6 @@ onClick={closeSizePanel}
 >
   <span className="add-to-cart-text">{addToCartLabel}</span>
 </button>
-
-{!isMobile && (
-  <div className="product-accordions-desktop">
-    {productAccordions}
-  </div>
-)}
 
 {isMobile && (
   <div className="product-accordions-mobile">
