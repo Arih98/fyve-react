@@ -180,7 +180,6 @@
 .product-image-gallery {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .product-image-gallery-track {
