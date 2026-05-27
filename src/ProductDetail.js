@@ -80,9 +80,9 @@ const relatedProductsMouseDragRef = useRef({
   pointerId: null,
   startX: 0,
   deltaX: 0,
-  moved: false
+  moved: false,
+  preventNextClick: false
 });
-const relatedProductsSuppressClickRef = useRef(false);
 const [relatedProductsIndex, setRelatedProductsIndex] = useState(0);
 const [relatedProductsDragOffset, setRelatedProductsDragOffset] = useState(0);
 const [isRelatedProductsMouseDragging, setIsRelatedProductsMouseDragging] = useState(false);
@@ -276,14 +276,15 @@ const getRelatedProductPath = (relItem) => {
 };
 
 const handleRelatedProductClick = (relItem, index) => {
-  if (relatedProductsSuppressClickRef.current) {
-    relatedProductsSuppressClickRef.current = false;
+  const drag = relatedProductsMouseDragRef.current;
+
+  if (drag.preventNextClick) {
+    relatedProductsMouseDragRef.current.preventNextClick = false;
     return;
   }
 
   if (relatedProductClickLockRef.current) return;
   relatedProductClickLockRef.current = true;
-
 
   const key = getRelatedProductKey(relItem, index);
   const sourceEl = relatedProductImageRefs.current.get(key);
@@ -299,15 +300,15 @@ const handleRelatedProductClick = (relItem, index) => {
     null;
 
   if (sourceEl) {
-startProductImageTransition({
-  src: sourceSrc,
-  fromElement: sourceEl,
-  toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
-  duration: isMobileViewport ? 520 : 620,
-  minTargetTop: isMobileViewport ? 80 : 0,
-  zIndex: isMobileViewport ? 1 : 999999,
-  fillTarget: true
-});
+    startProductImageTransition({
+      src: sourceSrc,
+      fromElement: sourceEl,
+      toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
+      duration: isMobileViewport ? 520 : 620,
+      minTargetTop: isMobileViewport ? 80 : 0,
+      zIndex: isMobileViewport ? 1 : 999999,
+      fillTarget: true
+    });
   }
 
   navigate(path, {
@@ -445,20 +446,19 @@ const handleRelatedProductsPointerDown = (e) => {
   if (e.pointerType !== 'mouse') return;
   if (e.button !== 0) return;
 
+  window.getSelection?.()?.removeAllRanges();
+
   relatedProductsMouseDragRef.current = {
     isDragging: true,
     pointerId: e.pointerId,
     startX: e.clientX,
     deltaX: 0,
-    moved: false
+    moved: false,
+    preventNextClick: false
   };
 
   setRelatedProductsDragOffset(0);
-  setIsRelatedProductsMouseDragging(true);
-
-  if (e.currentTarget.setPointerCapture) {
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }
+  setIsRelatedProductsMouseDragging(false);
 };
 
 const handleRelatedProductsPointerMove = (e) => {
@@ -471,10 +471,19 @@ const handleRelatedProductsPointerMove = (e) => {
 
   drag.deltaX = deltaX;
 
-  if (Math.abs(deltaX) > 6) {
+  if (Math.abs(deltaX) > 8) {
     e.preventDefault();
+    window.getSelection?.()?.removeAllRanges();
+
     drag.moved = true;
+    setIsRelatedProductsMouseDragging(true);
     setRelatedProductsDragOffset(deltaX);
+
+    if (e.currentTarget.setPointerCapture) {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {}
+    }
   }
 };
 
@@ -494,22 +503,25 @@ const handleRelatedProductsPointerUp = (e) => {
     pointerId: null,
     startX: 0,
     deltaX: 0,
-    moved: false
+    moved: false,
+    preventNextClick: moved
   };
 
   setIsRelatedProductsMouseDragging(false);
   setRelatedProductsDragOffset(0);
 
   if (e.currentTarget.releasePointerCapture) {
-    e.currentTarget.releasePointerCapture(e.pointerId);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
   }
 
   if (moved) {
-    relatedProductsSuppressClickRef.current = true;
+    window.getSelection?.()?.removeAllRanges();
 
     window.setTimeout(() => {
-      relatedProductsSuppressClickRef.current = false;
-    }, 140);
+      relatedProductsMouseDragRef.current.preventNextClick = false;
+    }, 0);
   }
 
   if (deltaX <= -threshold) {
@@ -525,7 +537,8 @@ const handleRelatedProductsPointerCancel = () => {
     pointerId: null,
     startX: 0,
     deltaX: 0,
-    moved: false
+    moved: false,
+    preventNextClick: false
   };
 
   setIsRelatedProductsMouseDragging(false);
@@ -2113,6 +2126,7 @@ const relatedProductsSlider = relatedProducts.length > 0 ? (
   onPointerUp={handleRelatedProductsPointerUp}
   onPointerCancel={handleRelatedProductsPointerCancel}
   onPointerLeave={handleRelatedProductsPointerUp}
+  onSelectStart={e => e.preventDefault()}
 >
       <div
         className="related-products-track"
