@@ -1426,6 +1426,12 @@ body.product-image-transition-active .footer {
   user-select: none;
 }
 
+.related-product-image {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .related-products-carousel.is-mouse-dragging {
   cursor: grabbing;
 }

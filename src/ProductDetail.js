@@ -2131,18 +2131,20 @@ style={{
             >
               <div className="related-product-image-wrap">
                 <img
-                  ref={el => {
-                    if (el) {
-                      relatedProductImageRefs.current.set(relatedKey, el);
-                    } else {
-                      relatedProductImageRefs.current.delete(relatedKey);
-                    }
-                  }}
-                  src={getDisplayImage(relItem)}
-                  alt={relItem.displayTitle}
-                  className="related-product-image"
-                  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
-                />
+  ref={el => {
+    if (el) {
+      relatedProductImageRefs.current.set(relatedKey, el);
+    } else {
+      relatedProductImageRefs.current.delete(relatedKey);
+    }
+  }}
+  src={getDisplayImage(relItem)}
+  alt={relItem.displayTitle}
+  className="related-product-image"
+  draggable={false}
+  onDragStart={e => e.preventDefault()}
+  onError={e => { e.target.src = '/api/Uploads/fallback-image.png'; }}
+/>
               </div>
 
               <div className="related-product-info">
