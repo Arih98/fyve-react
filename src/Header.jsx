@@ -257,6 +257,7 @@ const prevMenuStateRef = useRef(menuState);
 const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
+const desktopMenuTimelineRef = useRef(null);
 const [menuVisualActive, setMenuVisualActive] = useState(false);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
@@ -649,31 +650,6 @@ useEffect(() => {
 }, [isMenuOpen]);
 
 useEffect(() => {
-  if (menuState !== 'open') return;
-
-  setActiveMenuImage('ss26');
-  setIsImageAnimating(false);
-
-  requestAnimationFrame(() => {
-    const images = document.querySelectorAll('.menu-image');
-    const defaultImage = document.querySelector('.menu-image[data-menu-item="ss26"]');
-
-    images.forEach((el) => {
-      gsap.killTweensOf(el);
-      gsap.killTweensOf(el.querySelector('img'));
-      el.style.opacity = '';
-      el.style.zIndex = '';
-    });
-
-    if (defaultImage) {
-      defaultImage.style.opacity = '1';
-      defaultImage.style.zIndex = '2';
-      gsap.set(defaultImage.querySelector('img'), { yPercent: 0 });
-    }
-  });
-}, [menuState]);
-
-useEffect(() => {
   const handleHeaderThemeScroll = () => {
     setIsScrolled(window.scrollY > 10);
   };
@@ -989,6 +965,139 @@ useEffect(() => {
   setSearchError('');
   setSearchLoading(false);
 }, [location.pathname]);
+
+useEffect(() => {
+  if (isMobile) return;
+
+  const menu = document.querySelector('.mobile-menu');
+  const background = document.querySelector('.menu-background');
+  const content = document.querySelector('.menu-content');
+  const imageColumn = document.querySelector('.menu-image-column');
+  const items = gsap.utils.toArray('.menu-items > li');
+  const images = gsap.utils.toArray('.menu-image');
+  const defaultImage = document.querySelector('.menu-image[data-menu-item="ss26"]');
+
+  if (!menu || !background || !content || !imageColumn) return;
+
+  if (desktopMenuTimelineRef.current) {
+    desktopMenuTimelineRef.current.kill();
+    desktopMenuTimelineRef.current = null;
+  }
+
+  gsap.killTweensOf([menu, background, content, imageColumn, ...items, ...images]);
+
+  if (menuState === 'open') {
+    setActiveMenuImage('ss26');
+    setIsImageAnimating(false);
+
+    gsap.set(menu, {
+      autoAlpha: 1,
+      pointerEvents: 'auto'
+    });
+
+    gsap.set(background, {
+      yPercent: -100
+    });
+
+    gsap.set(content, {
+      yPercent: -100,
+      autoAlpha: 1,
+      pointerEvents: 'auto'
+    });
+
+    gsap.set(imageColumn, {
+      yPercent: -100,
+      autoAlpha: 1
+    });
+
+    gsap.set(items, {
+      yPercent: 100,
+      clipPath: 'inset(100% 0% 0% 0%)'
+    });
+
+    images.forEach((image) => {
+      gsap.set(image, {
+        autoAlpha: image === defaultImage ? 1 : 0,
+        zIndex: image === defaultImage ? 2 : 1
+      });
+
+      const img = image.querySelector('img');
+
+      if (img) {
+        gsap.set(img, {
+          yPercent: 0
+        });
+      }
+    });
+
+    desktopMenuTimelineRef.current = gsap.timeline();
+
+    desktopMenuTimelineRef.current
+      .to(background, {
+        yPercent: 0,
+        duration: 0.9,
+        ease: 'power3.inOut'
+      })
+      .to([content, imageColumn], {
+        yPercent: 0,
+        duration: 0.82,
+        ease: 'power3.inOut'
+      }, '<0.08')
+      .to(items, {
+        yPercent: 0,
+        clipPath: 'inset(0% 0% 0% 0%)',
+        duration: 0.62,
+        stagger: 0.07,
+        ease: 'power3.inOut'
+      }, '<0.28');
+
+    return;
+  }
+
+  if (menuState === 'closing') {
+    gsap.set(menu, {
+      autoAlpha: 1,
+      pointerEvents: 'none'
+    });
+
+    desktopMenuTimelineRef.current = gsap.timeline();
+
+    desktopMenuTimelineRef.current
+      .to(items, {
+        yPercent: 100,
+        clipPath: 'inset(100% 0% 0% 0%)',
+        duration: 0.36,
+        stagger: 0.035,
+        ease: 'power3.inOut'
+      })
+      .to([content, imageColumn], {
+        yPercent: -100,
+        duration: 0.58,
+        ease: 'power3.inOut'
+      }, '<0.08')
+      .to(background, {
+        yPercent: -100,
+        duration: 0.78,
+        ease: 'power3.inOut'
+      }, '<0.16');
+
+    return;
+  }
+
+  gsap.set(menu, {
+    autoAlpha: 0,
+    pointerEvents: 'none'
+  });
+
+  gsap.set([background, content, imageColumn], {
+    yPercent: -100
+  });
+
+  gsap.set(items, {
+    yPercent: 100,
+    clipPath: 'inset(100% 0% 0% 0%)'
+  });
+}, [menuState, isMobile]);
 
   const handleMenuImageChange = (newId) => {
     if (isImageAnimating || newId === activeMenuImage) return;
