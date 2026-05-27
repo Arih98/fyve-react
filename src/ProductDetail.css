@@ -1,3 +1,144 @@
+.product-detail-skeleton {
+  width: 100%;
+}
+
+.product-detail-container-skeleton {
+  pointer-events: none;
+}
+
+.product-image-gallery-track-skeleton {
+  transform: none !important;
+}
+
+.product-skeleton-image-wrapper {
+  background: #f7f7f7;
+}
+
+.product-skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: #f3f3f3;
+}
+
+.product-skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: productSkeletonShimmer 1.4s infinite;
+}
+
+.product-skeleton-line {
+  position: relative;
+  overflow: hidden;
+  background: #f3f3f3;
+  border-radius: 999px;
+}
+
+.product-skeleton-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: productSkeletonShimmer 1.4s infinite;
+}
+
+.product-skeleton-breadcrumb {
+  width: 42%;
+  height: 12px;
+  margin-bottom: 22px;
+}
+
+.product-skeleton-title {
+  width: 82%;
+  height: 34px;
+  margin-bottom: 16px;
+}
+
+.product-skeleton-price {
+  width: 28%;
+  height: 16px;
+  margin-bottom: 28px;
+}
+
+.product-skeleton-description {
+  width: 92%;
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.product-skeleton-description-short {
+  width: 68%;
+  margin-bottom: 32px;
+}
+
+.product-skeleton-swatches {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.product-skeleton-swatch {
+  width: 46px;
+  height: 40px;
+}
+
+.product-skeleton-button {
+  width: 100%;
+  height: 55px;
+  border-radius: 999px;
+  margin-bottom: 26px;
+}
+
+.product-skeleton-accordion {
+  width: 100%;
+  height: 46px;
+  border-radius: 0;
+  border-top: 1px solid #e5e5e5;
+}
+
+@keyframes productSkeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .product-skeleton-secondary-image {
+    display: none;
+  }
+
+  .product-skeleton-details-container {
+    margin-top: 0;
+  }
+
+  .product-skeleton-breadcrumb {
+    display: none;
+  }
+
+  .product-skeleton-title {
+    width: 78%;
+    height: 28px;
+    margin-bottom: 14px;
+  }
+
+  .product-skeleton-price {
+    width: 34%;
+    height: 14px;
+    margin-bottom: 24px;
+  }
+
+  .product-skeleton-description {
+    width: 90%;
+  }
+
+  .product-skeleton-description-short {
+    width: 62%;
+  }
+}
+
 .product-breadcrumbs {
   display: none;
 }

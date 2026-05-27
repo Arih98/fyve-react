@@ -15,6 +15,49 @@ import FullscreenGallery from './FullscreenGallery';
 
 let persistedOptimisticVisualSelection = null;
 
+const ProductDetailSkeleton = () => {
+  return (
+    <div className="product-detail-skeleton">
+      <div className="product-detail-container product-detail-container-skeleton">
+        <div className="images-container">
+          <div className="product-image-gallery">
+            <div className="product-image-gallery-track product-image-gallery-track-skeleton">
+              <div className="product-gallery-image-wrapper product-gallery-image-wrapper-main product-skeleton-image-wrapper">
+                <div className="product-gallery-image-box product-skeleton-shimmer"></div>
+              </div>
+
+              <div className="product-gallery-image-wrapper product-skeleton-image-wrapper product-skeleton-secondary-image">
+                <div className="product-gallery-image-box product-skeleton-shimmer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="details-container product-skeleton-details-container">
+          <div className="product-details">
+            <div className="product-skeleton-line product-skeleton-breadcrumb"></div>
+            <div className="product-skeleton-line product-skeleton-title"></div>
+            <div className="product-skeleton-line product-skeleton-price"></div>
+            <div className="product-skeleton-line product-skeleton-description"></div>
+            <div className="product-skeleton-line product-skeleton-description product-skeleton-description-short"></div>
+
+            <div className="product-skeleton-swatches">
+              <div className="product-skeleton-swatch product-skeleton-shimmer"></div>
+              <div className="product-skeleton-swatch product-skeleton-shimmer"></div>
+              <div className="product-skeleton-swatch product-skeleton-shimmer"></div>
+            </div>
+
+            <div className="product-skeleton-button product-skeleton-shimmer"></div>
+
+            <div className="product-skeleton-accordion product-skeleton-shimmer"></div>
+            <div className="product-skeleton-accordion product-skeleton-shimmer"></div>
+            <div className="product-skeleton-accordion product-skeleton-shimmer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProductDetail = () => {
   const { cartItems, addItem, loading: cartLoading } = useContext(CartContext);
@@ -1976,10 +2019,10 @@ const relatedProductsSlider = relatedProducts.length > 0 ? (
   </div>
 ) : null;
 
-  if (loading && !product) return <div className="product-not-found">Loading product...</div>;
-  if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
-  if (!product) return <div className="product-not-found">Product not found</div>;
-  if (product.product_type === 'variable' && !effectiveVariation) return <div>Loading variation...</div>;
+  if (loading && !product) return <ProductDetailSkeleton />;
+if (error && !product) return <div className="product-not-found">{error.message || 'Failed to load product'}</div>;
+if (!product) return <div className="product-not-found">Product not found</div>;
+if (product.product_type === 'variable' && !effectiveVariation) return <ProductDetailSkeleton />;
 
 return (
   <>
