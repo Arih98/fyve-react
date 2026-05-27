@@ -1004,22 +1004,22 @@ useEffect(() => {
       yPercent: 0
     });
 
-    gsap.set([content, imageColumn], {
-      y: -220,
-      rotation: -7,
-      scale: 1.3,
-      autoAlpha: 1,
-      transformOrigin: '50% 0%',
-      pointerEvents: 'auto'
-    });
+gsap.set([content, imageColumn], {
+  y: -120,
+  rotation: -4,
+  scale: 1.16,
+  autoAlpha: 1,
+  transformOrigin: '50% 0%',
+  pointerEvents: 'auto'
+});
 
-    gsap.set(items, {
-      yPercent: 105,
-      rotation: 7,
-      autoAlpha: 0,
-      transformOrigin: '0% 100%',
-      clipPath: 'inset(0% 0% 0% 0%)'
-    });
+gsap.set(items, {
+  yPercent: 80,
+  rotation: 4,
+  autoAlpha: 0,
+  transformOrigin: '0% 100%',
+  clipPath: 'inset(0% 0% 0% 0%)'
+});
 
     images.forEach((image) => {
       gsap.set(image, {
@@ -1037,30 +1037,32 @@ useEffect(() => {
     });
 
     desktopMenuTimelineRef.current = gsap.timeline({
-      defaults: {
-        ease: 'expo.inOut'
-      }
-    });
+  defaults: {
+    ease: 'power4.out'
+  }
+});
 
-    desktopMenuTimelineRef.current
-      .to(background, {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 1.35
-      }, 0)
-      .to([content, imageColumn], {
-        y: 0,
-        rotation: 0,
-        scale: 1,
-        duration: 1.35
-      }, 0.02)
-      .to(items, {
-        yPercent: 0,
-        rotation: 0,
-        autoAlpha: 1,
-        duration: 0.95,
-        stagger: 0.075,
-        ease: 'expo.out'
-      }, 0.34);
+desktopMenuTimelineRef.current
+  .to(background, {
+    clipPath: 'inset(0% 0% 0% 0%)',
+    duration: 1.05,
+    ease: 'power4.out'
+  }, 0)
+  .to([content, imageColumn], {
+    y: 0,
+    rotation: 0,
+    scale: 1,
+    duration: 1.1,
+    ease: 'power4.out'
+  }, 0.04)
+  .to(items, {
+    yPercent: 0,
+    rotation: 0,
+    autoAlpha: 1,
+    duration: 0.75,
+    stagger: 0.055,
+    ease: 'power4.out'
+  }, 0.16);
 
     return;
   }
