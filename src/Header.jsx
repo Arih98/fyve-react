@@ -986,11 +986,11 @@ useEffect(() => {
 
   gsap.killTweensOf([menu, background, content, imageColumn, ...items, ...images]);
 
-gsap.set([background, content, imageColumn, ...items], {
-  clearProps: 'transform'
-});
+  gsap.set([background, content, imageColumn, ...items], {
+    clearProps: 'transform'
+  });
 
-if (menuState === 'open') {
+  if (menuState === 'open') {
     setActiveMenuImage('ss26');
     setIsImageAnimating(false);
 
@@ -1000,23 +1000,25 @@ if (menuState === 'open') {
     });
 
     gsap.set(background, {
-      yPercent: -100
+      clipPath: 'inset(0% 0% 100% 0%)',
+      yPercent: 0
     });
 
-    gsap.set(content, {
-      yPercent: -100,
+    gsap.set([content, imageColumn], {
+      y: -220,
+      rotation: -7,
+      scale: 1.3,
       autoAlpha: 1,
+      transformOrigin: '50% 0%',
       pointerEvents: 'auto'
     });
 
-    gsap.set(imageColumn, {
-      yPercent: -100,
-      autoAlpha: 1
-    });
-
     gsap.set(items, {
-      yPercent: 100,
-      clipPath: 'inset(100% 0% 0% 0%)'
+      yPercent: 105,
+      rotation: 7,
+      autoAlpha: 0,
+      transformOrigin: '0% 100%',
+      clipPath: 'inset(0% 0% 0% 0%)'
     });
 
     images.forEach((image) => {
@@ -1034,26 +1036,31 @@ if (menuState === 'open') {
       }
     });
 
-    desktopMenuTimelineRef.current = gsap.timeline();
+    desktopMenuTimelineRef.current = gsap.timeline({
+      defaults: {
+        ease: 'expo.inOut'
+      }
+    });
 
     desktopMenuTimelineRef.current
       .to(background, {
-        yPercent: 0,
-        duration: 0.9,
-        ease: 'power3.inOut'
-      })
+        clipPath: 'inset(0% 0% 0% 0%)',
+        duration: 1.35
+      }, 0)
       .to([content, imageColumn], {
-        yPercent: 0,
-        duration: 0.82,
-        ease: 'power3.inOut'
-      }, '<0.08')
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        duration: 1.35
+      }, 0.02)
       .to(items, {
         yPercent: 0,
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 0.62,
-        stagger: 0.07,
-        ease: 'power3.inOut'
-      }, '<0.28');
+        rotation: 0,
+        autoAlpha: 1,
+        duration: 0.95,
+        stagger: 0.075,
+        ease: 'expo.out'
+      }, 0.34);
 
     return;
   }
@@ -1064,26 +1071,32 @@ if (menuState === 'open') {
       pointerEvents: 'none'
     });
 
-    desktopMenuTimelineRef.current = gsap.timeline();
+    desktopMenuTimelineRef.current = gsap.timeline({
+      defaults: {
+        ease: 'expo.inOut'
+      }
+    });
 
     desktopMenuTimelineRef.current
       .to(items, {
-        yPercent: 100,
-        clipPath: 'inset(100% 0% 0% 0%)',
-        duration: 0.36,
+        yPercent: 105,
+        rotation: 7,
+        autoAlpha: 0,
+        duration: 0.48,
         stagger: 0.035,
-        ease: 'power3.inOut'
-      })
+        ease: 'expo.in'
+      }, 0)
       .to([content, imageColumn], {
-        yPercent: -100,
-        duration: 0.58,
-        ease: 'power3.inOut'
-      }, '<0.08')
+        y: -220,
+        rotation: -7,
+        scale: 1.3,
+        autoAlpha: 0.3,
+        duration: 1.05
+      }, 0.08)
       .to(background, {
-        yPercent: -100,
-        duration: 0.78,
-        ease: 'power3.inOut'
-      }, '<0.16');
+        clipPath: 'inset(0% 0% 100% 0%)',
+        duration: 1.05
+      }, 0.08);
 
     return;
   }
@@ -1093,13 +1106,23 @@ if (menuState === 'open') {
     pointerEvents: 'none'
   });
 
-  gsap.set([background, content, imageColumn], {
-    yPercent: -100
+  gsap.set(background, {
+    clipPath: 'inset(0% 0% 100% 0%)',
+    yPercent: 0
+  });
+
+  gsap.set([content, imageColumn], {
+    y: -220,
+    rotation: -7,
+    scale: 1.3,
+    autoAlpha: 0
   });
 
   gsap.set(items, {
-    yPercent: 100,
-    clipPath: 'inset(100% 0% 0% 0%)'
+    yPercent: 105,
+    rotation: 7,
+    autoAlpha: 0,
+    clipPath: 'inset(0% 0% 0% 0%)'
   });
 }, [menuState, isMobile]);
 
