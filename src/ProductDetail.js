@@ -445,8 +445,6 @@ const handleRelatedProductsPointerDown = (e) => {
   if (e.pointerType !== 'mouse') return;
   if (e.button !== 0) return;
 
-  e.preventDefault();
-
   relatedProductsMouseDragRef.current = {
     isDragging: true,
     pointerId: e.pointerId,
@@ -469,13 +467,12 @@ const handleRelatedProductsPointerMove = (e) => {
   if (!drag.isDragging) return;
   if (drag.pointerId !== e.pointerId) return;
 
-  e.preventDefault();
-
   const deltaX = e.clientX - drag.startX;
 
   drag.deltaX = deltaX;
 
   if (Math.abs(deltaX) > 6) {
+    e.preventDefault();
     drag.moved = true;
     setRelatedProductsDragOffset(deltaX);
   }
