@@ -13,6 +13,8 @@ import { useRelatedProducts } from './hooks/useRelatedProducts';
 import gsap from 'gsap';
 import FullscreenGallery from './FullscreenGallery';
 
+let persistedOptimisticVisualSelection = null;
+
 
 const ProductDetail = () => {
   const { cartItems, addItem, loading: cartLoading } = useContext(CartContext);
@@ -98,8 +100,8 @@ const productForOptions = loadedProduct ?? fallbackProduct ?? null;
   const shouldAnimateDetailsIn = !!location.state?.fromProductGrid;
   const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
   const hideGalleryProgress = !showGalleryProgress;
-  const [optimisticVisualSelection, setOptimisticVisualSelection] = useState(null);
-const optimisticVisualSelectionRef = useRef(null);
+const [optimisticVisualSelection, setOptimisticVisualSelection] = useState(() => persistedOptimisticVisualSelection);
+const optimisticVisualSelectionRef = useRef(persistedOptimisticVisualSelection);
 
 const {
   selectedAttributes,
@@ -476,6 +478,7 @@ const waitForFrames = (count = 2) => {
 const handleVisualColorChange = async (attrName, term, e) => {
   const nextOptimisticSelection = { attrName, term };
 
+  persistedOptimisticVisualSelection = nextOptimisticSelection;
   optimisticVisualSelectionRef.current = nextOptimisticSelection;
   setOptimisticVisualSelection(nextOptimisticSelection);
 
@@ -1258,16 +1261,17 @@ useEffect(() => {
 }, [isMobile, isSizePanelOpen]);
 
 useEffect(() => {
-  if (!optimisticVisualSelectionRef.current) return;
+  if (!optimisticVisualSelectionRef.current && !persistedOptimisticVisualSelection) return;
 
   const timeout = setTimeout(() => {
-    const activeOptimisticSelection = optimisticVisualSelectionRef.current;
+    const activeOptimisticSelection = optimisticVisualSelectionRef.current || persistedOptimisticVisualSelection;
 
     if (!activeOptimisticSelection) return;
 
     const currentValue = selectedAttributes[activeOptimisticSelection.attrName];
 
     if (currentValue === activeOptimisticSelection.term) {
+      persistedOptimisticVisualSelection = null;
       optimisticVisualSelectionRef.current = null;
       setOptimisticVisualSelection(null);
     }
@@ -1277,6 +1281,7 @@ useEffect(() => {
 }, [selectedAttributes]);
 
 useEffect(() => {
+  persistedOptimisticVisualSelection = null;
   optimisticVisualSelectionRef.current = null;
   setOptimisticVisualSelection(null);
 }, [product?.id]);
