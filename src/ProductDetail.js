@@ -102,6 +102,7 @@ const productForOptions = loadedProduct ?? fallbackProduct ?? null;
   const hideGalleryProgress = !showGalleryProgress;
 const [optimisticVisualSelection, setOptimisticVisualSelection] = useState(() => persistedOptimisticVisualSelection);
 const optimisticVisualSelectionRef = useRef(persistedOptimisticVisualSelection);
+const relatedProductClickLockRef = useRef(false);
 
 const {
   selectedAttributes,
@@ -222,12 +223,21 @@ const getRelatedProductPath = (relItem) => {
 };
 
 const handleRelatedProductClick = (relItem, index) => {
+  if (relatedProductClickLockRef.current) return;
+  relatedProductClickLockRef.current = true;
+
   const key = getRelatedProductKey(relItem, index);
   const sourceEl = relatedProductImageRefs.current.get(key);
   const sourceSrc = getDisplayImage(relItem);
   const isMobileViewport = window.innerWidth <= 768;
   const path = getRelatedProductPath(relItem);
   const initialColor = getRelatedProductColor(relItem);
+  const parentId = getRelatedProductParentId(relItem);
+
+  const fallbackRelatedProduct =
+    relItem.product ||
+    allProducts.find((item) => String(item.id) === String(parentId)) ||
+    null;
 
   if (sourceEl) {
     startProductImageTransition({
@@ -242,13 +252,17 @@ const handleRelatedProductClick = (relItem, index) => {
 
   navigate(path, {
     state: {
-      product: relItem.product,
+      product: fallbackRelatedProduct,
       initialColor,
       transitionSourceDisplayId: key,
       transitionSourceSrc: sourceSrc,
       fromProductGrid: true
     }
   });
+
+  window.setTimeout(() => {
+    relatedProductClickLockRef.current = false;
+  }, 900);
 };
 
 useEffect(() => {
