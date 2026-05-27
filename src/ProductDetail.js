@@ -99,6 +99,7 @@ const productForOptions = loadedProduct ?? fallbackProduct ?? null;
   const [showGalleryProgress, setShowGalleryProgress] = useState(!location.state?.fromProductGrid);
   const hideGalleryProgress = !showGalleryProgress;
   const [optimisticVisualSelection, setOptimisticVisualSelection] = useState(null);
+const optimisticVisualSelectionRef = useRef(null);
 
 const {
   selectedAttributes,
@@ -473,7 +474,10 @@ const waitForFrames = (count = 2) => {
 };
 
 const handleVisualColorChange = async (attrName, term, e) => {
-  setOptimisticVisualSelection({ attrName, term });
+  const nextOptimisticSelection = { attrName, term };
+
+  optimisticVisualSelectionRef.current = nextOptimisticSelection;
+  setOptimisticVisualSelection(nextOptimisticSelection);
 
   const sourceEl = e.currentTarget;
   const src = getVariationTransitionImageForAttributeOption(attrName, term);
@@ -1254,20 +1258,26 @@ useEffect(() => {
 }, [isMobile, isSizePanelOpen]);
 
 useEffect(() => {
-  if (!optimisticVisualSelection) return;
+  if (!optimisticVisualSelectionRef.current) return;
 
   const timeout = setTimeout(() => {
-    const currentValue = selectedAttributes[optimisticVisualSelection.attrName];
+    const activeOptimisticSelection = optimisticVisualSelectionRef.current;
 
-    if (currentValue === optimisticVisualSelection.term) {
+    if (!activeOptimisticSelection) return;
+
+    const currentValue = selectedAttributes[activeOptimisticSelection.attrName];
+
+    if (currentValue === activeOptimisticSelection.term) {
+      optimisticVisualSelectionRef.current = null;
       setOptimisticVisualSelection(null);
     }
-  }, 1200);
+  }, 1800);
 
   return () => clearTimeout(timeout);
-}, [optimisticVisualSelection, selectedAttributes]);
+}, [selectedAttributes]);
 
 useEffect(() => {
+  optimisticVisualSelectionRef.current = null;
   setOptimisticVisualSelection(null);
 }, [product?.id]);
 
@@ -1630,12 +1640,14 @@ const mobileColorOptions = product?.product_type === 'variable' ? (
   <div className="color-options visual-color-options">
     {options.map(term => {
       const imageSrc = getVariationSwatchImageForAttributeOption(attrName, term);
-      const optimisticSelected =
-  optimisticVisualSelection &&
-  optimisticVisualSelection.attrName === attrName;
+const activeOptimisticSelection = optimisticVisualSelection || optimisticVisualSelectionRef.current;
+
+const optimisticSelected =
+  activeOptimisticSelection &&
+  activeOptimisticSelection.attrName === attrName;
 
 const isSelected = optimisticSelected
-  ? optimisticVisualSelection.term === term
+  ? activeOptimisticSelection.term === term
   : selectedAttributes[attrName] === term;
 
       return (
@@ -2053,13 +2065,15 @@ return (
   <div className="color-options visual-color-options">
 {options.map(term => {
   const imageSrc = getVariationSwatchImageForAttributeOption(attrName, term);
-  const optimisticSelected =
-    optimisticVisualSelection &&
-    optimisticVisualSelection.attrName === attrName;
+const activeOptimisticSelection = optimisticVisualSelection || optimisticVisualSelectionRef.current;
 
-  const isSelected = optimisticSelected
-    ? optimisticVisualSelection.term === term
-    : selectedAttributes[attrName] === term;
+const optimisticSelected =
+  activeOptimisticSelection &&
+  activeOptimisticSelection.attrName === attrName;
+
+const isSelected = optimisticSelected
+  ? activeOptimisticSelection.term === term
+  : selectedAttributes[attrName] === term;
 
   return (
         <div key={term} className="color-option visual-color-option">
