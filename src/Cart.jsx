@@ -226,10 +226,32 @@ const productLink = getCartProductLink(item, variationColor);
   </ul>
 )
 
+const getProductIdFromPath = (path) => {
+  const match = String(path || '').match(/\/product\/([^?/#]+)/);
+  return match ? match[1] : '';
+};
+
+const getRecentlyViewedFallbackProduct = (item) => {
+  const id = item.product?.id || item.parentId || item.parent_id || item.productId || item.product_id || getProductIdFromPath(item.path);
+  const image = item.image || placeholderImage;
+
+  return {
+    id,
+    title: item.title || item.name || '',
+    name: item.title || item.name || '',
+    product_type: item.product?.product_type || 'simple',
+    thumbnail: image,
+    gallery: image ? [image] : [],
+    price: item.price || item.displayPrice || 0,
+    selectedColor: item.selectedColor || ''
+  };
+};
+
   const handleRecentlyViewedClick = (item) => {
   const sourceEl = recentlyViewedImageRefs.current.get(item.path);
   const sourceSrc = item.image || placeholderImage;
   const isMobileViewport = window.innerWidth <= 768;
+  const fallbackProduct = item.product || getRecentlyViewedFallbackProduct(item);
 
   if (sourceEl) {
     startProductImageTransition({
@@ -238,13 +260,18 @@ const productLink = getCartProductLink(item, variationColor);
       toElementGetter: () => document.querySelector('[data-pdp-primary-image="true"]'),
       duration: isMobileViewport ? 520 : 620,
       minTargetTop: isMobileViewport ? 80 : 0,
-      zIndex: isMobileViewport ? 1 : 999999
+      zIndex: 999999,
+      fillTarget: true
     });
+  }
+
+  if (typeof onClose === 'function') {
+    onClose();
   }
 
   navigate(item.path, {
     state: {
-      product: item.product,
+      product: fallbackProduct,
       initialColor: item.selectedColor,
       transitionSourceDisplayId: item.path,
       transitionSourceSrc: sourceSrc,

@@ -91,7 +91,7 @@ const [isGallerySettling, setIsGallerySettling] = useState(false);
 
   const fallbackProduct = location.state?.product;
   const resolvedProductId = productId ?? fallbackProduct?.id ?? null;
-  const { product: loadedProduct, loading, error } = useProduct(resolvedProductId);
+  const { product: loadedProduct, loading, error } = useProduct(resolvedProductId, fallbackProduct);
 const product = loadedProduct ?? fallbackProduct ?? null;
 const productForOptions = loadedProduct ?? fallbackProduct ?? null;
   const urlColor = searchParams.get('color') || '';
