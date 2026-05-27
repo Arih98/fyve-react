@@ -1332,8 +1332,8 @@ useEffect(() => {
   if (!product) return;
   if (product.product_type === 'variable' && !effectiveVariation) return;
 
-const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
-const selectedColor = selectedColorKey ? selectedAttributes[selectedColorKey] || '' : '';
+  const selectedColorKey = Object.keys(selectedAttributes).find(isColorLikeAttributeName);
+  const selectedColor = selectedColorKey ? selectedAttributes[selectedColorKey] || '' : '';
 
   if (product.product_type === 'variable' && !selectedColor) return;
 
@@ -1341,26 +1341,51 @@ const selectedColor = selectedColorKey ? selectedAttributes[selectedColorKey] ||
 
   const recentlyViewedItem = {
     storageKey,
-    id: current?.id || product.id,
-    parentId: product.id,
-    title: displayTitle,
+    id: String(current?.id || product.id || ''),
+    parentId: String(product.id || ''),
+    variationId: String(effectiveVariation?.id || current?.id || ''),
+    title: displayTitle || product.title || product.name || '',
     price: Number(current?.price?.current ?? product?.price?.current ?? current?.price ?? product?.price ?? 0),
     image: displayImages[0] || product?.thumbnail || '/api/Uploads/fallback-image.png',
     selectedColor,
-    gallery: displayImages,
-    product,
     path: `/product/${product.id}${selectedColor ? `?color=${encodeURIComponent(selectedColor)}` : ''}`
   };
 
-  const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-  const filtered = existing.filter(item => item.storageKey !== storageKey);
-  const next = [recentlyViewedItem, ...filtered].slice(0, 8);
+  try {
+    const existing = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+    const safeExisting = Array.isArray(existing) ? existing : [];
 
-  localStorage.setItem('recentlyViewedProducts', JSON.stringify(next));
+    const filtered = safeExisting
+      .filter(item => item && item.storageKey !== storageKey)
+      .map(item => ({
+        storageKey: item.storageKey || '',
+        id: String(item.id || ''),
+        parentId: String(item.parentId || item.id || ''),
+        variationId: String(item.variationId || ''),
+        title: item.title || '',
+        price: Number(item.price || 0),
+        image: item.image || '/api/Uploads/fallback-image.png',
+        selectedColor: item.selectedColor || '',
+        path: item.path || `/product/${item.parentId || item.id || ''}`
+      }))
+      .filter(item => item.id && item.title);
+
+    const next = [recentlyViewedItem, ...filtered].slice(0, 6);
+
+    localStorage.setItem('recentlyViewedProducts', JSON.stringify(next));
+  } catch {
+    try {
+      localStorage.removeItem('recentlyViewedProducts');
+      localStorage.setItem('recentlyViewedProducts', JSON.stringify([recentlyViewedItem]));
+    } catch {}
+  }
 }, [
-  product,
-  current,
-  effectiveVariation,
+  product?.id,
+  product?.product_type,
+  current?.id,
+  current?.price,
+  current?.price?.current,
+  effectiveVariation?.id,
   displayImages,
   displayTitle,
   selectedAttributes,
