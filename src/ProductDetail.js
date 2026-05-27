@@ -1256,16 +1256,20 @@ useEffect(() => {
 useEffect(() => {
   if (!optimisticVisualSelection) return;
 
-  const currentValue = selectedAttributes[optimisticVisualSelection.attrName];
-
-  if (currentValue !== optimisticVisualSelection.term) return;
-
   const timeout = setTimeout(() => {
-    setOptimisticVisualSelection(null);
-  }, 350);
+    const currentValue = selectedAttributes[optimisticVisualSelection.attrName];
+
+    if (currentValue === optimisticVisualSelection.term) {
+      setOptimisticVisualSelection(null);
+    }
+  }, 1200);
 
   return () => clearTimeout(timeout);
 }, [optimisticVisualSelection, selectedAttributes]);
+
+useEffect(() => {
+  setOptimisticVisualSelection(null);
+}, [product?.id]);
 
 useEffect(() => {
   if (!product) return;
