@@ -1103,6 +1103,38 @@ if (menuState === 'open') {
   });
 }, [menuState, isMobile]);
 
+useEffect(() => {
+  if (isMobile) {
+    document.documentElement.style.removeProperty('--desktop-menu-top');
+    return;
+  }
+
+  let frame = 0;
+
+  const updateDesktopMenuTop = () => {
+    cancelAnimationFrame(frame);
+
+    frame = requestAnimationFrame(() => {
+      const header = headerRef.current || document.querySelector('.mobile-header.first-header');
+      const rect = header?.getBoundingClientRect();
+      const top = rect ? Math.max(0, Math.round(rect.bottom)) : 0;
+
+      document.documentElement.style.setProperty('--desktop-menu-top', `${top}px`);
+    });
+  };
+
+  updateDesktopMenuTop();
+
+  window.addEventListener('resize', updateDesktopMenuTop);
+  window.addEventListener('scroll', updateDesktopMenuTop, { passive: true });
+
+  return () => {
+    cancelAnimationFrame(frame);
+    window.removeEventListener('resize', updateDesktopMenuTop);
+    window.removeEventListener('scroll', updateDesktopMenuTop);
+  };
+}, [isMobile, location.pathname, hideHeader, isMenuOpen]);
+
   const handleMenuImageChange = (newId) => {
     if (isImageAnimating || newId === activeMenuImage) return;
     const prevId = activeMenuImage;
