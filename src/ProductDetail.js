@@ -475,6 +475,46 @@ const waitForFrames = (count = 2) => {
   });
 };
 
+const resetPdpGalleryToStartBeforeTransition = async () => {
+  setActiveImageIndex(0);
+  setGalleryTranslateX(0);
+  setIsGallerySettling(false);
+
+  window.clearTimeout(galleryMouseDragRef.current.settleTimeout);
+  window.clearTimeout(galleryWheelRef.current.unlockTimeout);
+
+  galleryMouseDragRef.current = {
+    ...galleryMouseDragRef.current,
+    isDragging: false,
+    pointerId: null,
+    startX: 0,
+    startTranslateX: 0,
+    lastTranslateX: 0,
+    lastTime: 0,
+    velocity: 0,
+    moved: false,
+    hasPointerCapture: false,
+    settleTimeout: 0
+  };
+
+  galleryWheelRef.current = {
+    accumulatedDeltaX: 0,
+    isLocked: false,
+    unlockTimeout: 0
+  };
+
+  if (mobileGalleryRef.current) {
+    mobileGalleryRef.current.scrollLeft = 0;
+    mobileGalleryRef.current.scrollTo({
+      left: 0,
+      top: 0,
+      behavior: 'auto'
+    });
+  }
+
+  await waitForFrames(2);
+};
+
 const handleVisualColorChange = async (attrName, term, e) => {
   const nextOptimisticSelection = { attrName, term };
 
@@ -502,6 +542,8 @@ const handleVisualColorChange = async (attrName, term, e) => {
     applyChange();
     return;
   }
+
+  await resetPdpGalleryToStartBeforeTransition();
 
   if (window.scrollY > 0) {
     window.scrollTo(0, 0);
