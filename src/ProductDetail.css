@@ -1044,7 +1044,7 @@ body.product-image-transition-active .footer {
   }
 
 .images-container {
-  --pdp-mobile-gallery-size: 87vw;
+  --pdp-mobile-gallery-size: 90vw;
   width: 100%;
   max-width: 100%;
   position: relative;
