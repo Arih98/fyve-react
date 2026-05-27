@@ -1016,37 +1016,72 @@ return true;
   openSizePanel
 ]);
 
-const formatPdpPrice = (value) => {
-  const number = Number(String(value ?? '').replace(/[^0-9.-]/g, ''));
-  return Number.isFinite(number) ? number.toFixed(2) : '';
-};
-
 const getPdpPriceNumber = (value) => {
-  const number = Number(String(value ?? '').replace(/[^0-9.-]/g, ''));
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'string' && value.trim() === '') return null;
+  if (typeof value === 'object') return null;
+
+  const cleaned = String(value).replace(/[^0-9.-]/g, '');
+
+  if (!cleaned || cleaned === '-' || cleaned === '.' || cleaned === '-.') return null;
+
+  const number = Number(cleaned);
   return Number.isFinite(number) ? number : null;
 };
 
-const pdpCurrentPrice = getPdpPriceNumber(
-  current?.price?.current ??
-  current?.sale_price ??
-  current?.salePrice ??
-  current?.price ??
-  product?.price?.current ??
-  product?.sale_price ??
-  product?.salePrice ??
+const formatPdpPrice = (value) => {
+  const number = getPdpPriceNumber(value);
+  return number !== null ? number.toFixed(2) : '';
+};
+
+const pickFirstValidPdpPrice = (...values) => {
+  for (const value of values) {
+    const number = getPdpPriceNumber(value);
+
+    if (number !== null && number > 0) {
+      return number;
+    }
+  }
+
+  return null;
+};
+
+const pdpSalePrice = pickFirstValidPdpPrice(
+  current?.price?.sale,
+  current?.sale_price,
+  current?.salePrice,
+  product?.price?.sale,
+  product?.sale_price,
+  product?.salePrice
+);
+
+const pdpNormalPrice = pickFirstValidPdpPrice(
+  current?.price?.current,
+  current?.price,
+  product?.price?.current,
   product?.price
 );
 
-const pdpRegularPrice = getPdpPriceNumber(
-  current?.price?.regular ??
-  current?.regular_price ??
-  current?.regularPrice ??
-  product?.price?.regular ??
-  product?.regular_price ??
+const pdpRegularPrice = pickFirstValidPdpPrice(
+  current?.price?.regular,
+  current?.regular_price,
+  current?.regularPrice,
+  product?.price?.regular,
+  product?.regular_price,
   product?.regularPrice
 );
 
+const pdpCurrentPrice =
+  pdpSalePrice !== null &&
+  pdpRegularPrice !== null &&
+  pdpSalePrice < pdpRegularPrice
+    ? pdpSalePrice
+    : pdpNormalPrice;
+
 const pdpIsOnSale =
+  pdpCurrentPrice !== null &&
+  pdpRegularPrice !== null &&
+  pdpRegularPrice > pdpCurrentPrice;
   Boolean(current?.price?.isOnSale ?? product?.price?.isOnSale) ||
   (
     pdpCurrentPrice !== null &&
