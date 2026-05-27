@@ -75,7 +75,17 @@ const relatedProductsTouchStartX = useRef(0);
 const relatedProductsTouchDeltaX = useRef(0);
 const relatedProductsWheelLockRef = useRef(false);
 const relatedProductsWheelUnlockRef = useRef(0);
+const relatedProductsMouseDragRef = useRef({
+  isDragging: false,
+  pointerId: null,
+  startX: 0,
+  deltaX: 0,
+  moved: false
+});
+const relatedProductsSuppressClickRef = useRef(false);
 const [relatedProductsIndex, setRelatedProductsIndex] = useState(0);
+const [relatedProductsDragOffset, setRelatedProductsDragOffset] = useState(0);
+const [isRelatedProductsMouseDragging, setIsRelatedProductsMouseDragging] = useState(false);
 const [, setRelatedProductsMeasureTick] = useState(0);
   const mobileGalleryRef = useRef(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -266,8 +276,14 @@ const getRelatedProductPath = (relItem) => {
 };
 
 const handleRelatedProductClick = (relItem, index) => {
+  if (relatedProductsSuppressClickRef.current) {
+    relatedProductsSuppressClickRef.current = false;
+    return;
+  }
+
   if (relatedProductClickLockRef.current) return;
   relatedProductClickLockRef.current = true;
+
 
   const key = getRelatedProductKey(relItem, index);
   const sourceEl = relatedProductImageRefs.current.get(key);
@@ -351,6 +367,32 @@ const getRelatedProductsTranslateX = () => {
   return Math.max(0, Math.min(rawTranslate, maxTranslate));
 };
 
+const getRelatedProductsMaxTranslate = () => {
+  const viewport = relatedProductsViewportRef.current;
+  if (!viewport) return 0;
+
+  const track = viewport.querySelector('.related-products-track');
+  const firstCard = track?.querySelector('.related-product-card');
+
+  if (!track || !firstCard) return 0;
+
+  const viewportWidth = viewport.clientWidth;
+  const cardWidth = firstCard.getBoundingClientRect().width;
+  const trackStyle = window.getComputedStyle(track);
+  const gap = parseFloat(trackStyle.columnGap || trackStyle.gap || '0') || 0;
+  const trackWidth = relatedProducts.length * cardWidth + Math.max(0, relatedProducts.length - 1) * gap;
+
+  return Math.max(0, trackWidth - viewportWidth);
+};
+
+const getRelatedProductsVisualTranslateX = () => {
+  const baseTranslate = getRelatedProductsTranslateX();
+  const maxTranslate = getRelatedProductsMaxTranslate();
+  const nextTranslate = baseTranslate - relatedProductsDragOffset;
+
+  return Math.max(0, Math.min(nextTranslate, maxTranslate));
+};
+
 const handleRelatedProductsTouchStart = (e) => {
   relatedProductsTouchStartX.current = e.touches[0].clientX;
   relatedProductsTouchDeltaX.current = 0;
@@ -397,6 +439,96 @@ const handleRelatedProductsWheel = (e) => {
   relatedProductsWheelUnlockRef.current = window.setTimeout(() => {
     relatedProductsWheelLockRef.current = false;
   }, 360);
+};
+
+const handleRelatedProductsPointerDown = (e) => {
+  if (e.pointerType !== 'mouse') return;
+  if (e.button !== 0) return;
+
+  relatedProductsMouseDragRef.current = {
+    isDragging: true,
+    pointerId: e.pointerId,
+    startX: e.clientX,
+    deltaX: 0,
+    moved: false
+  };
+
+  setRelatedProductsDragOffset(0);
+  setIsRelatedProductsMouseDragging(true);
+
+  if (e.currentTarget.setPointerCapture) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+};
+
+const handleRelatedProductsPointerMove = (e) => {
+  const drag = relatedProductsMouseDragRef.current;
+
+  if (!drag.isDragging) return;
+  if (drag.pointerId !== e.pointerId) return;
+
+  const deltaX = e.clientX - drag.startX;
+
+  drag.deltaX = deltaX;
+
+  if (Math.abs(deltaX) > 6) {
+    drag.moved = true;
+    setRelatedProductsDragOffset(deltaX);
+  }
+};
+
+const handleRelatedProductsPointerUp = (e) => {
+  const drag = relatedProductsMouseDragRef.current;
+
+  if (!drag.isDragging) return;
+  if (drag.pointerId !== e.pointerId) return;
+
+  const deltaX = drag.deltaX;
+  const moved = drag.moved;
+  const threshold = 45;
+  const maxIndex = Math.max(0, relatedProducts.length - 1);
+
+  relatedProductsMouseDragRef.current = {
+    isDragging: false,
+    pointerId: null,
+    startX: 0,
+    deltaX: 0,
+    moved: false
+  };
+
+  setIsRelatedProductsMouseDragging(false);
+  setRelatedProductsDragOffset(0);
+
+  if (e.currentTarget.releasePointerCapture) {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  }
+
+  if (moved) {
+    relatedProductsSuppressClickRef.current = true;
+
+    window.setTimeout(() => {
+      relatedProductsSuppressClickRef.current = false;
+    }, 140);
+  }
+
+  if (deltaX <= -threshold) {
+    setRelatedProductsIndex(prev => Math.min(prev + 1, maxIndex));
+  } else if (deltaX >= threshold) {
+    setRelatedProductsIndex(prev => Math.max(prev - 1, 0));
+  }
+};
+
+const handleRelatedProductsPointerCancel = () => {
+  relatedProductsMouseDragRef.current = {
+    isDragging: false,
+    pointerId: null,
+    startX: 0,
+    deltaX: 0,
+    moved: false
+  };
+
+  setIsRelatedProductsMouseDragging(false);
+  setRelatedProductsDragOffset(0);
 };
 
 const getSelectedAttributeDisplayValue = (attrName) => {
@@ -1968,19 +2100,24 @@ const relatedProductsSlider = relatedProducts.length > 0 ? (
   <div className="related-products-container">
     <h2 className="related-products-title">Related Products</h2>
 
-    <div
-      ref={relatedProductsViewportRef}
-      className="related-products-carousel"
-      onTouchStart={handleRelatedProductsTouchStart}
-      onTouchMove={handleRelatedProductsTouchMove}
-      onTouchEnd={handleRelatedProductsTouchEnd}
-      onWheel={handleRelatedProductsWheel}
-    >
+<div
+  ref={relatedProductsViewportRef}
+  className={`related-products-carousel ${isRelatedProductsMouseDragging ? 'is-mouse-dragging' : ''}`}
+  onTouchStart={handleRelatedProductsTouchStart}
+  onTouchMove={handleRelatedProductsTouchMove}
+  onTouchEnd={handleRelatedProductsTouchEnd}
+  onWheel={handleRelatedProductsWheel}
+  onPointerDown={handleRelatedProductsPointerDown}
+  onPointerMove={handleRelatedProductsPointerMove}
+  onPointerUp={handleRelatedProductsPointerUp}
+  onPointerCancel={handleRelatedProductsPointerCancel}
+  onPointerLeave={handleRelatedProductsPointerUp}
+>
       <div
         className="related-products-track"
-        style={{
-          transform: `translate3d(-${getRelatedProductsTranslateX()}px, 0, 0)`
-        }}
+style={{
+  transform: `translate3d(-${getRelatedProductsVisualTranslateX()}px, 0, 0)`
+}}
       >
         {relatedProducts.map((relItem, index) => {
           const relatedKey = getRelatedProductKey(relItem, index);

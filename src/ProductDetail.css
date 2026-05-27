@@ -1421,6 +1421,25 @@ body.product-image-transition-active .footer {
     font-size: 14px;
   }
 
+  .related-products-carousel {
+  cursor: grab;
+  user-select: none;
+}
+
+.related-products-carousel.is-mouse-dragging {
+  cursor: grabbing;
+}
+
+.related-products-carousel.is-mouse-dragging .related-products-track {
+  transition: none;
+}
+
+.related-product-card,
+.related-product-image {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
  .related-products-container {
   padding: 12px 0 20px 12px;
   padding-top: 20px;
