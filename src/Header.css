@@ -1204,6 +1204,12 @@ body.search-open {
   box-sizing: border-box;
 }
 
+.menu-image.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
 .menu-image {
   opacity: 0;
   visibility: hidden;
@@ -1219,22 +1225,18 @@ body.search-open {
   transform-origin: 50% 50%;
   will-change: opacity, transform;
   box-sizing: border-box;
-}
-
-.menu-image.active {
-  opacity: 1;
-  visibility: visible;
-  z-index: 2;
+  background: #F1DBD1;
 }
 
 .menu-image img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
   object-position: center;
-  overflow: clip;
-  transform: none;
+  transform: none !important;
   margin: 0;
   border: none;
 }

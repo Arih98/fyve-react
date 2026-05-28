@@ -983,6 +983,13 @@ useEffect(() => {
   const imageColumn = document.querySelector('.menu-image-column');
   const items = gsap.utils.toArray('.menu-items > li');
   const images = gsap.utils.toArray('.menu-image');
+  const menuImageImgs = gsap.utils.toArray('.menu-image img');
+
+gsap.killTweensOf(menuImageImgs);
+
+gsap.set(menuImageImgs, {
+  clearProps: 'transform'
+});
   const defaultImage = document.querySelector('.menu-image[data-menu-item="ss26"]');
 
   if (!menu || !background || !content || !imageColumn) return;
@@ -1050,13 +1057,6 @@ gsap.set(menu, {
   transformOrigin: '50% 50%'
 });
 
-      const img = image.querySelector('img');
-
-      if (img) {
-        gsap.set(img, {
-          yPercent: 0
-        });
-      }
     });
 
     desktopMenuTimelineRef.current = gsap.timeline({
