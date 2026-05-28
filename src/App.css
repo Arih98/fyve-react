@@ -81,25 +81,3 @@ body::-webkit-scrollbar {
     padding-top: var(--announcement-height);
   }
 }
-
-.App.auth-route {
-  min-height: 100svh;
-  height: 100svh;
-  overflow: hidden;
-}
-
-.App.auth-route .site-content {
-  min-height: 0;
-  height: calc(100svh - 146px);
-  padding-top: 146px;
-  box-sizing: border-box;
-}
-
-.App.auth-route .account-auth-page {
-  min-height: 0;
-  height: calc(100svh - 146px);
-  padding-top: 40px;
-  padding-bottom: 40px;
-  box-sizing: border-box;
-  overflow: hidden;
-}
