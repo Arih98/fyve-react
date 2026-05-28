@@ -316,7 +316,6 @@ const [pdpMobileAddDisabled, setPdpMobileAddDisabled] = useState(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
-  !menuVisualActive &&
   !isSearchOpen &&
   (!isScrolled || hideHeader);
 
