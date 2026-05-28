@@ -8,6 +8,43 @@ import { startProductImageTransition } from '../utils/productImageTransition';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
+  const waitForMobileViewportSettle = async () => {
+  if (window.innerWidth > 768) return;
+
+  window.scrollTo(0, 0);
+
+  await new Promise(resolve => requestAnimationFrame(resolve));
+  await new Promise(resolve => requestAnimationFrame(resolve));
+
+  const getSnapshot = () => ({
+    scrollY: Math.round(window.scrollY),
+    innerHeight: Math.round(window.innerHeight),
+    visualHeight: Math.round(window.visualViewport?.height || window.innerHeight),
+    visualOffsetTop: Math.round(window.visualViewport?.offsetTop || 0)
+  });
+
+  let previous = getSnapshot();
+  let stableFrames = 0;
+  let attempts = 0;
+
+  while (stableFrames < 3 && attempts < 30) {
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    window.scrollTo(0, 0);
+
+    const current = getSnapshot();
+
+    const isStable =
+      current.scrollY === 0 &&
+      Math.abs(current.innerHeight - previous.innerHeight) <= 1 &&
+      Math.abs(current.visualHeight - previous.visualHeight) <= 1 &&
+      Math.abs(current.visualOffsetTop - previous.visualOffsetTop) <= 1;
+
+    stableFrames = isStable ? stableFrames + 1 : 0;
+    previous = current;
+    attempts += 1;
+  }
+};
   const productsPerPage = 16;
   const navigate = useNavigate();
   const navigationType = useNavigationType();
@@ -1446,7 +1483,8 @@ startProductImageTransition({
   duration: isMobileViewport ? 520 : 620,
   minTargetTop: isMobileViewport ? 80 : 0,
   zIndex: isMobileViewport ? 1 : 999999,
-  fillTarget: true
+  fillTarget: true,
+  beforeTargetMeasure: waitForMobileViewportSettle
 });
     }
 
