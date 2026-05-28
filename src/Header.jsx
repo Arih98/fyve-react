@@ -1917,10 +1917,8 @@ onClick={(e) => {
             <div className="menu-image-column">
               {menuItems.map(item => (
                 <div key={item.id} className={`menu-image${activeMenuImage === item.id ? ' active' : ''}`} data-menu-item={item.id}>
-                  <div className="menu-image-reveal">
-                    <img src={item.image} alt={`${item.name} Image`} />
-                  </div>
-                </div>
+  <img src={item.image} alt={`${item.name} Image`} />
+</div>
               ))}
             </div>
             <div className="menu-items-wrapper">
