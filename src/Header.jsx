@@ -316,8 +316,16 @@ const [pdpMobileAddDisabled, setPdpMobileAddDisabled] = useState(false);
 
 const shouldBeTransparentHomeHeader =
   isHomePage &&
+  !menuVisualActive &&
   !isSearchOpen &&
   (!isScrolled || hideHeader);
+
+const keepHomeMenuHeaderBackgroundTransparent =
+  isHomePage &&
+  !isMobile &&
+  !isSearchOpen &&
+  !isScrolled &&
+  (menuState === 'open' || menuState === 'closing');
 
 const useTransparentHomeHeader =
   shouldBeTransparentHomeHeader &&
@@ -1429,7 +1437,7 @@ const handleToggleMenu = () => {
     
     <div
   ref={headerRef}
-  className={`mobile-header first-header${normalDesktopHeader ? ' desktop-normal-scroll' : ''}${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${useProductsFilterVariant ? ' products-filter-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant && !useProductsFilterVariant ? ' home-transparent' : ''}`}
+  className={`mobile-header first-header${normalDesktopHeader ? ' desktop-normal-scroll' : ''}${useCartHeaderVariant ? ' cart-page-header' : ''}${usePdpBottomAddVariant ? ' pdp-page-header' : ''}${useProductsFilterVariant ? ' products-filter-page-header' : ''}${hideHeader ? ' hide-header' : ''}${isMenuOpen ? ' menu-active' : ''}${isMenuOpen ? ' menu-open' : ''}${useTransparentHomeHeader && !useCartHeaderVariant && !usePdpBottomAddVariant && !useProductsFilterVariant ? ' home-transparent' : ''}${keepHomeMenuHeaderBackgroundTransparent ? ' home-menu-transparent-bg' : ''}`}
 >
   {BurgerIcon}
 
