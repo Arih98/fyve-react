@@ -986,8 +986,8 @@ useEffect(() => {
 
   gsap.killTweensOf([menu, background, content, imageColumn, ...items, ...images]);
 
-  gsap.set([background, content, imageColumn, ...items], {
-    clearProps: 'transform'
+  gsap.set([menu, background, content, imageColumn, ...items], {
+    clearProps: 'transform,clipPath'
   });
 
   if (menuState === 'open') {
@@ -996,30 +996,38 @@ useEffect(() => {
 
     gsap.set(menu, {
       autoAlpha: 1,
-      pointerEvents: 'auto'
+      pointerEvents: 'auto',
+      clipPath: 'inset(0% 0% 100% 0%)'
     });
 
     gsap.set(background, {
-      clipPath: 'inset(0% 0% 100% 0%)',
-      yPercent: 0
+      autoAlpha: 1
     });
 
-gsap.set([content, imageColumn], {
-  y: -220,
-  rotation: -7,
-  scale: 1.3,
-  autoAlpha: 1,
-  transformOrigin: '50% 0%',
-  pointerEvents: 'auto'
-});
+    gsap.set(content, {
+      y: -220,
+      rotation: -7,
+      scale: 1.3,
+      autoAlpha: 1,
+      transformOrigin: '50% 0%',
+      pointerEvents: 'auto'
+    });
 
-gsap.set(items, {
-  yPercent: 105,
-  rotation: 7,
-  autoAlpha: 0,
-  transformOrigin: '0% 100%',
-  clipPath: 'inset(0% 0% 0% 0%)'
-});
+    gsap.set(imageColumn, {
+      y: 0,
+      rotation: 0,
+      scale: 1,
+      autoAlpha: 1,
+      transformOrigin: '50% 50%'
+    });
+
+    gsap.set(items, {
+      yPercent: 105,
+      rotation: 7,
+      autoAlpha: 0,
+      transformOrigin: '0% 100%',
+      clipPath: 'inset(0% 0% 0% 0%)'
+    });
 
     images.forEach((image) => {
       gsap.set(image, {
@@ -1037,32 +1045,32 @@ gsap.set(items, {
     });
 
     desktopMenuTimelineRef.current = gsap.timeline({
-  defaults: {
-    ease: 'expo.out'
-  }
-});
+      defaults: {
+        ease: 'expo.out'
+      }
+    });
 
-desktopMenuTimelineRef.current
-  .to(background, {
-    clipPath: 'inset(0% 0% 0% 0%)',
-    duration: 1.45,
-    ease: 'expo.inOut'
-  }, 0)
-  .to([content, imageColumn], {
-    y: 0,
-    rotation: 0,
-    scale: 1,
-    duration: 1.45,
-    ease: 'expo.inOut'
-  }, 0)
-  .to(items, {
-    yPercent: 0,
-    rotation: 0,
-    autoAlpha: 1,
-    duration: 0.85,
-    stagger: 0.075,
-    ease: 'expo.out'
-  }, 0.48);
+    desktopMenuTimelineRef.current
+      .to(menu, {
+        clipPath: 'inset(0% 0% 0% 0%)',
+        duration: 1.45,
+        ease: 'expo.inOut'
+      }, 0)
+      .to(content, {
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        duration: 1.45,
+        ease: 'expo.inOut'
+      }, 0)
+      .to(items, {
+        yPercent: 0,
+        rotation: 0,
+        autoAlpha: 1,
+        duration: 0.85,
+        stagger: 0.075,
+        ease: 'expo.out'
+      }, 0.48);
 
     return;
   }
@@ -1070,7 +1078,8 @@ desktopMenuTimelineRef.current
   if (menuState === 'closing') {
     gsap.set(menu, {
       autoAlpha: 1,
-      pointerEvents: 'none'
+      pointerEvents: 'none',
+      clipPath: 'inset(0% 0% 0% 0%)'
     });
 
     desktopMenuTimelineRef.current = gsap.timeline({
@@ -1084,40 +1093,49 @@ desktopMenuTimelineRef.current
         yPercent: 105,
         rotation: 7,
         autoAlpha: 0,
-        duration: 0.48,
+        duration: 0.45,
         stagger: 0.035,
         ease: 'expo.in'
       }, 0)
-      .to([content, imageColumn], {
+      .to(content, {
         y: -220,
         rotation: -7,
         scale: 1.3,
-        autoAlpha: 0.3,
-        duration: 1.05
-      }, 0.08)
-      .to(background, {
+        autoAlpha: 0.35,
+        duration: 1.15,
+        ease: 'expo.inOut'
+      }, 0.18)
+      .to(menu, {
         clipPath: 'inset(0% 0% 100% 0%)',
-        duration: 1.05
-      }, 0.08);
+        duration: 1.15,
+        ease: 'expo.inOut'
+      }, 0.32);
 
     return;
   }
 
   gsap.set(menu, {
     autoAlpha: 0,
-    pointerEvents: 'none'
+    pointerEvents: 'none',
+    clipPath: 'inset(0% 0% 100% 0%)'
   });
 
   gsap.set(background, {
-    clipPath: 'inset(0% 0% 100% 0%)',
-    yPercent: 0
+    autoAlpha: 1
   });
 
-  gsap.set([content, imageColumn], {
+  gsap.set(content, {
     y: -220,
     rotation: -7,
     scale: 1.3,
     autoAlpha: 0
+  });
+
+  gsap.set(imageColumn, {
+    y: 0,
+    rotation: 0,
+    scale: 1,
+    autoAlpha: 1
   });
 
   gsap.set(items, {
