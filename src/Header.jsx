@@ -631,7 +631,7 @@ useEffect(() => {
     } else {
 timeout = setTimeout(() => {
   setMenuVisualActive(false);
-}, 1250);
+}, 1300);
     }
   } else if (!isMenuOpen) {
     setMenuVisualActive(false);
