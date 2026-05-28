@@ -47,7 +47,9 @@ const Layout = () => {
   const showHeader = location.pathname !== '/admin';
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showAnnouncementBar = location.pathname !== '/admin';
-  const showFooter = location.pathname !== '/admin';
+  const pathname = location.pathname.replace(/\/+$/, '') || '/';
+const hideFooterRoutes = ['/admin', '/login', '/signup'];
+const showFooter = !hideFooterRoutes.includes(pathname);
   
   return (
     <div className="App">
