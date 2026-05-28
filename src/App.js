@@ -48,11 +48,12 @@ const Layout = () => {
   const showMobileTopHeader = location.pathname !== '/' && location.pathname !== '/admin';
   const showAnnouncementBar = location.pathname !== '/admin';
   const pathname = location.pathname.replace(/\/+$/, '') || '/';
+  const isAuthRoute = ['/login', '/signup'].includes(pathname);
 const hideFooterRoutes = ['/admin', '/login', '/signup'];
 const showFooter = !hideFooterRoutes.includes(pathname);
   
   return (
-    <div className="App">
+    <div className={`App ${isAuthRoute ? 'auth-route' : ''}`}>
       {showAnnouncementBar && <AnnouncementBar />}
       {showMobileTopHeader && <MobileTopHeader />}
       {showHeader && <Header />}
