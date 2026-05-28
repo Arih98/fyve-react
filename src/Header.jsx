@@ -1045,32 +1045,32 @@ useEffect(() => {
     });
 
     desktopMenuTimelineRef.current = gsap.timeline({
-      defaults: {
-        ease: 'expo.out'
-      }
-    });
+  defaults: {
+    ease: 'power4.out'
+  }
+});
 
-    desktopMenuTimelineRef.current
-      .to(menu, {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 1.45,
-        ease: 'expo.inOut'
-      }, 0)
-      .to(content, {
-        y: 0,
-        rotation: 0,
-        scale: 1,
-        duration: 1.45,
-        ease: 'expo.inOut'
-      }, 0)
-      .to(items, {
-        yPercent: 0,
-        rotation: 0,
-        autoAlpha: 1,
-        duration: 0.85,
-        stagger: 0.075,
-        ease: 'expo.out'
-      }, 0.48);
+desktopMenuTimelineRef.current
+  .to(menu, {
+    clipPath: 'inset(0% 0% 0% 0%)',
+    duration: 1.18,
+    ease: 'power4.out'
+  }, 0)
+  .to(content, {
+    y: 0,
+    rotation: 0,
+    scale: 1,
+    duration: 1.18,
+    ease: 'power4.out'
+  }, 0)
+  .to(items, {
+    yPercent: 0,
+    rotation: 0,
+    autoAlpha: 1,
+    duration: 0.85,
+    stagger: 0.075,
+    ease: 'expo.out'
+  }, 0.48);
 
     return;
   }
@@ -1083,33 +1083,33 @@ useEffect(() => {
     });
 
     desktopMenuTimelineRef.current = gsap.timeline({
-      defaults: {
-        ease: 'expo.inOut'
-      }
-    });
+  defaults: {
+    ease: 'power4.inOut'
+  }
+});
 
-    desktopMenuTimelineRef.current
-      .to(items, {
-        yPercent: 105,
-        rotation: 7,
-        autoAlpha: 0,
-        duration: 0.45,
-        stagger: 0.035,
-        ease: 'expo.in'
-      }, 0)
-      .to(content, {
-        y: -220,
-        rotation: -7,
-        scale: 1.3,
-        autoAlpha: 0.35,
-        duration: 1.15,
-        ease: 'expo.inOut'
-      }, 0.18)
-      .to(menu, {
-        clipPath: 'inset(0% 0% 100% 0%)',
-        duration: 1.15,
-        ease: 'expo.inOut'
-      }, 0.32);
+desktopMenuTimelineRef.current
+  .to(items, {
+    yPercent: 105,
+    rotation: 7,
+    autoAlpha: 0,
+    duration: 0.42,
+    stagger: 0.035,
+    ease: 'power2.in'
+  }, 0)
+  .to(content, {
+    y: -220,
+    rotation: -7,
+    scale: 1.3,
+    autoAlpha: 0.35,
+    duration: 1.05,
+    ease: 'power4.inOut'
+  }, 0.04)
+  .to(menu, {
+    clipPath: 'inset(0% 0% 100% 0%)',
+    duration: 1.05,
+    ease: 'power4.inOut'
+  }, 0.16);
 
     return;
   }
