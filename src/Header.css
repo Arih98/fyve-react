@@ -1206,21 +1206,26 @@ body.search-open {
 
 .menu-image {
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-30%, -50%);
   width: 23vw;
   height: 34vw;
+  overflow: hidden;
+  transform: none;
+  transform-origin: 50% 50%;
+  will-change: opacity, transform;
 }
 
 .menu-image.active {
   opacity: 1;
+  visibility: visible;
   z-index: 2;
 }
 
@@ -1229,8 +1234,9 @@ body.search-open {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  margin-top: 8px;
+  margin-top: 0;
   border: 1.5px solid #4A494A;
+  transform: none;
 }
 
 .menu-items-wrapper {

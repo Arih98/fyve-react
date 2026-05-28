@@ -258,6 +258,7 @@ const [delayTransparentHeader, setDelayTransparentHeader] = useState(false);
 const [openSubmenuId, setOpenSubmenuId] = useState(null);
 const submenuRefs = useRef(new Map());
 const desktopMenuTimelineRef = useRef(null);
+const menuImageHoverTimelineRef = useRef(null);
 const [menuVisualActive, setMenuVisualActive] = useState(false);
 const bagIconButtonRef = useRef(null);
 const bagCountRef = useRef(null);
@@ -1031,9 +1032,16 @@ useEffect(() => {
 
     images.forEach((image) => {
       gsap.set(image, {
-        autoAlpha: image === defaultImage ? 1 : 0,
-        zIndex: image === defaultImage ? 2 : 1
-      });
+  autoAlpha: image === defaultImage ? 1 : 0,
+  zIndex: image === defaultImage ? 3 : 1,
+  xPercent: -30,
+  yPercent: -50,
+  x: 0,
+  y: 0,
+  rotation: 0,
+  scale: 1,
+  transformOrigin: '50% 50%'
+});
 
       const img = image.querySelector('img');
 
@@ -1179,40 +1187,111 @@ useEffect(() => {
 }, [isMobile, location.pathname, hideHeader, isMenuOpen]);
 
   const handleMenuImageChange = (newId) => {
-    if (isImageAnimating || newId === activeMenuImage) return;
-    const prevId = activeMenuImage;
-    const prevElem = document.querySelector(`.menu-image[data-menu-item="${prevId}"]`);
-    const newElem = document.querySelector(`.menu-image[data-menu-item="${newId}"]`);
-    if (!newElem) return;
-    setIsImageAnimating(true);
-    if (prevElem) {
-      prevElem.style.opacity = '1';
-      prevElem.style.zIndex = '1';
-    }
-    newElem.style.opacity = '1';
-    newElem.style.zIndex = '2';
-    const newImg = newElem.querySelector('img');
-    gsap.set(newImg, { yPercent: -100 });
-    gsap.to(newImg, { yPercent: 0, duration: 0.6, ease: 'power2.inOut' });
-    const prevImg = prevElem ? prevElem.querySelector('img') : null;
-    if (prevImg) {
-      gsap.to(prevImg, {
-        yPercent: 100,
-        duration: 0.6,
-        ease: 'power2.inOut',
-        onComplete: () => {
-          if (prevElem) {
-            prevElem.style.opacity = '0';
-            prevElem.style.zIndex = '1';
-          }
-          setIsImageAnimating(false);
-        }
+  if (newId === activeMenuImage) return;
+
+  const prevId = activeMenuImage;
+  const prevElem = document.querySelector(`.menu-image[data-menu-item="${prevId}"]`);
+  const newElem = document.querySelector(`.menu-image[data-menu-item="${newId}"]`);
+
+  if (!newElem) return;
+
+  if (menuImageHoverTimelineRef.current) {
+    menuImageHoverTimelineRef.current.kill();
+    menuImageHoverTimelineRef.current = null;
+  }
+
+  const allImages = gsap.utils.toArray('.menu-image');
+
+  gsap.killTweensOf(allImages);
+
+  allImages.forEach((el) => {
+    if (el !== prevElem && el !== newElem) {
+      gsap.set(el, {
+        autoAlpha: 0,
+        zIndex: 1,
+        xPercent: -30,
+        yPercent: -50,
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        transformOrigin: '50% 50%'
       });
-    } else {
-      setIsImageAnimating(false);
     }
-    setActiveMenuImage(newId);
-  };
+  });
+
+  if (prevElem) {
+    gsap.set(prevElem, {
+      autoAlpha: 1,
+      zIndex: 2,
+      xPercent: -30,
+      yPercent: -50,
+      x: 0,
+      y: 0,
+      rotation: 0,
+      scale: 1,
+      transformOrigin: '50% 50%'
+    });
+  }
+
+  gsap.set(newElem, {
+    autoAlpha: 0.16,
+    zIndex: 3,
+    xPercent: -30,
+    yPercent: -50,
+    x: 0,
+    y: 0,
+    rotation: 6,
+    scale: 1.25,
+    transformOrigin: '50% 50%'
+  });
+
+  menuImageHoverTimelineRef.current = gsap.timeline({
+    onComplete: () => {
+      if (prevElem) {
+        gsap.set(prevElem, {
+          autoAlpha: 0,
+          zIndex: 1,
+          xPercent: -30,
+          yPercent: -50,
+          x: 0,
+          y: 0,
+          rotation: 0,
+          scale: 1
+        });
+      }
+
+      gsap.set(newElem, {
+        autoAlpha: 1,
+        zIndex: 3,
+        xPercent: -30,
+        yPercent: -50,
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1
+      });
+
+      menuImageHoverTimelineRef.current = null;
+    }
+  });
+
+  menuImageHoverTimelineRef.current
+    .to(newElem, {
+      autoAlpha: 1,
+      rotation: 0,
+      scale: 1,
+      duration: 1,
+      ease: 'power3.out'
+    }, 0)
+    .to(prevElem, {
+      autoAlpha: 0,
+      duration: 0.45,
+      ease: 'power2.out'
+    }, 0.08);
+
+  setActiveMenuImage(newId);
+};
 
   const setSubmenuRef = (id, el) => {
   if (el) {
