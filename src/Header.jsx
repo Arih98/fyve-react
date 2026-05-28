@@ -995,11 +995,11 @@ useEffect(() => {
     setActiveMenuImage('ss26');
     setIsImageAnimating(false);
 
-    gsap.set(menu, {
-      autoAlpha: 1,
-      pointerEvents: 'auto',
-      clipPath: 'inset(0% 0% 100% 0%)'
-    });
+gsap.set(menu, {
+  autoAlpha: 1,
+  pointerEvents: 'auto',
+  clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)'
+});
 
     gsap.set(background, {
       autoAlpha: 1
@@ -1054,22 +1054,22 @@ useEffect(() => {
 
     desktopMenuTimelineRef.current = gsap.timeline({
   defaults: {
-    ease: 'power4.out'
+    ease: 'power3.out'
   }
 });
 
 desktopMenuTimelineRef.current
   .to(menu, {
-    clipPath: 'inset(0% 0% 0% 0%)',
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 110%, 0% 100%)',
     duration: 1.18,
-    ease: 'power4.out'
+    ease: 'power3.out'
   }, 0)
   .to(content, {
     y: 0,
     rotation: 0,
     scale: 1,
     duration: 1.18,
-    ease: 'power4.out'
+    ease: 'power3.out'
   }, 0)
   .to(items, {
     yPercent: 0,
@@ -1078,53 +1078,53 @@ desktopMenuTimelineRef.current
     duration: 0.85,
     stagger: 0.075,
     ease: 'expo.out'
-  }, 0.48);
+  }, 0.5);
 
     return;
   }
 
   if (menuState === 'closing') {
-    gsap.set(menu, {
-      autoAlpha: 1,
-      pointerEvents: 'none',
-      clipPath: 'inset(0% 0% 0% 0%)'
-    });
+gsap.set(menu, {
+  autoAlpha: 1,
+  pointerEvents: 'none',
+  clipPath: 'polygon(0% 0%, 100% 0%, 100% 110%, 0% 100%)'
+});
 
     desktopMenuTimelineRef.current = gsap.timeline({
   defaults: {
-    ease: 'power4.inOut'
+    ease: 'power2.inOut'
   }
 });
 
 desktopMenuTimelineRef.current
   .set(items, {
-  yPercent: 0,
-  rotation: 0,
-  autoAlpha: 1,
-  clipPath: 'inset(0% 0% 0% 0%)'
-}, 0)
-.to(content, {
-  y: -220,
-  rotation: -7,
-  scale: 1.3,
-  autoAlpha: 1,
-  duration: 1.05,
-  ease: 'power4.inOut'
-}, 0.12)
-.to(menu, {
-  clipPath: 'inset(0% 0% 100% 0%)',
-  duration: 1.05,
-  ease: 'power4.inOut'
-}, 0.28);
+    yPercent: 0,
+    rotation: 0,
+    autoAlpha: 1,
+    clipPath: 'inset(0% 0% 0% 0%)'
+  }, 0)
+  .to(content, {
+    y: -220,
+    rotation: -7,
+    scale: 1.3,
+    autoAlpha: 1,
+    duration: 1.05,
+    ease: 'power2.inOut'
+  }, 0)
+  .to(menu, {
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+    duration: 1.05,
+    ease: 'power2.inOut'
+  }, 0.1);
 
     return;
   }
 
-  gsap.set(menu, {
-    autoAlpha: 0,
-    pointerEvents: 'none',
-    clipPath: 'inset(0% 0% 100% 0%)'
-  });
+gsap.set(menu, {
+  autoAlpha: 0,
+  pointerEvents: 'none',
+  clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)'
+});
 
   gsap.set(background, {
     autoAlpha: 1
