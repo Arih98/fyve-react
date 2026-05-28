@@ -628,9 +628,9 @@ useEffect(() => {
     if (isMobile) {
       setMenuVisualActive(false);
     } else {
-      timeout = setTimeout(() => {
-        setMenuVisualActive(false);
-      }, 350);
+timeout = setTimeout(() => {
+  setMenuVisualActive(false);
+}, 1250);
     }
   } else if (!isMenuOpen) {
     setMenuVisualActive(false);
