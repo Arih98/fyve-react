@@ -1097,27 +1097,25 @@ desktopMenuTimelineRef.current
 });
 
 desktopMenuTimelineRef.current
-  .to(items, {
-    yPercent: 105,
-    rotation: 7,
-    autoAlpha: 0,
-    duration: 0.42,
-    stagger: 0.035,
-    ease: 'power2.in'
-  }, 0)
-  .to(content, {
-    y: -220,
-    rotation: -7,
-    scale: 1.3,
-    autoAlpha: 0.35,
-    duration: 1.05,
-    ease: 'power4.inOut'
-  }, 0.04)
-  .to(menu, {
-    clipPath: 'inset(0% 0% 100% 0%)',
-    duration: 1.05,
-    ease: 'power4.inOut'
-  }, 0.16);
+  .set(items, {
+  yPercent: 0,
+  rotation: 0,
+  autoAlpha: 1,
+  clipPath: 'inset(0% 0% 0% 0%)'
+}, 0)
+.to(content, {
+  y: -220,
+  rotation: -7,
+  scale: 1.3,
+  autoAlpha: 1,
+  duration: 1.05,
+  ease: 'power4.inOut'
+}, 0.12)
+.to(menu, {
+  clipPath: 'inset(0% 0% 100% 0%)',
+  duration: 1.05,
+  ease: 'power4.inOut'
+}, 0.28);
 
     return;
   }
