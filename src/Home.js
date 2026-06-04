@@ -368,26 +368,6 @@ setTimeout(refreshAfterIntro, 500)
   useEffect(() => {
   const ctx = gsap.context(() => {
     const isMobile = window.innerWidth <= 768
-gsap.set('.fyve-image-parallax-wrap', {
-  y: isMobile ? '6vh' : '6vh',
-  scale: isMobile ? 1.04 : 1.06,
-  force3D: true,
-  transformOrigin: 'center center'
-})
-
-gsap.to('.fyve-image-parallax-wrap', {
-  y: isMobile ? '15vh' : '21vh',
-  scale: 1,
-  ease: 'none',
-  force3D: true,
-  scrollTrigger: {
-    trigger: '.fyve-hero-section',
-    start: 'top top',
-    end: 'bottom top',
-    scrub: 0.35,
-    invalidateOnRefresh: true
-  }
-})
 
 gsap.fromTo('.section1-aesthetic-image', {
   scale: 1.22

@@ -188,11 +188,10 @@
 
 .fyve-image-parallax-wrap {
   position: absolute;
-  inset: -10vh 0;
+  inset: 0;
   width: 100%;
-  height: calc(100% + 20vh);
+  height: 100%;
   transform-origin: center center;
-  will-change: transform;
 }
 
 .fyve-image-picture {
@@ -541,17 +540,11 @@
   background: transparent;
 }
 
-.fyve-image-parallax-wrap,
 .fyve-image-scale-wrap,
-.fyve-image-slot,
-.fyve-cover,
-.lottie-container,
-.london-below,
-.section1-aesthetic-image,
-.section1-title-line,
-.results-before-after-title,
-.results-img-wrap {
-  transition: none !important;
+.fyve-image,
+.section1-aesthetic-image {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
 .fyve-hero-section,
@@ -909,13 +902,12 @@
     inset: 0;
   }
 
-  .fyve-image-parallax-wrap {
+.fyve-image-parallax-wrap {
   position: absolute;
-  inset: -6vh 0;
+  inset: 0;
   width: 100%;
-  height: calc(100% + 12vh);
+  height: 100%;
   transform-origin: center center;
-  will-change: transform;
 }
 
 .fyve-image-picture {
