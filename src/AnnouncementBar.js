@@ -3,7 +3,28 @@ import { useLocation } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
 import './AnnouncementBar.css';
 
-const items = Array(10).fill('FREE SHIPPING SITEWIDE');
+const AnnouncementBar = () => {
+  const location = useLocation();
+  const { isMenuOpen } = useContext(MenuContext);
+
+  const [message, setMessage] = React.useState('FREE SHIPPING SITEWIDE');
+
+  useEffect(() => {
+    fetch('https://yourdomain.com/wp-json/fyve/v1/discount')
+      .then(res => res.json())
+      .then(data => {
+        if (data.enabled && data.percent > 0) {
+          setMessage(`${data.percent}% OFF SITEWIDE`);
+        } else {
+          setMessage('FREE SHIPPING SITEWIDE');
+        }
+      })
+      .catch(() => {
+        setMessage('FREE SHIPPING SITEWIDE');
+      });
+  }, []);
+
+  const items = Array(10).fill(message);
 
 const AnnouncementBar = () => {
   const location = useLocation();
