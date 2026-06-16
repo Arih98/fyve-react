@@ -15,7 +15,9 @@ const AnnouncementBar = () => {
   // Fetch discount from backend
   useEffect(() => {
     const fetchDiscount = () => {
-      fetch('https://yourdomain.com/wp-json/fyve/v1/discount')
+      const API_BASE = process.env.REACT_APP_API_BASE || 'https://fyvelondon.com';
+
+fetch(`${API_BASE}/wp-json/fyve/v1/discount`)
         .then(res => res.json())
         .then(data => {
           if (data?.enabled && data?.percent > 0) {
