@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MenuContext } from './MenuContext';
 import './AnnouncementBar.css';
@@ -6,35 +6,34 @@ import './AnnouncementBar.css';
 const AnnouncementBar = () => {
   const location = useLocation();
   const { isMenuOpen } = useContext(MenuContext);
+  const isCartPage = location.pathname === '/cart';
+  const marqueeRef = useRef(null);
 
-  const [message, setMessage] = React.useState('FREE SHIPPING SITEWIDE');
+  const [message, setMessage] = useState('FREE SHIPPING SITEWIDE');
 
+  // Fetch discount from WordPress
   useEffect(() => {
     fetch('https://yourdomain.com/wp-json/fyve/v1/discount')
       .then(res => res.json())
       .then(data => {
-        if (data.enabled && data.percent > 0) {
+        if (data?.enabled && data?.percent > 0) {
           setMessage(`${data.percent}% OFF SITEWIDE`);
         } else {
           setMessage('FREE SHIPPING SITEWIDE');
         }
       })
       .catch(() => {
+        // Keep default message on error
         setMessage('FREE SHIPPING SITEWIDE');
       });
   }, []);
 
-  const items = Array(10).fill(message);
+  // Create repeated items for seamless marquee
+  const items = React.useMemo(() => Array(10).fill(message), [message]);
 
-const AnnouncementBar = () => {
-  const location = useLocation();
-  const { isMenuOpen } = useContext(MenuContext);
-  const isCartPage = location.pathname === '/cart';
-  const marqueeRef = useRef(null);
-
+  // Handle tab visibility for pause/resume
   useEffect(() => {
     const marquee = marqueeRef.current;
-
     if (!marquee) return;
 
     const syncPausedState = () => {
@@ -46,7 +45,6 @@ const AnnouncementBar = () => {
     };
 
     syncPausedState();
-
     document.addEventListener('visibilitychange', syncPausedState);
 
     return () => {
