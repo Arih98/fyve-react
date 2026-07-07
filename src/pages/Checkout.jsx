@@ -1032,15 +1032,6 @@ if (cardSession?.wc_order_key) {
   setDraftOrderKey(cardSession.wc_order_key)
 }
 
-if (cardSession?.wc_order_id) {
-  setDraftOrderId(cardSession.wc_order_id)
-  latestWooOrderIdRef.current = cardSession.wc_order_id
-}
-
-if (cardSession?.wc_order_key) {
-  setDraftOrderKey(cardSession.wc_order_key)
-}
-
 if (!cardSession?.revolut_public_key) {
   throw new Error('Missing Revolut public API key')
 }
