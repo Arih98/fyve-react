@@ -607,12 +607,12 @@ const initializePaymentMethods = useCallback(async () => {
   const latestCheckout = await getCheckoutData()
   const addressPayload = buildCheckoutAddressPayload(snapshot)
 
-  const revolutResult = await createRevolutOrder({
-    draft_order_id: latestCheckout.order_id || null,
-    draft_order_key: latestCheckout.order_key || '',
-    validation_mode: 'payment',
-    ...addressPayload
-  })
+const revolutResult = await createRevolutOrder({
+  draft_order_id: latestWooOrderIdRef.current || latestCheckout.order_id || null,
+  draft_order_key: latestCheckout.order_key || '',
+  validation_mode: 'payment',
+  ...addressPayload
+})
 
   if (revolutResult?.free_order) {
     latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
@@ -1018,6 +1018,15 @@ const cardSession = await createRevolutOrder({
   validation_mode: 'mount',
   ...addressPayload
 })
+
+if (cardSession?.wc_order_id) {
+  setDraftOrderId(cardSession.wc_order_id)
+  latestWooOrderIdRef.current = cardSession.wc_order_id
+}
+
+if (cardSession?.wc_order_key) {
+  setDraftOrderKey(cardSession.wc_order_key)
+}
 
 if (!cardSession?.revolut_public_key) {
   throw new Error('Missing Revolut public API key')
