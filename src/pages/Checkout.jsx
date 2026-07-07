@@ -608,9 +608,11 @@ const initializePaymentMethods = useCallback(async () => {
   const addressPayload = buildCheckoutAddressPayload(snapshot)
 
 const revolutResult = await createRevolutOrder({
-  draft_order_id: latestWooOrderIdRef.current || latestCheckout.order_id || null,
-  draft_order_key: latestCheckout.order_key || '',
+  draft_order_id: latestWooOrderIdRef.current || draftOrderId || latestCheckout.order_id || null,
+  draft_order_key: draftOrderKey || latestCheckout.order_key || '',
   validation_mode: 'payment',
+  cart_items: cartItems,
+  cart_coupons: cart?.coupons || latestCheckout?.coupons || [],
   ...addressPayload
 })
 
@@ -626,7 +628,7 @@ const revolutResult = await createRevolutOrder({
   latestWooOrderIdRef.current = revolutResult.wc_order_id || latestCheckout.order_id || null
 
   return revolutResult
-}, [])
+}, [cart, cartItems, draftOrderId, draftOrderKey])
 
   const [fieldErrors, setFieldErrors] = useState({})
 
@@ -1016,8 +1018,19 @@ const cardSession = await createRevolutOrder({
   draft_order_id: draftOrderId || checkoutData?.order_id || null,
   draft_order_key: draftOrderKey || checkoutData?.order_key || '',
   validation_mode: 'mount',
+  cart_items: cartItems,
+  cart_coupons: cart?.coupons || checkoutData?.coupons || [],
   ...addressPayload
 })
+
+if (cardSession?.wc_order_id) {
+  setDraftOrderId(cardSession.wc_order_id)
+  latestWooOrderIdRef.current = cardSession.wc_order_id
+}
+
+if (cardSession?.wc_order_key) {
+  setDraftOrderKey(cardSession.wc_order_key)
+}
 
 if (cardSession?.wc_order_id) {
   setDraftOrderId(cardSession.wc_order_id)
