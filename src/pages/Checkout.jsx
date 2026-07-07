@@ -37,8 +37,7 @@ function decodeHtmlEntities(value) {
 
 const CHECKOUT_DRAFT_STORAGE_KEY = 'fyve_checkout_draft_v3'
 
-const RAW_API_BASE = process.env.REACT_APP_API_BASE || window.location.origin
-const API_BASE = RAW_API_BASE.replace(/\/wp-json\/?$/, '').replace(/\/$/, '')
+const API_BASE = 'https://fyvelondon.com'
 
 const US_STATES = [
   { code: 'AL', name: 'Alabama' },
