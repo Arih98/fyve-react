@@ -401,10 +401,9 @@ style={{
                 <span>{formatWooMoney(cartTotal, cart?.totals)}</span>
               </div>
 
-              <Link to="/checkout" className="button cart-checkout-button" onClick={onClose}>
-                <span>Checkout</span>
-                <span className="cart-total-amount">{formatWooMoney(cartTotal, cart?.totals)}</span>
-              </Link>
+<Link to="/checkout" className="button cart-checkout-button" onClick={onClose}>
+  <span>Checkout</span>
+</Link>
 
               <Link to="/cart" className="cart-panel-view-bag" onClick={onClose}>
                 View bag
