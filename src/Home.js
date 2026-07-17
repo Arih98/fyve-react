@@ -626,7 +626,7 @@ gsap.fromTo('.results-before-after-title', {
     </a>
 
     <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-img-wrap results-img-wrap-1" data-results-amount="3.88889">
-      <img src="/assets/home/fyve-london-hero.webp" alt="" draggable="false" />
+      <img src="/assets/home/little-artist-clean-floor" alt="" draggable="false" />
     </a>
 
     <a href="https://dev.fyvelondon.com/products?category=ss26" className="results-outline-button">
